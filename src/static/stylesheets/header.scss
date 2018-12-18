@@ -1,0 +1,52 @@
+@import "variables/colors";
+@import "variables/mixins";
+
+.header {
+  @include no-select;
+  align-items: center;
+  box-shadow: 0 2px 2px 0 $color-shadow-gray;
+  display: flex;
+  height: 45px;
+  justify-content: space-between;
+  max-height: 45px;
+  min-height: 45px;
+  text-align: right;
+  width: 100%;
+  z-index: 1000;
+
+  .logo-link,
+  .current-account {
+    margin: 0 5px;
+  }
+
+  .current-account {
+    align-items: center;
+    display: flex;
+
+    .account-name {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .account-balance {
+      color: $color-text-light;
+      font-size: 14px;
+    }
+  }
+
+  .icon-container {
+    $icon-size: 35px;
+    padding: 0 10px 0 15px;
+    width: $icon-size;
+
+    .logo-icon {
+      height: auto;
+      max-width: 90px;
+      width: auto;
+    }
+
+    .cropped-image {
+      @include cropped-image($icon-size, $icon-size, 50%, $icon-size, $icon-size);
+    }
+  }
+}

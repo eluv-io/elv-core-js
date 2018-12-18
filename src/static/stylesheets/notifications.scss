@@ -1,0 +1,51 @@
+@import "variables/colors";
+
+.notification-container {
+  background: $color-bg-light;
+  display: block;
+  height: 40px;
+  min-height: 40px;
+  position: absolute;
+  top: 46px;
+  width: 100%;
+
+  &:empty {
+    height: 0;
+    min-height: 0;
+  }
+
+  .notification-message-container {
+    background: $color-mediumblue;
+    color: $color-text-white;
+  }
+
+  .error-message-container {
+    background: $color-midred;
+    color: $color-text-white;
+  }
+
+  .notification-message-container,
+  .error-message-container {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .clear-notification {
+    align-items: center;
+    color: $color-text-white;
+    cursor: pointer;
+    display: flex;
+    font-weight: bold;
+    //height: 100%;
+    padding: 10px;
+    position: absolute;
+    right: 15px;
+
+    &:hover {
+      color: $color-darkergray;
+    }
+  }
+}

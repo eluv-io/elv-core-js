@@ -1,0 +1,136 @@
+@import "variables/spacing";
+@import "variables/colors";
+@import "variables/mixins";
+
+.app-container,
+.account-manager-container {
+  height: 100%;
+  width: 100%;
+}
+
+.account-manager-container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+
+  .logo {
+    margin: $spacing-s 0;
+    width: 200px;
+  }
+}
+
+.accounts {
+  background: $color-bg-dark;
+  border: 1px solid $color-midgray;
+  margin: $spacing-xxs;
+  width: 400px;
+  z-index: 101;
+
+  .add-account-container {
+    align-items: center;
+    background: $color-bg-white;
+    cursor: auto;
+    display: flex;
+    justify-content: center;
+    padding: $spacing-s 0;
+  }
+
+  .account-container {
+    align-items: center;
+    background-color: $color-bg-dark;
+    border-bottom: 1px solid $color-midgray;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: $spacing-xs $spacing-s;
+
+    &:last-child {
+      border: 0;
+    }
+
+    &:hover {
+      background: $color-bg-white;
+      cursor: pointer;
+    }
+
+    .icon-container {
+      $image-width: 55px;
+      height: $image-width;
+      width: $image-width;
+
+      .cropped-image {
+        @include cropped-image($image-width, $image-width, 50%, $image-width, $image-width);
+      }
+    }
+
+    .info-container {
+      width: 300px;
+    }
+
+    .account-header {
+      display: flex;
+      justify-content: space-between;
+      padding-bottom: $spacing-xxs;
+      width: 100%;
+
+      .account-name {
+        @include ellipsis;
+        padding-right: $spacing-xxs;
+      }
+
+      .account-balance {
+        font-size: 12px;
+      }
+    }
+
+    .actions-container,
+    &.actions-container {
+      .action {
+        height: 2.2em;
+        margin: $spacing-xxs 0;
+      }
+    }
+
+    .account-actions {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .account-address {
+      @include ellipsis;
+
+      color: $color-text-light;
+      font-size: 9px;
+      padding-bottom: $spacing-xxs;
+      width: 100%;
+    }
+
+    .account-remove {
+      z-index: 1002;
+    }
+  }
+
+  .current-account {
+    background: $color-bg-white;
+    padding: $spacing-s;
+
+    &:hover {
+      cursor: auto;
+    }
+
+    .icon-container {
+      $image-width: 80px;
+      height: $image-width;
+      width: $image-width;
+
+      .cropped-image {
+        @include cropped-image($image-width, $image-width, 50%, $image-width, $image-width);
+      }
+    }
+
+    .info-container {
+      width: 275px;
+    }
+  }
+}

@@ -1,0 +1,36 @@
+@import "variables/colors";
+@import "variables/spacing";
+@import "variables/mixins";
+@import "fonts";
+
+@import "defaults";
+@import "actions";
+@import "forms";
+@import "header";
+@import "notifications";
+@import "accounts";
+@import "radio";
+
+.app {
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+}
+
+iframe {
+  border: 0;
+}
+
+.app-frame {
+  height: 100%;
+  width: 100%;
+}
+
+.route-container {
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+}
+
+

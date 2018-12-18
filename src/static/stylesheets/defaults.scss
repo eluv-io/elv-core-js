@@ -1,0 +1,75 @@
+@import "variables/colors";
+
+html,
+body,
+.page-container {
+  font-family: Lato, sans-serif;
+  font-size: 16px;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+textarea {
+  font-family: Lato, sans-serif;
+}
+
+h1 {
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0;
+}
+
+h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+}
+
+h3 {
+  font-size: 20px;
+  font-weight: normal;
+  margin: 0;
+}
+
+h4 {
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+
+  &,
+  &:visited {
+    color: $color-darkgray;
+  }
+
+  &.link {
+    display: block;
+  }
+
+  &.image-link {
+    display: flex;
+  }
+}
+
+input {
+  &[type="checkbox"] {
+    cursor: pointer;
+  }
+}
+
+.main-content-container {
+  margin: 50px 0 0;
+}
+
+pre {
+  background: $color-lightergray;
+  border: 1px solid $color-gray;
+  margin: 0;
+  overflow: auto;
+
+  padding: 10px;
+  white-space: pre-wrap;
+}
