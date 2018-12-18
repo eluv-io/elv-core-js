@@ -1,0 +1,253 @@
+/* AppFrame
+
+This is a sandboxed frame that includes a message passing interface
+to allow the contained app to request fabric / blockchain API requests
+from the core app, which owns user account information and keys
+*/
+
+import React from "react";
+import connect from "react-redux/es/connect/connect";
+import Path from "path";
+import { SetErrorMessage } from "../actions/Notifications";
+import { UpdateAccountBalance } from "../actions/Accounts";
+import Authenticate from "./Authenticate";
+import {SetAppLocation} from "../actions/Routing";
+
+// Ensure error objects can be properly serialized in messages
+if (!("toJSON" in Error.prototype)) {
+  const excludedAttributes = [
+    "columnNumber",
+    "fileName",
+    "lineNumber"
+  ];
+
+  Object.defineProperty(Error.prototype, "toJSON", {
+    value: function() {
+      let object = {};
+
+      Object.getOwnPropertyNames(this).forEach(key => {
+        if(!excludedAttributes.includes(key)) {
+          object[key] = this[key];
+        }
+      }, this);
+
+      return object;
+    },
+    configurable: true,
+    writable: true
+  });
+}
+
+class IFrameBase extends React.Component {
+  SandboxPermissions() {
+    return [
+      "allow-scripts",
+      "allow-forms",
+      "allow-modals",
+      "allow-pointer-lock",
+      "allow-orientation-lock",
+      "allow-popups",
+      "allow-presentation"
+    ].join(" ");
+  }
+
+  shouldComponentUpdate() { return false; }
+
+  componentDidMount() {
+    window.addEventListener("message", this.props.listener);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("message", this.props.listener);
+  }
+
+  render() {
+    return (
+      <iframe
+        ref={this.props.appRef}
+        src={this.props.appUrl}
+        sandbox={this.SandboxPermissions()}
+        className={this.props.className}
+      />
+    );
+  }
+}
+
+const IFrame = React.forwardRef(
+  (props, appRef) => <IFrameBase appRef={appRef} {...props} />
+);
+
+const IsCloneable = (value) => {
+  if(Object(value) !== value) {
+    // Primitive valueue
+    return true;
+  }
+  
+  switch({}.toString.call(value).slice(8,-1)) { // Class
+    case "Boolean":     
+    case "Number":      
+    case "String":      
+    case "Date":
+    case "RegExp":      
+    case "Blob":        
+    case "FileList":
+    case "ImageData":   
+    case "ImageBitmap": 
+    case "ArrayBuffer":
+      return true;
+    case "Array":
+    case "Object":
+      return Object.keys(value).every(prop => IsCloneable(value[prop]));
+    case "Map":
+      return [...value.keys()].every(IsCloneable)
+        && [...value.values()].every(IsCloneable);
+    case "Set":
+      return [...value.keys()].every(IsCloneable);
+    default:
+      return false;
+  }
+};
+
+class AppFrame extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      appRef: React.createRef(),
+      loginRequired: false,
+      redirectLocation: "",
+      basePath: Path.join("/apps", this.props.match.params.appName)
+    };
+
+    this.ApiRequestListener = this.ApiRequestListener.bind(this);
+  }
+
+  // Make request to update the current user's account balance
+  // Wait a second before making the request - if any other requests
+  // are made by the client, the timer will be reset to prevent
+  // multiple updates on a single user action requiring multiple requests
+  UpdateAccountBalance() {
+    if(this.state.balanceUpdateTimeout) {
+      clearTimeout(this.state.balanceUpdateTimeout);
+    }
+
+    const timeout = setTimeout(() => {
+      this.props.dispatch(
+        UpdateAccountBalance({
+          client: this.props.client.client,
+          accountManager: this.props.accounts.accountManager,
+          accountName: this.props.accounts.currentAccount.accountName
+        })
+      );
+
+      this.setState({balanceUpdateTimeout: undefined});
+    }, 1000);
+
+    this.setState({
+      balanceUpdateTimeout: timeout
+    });
+  }
+
+  Respond(event, responseMessage) {
+    responseMessage = {
+      ...responseMessage,
+      requestId: event.data.requestId,
+      type: "ElvFrameResponse"
+    };
+
+    // If the response is not cloneable, serialize it to remove any non-cloneable parts
+    if(!IsCloneable(responseMessage)) {
+      responseMessage = JSON.parse(JSON.stringify(responseMessage));
+    }
+
+    try {
+      // Try sending the response message as-is
+      event.source.postMessage(
+        responseMessage,
+        "*"
+      );
+    } catch(error) {
+      /* eslint-disable no-console */
+      console.error(responseMessage);
+      console.error(error);
+      /* eslint-enable no-console */
+    }
+  }
+
+  // Listen for API request messages from frame
+  // TODO: Validate origin
+  async ApiRequestListener(event) {
+    // Ignore unrelated messages
+    if(!event || !event.data || event.data.type !== "ElvFrameRequest") { return; }
+
+    const currentAccount = this.props.accounts.currentAccount;
+
+    /* Account Validation */
+    if(!currentAccount) {
+      this.setState({
+        loginRequired: true,
+        redirectLocation: "/accounts"
+      });
+
+      this.props.dispatch(SetErrorMessage({message: "Account required"}));
+      this.Respond(event, {error: new Error("Not logged in")});
+
+      return;
+    } else {
+      if (!this.props.client) {
+        // Must enter password to decrypt saved private key
+        this.setState({
+          loginRequired: true,
+          redirectLocation: Path.join("/accounts", "log-in", currentAccount.accountAddress)
+        });
+
+        this.props.dispatch(SetErrorMessage({message: "Authentication required"}));
+        this.Respond(event, {error: new Error("Awaiting authorization")});
+
+        return;
+      }
+    }
+    /* End Account Validation */
+    switch(event.data.operation) {
+      // App requested the app path
+      case "GetFramePath":
+        this.Respond(event, {response: this.props.location.pathname.replace(this.state.basePath, "")});
+        break;
+
+      // App requested to push a new app path
+      case "SetFramePath":
+        this.props.dispatch(SetAppLocation({
+          location: this.props.location,
+          newPath: Path.join(this.state.basePath, event.data.path || "/")
+        }));
+        this.Respond(event, {response: "Set path " + event.data.path});
+        break;
+
+      // App requested an ElvClient method
+      default:
+        this.Respond(event, await this.props.client.client.CallFromFrameMessage(event.data));
+    }
+
+
+    this.UpdateAccountBalance();
+  }
+
+  render() {
+    // TODO: Don't hardcode this
+    const appUrl = "http://localhost:8080";
+
+    return (
+      <IFrame
+        ref={this.state.appRef}
+        appUrl={appUrl}
+        listener={this.ApiRequestListener}
+        className="app-frame"
+      />
+    );
+  }
+}
+
+
+export default connect(
+  (state) => state
+)(Authenticate(AppFrame));
