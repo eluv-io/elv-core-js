@@ -10,7 +10,7 @@ const AccountsReducer = (state = {}, action) => {
       };
 
     case ActionTypes.accounts.updateAccountBalance:
-      const balance = action.balance ? `${Math.round(action.balance * 1000) / 1000} Eluvio Bux` : "";
+      const balance = action.balance ? `φ${Math.round(action.balance * 1000) / 1000}` : "";
       return {
         ...state,
         balances: {
