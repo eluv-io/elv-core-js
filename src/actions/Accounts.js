@@ -28,9 +28,11 @@ export const SetAccounts = ({client, accountManager}) => {
       currentAccount
     });
 
-    Object.values(accountManager.Accounts()).forEach(account => {
-      dispatch(UpdateAccountBalance({client, accountManager, accountName: account.accountName}));
-    });
+    if(client) {
+      Object.values(accountManager.Accounts()).forEach(account => {
+        dispatch(UpdateAccountBalance({client, accountManager, accountName: account.accountName}));
+      });
+    }
   };
 };
 
@@ -115,7 +117,7 @@ export const SwitchAccount = ({ client, accountManager, account, noFlash=false }
       });
     }
 
-    dispatch(SetAccounts({client, accountManager}));
+    dispatch(SetAccounts({accountManager}));
 
     if(!noFlash) {
       dispatch(SetNotificationMessage({message: "Successfully switched accounts"}));
@@ -185,7 +187,7 @@ export const SendFunds = ({ client, accountManager, recipient, ether }) => {
         }));
 
         dispatch(SetNotificationMessage({
-          message: "Successfully sent " + ether + " Eluvio Bux to " + recipientName,
+          message: "Successfully sent φ" + ether + " to " + recipientName,
           redirect: true
         }));
       }

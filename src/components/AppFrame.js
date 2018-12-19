@@ -11,7 +11,7 @@ import Path from "path";
 import { SetErrorMessage } from "../actions/Notifications";
 import { UpdateAccountBalance } from "../actions/Accounts";
 import Authenticate from "./Authenticate";
-import {SetAppLocation} from "../actions/Routing";
+import {GetAppLocation, SetAppLocation} from "../actions/Routing";
 
 // Ensure error objects can be properly serialized in messages
 if (!("toJSON" in Error.prototype)) {
@@ -207,19 +207,20 @@ class AppFrame extends React.Component {
         return;
       }
     }
+
     /* End Account Validation */
     switch(event.data.operation) {
-      // App requested the app path
+      // App requested its app path
       case "GetFramePath":
-        this.Respond(event, {response: this.props.location.pathname.replace(this.state.basePath, "")});
+        this.Respond(event, {response: GetAppLocation({basePath: this.state.basePath})});
         break;
 
-      // App requested to push a new app path
+      // App requested to push its new app path
       case "SetFramePath":
-        this.props.dispatch(SetAppLocation({
-          location: this.props.location,
-          newPath: Path.join(this.state.basePath, event.data.path || "/")
-        }));
+        SetAppLocation({
+          basePath: this.state.basePath,
+          appPath: event.data.path || "/"
+        });
         this.Respond(event, {response: "Set path " + event.data.path});
         break;
 

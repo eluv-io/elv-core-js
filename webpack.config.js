@@ -26,7 +26,7 @@ module.exports = {
     }
   },
   mode: "development",
-  devtool: "source-map",
+  devtool: "eval-source-map",
   plugins: [
     new CopyWebpackPlugin([path.join(__dirname, "src", "index.html")]),
     new webpack.optimize.LimitChunkCountPlugin({
