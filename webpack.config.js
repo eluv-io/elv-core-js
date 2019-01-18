@@ -11,6 +11,9 @@ module.exports = {
     path: path.resolve(__dirname, "dist"),
     filename: "index.js",
   },
+  node: {
+    fs: "empty"
+  },
   devServer: {
     inline: true,
     port: 8080,
