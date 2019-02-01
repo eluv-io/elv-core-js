@@ -13,8 +13,7 @@ class Accounts extends React.Component {
     super(props);
 
     this.state = {
-      loginRedirect: false,
-      loginAccount: ""
+      loginRedirect: false
     };
   }
 
@@ -43,6 +42,10 @@ class Accounts extends React.Component {
       accountManager: this.props.accounts.accountManager,
       account
     }));
+
+    this.setState({
+      loginRedirect: true
+    });
   }
 
   AccountActions(account, currentAccount=false) {
@@ -113,8 +116,8 @@ class Accounts extends React.Component {
   }
 
   render() {
-    if(this.state.loginRedirect) {
-      return <Redirect to={Path.join("/accounts", "log-in", this.state.loginAccount)} />;
+    if(this.state.loginRedirect && !this.props.client.signer && this.props.accounts.currentAccount) {
+      return <Redirect to={Path.join("/accounts", "log-in", this.props.accounts.currentAccount.accountAddress)} />;
     }
 
     return (

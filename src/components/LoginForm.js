@@ -15,7 +15,8 @@ class LoginForm extends React.Component {
     this.state = {
       account,
       password: "",
-      redirect: false
+      redirect: false,
+      redirectLocation: this.props.accounts.savedLocation || "/accounts"
     };
 
     this.HandleInputChange = this.HandleInputChange.bind(this);
@@ -85,7 +86,7 @@ class LoginForm extends React.Component {
 
   render() {
     if(!this.state.account || this.state.redirect) {
-      return <Redirect push to="/accounts" />;
+      return <Redirect push to={this.state.redirectLocation} />;
     }
 
     return (

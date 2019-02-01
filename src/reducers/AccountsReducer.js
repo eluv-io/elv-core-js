@@ -19,12 +19,25 @@ const AccountsReducer = (state = {}, action) => {
         }
       };
 
+    case ActionTypes.accounts.saveLocation:
+      return {
+        ...state,
+        savedLocation: action.location
+      };
+
+    case ActionTypes.accounts.clearSavedLocation:
+      return {
+        ...state,
+        savedLocation: undefined
+      };
+
     default:
       return {
         ...state,
         balances: state.balances || {},
         activeAccounts: state.activeAccounts || [] || state.accountManager.Accounts(),
-        currentAccount: state.currentAccount
+        currentAccount: state.currentAccount,
+        savedLocation: state.savedLocation
       };
   }
 };

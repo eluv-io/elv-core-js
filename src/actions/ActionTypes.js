@@ -1,7 +1,9 @@
 const ActionTypes = {
   accounts: {
     setAccounts: "UPDATE_ACCOUNTS",
-    updateAccountBalance: "UPDATE_ACCOUNT_BALANCE"
+    updateAccountBalance: "UPDATE_ACCOUNT_BALANCE",
+    saveLocation: "SAVE_LOCATION",
+    clearSavedLocation: "CLEAR_SAVED_LOCATION"
   },
   client: {
     clearSigner: "CLEAR_SIGNER",
