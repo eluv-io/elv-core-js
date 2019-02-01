@@ -4,10 +4,12 @@ import NotificationsReducer from "./NotificationsReducer";
 import AccountsReducer from "./AccountsReducer";
 import RequestsReducer from "./RequestsReducer";
 import ClientReducer from "./ClientReducer";
+import RoutingReducer from "./RoutingReducer";
 
 export default combineReducers({
   accounts: AccountsReducer,
   client: ClientReducer,
   notifications: NotificationsReducer,
-  requests: RequestsReducer
+  requests: RequestsReducer,
+  routing: RoutingReducer
 });
