@@ -3,7 +3,7 @@ import connect from "react-redux/es/connect/connect";
 import Link from "react-router-dom/es/Link";
 import {LogOut, RemoveAccount, SwitchAccount} from "../actions/Accounts";
 
-import ImageIcon from "./ImageIcon";
+import {ImageIcon} from "./Icons";
 import AccountIcon from "../static/images/portrait2.png";
 import Redirect from "react-router/es/Redirect";
 import Path from "path";
