@@ -1,5 +1,4 @@
-@import "variables/colors";
-@import "variables/mixins";
+
 
 .header {
   @include no-select;
@@ -11,12 +10,45 @@
   max-height: 45px;
   min-height: 45px;
   text-align: right;
+  transition: min-height 0.5s ease-in-out, height 0.5s ease-in-out;
   width: 100%;
   z-index: 1000;
+
+  .toggle-header-section {
+    cursor: pointer;
+    height: 100%;
+    margin: 0 $spacing-m;
+    width: 100%;
+  }
+
+  .toggle-header-button {
+    background: transparent;
+    border: 0;
+    color: $color-lightgray;
+    cursor: pointer;
+    height: 40px;
+    left: 50%;
+    margin: 0;
+    opacity: 0;
+    padding: 0;
+    position: absolute;
+    right: 50%;
+    top: 0;
+    transition: visibility 0.35s, opacity 0.35s linear;
+    visibility: hidden;
+    width: 40px;
+    z-index: 1000;
+  }
+
+  .logo-link {
+    width: 200px;
+  }
 
   .logo-link,
   .current-account {
     margin: 0 5px;
+    transition: visibility 0.35s ease-in, opacity 0.35s;
+    transition-delay: 0.5s;
   }
 
   .current-account {
@@ -47,6 +79,27 @@
 
     .cropped-image {
       @include cropped-image($icon-size, $icon-size, 50%, $icon-size, $icon-size);
+    }
+  }
+
+  &.hidden-header {
+    background: transparent;
+    height: 0;
+    min-height: 0;
+    transition-delay: 0.35s;
+
+    .logo-link,
+    .toggle-header-section,
+    .current-account {
+      opacity: 0;
+      transition-delay: 0s;
+      visibility: hidden;
+    }
+
+    .toggle-header-button {
+      opacity: 1;
+      transition-delay: 0.5s;
+      visibility: visible;
     }
   }
 }
