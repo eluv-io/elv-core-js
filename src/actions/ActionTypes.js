@@ -22,6 +22,10 @@ const ActionTypes = {
     submitted: "REQUEST_SUBMITTED",
     completed: "REQUEST_COMPLETED",
     error: "REQUEST_ERROR"
+  },
+  routing: {
+    hideHeader: "HIDE_HEADER",
+    showHeader: "SHOW_HEADER"
   }
 };
 

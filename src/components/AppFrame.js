@@ -10,7 +10,8 @@ import connect from "react-redux/es/connect/connect";
 import Path from "path";
 import {UpdateAccountBalance} from "../actions/Accounts";
 import Authenticate from "./Authenticate";
-import {GetAppLocation, SetAppLocation} from "../actions/Routing";
+import {GetAppLocation, HideHeader, SetAppLocation, ShowHeader} from "../actions/Routing";
+import Redirect from "react-router/es/Redirect";
 
 // Ensure error objects can be properly serialized in messages
 if (!("toJSON" in Error.prototype)) {
@@ -191,7 +192,21 @@ class AppFrame extends React.Component {
         });
         this.Respond(event, {response: "Set path " + event.data.path});
         break;
-        
+
+      case "ShowAccountsPage":
+        this.setState({
+          redirectLocation: "/accounts"
+        });
+        break;
+
+      case "ShowHeader":
+        this.props.dispatch(ShowHeader());
+        break;
+
+      case "HideHeader":
+        this.props.dispatch(HideHeader());
+        break;
+
       // App requested an ElvClient method
       default:
         this.Respond(event, await this.props.client.client.CallFromFrameMessage(event.data));
@@ -202,6 +217,10 @@ class AppFrame extends React.Component {
   }
 
   render() {
+    if(this.state.redirectLocation) {
+      return <Redirect push to={this.state.redirectLocation} />;
+    }
+
     // TODO: Don't hardcode this
     const appUrl = "http://localhost:8080";
 
