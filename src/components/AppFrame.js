@@ -8,8 +8,7 @@ from the core app, which owns user account information and keys
 import React from "react";
 import connect from "react-redux/es/connect/connect";
 import Path from "path";
-import { SetErrorMessage } from "../actions/Notifications";
-import { UpdateAccountBalance } from "../actions/Accounts";
+import {UpdateAccountBalance} from "../actions/Accounts";
 import Authenticate from "./Authenticate";
 import {GetAppLocation, SetAppLocation} from "../actions/Routing";
 
@@ -123,9 +122,7 @@ class AppFrame extends React.Component {
   }
 
   // Make request to update the current user's account balance
-  // Wait a second before making the request - if any other requests
-  // are made by the client, the timer will be reset to prevent
-  // multiple updates on a single user action requiring multiple requests
+  // Debounce to reduce unnecessary requests when multiple calls are made
   UpdateAccountBalance() {
     if(this.state.balanceUpdateTimeout) {
       clearTimeout(this.state.balanceUpdateTimeout);
@@ -180,35 +177,6 @@ class AppFrame extends React.Component {
     // Ignore unrelated messages
     if(!event || !event.data || event.data.type !== "ElvFrameRequest") { return; }
 
-    const currentAccount = this.props.accounts.currentAccount;
-
-    /* Account Validation */
-    if(!currentAccount) {
-      this.setState({
-        loginRequired: true,
-        redirectLocation: "/accounts"
-      });
-
-      this.props.dispatch(SetErrorMessage({message: "Account required"}));
-      this.Respond(event, {error: new Error("Not logged in")});
-
-      return;
-    } else {
-      if (!this.props.client) {
-        // Must enter password to decrypt saved private key
-        this.setState({
-          loginRequired: true,
-          redirectLocation: Path.join("/accounts", "log-in", currentAccount.accountAddress)
-        });
-
-        this.props.dispatch(SetErrorMessage({message: "Authentication required"}));
-        this.Respond(event, {error: new Error("Awaiting authorization")});
-
-        return;
-      }
-    }
-
-    /* End Account Validation */
     switch(event.data.operation) {
       // App requested its app path
       case "GetFramePath":
@@ -223,7 +191,7 @@ class AppFrame extends React.Component {
         });
         this.Respond(event, {response: "Set path " + event.data.path});
         break;
-
+        
       // App requested an ElvClient method
       default:
         this.Respond(event, await this.props.client.client.CallFromFrameMessage(event.data));

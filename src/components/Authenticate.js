@@ -1,28 +1,31 @@
 import React from "react";
 import Redirect from "react-router/es/Redirect";
 import Path from "path";
-import {SetErrorMessage} from "../actions/Notifications";
+import {AuthenticationFailure} from "../actions/Accounts";
 
 const Authenticate = (Component) => {
   return (props) => {
     if (props.client.client.signer) { return <Component {...props} />; }
 
     const currentAccount = props.accounts.accountManager.CurrentAccount();
+    let errorMessage, redirectLocation;
     if(currentAccount) {
-      props.dispatch(SetErrorMessage({
-        message: "Authentication Required",
-        redirect: true
-      }));
-
-      return <Redirect to={Path.join("/accounts", "log-in", currentAccount.accountAddress)} />;
+      redirectLocation = Path.join("/accounts", "log-in", currentAccount.accountAddress);
+      errorMessage = "Authentication Required";
     } else {
-      props.dispatch(SetErrorMessage({
-        message: "Please add an account",
-        redirect: true
-      }));
-
-      return <Redirect to={Path.join("/accounts")} />;
+      errorMessage = "Please add an account";
+      redirectLocation = Path.join("/accounts");
     }
+
+    if(redirectLocation) {
+      props.dispatch(AuthenticationFailure({
+        message: errorMessage,
+        originalLocation: props.location.pathname
+      }));
+    }
+
+    return <Redirect to={redirectLocation} />;
+
   };
 };
 

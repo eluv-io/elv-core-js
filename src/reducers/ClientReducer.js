@@ -16,18 +16,21 @@ const ClientReducer = (state = {}, action) => {
     case ActionTypes.client.setSigner:
       return {
         ...state,
+        signer: action.signer,
         client: InitializeClient(action.signer)
       };
 
     case ActionTypes.client.clearSigner:
       return {
         ...state,
+        signer: undefined,
         client: InitializeClient()
       };
 
     default:
       return {
         ...state,
+        signer: state.signer,
         client: state.client || InitializeClient()
       };
   }

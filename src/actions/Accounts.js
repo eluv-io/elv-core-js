@@ -118,6 +118,8 @@ export const SwitchAccount = ({client, accountManager, account, noFlash=false}) 
 
     dispatch(SetAccounts({accountManager}));
 
+    dispatch({type: ActionTypes.accounts.clearSavedLocation});
+
     if(!noFlash) {
       dispatch(SetNotificationMessage({message: "Successfully switched accounts"}));
     }
@@ -190,5 +192,20 @@ export const SendFunds = ({ client, accountManager, recipient, ether }) => {
         }));
       }
     });
+  };
+};
+
+// Failed to authenticate, save current location and show error message
+export const AuthenticationFailure = ({message, originalLocation}) => {
+  return (dispatch) => {
+    dispatch({
+      type: ActionTypes.accounts.saveLocation,
+      location: originalLocation
+    });
+
+    dispatch(SetErrorMessage({
+      message,
+      redirect: true
+    }));
   };
 };
