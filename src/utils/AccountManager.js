@@ -1,6 +1,8 @@
 export const ELV_ACCOUNTS_KEY = "ElvAccounts";
 export const ELV_CURRENT_ACCOUNT_KEY = "ElvCurrentAccount";
 
+import Utils from "elv-client-js/src/Utils";
+
 // Manage account information in localstorage and ElvWallet
 class AccountManager {
   constructor({elvWallet}) {
@@ -12,8 +14,8 @@ class AccountManager {
 
     // Insert signer into each account record
     // Signer storage (elvWallet) and and local storage are *only* merged here
-    Object.keys(accounts).forEach(accountName => {
-      accounts[accountName].signer = this.elvWallet.GetAccount({accountName});
+    Object.keys(accounts).forEach(accountAddress => {
+      accounts[accountAddress].signer = this.elvWallet.GetAccount({accountName: accountAddress});
     });
 
     return accounts;
@@ -31,36 +33,33 @@ class AccountManager {
 
     let currentAccounts = this.__StoredAccounts();
 
-    currentAccounts[accountName] = {
+    const accountAddress = Utils.FormatAddress(accountCredentials.signer.address);
+
+    currentAccounts[accountAddress] = {
       accountName,
-      accountAddress: accountCredentials.signer.address.toLowerCase(),
+      accountAddress,
       encryptedPrivateKey: accountCredentials.encryptedPrivateKey
     };
 
     this.__UpdateAccounts(currentAccounts);
 
     this.elvWallet.AddAccount({
-      accountName,
+      accountName: accountAddress,
       privateKey: accountCredentials.signer.privateKey
     });
 
-    return this.GetAccount({accountName});
+    return this.GetAccount({accountAddress});
   }
 
-  GetAccount({accountName}) {
-    return this.Accounts()[accountName];
+  GetAccount({accountAddress}) {
+    return this.Accounts()[accountAddress];
   }
 
-  GetAccountByAddress({accountAddress}) {
-    return Object.values(this.Accounts()).find(accountInfo =>
-      accountInfo.accountAddress.toLowerCase() === accountAddress.toLowerCase());
-  }
-
-  async Authenticate({accountName, password}) {
-    const account = this.GetAccount({accountName});
-    if(!account) { throw Error("Unknown account: " + accountName); }
+  async Authenticate({accountAddress, password}) {
+    const account = this.GetAccount({accountAddress});
+    if(!account) { throw Error("Unknown account: " + accountAddress); }
     const signer = await this.elvWallet.AddAccountFromEncryptedPK({
-      accountName,
+      accountName: accountAddress,
       encryptedPrivateKey: account.encryptedPrivateKey,
       password
     });
@@ -68,12 +67,12 @@ class AccountManager {
     if(!signer) { throw Error("Invalid credentials"); }
 
     // Get account again - will include signer
-    return this.GetAccount({accountName});
+    return this.GetAccount({accountAddress});
   }
 
-  SwitchAccount({accountName}) {
-    if(accountName) {
-      localStorage.setItem(ELV_CURRENT_ACCOUNT_KEY, accountName);
+  SwitchAccount({accountAddress}) {
+    if(accountAddress) {
+      localStorage.setItem(ELV_CURRENT_ACCOUNT_KEY, accountAddress);
     } else {
       localStorage.removeItem(ELV_CURRENT_ACCOUNT_KEY);
     }
@@ -83,15 +82,15 @@ class AccountManager {
     return this.Accounts()[localStorage.getItem(ELV_CURRENT_ACCOUNT_KEY)];
   }
 
-  RemoveAccount({accountName}) {
+  RemoveAccount({accountAddress}) {
     let currentAccounts = this.__StoredAccounts();
 
     // Remove from localstorage
-    delete currentAccounts[accountName];
+    delete currentAccounts[accountAddress];
     this.__UpdateAccounts(currentAccounts);
 
     // Remove from wallet
-    this.elvWallet.RemoveAccount({accountName});
+    this.elvWallet.RemoveAccount({accountAddress});
   }
 
   // Store accounts from localstorage
@@ -132,7 +131,11 @@ class AccountManager {
     }
 
     if(!encryptedPrivateKey) {
-      encryptedPrivateKey = await this.elvWallet.GenerateEncryptedPrivateKey({signer, password});
+      const options = {
+        scrypt: { N: 16384 }
+      };
+
+      encryptedPrivateKey = await this.elvWallet.GenerateEncryptedPrivateKey({signer, password, options});
     }
 
     return {

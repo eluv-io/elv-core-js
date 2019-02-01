@@ -136,7 +136,7 @@ class AppFrame extends React.Component {
         UpdateAccountBalance({
           client: this.props.client.client,
           accountManager: this.props.accounts.accountManager,
-          accountName: this.props.accounts.currentAccount.accountName
+          accountAddress: this.props.accounts.currentAccount.accountAddress
         })
       );
 

@@ -15,8 +15,10 @@ class Header extends React.Component {
   }
 
   render() {
-    const accountName = this.props.accounts.currentAccount ? this.props.accounts.currentAccount.accountName : "Not logged in";
-    const accountImage = this.props.accounts.currentAccount ? AccountImage : UnknownAccountImage;
+    const account = this.props.accounts.currentAccount;
+    const accountName = account ? account.accountName : "Not logged in";
+    const accountBalance = account ? this.props.accounts.balances[account.accountAddress] : "";
+    const accountImage = account ? AccountImage : UnknownAccountImage;
 
     return (
       <header className="header">
@@ -31,7 +33,7 @@ class Header extends React.Component {
               { accountName }
             </div>
             <div className="account-balance">
-              { this.props.accounts.balances[accountName] }
+              { accountBalance }
             </div>
           </div>
           <div className="icon-container">

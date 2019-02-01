@@ -10,8 +10,7 @@ class LoginForm extends React.Component {
     super(props);
 
     const accountAddress = this.props.match.params.accountAddress;
-    const account = Object.values(this.props.accounts.activeAccounts)
-      .find(accountInfo => accountInfo.accountAddress.toLowerCase() === accountAddress.toLowerCase());
+    const account = this.props.accounts.activeAccounts[accountAddress];
 
     this.state = {
       account,
@@ -34,8 +33,9 @@ class LoginForm extends React.Component {
 
     const requestId = this.props.dispatch(
       LogIn({
+        client: this.props.client.client,
         accountManager: this.props.accounts.accountManager,
-        accountName: this.state.account.accountName,
+        accountAddress: this.state.account.accountAddress,
         encryptedPrivateKey: this.state.account.encryptedPrivateKey,
         password: this.state.password,
       })
