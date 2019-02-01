@@ -97,23 +97,19 @@ class Accounts extends React.Component {
   }
 
   Accounts() {
-    let accounts = [];
-
     const currentAccount = this.props.accounts.currentAccount;
 
-    if(currentAccount) {
-      accounts.push(this.Account(currentAccount, true));
-    }
+    return Object.keys(this.props.accounts.activeAccounts)
+      .filter(accountAddress => currentAccount.accountAddress !== accountAddress)
+      .map(accountAddress => this.Account(this.props.accounts.activeAccounts[accountAddress]));
+  }
 
-    Object.keys(this.props.accounts.activeAccounts).map(accountName => {
-      if(currentAccount && currentAccount.accountName === accountName) {
-        return null;
-      }
+  CurrentAccount() {
+    const currentAccount = this.props.accounts.currentAccount;
 
-      accounts.push(this.Account(this.props.accounts.activeAccounts[accountName]));
-    });
+    if(!currentAccount) { return; }
 
-    return accounts;
+    return this.Account(currentAccount, true);
   }
 
   render() {
@@ -124,6 +120,7 @@ class Accounts extends React.Component {
     return (
       <div className="accounts-container main-content-container">
         <div className="accounts">
+          { this.CurrentAccount() }
           { this.Accounts() }
           <div className="actions-container add-account-container">
             <Link className="action action-compact action-wide" to="/accounts/add-account">

@@ -27,6 +27,7 @@ export const SeedAccounts = async (store, client, accountManager) => {
   }
 
   const currentAccount = accountManager.CurrentAccount() || accountManager.Accounts()[Object.keys(accountManager.Accounts())[0]];
+
   store.dispatch(SwitchAccount({
     client,
     accountManager,

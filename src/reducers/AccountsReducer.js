@@ -15,7 +15,7 @@ const AccountsReducer = (state = {}, action) => {
         ...state,
         balances: {
           ...state.balances,
-          [action.accountName]: balance
+          [action.accountAddress]: balance
         }
       };
 

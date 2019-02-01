@@ -2,17 +2,13 @@ import ActionTypes from "./ActionTypes";
 import { SetErrorMessage, SetNotificationMessage } from "./Notifications";
 import { WrapRequest } from "./Requests";
 
-export const UpdateAccountBalance = ({client, accountManager, accountName}) => {
+export const UpdateAccountBalance = ({client, accountAddress}) => {
   return async (dispatch) => {
-    const account = accountManager.GetAccount({accountName});
-
-    if(!account) { return; }
-
-    const balance = await client.GetBalance({address: account.accountAddress});
+    const balance = await client.GetBalance({address: accountAddress});
 
     dispatch({
       type: ActionTypes.accounts.updateAccountBalance,
-      accountName,
+      accountAddress,
       balance
     });
   };
@@ -29,15 +25,16 @@ export const SetAccounts = ({client, accountManager}) => {
     });
 
     if(client) {
-      Object.values(accountManager.Accounts()).forEach(account => {
-        dispatch(UpdateAccountBalance({client, accountManager, accountName: account.accountName}));
+      Object.keys(accountManager.Accounts()).forEach(accountAddress => {
+        dispatch(UpdateAccountBalance({client, accountAddress}));
       });
     }
   };
 };
 
 export const LogIn = ({
-  accountName,
+  client,
+  accountAddress,
   password,
   accountManager
 }) => {
@@ -46,9 +43,9 @@ export const LogIn = ({
       dispatch,
       action: "logIn",
       todo: async () => {
-        const account = await accountManager.Authenticate({accountName, password});
+        const account = await accountManager.Authenticate({accountAddress, password});
 
-        dispatch(SwitchAccount({account, accountManager}));
+        dispatch(SwitchAccount({client, account, accountManager}));
 
         dispatch(SetNotificationMessage({
           message: "Login successful",
@@ -83,7 +80,7 @@ export const AddAccount = ({
 
         // If no current account, set new account as current
         if(!accountManager.CurrentAccount()) {
-          dispatch(SwitchAccount({ account, accountManager }));
+          dispatch(SwitchAccount({client, account, accountManager}));
         }
 
         dispatch(SetAccounts({client, accountManager}));
@@ -98,13 +95,13 @@ export const AddAccount = ({
 };
 
 // TODO: remove noFlash parameter when seed doesn't need it
-export const SwitchAccount = ({ client, accountManager, account, noFlash=false }) => {
+export const SwitchAccount = ({client, accountManager, account, noFlash=false}) => {
   return (dispatch) => {
     if(account) {
-      accountManager.SwitchAccount({accountName: account.accountName});
+      accountManager.SwitchAccount({accountAddress: account.accountAddress});
 
       // Update client with signer
-      const signer = accountManager.GetAccount({accountName: account.accountName}).signer;
+      const signer = accountManager.GetAccount({accountAddress: account.accountAddress}).signer;
       dispatch({
         type: ActionTypes.client.setSigner,
         signer
@@ -116,6 +113,8 @@ export const SwitchAccount = ({ client, accountManager, account, noFlash=false }
         type: ActionTypes.client.clearSigner
       });
     }
+
+    dispatch(UpdateAccountBalance({client, accountAddress: account.accountAddress}));
 
     dispatch(SetAccounts({accountManager}));
 
@@ -134,14 +133,14 @@ export const LogOut = ({client, accountManager}) => {
     }
 
     dispatch(RemoveAccount({
-      accountName: currentAccount.accountName,
+      accountAddress: currentAccount.accountAddress,
       accountManager
     }));
 
     // Switch to another account if any exist
     // If no other accounts exist, SwitchAccount will clear currentAccount, logging out
     let accounts = accountManager.Accounts();
-    delete accounts[currentAccount.accountName];
+    delete accounts[currentAccount.accountAddress];
     let firstAccount = accounts[Object.keys(accounts)[0]];
     dispatch(SwitchAccount({client, account: firstAccount, accountManager}));
 
@@ -149,16 +148,16 @@ export const LogOut = ({client, accountManager}) => {
   };
 };
 
-export const RemoveAccount = ({ client, accountManager, accountName }) => {
+export const RemoveAccount = ({ client, accountManager, accountAddress }) => {
   return (dispatch) => {
-    let accountInfo = accountManager.GetAccount({accountName});
+    let accountInfo = accountManager.GetAccount({accountAddress});
 
     if (!accountInfo) {
-      dispatch(SetErrorMessage({message: "Invalid account: " + accountName}));
+      dispatch(SetErrorMessage({message: "Invalid account: " + accountAddress}));
       return;
     }
 
-    accountManager.RemoveAccount({accountName});
+    accountManager.RemoveAccount({accountAddress});
 
     dispatch(SetNotificationMessage({message: "Successfully removed account"}));
 
@@ -177,13 +176,12 @@ export const SendFunds = ({ client, accountManager, recipient, ether }) => {
           ether
         });
 
-        const recipientInfo = accountManager.GetAccountByAddress({accountAddress: recipient});
+        const recipientInfo = accountManager.GetAccount({accountAddress: recipient});
         const recipientName = recipientInfo ? recipientInfo.accountName : recipient;
 
         dispatch(UpdateAccountBalance({
           client,
-          accountManager: accountManager,
-          accountName: accountManager.CurrentAccount().accountName
+          accountAddress: client.CurrentAccountAddress()
         }));
 
         dispatch(SetNotificationMessage({

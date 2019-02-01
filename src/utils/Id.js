@@ -14,4 +14,4 @@ class Id {
   }
 }
 
-module.exports = Id;
+export default Id;
