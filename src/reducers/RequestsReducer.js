@@ -2,37 +2,34 @@ import ActionTypes from "../actions/ActionTypes";
 
 const RequestsReducer = (state = {}, action) => {
   switch (action.type) {
-    case ActionTypes.requests.submitted:
+    case ActionTypes.requests.status.submitted:
       return {
         ...state,
         [action.requestId]: {
-          action: action.action,
           updatedAt: Date.now(),
-          pending: true,
+          loading: true,
           completed: false,
           error: false
         }
       };
 
-    case ActionTypes.requests.completed:
+    case ActionTypes.requests.status.completed:
       return {
         ...state,
         [action.requestId]: {
-          action: action.action,
           updatedAt: Date.now(),
-          pending: false,
+          loading: false,
           completed: true,
           error: false,
         }
       };
 
-    case ActionTypes.requests.error:
+    case ActionTypes.requests.status.error:
       return {
         ...state,
         [action.requestId]: {
-          action: action.action,
           updatedAt: Date.now(),
-          pending: false,
+          loading: false,
           completed: false,
           error: true,
           error_message: action.error_message

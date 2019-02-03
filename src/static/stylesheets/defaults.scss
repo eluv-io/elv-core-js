@@ -32,7 +32,7 @@ h3 {
 }
 
 h4 {
-  margin: 0;
+  margin: $spacing-xs 0;
 }
 
 a {
@@ -70,4 +70,43 @@ pre {
 
   padding: 10px;
   white-space: pre-wrap;
+}
+
+
+.page-header-container {
+  @include centered;
+  flex-direction: column;
+
+  .page-header {
+    font-size: 20px;
+    margin: $spacing-xxs 0;
+  }
+
+  .page-subheader {
+    color: $color-text-light;
+    font-size: 12px;
+  }
+}
+
+.small-text {
+  font-size: 14px;
+}
+
+.indented {
+  margin-left: $spacing-s;
+}
+
+.info-section {
+  margin: $spacing-s 0;
+}
+
+.labelled-field {
+  display: flex;
+  margin: $spacing-xs 0;
+
+  label {
+    width: 120px;
+  }
+
+
 }

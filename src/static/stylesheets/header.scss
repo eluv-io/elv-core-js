@@ -54,8 +54,11 @@
   .current-account {
     align-items: center;
     display: flex;
+    max-width: 250px;
+    width: auto;
 
     .account-name {
+      @include ellipsis;
       font-size: 16px;
       font-weight: bold;
     }
@@ -76,10 +79,12 @@
       max-width: 90px;
       width: auto;
     }
+  }
 
-    .cropped-image {
-      @include cropped-image($icon-size, $icon-size, 50%, $icon-size, $icon-size);
-    }
+  .profile-image {
+    $image-size: 35px;
+    @include cropped-image($image-size, $image-size, 50%, $image-size, $image-size);
+    margin: 0 $spacing-xxs 0 $spacing-xs;
   }
 
   &.hidden-header {

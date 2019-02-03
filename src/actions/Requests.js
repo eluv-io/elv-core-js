@@ -1,42 +1,40 @@
 import ActionTypes from "./ActionTypes";
+import { SetErrorMessage } from "./Notifications";
 import Id from "../utils/Id";
-import {SetErrorMessage} from "./Notifications";
 
 // Wrap actions with requests to keep request state updated automatically
 // Returns a unique ID corresponding to the request state
-export const WrapRequest = ({
-  dispatch,
-  action,
-  todo
-}) => {
-  let requestId = Id.next();
+export const WrapRequest = ({todo, modal=false}) => {
+  return (dispatch) => {
+    let requestId = Id.next();
 
-  Request({
-    requestId,
-    dispatch,
-    action,
-    todo
-  });
+    Request({
+      requestId,
+      dispatch,
+      modal,
+      todo
+    });
 
-  return requestId;
+    return requestId;
+  };
 };
 
 const Request = async ({
   requestId,
   dispatch,
-  action,
+  modal,
   todo
 }) => {
-  dispatch(RequestSubmitted(requestId, action));
+  dispatch(RequestSubmitted(requestId));
 
   try {
     await todo();
 
-    dispatch(RequestCompleted(requestId, action));
+    dispatch(RequestCompleted(requestId));
   } catch(error) {
     console.error(error);
-    let errorMessage = error;
 
+    let errorMessage = error;
     if(typeof error !== "string") {
       // Error object -- actual message may be present in one of several different keys
       errorMessage = error.message ||
@@ -45,32 +43,33 @@ const Request = async ({
         error;
     }
 
-    dispatch(RequestError(requestId, action, errorMessage));
-    dispatch(SetErrorMessage({message: errorMessage}));
+    dispatch(RequestError(requestId, errorMessage));
+
+    // Modals will handle their own errors
+    if(!modal) {
+      dispatch(SetErrorMessage({message: errorMessage}));
+    }
   }
 };
 
-const RequestSubmitted = (requestId, action) => {
+const RequestSubmitted = (requestId) => {
   return {
-    type: ActionTypes.requests.submitted,
-    requestId: requestId,
-    action: action
+    type: ActionTypes.requests.status.submitted,
+    requestId
   };
 };
 
-const RequestCompleted = (requestId, action) => {
+const RequestCompleted = (requestId) => {
   return {
-    type: ActionTypes.requests.completed,
-    requestId: requestId,
-    action: action
+    type: ActionTypes.requests.status.completed,
+    requestId
   };
 };
 
-const RequestError = (requestId, action, error_message) => {
+const RequestError = (requestId, error_message) => {
   return {
-    type: ActionTypes.requests.error,
-    requestId: requestId,
-    action: action,
-    error_message: error_message
+    type: ActionTypes.requests.status.error,
+    requestId,
+    error_message
   };
 };

@@ -18,6 +18,7 @@
     "classnames": "^2.2.6",
     "connected-react-router": "^4.5.0",
     "elv-client-js": "git+https://github.com/eluv-io/elv-client-js.git",
+    "ethers": "^4.0.23",
     "path": "^0.12.7",
     "prop-types": "^15.6.2",
     "react": "^16.4.2",

@@ -1,5 +1,5 @@
 import React from "react";
-import "../static/stylesheets/animations/ball-pulse.scss";
+import "../../static/stylesheets/animations/ball-pulse.scss";
 
 export const BallPulse = () => {
   return (

@@ -1,10 +1,9 @@
 import React from "react";
 import Link from "react-router-dom/es/Link";
-import { AddAccount } from "../actions/Accounts";
 import connect from "react-redux/es/connect/connect";
-import { BallPulse } from "./AnimatedIcons";
 import Redirect from "react-router/es/Redirect";
-import RadioSelect from "./RadioSelect";
+import RadioSelect from "./components/RadioSelect";
+import RequestElement from "./components/RequestElement";
 
 class AccountForm extends React.Component {
   constructor(props) {
@@ -39,58 +38,32 @@ class AccountForm extends React.Component {
   HandleSubmit(event) {
     event.preventDefault();
 
-    const requestId = this.props.dispatch(
-      AddAccount({
-        client: this.props.client.client,
-        accountManager: this.props.accounts.accountManager,
-        accountName: this.state.accountName,
-        privateKey: this.state.privateKey,
-        encryptedPrivateKey: this.state.encryptedPrivateKey,
-        mnemonic: this.state.mnemonic,
-        password: this.state.password
-      })
-    );
-
     this.setState({
-      requestId
+      requestId: this.props.WrapRequest({
+        todo: async () => {
+          await this.props.AddAccount({
+            client: this.props.client.client,
+            accountManager: this.props.accounts.accountManager,
+            accountName: this.state.accountName,
+            privateKey: this.state.privateKey,
+            encryptedPrivateKey: this.state.encryptedPrivateKey,
+            mnemonic: this.state.mnemonic,
+            password: this.state.password
+          });
+        }
+      })
     });
   }
 
-  componentDidUpdate() {
-    if(!this.state.requestId) { return; }
-
-    const request = this.props.requests[this.state.requestId];
-
-    if(request && !request.pending) {
-      this.setState({
-        requestId: undefined
-      });
-
-      if(request.completed) {
-        this.setState({
-          redirect: true
-        });
-      }
-    }
-  }
-
   Actions() {
-    if(this.state.requestId) {
-      return (
-        <div className="actions-container loading">
-          <div className="action-loading">
-            <BallPulse />
-          </div>
-        </div>
-      );
-    } else {
-      return (
+    return (
+      <RequestElement requestId={this.state.requestId} requests={this.props.requests}>
         <div className="actions-container">
           <Link to="/accounts" className="action action-compact action-wide secondary">Cancel</Link>
           <input type="submit" className="action action-compact action-wide" value="Submit" />
         </div>
-      );
-    }
+      </RequestElement>
+    );
   }
 
   Credentials() {
@@ -151,7 +124,8 @@ class AccountForm extends React.Component {
   }
 
   render() {
-    if(this.state.redirect) {
+    const request = this.props.requests[this.state.requestId];
+    if(request && request.completed) {
       return <Redirect push to="/accounts" />;
     }
 
@@ -162,7 +136,7 @@ class AccountForm extends React.Component {
           <div className="form-content">
             <div className="labelled-input">
               <label htmlFor="accountName">Account Name</label>
-              <input name="accountName" value={this.state.accountName} required={true} onChange={this.HandleInputChange} />
+              <input name="accountName" value={this.state.accountName} onChange={this.HandleInputChange} />
             </div>
 
             <RadioSelect
