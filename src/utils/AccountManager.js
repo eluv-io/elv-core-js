@@ -130,9 +130,10 @@ class AccountManager {
       signer = await this.elvWallet.AddAccountFromEncryptedPK({encryptedPrivateKey, password});
     }
 
-    if(!encryptedPrivateKey) {
+    if(!encryptedPrivateKey || (encryptedPrivateKey.Crypto || encryptedPrivateKey.crypto).kdfparams.n !== 16384) {
+      // (re)encrypt key with low N for faster decryption
       const options = {
-        scrypt: { N: 16384 }
+        scrypt: {N: 16384}
       };
 
       encryptedPrivateKey = await this.elvWallet.GenerateEncryptedPrivateKey({signer, password, options});
