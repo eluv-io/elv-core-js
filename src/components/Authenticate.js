@@ -10,7 +10,7 @@ const Authenticate = (Component) => {
     const currentAccount = props.accounts.accountManager.CurrentAccount();
     let errorMessage, redirectLocation;
     if(currentAccount) {
-      redirectLocation = Path.join("/accounts", "log-in", currentAccount.accountAddress);
+      redirectLocation = Path.join("/accounts", currentAccount.accountAddress, "log-in");
       errorMessage = "Authentication Required";
     } else {
       errorMessage = "Please add an account";

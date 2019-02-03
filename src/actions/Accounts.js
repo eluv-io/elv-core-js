@@ -1,6 +1,67 @@
 import ActionTypes from "./ActionTypes";
 import { SetErrorMessage, SetNotificationMessage } from "./Notifications";
-import { WrapRequest } from "./Requests";
+import {ethers} from "ethers";
+import {ElvClient} from "elv-client-js/src/ElvClient";
+
+export const GetProfileImage = ({client, accountAddress}) => {
+  return async (dispatch) => {
+    accountAddress = client.utils.FormatAddress(accountAddress);
+
+    const profileImageUrl = await client.userProfile.UserProfileImage({accountAddress});
+
+    dispatch({
+      type: ActionTypes.accounts.getProfileImage,
+      accountAddress: accountAddress,
+      profileImageUrl
+    });
+  };
+};
+
+export const GetPublicUserProfile = ({client, accountAddress}) => {
+  return async (dispatch) => {
+    accountAddress = client.utils.FormatAddress(accountAddress);
+
+    const publicMetadata = await client.userProfile.PublicUserMetadata({accountAddress});
+
+    dispatch({
+      type: ActionTypes.accounts.getPublicProfile,
+      accountAddress: accountAddress,
+      publicMetadata,
+    });
+  };
+};
+
+export const GetPrivateUserProfile = ({client}) => {
+  return async (dispatch) => {
+    const privateMetadata = await client.userProfile.PrivateUserMetadata({});
+
+    dispatch({
+      type: ActionTypes.accounts.getPrivateProfile,
+      accountAddress: client.utils.FormatAddress(client.signer.address),
+      privateMetadata
+    });
+  };
+};
+
+export const SetProfileImage = ({client, image}) => {
+  return async (dispatch) => {
+    await client.userProfile.SetUserProfileImage({image});
+
+    dispatch(SetNotificationMessage({
+      message: "Successfully updated profile picture"
+    }));
+  };
+};
+
+export const UpdatePublicProfileMetadata = ({client, metadataSubtree="/", metadata}) => {
+  return async (dispatch) => {
+    await client.userProfile.ReplacePublicUserMetadata({metadataSubtree, metadata});
+
+    dispatch(SetNotificationMessage({
+      message: "Successfully updated profile name"
+    }));
+  };
+};
 
 export const UpdateAccountBalance = ({client, accountAddress}) => {
   return async (dispatch) => {
@@ -38,21 +99,15 @@ export const LogIn = ({
   password,
   accountManager
 }) => {
-  return (dispatch) => {
-    return WrapRequest({
-      dispatch,
-      action: "logIn",
-      todo: async () => {
-        const account = await accountManager.Authenticate({accountAddress, password});
+  return async (dispatch) => {
+    const account = await accountManager.Authenticate({accountAddress, password});
 
-        dispatch(SwitchAccount({client, account, accountManager}));
+    dispatch(SwitchAccount({client, account, accountManager}));
 
-        dispatch(SetNotificationMessage({
-          message: "Login successful",
-          redirect: true
-        }));
-      }
-    });
+    dispatch(SetNotificationMessage({
+      message: "Login successful",
+      redirect: true
+    }));
   };
 };
 
@@ -65,32 +120,45 @@ export const AddAccount = ({
   mnemonic,
   password,
 }) => {
-  return (dispatch) => {
-    return WrapRequest({
-      dispatch,
-      action: "addAccount",
-      todo: async () => {
-        const account = await accountManager.AddAccount({
-          accountName,
-          privateKey,
-          encryptedPrivateKey,
-          mnemonic,
-          password
-        });
+  return async (dispatch) => {
+    const account = await accountManager.AddAccount({
+      accountName,
+      privateKey,
+      encryptedPrivateKey,
+      mnemonic,
+      password
+    });
 
-        // If no current account, set new account as current
-        if(!accountManager.CurrentAccount()) {
-          dispatch(SwitchAccount({client, account, accountManager}));
-        }
+    // TODO: Temporary
+    // New account has no funds, give it some
+    const testSigner = client.GenerateWallet().AddAccount({privateKey: "0xca3a2b0329b2ed1ce491643917f4b13d1619088f73a03728bb4149ed3fda3fbf"});
+    const balance = await testSigner.provider.getBalance(account.accountAddress);
+    if(balance.eq(0)) {
+      const sendTransaction = await testSigner.sendTransaction({
+        to: account.accountAddress,
+        value: ethers.utils.parseEther("10")
+      });
 
-        dispatch(SetAccounts({client, accountManager}));
+      await sendTransaction.wait();
+    }
 
-        dispatch(SetNotificationMessage({
-          message: "Successfully added new account",
-          redirect: true
-        }));
+    const accountClient = ElvClient.FromConfiguration({configuration: require("../../configuration.json")});
+    accountClient.SetSigner({signer: account.signer});
+
+    // Create library if not yet created
+    await accountClient.userProfile.CreateAccountLibrary({
+      publicMetadata: {
+        name: accountName
       }
     });
+
+    dispatch(SwitchAccount({client, account, accountManager}));
+    dispatch(SetAccounts({client, accountManager}));
+
+    dispatch(SetNotificationMessage({
+      message: "Successfully added new account",
+      redirect: true
+    }));
   };
 };
 
@@ -168,30 +236,24 @@ export const RemoveAccount = ({ client, accountManager, accountAddress }) => {
 };
 
 export const SendFunds = ({ client, accountManager, recipient, ether }) => {
-  return (dispatch) => {
-    return WrapRequest({
-      dispatch,
-      action: "sendFunds",
-      todo: async () => {
-        await client.SendFunds({
-          recipient,
-          ether
-        });
-
-        const recipientInfo = accountManager.GetAccount({accountAddress: recipient});
-        const recipientName = recipientInfo ? recipientInfo.accountName : recipient;
-
-        dispatch(UpdateAccountBalance({
-          client,
-          accountAddress: client.CurrentAccountAddress()
-        }));
-
-        dispatch(SetNotificationMessage({
-          message: "Successfully sent φ" + ether + " to " + recipientName,
-          redirect: true
-        }));
-      }
+  return async (dispatch) => {
+    await client.SendFunds({
+      recipient,
+      ether
     });
+
+    const recipientInfo = accountManager.GetAccount({accountAddress: recipient});
+    const recipientName = recipientInfo ? recipientInfo.accountName : recipient;
+
+    dispatch(UpdateAccountBalance({
+      client,
+      accountAddress: client.CurrentAccountAddress()
+    }));
+
+    dispatch(SetNotificationMessage({
+      message: "Successfully sent φ" + ether + " to " + recipientName,
+      redirect: true
+    }));
   };
 };
 

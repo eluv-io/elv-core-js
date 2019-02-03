@@ -1,12 +1,13 @@
 import React from "react";
 import connect from "react-redux/es/connect/connect";
 import Link from "react-router-dom/es/Link";
-import {LogOut, RemoveAccount, SwitchAccount} from "../actions/Accounts";
 
-import {ImageIcon} from "./Icons";
-import AccountIcon from "../static/images/portrait2.png";
+import {CroppedIcon} from "./components/Icons";
+import DefaultProfileImage from "../static/icons/account.svg";
 import Redirect from "react-router/es/Redirect";
 import Path from "path";
+import RequestElement from "./components/RequestElement";
+import {FormatAddress} from "../utils/Helpers";
 
 class Accounts extends React.Component {
   constructor(props) {
@@ -15,33 +16,54 @@ class Accounts extends React.Component {
     this.state = {
       loginRedirect: false
     };
+
+    this.Accounts = this.Accounts.bind(this);
+  }
+
+  componentDidMount() {
+    this.setState({
+      requestId: this.props.WrapRequest({
+        todo: async () => {
+          await Promise.all(
+            Object.keys(this.props.accounts.activeAccounts).map(async accountAddress => {
+              await this.props.GetProfileImage({client: this.props.client.client, accountAddress});
+              await this.props.GetPublicUserProfile({client: this.props.client.client, accountAddress});
+            })
+          );
+        }
+      })
+    });
+  }
+
+  UserProfile(accountAddress) {
+    return this.props.accounts.userProfiles[FormatAddress(accountAddress)];
   }
 
   HandleRemoveAccount(account) {
     if(this.props.accounts.currentAccount && this.props.accounts.currentAccount.accountAddress === account.accountAddress) {
       if(confirm("Are you sure you want to log out?")) {
-        this.props.dispatch(LogOut({
+        this.props.LogOut({
           client: this.props.client.client,
           accountManager: this.props.accounts.accountManager
-        }));
+        });
       }
     } else {
       if(confirm("Are you sure you want to remove this account?")) {
-        this.props.dispatch(RemoveAccount({
+        this.props.RemoveAccount({
           client: this.props.client.client,
-          accountName: account.accountName,
+          accountAddress: account.accountAddress,
           accountManager: this.props.accounts.accountManager
-        }));
+        });
       }
     }
   }
 
   SwitchAccount(account) {
-    this.props.dispatch(SwitchAccount({
+    this.props.SwitchAccount({
       client: this.props.client.client,
       accountManager: this.props.accounts.accountManager,
       account
-    }));
+    });
 
     this.setState({
       loginRedirect: true
@@ -53,14 +75,21 @@ class Accounts extends React.Component {
 
     return (
       <div className="actions-container account-actions">
-        <Link className="action action-compact action-wide" to={Path.join(this.props.match.url, "transfer")}>
+        <Link className="action action-compact" to={Path.join(this.props.match.url, account.accountAddress, "profile")}>
+          Profile
+        </Link>
+        <Link className="action action-compact" to={Path.join(this.props.match.url, "transfer")}>
           Transfer Funds
         </Link>
       </div>
     );
   }
 
-  Account(account, currentAccount=false) {
+  Account(account) {
+    const currentAccount = account.accountAddress === this.props.accounts.currentAccount.accountAddress;
+    const name = this.UserProfile(account.accountAddress).publicMetadata.name || "Unknown Account";
+    const profileImage = this.UserProfile(account.accountAddress).profileImageUrl || DefaultProfileImage;
+
     return (
       <div
         onClick={() => {
@@ -71,15 +100,11 @@ class Accounts extends React.Component {
         key={"account-" + account.accountAddress}
         className={"account-container " + (currentAccount ? "current-account" : "")}
       >
-        <div className="icon-container">
-          <div className="cropped-image">
-            <ImageIcon className="account-icon" icon={AccountIcon} />
-          </div>
-        </div>
+        <CroppedIcon icon={profileImage} containerClassname="profile-image" />
         <div className="info-container">
           <div className="account-header">
             <div className="account-name">
-              { account.accountName }
+              { name }
             </div>
             <div className="actions-container remove-actions" onClick={(e) => { e.stopPropagation(); }} >
               <button
@@ -100,31 +125,13 @@ class Accounts extends React.Component {
   }
 
   Accounts() {
-    const currentAccount = this.props.accounts.currentAccount;
-
-    return Object.keys(this.props.accounts.activeAccounts)
-      .filter(accountAddress => currentAccount.accountAddress !== accountAddress)
+    const accounts = Object.keys(this.props.accounts.activeAccounts)
       .map(accountAddress => this.Account(this.props.accounts.activeAccounts[accountAddress]));
-  }
-
-  CurrentAccount() {
-    const currentAccount = this.props.accounts.currentAccount;
-
-    if(!currentAccount) { return; }
-
-    return this.Account(currentAccount, true);
-  }
-
-  render() {
-    if(this.state.loginRedirect && !this.props.client.signer && this.props.accounts.currentAccount) {
-      return <Redirect to={Path.join("/accounts", "log-in", this.props.accounts.currentAccount.accountAddress)} />;
-    }
 
     return (
       <div className="accounts-container main-content-container">
         <div className="accounts">
-          { this.CurrentAccount() }
-          { this.Accounts() }
+          { accounts }
           <div className="actions-container add-account-container">
             <Link className="action action-compact action-wide" to="/accounts/add-account">
               Add Account
@@ -133,6 +140,14 @@ class Accounts extends React.Component {
         </div>
       </div>
     );
+  }
+
+  render() {
+    if(this.state.loginRedirect && !this.props.client.signer && this.props.accounts.currentAccount) {
+      return <Redirect to={Path.join("/accounts", this.props.accounts.currentAccount.accountAddress, "log-in")} />;
+    }
+
+    return <RequestElement requestId={this.state.requestId} requests={this.props.requests} render={this.Accounts}/>;
   }
 }
 

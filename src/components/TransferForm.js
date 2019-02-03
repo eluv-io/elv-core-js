@@ -1,11 +1,10 @@
 import React from "react";
 import Link from "react-router-dom/es/Link";
 import connect from "react-redux/es/connect/connect";
-import { BallPulse } from "./AnimatedIcons";
 import Redirect from "react-router/es/Redirect";
 import Path from "path";
-import {SendFunds} from "../actions/Accounts";
 import Authenticate from "./Authenticate";
+import RequestElement from "./components/RequestElement";
 
 class TransferForm extends React.Component {
   constructor(props) {
@@ -56,33 +55,17 @@ class TransferForm extends React.Component {
     event.preventDefault();
 
     this.setState({
-      requestId: this.props.dispatch(
-        SendFunds({
-          accountManager: this.props.accounts.accountManager,
-          recipient: this.state.recipient,
-          ether: this.state.amount,
-          client: this.props.client.client,
-        })
-      )
+      requestId: this.props.WrapRequest({
+        todo: async () => {
+          await this.props.SendFunds({
+            accountManager: this.props.accounts.accountManager,
+            recipient: this.state.recipient,
+            ether: this.state.amount,
+            client: this.props.client.client,
+          });
+        }
+      })
     });
-  }
-
-  componentDidUpdate() {
-    if(!this.state.requestId) { return; }
-
-    const request = this.props.requests[this.state.requestId];
-
-    if(request && !request.pending) {
-      this.setState({
-        requestId: undefined
-      });
-
-      if(request.completed) {
-        this.setState({
-          redirect: true
-        });
-      }
-    }
   }
 
   AvailableAccounts() {
@@ -115,26 +98,19 @@ class TransferForm extends React.Component {
   }
 
   Actions() {
-    if(this.state.requestId) {
-      return (
-        <div className="actions-container loading">
-          <div className="action-loading">
-            <BallPulse />
-          </div>
-        </div>
-      );
-    } else {
-      return (
+    return (
+      <RequestElement requestId={this.state.requestId} requests={this.props.requests}>
         <div className="actions-container">
           <Link to={Path.dirname(this.props.match.url)} className="action action-compact action-wide secondary">Cancel</Link>
           <input type="submit" className="action action-compact action-wide" value="Submit" />
         </div>
-      );
-    }
+      </RequestElement>
+    );
   }
 
   render() {
-    if(this.state.redirect) {
+    const request = this.props.requests[this.state.requestId];
+    if(request && request.completed) {
       return <Redirect push to="/accounts" />;
     }
 

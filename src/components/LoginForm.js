@@ -1,9 +1,8 @@
 import React from "react";
 import Link from "react-router-dom/es/Link";
-import { LogIn } from "../actions/Accounts";
 import connect from "react-redux/es/connect/connect";
-import { BallPulse } from "./AnimatedIcons";
 import Redirect from "react-router/es/Redirect";
+import RequestElement from "./components/RequestElement";
 
 class LoginForm extends React.Component {
   constructor(props) {
@@ -15,7 +14,6 @@ class LoginForm extends React.Component {
     this.state = {
       account,
       password: "",
-      redirect: false,
       redirectLocation: this.props.accounts.savedLocation || "/accounts"
     };
 
@@ -32,60 +30,35 @@ class LoginForm extends React.Component {
   HandleSubmit(event) {
     event.preventDefault();
 
-    const requestId = this.props.dispatch(
-      LogIn({
-        client: this.props.client.client,
-        accountManager: this.props.accounts.accountManager,
-        accountAddress: this.state.account.accountAddress,
-        encryptedPrivateKey: this.state.account.encryptedPrivateKey,
-        password: this.state.password,
-      })
-    );
-
     this.setState({
-      requestId
+      requestId: this.props.WrapRequest({
+        todo: async () => {
+          await this.props.LogIn({
+            client: this.props.client.client,
+            accountManager: this.props.accounts.accountManager,
+            accountAddress: this.state.account.accountAddress,
+            encryptedPrivateKey: this.state.account.encryptedPrivateKey,
+            password: this.state.password,
+          });
+        }
+      })
     });
   }
 
-  componentDidUpdate() {
-    if(!this.state.requestId) { return; }
-
-    const request = this.props.requests[this.state.requestId];
-
-    if(request && !request.pending) {
-      this.setState({
-        requestId: undefined
-      });
-
-      if(request.completed) {
-        this.setState({
-          redirect: true
-        });
-      }
-    }
-  }
-
   Actions() {
-    if(this.state.requestId) {
-      return (
-        <div className="actions-container loading">
-          <div className="action-loading">
-            <BallPulse />
-          </div>
-        </div>
-      );
-    } else {
-      return (
+    return (
+      <RequestElement requestId={this.state.requestId} requests={this.props.requests}>
         <div className="actions-container">
           <Link to="/accounts" className="action action-compact action-wide secondary">Change Account</Link>
           <input type="submit" className="action action-compact action-wide" value="Submit" />
         </div>
-      );
-    }
+      </RequestElement>
+    );
   }
 
   render() {
-    if(!this.state.account || this.state.redirect) {
+    const request = this.props.requests[this.state.requestId];
+    if(request && request.completed) {
       return <Redirect push to={this.state.redirectLocation} />;
     }
 

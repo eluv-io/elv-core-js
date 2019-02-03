@@ -1,5 +1,8 @@
 const ActionTypes = {
   accounts: {
+    getProfileImage: "GET_USER_PROFILE_IMAGE",
+    getPublicProfile: "GET_PUBLIC_USER_PROFILE",
+    getPrivateProfile: "GET_PRIVATE_USER_PROFILE",
     setAccounts: "UPDATE_ACCOUNTS",
     updateAccountBalance: "UPDATE_ACCOUNT_BALANCE",
     saveLocation: "SAVE_LOCATION",
@@ -19,9 +22,11 @@ const ActionTypes = {
     clear: "CLEAR_NOTIFICATIONS"
   },
   requests: {
-    submitted: "REQUEST_SUBMITTED",
-    completed: "REQUEST_COMPLETED",
-    error: "REQUEST_ERROR"
+    status: {
+      submitted: "REQUEST_SUBMITTED",
+      completed: "REQUEST_COMPLETED",
+      error: "REQUEST_ERROR"
+    }
   },
   routing: {
     hideHeader: "HIDE_HEADER",

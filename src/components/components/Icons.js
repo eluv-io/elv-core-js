@@ -11,14 +11,27 @@ export const CroppedIcon = ({containerClassname, className, title, icon}) => {
   );
 };
 
+export const CroppedIconWithAction = ({containerClassname, className, title, icon, children}) => {
+  return (
+    <div className={containerClassname || ""}>
+      <div className="cropped-icon">
+        <ImageIcon icon={icon} title={title} className={className} />
+        <div className="hover-action">
+          { children}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export const ImageIcon = ({ className, title, icon }) => {
   if(icon.startsWith("<svg")) {
     return (
-      <InlineSVG title={title} className={"icon card-icon " + className || ""} src={icon}/>
+      <InlineSVG title={title} className={"icon " + className || ""} src={icon}/>
     );
   } else {
     return (
-      <img title={title} className={"icon card-icon " + className || ""} src={icon} />
+      <img title={title} className={"icon " + className || ""} src={icon} />
     );
   }
 };

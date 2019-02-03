@@ -1,6 +1,10 @@
 .actions-container {
   display: flex;
 
+  &.centered {
+    justify-content: center;
+  }
+
   &.inline-actions-container {
     margin: 0;
   }

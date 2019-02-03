@@ -23,11 +23,9 @@
   z-index: 101;
 
   .add-account-container {
-    align-items: center;
+    @include centered;
     background: $color-bg-white;
     cursor: auto;
-    display: flex;
-    justify-content: center;
     padding: $spacing-s 0;
   }
 
@@ -90,7 +88,13 @@
     .account-actions {
       display: flex;
       justify-content: center;
+      padding-left: 65px;
       width: 100%;
+
+      .action {
+        margin: $spacing-xxs;
+        width: 120px;
+      }
     }
 
     .account-address {
@@ -115,18 +119,66 @@
       cursor: auto;
     }
 
-    .icon-container {
-      $image-width: 80px;
-      height: $image-width;
-      width: $image-width;
-
-      .cropped-image {
-        @include cropped-image($image-width, $image-width, 50%, $image-width, $image-width);
-      }
+    .profile-image {
+      $image-size: 80px;
+      @include cropped-image($image-size, $image-size, 50%, $image-size, $image-size);
     }
 
     .info-container {
       width: 275px;
     }
   }
+
+  &.user-profile {
+    background: $color-bg-white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: $spacing-s $spacing-s $spacing-m;
+    width: 600px;
+
+    .profile-image-container {
+      @include centered;
+      height: 250px;
+      padding: $spacing-s 0 $spacing-xs;
+    }
+
+    .profile-image {
+      $image-size: 250px;
+      @include cropped-image($image-size, $image-size, 50%, $image-size, $image-size);
+    }
+
+    .change-profile-image {
+      @include centered;
+      cursor: pointer;
+      height: 100%;
+      width: 100%;
+      z-index: 1000;
+
+      span {
+        background: rgba(0, 0, 0, 0.75);
+        color: $color-white;
+        padding: $spacing-xs;
+      }
+    }
+
+    .modifiable-field {
+      cursor: pointer;
+    }
+
+    .modify-field {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+
+      input {
+        margin-right: $spacing-s;
+      }
+    }
+  }
+}
+
+.profile-image {
+  $image-size: 50px;
+  @include cropped-image($image-size, $image-size, 50%, $image-size, $image-size);
 }

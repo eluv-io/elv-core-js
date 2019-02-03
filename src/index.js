@@ -8,21 +8,22 @@ import { ConnectedRouter, connectRouter } from "connected-react-router";
 import { Route, Switch } from "react-router-dom";
 
 import { SetAccounts } from "./actions/Accounts";
-import Accounts from "./components/Accounts";
-import AccountForm from "./components/AccountForm";
 import Notifications from "./components/Notifications";
 import RootReducer from "./reducers/index";
-
-import Header from "./components/Header";
 import AppFrame from "./components/AppFrame";
-import LoginForm from "./components/LoginForm";
 
 import "./static/stylesheets/app.scss";
 import {SeedAccounts} from "./utils/SeedAccounts";
-import TransferForm from "./components/TransferForm";
 import {ElvClient} from "elv-client-js/src/ElvClient";
 import AccountManager from "./utils/AccountManager";
 import Redirect from "react-router/es/Redirect";
+import {
+  AccountFormContainer,
+  AccountsContainer, HeaderContainer,
+  LoginFormContainer,
+  ProfileContainer,
+  TransferFormContainer
+} from "./containers/Accounts";
 
 const InitializeClient = (signer) => {
   const client = ElvClient.FromConfiguration({configuration: require("../configuration.json")});
@@ -89,16 +90,17 @@ export class AccountManagerApp extends React.Component {
         <div className="app-container">
           <ConnectedRouter history={this.state.history}>
             <div className="account-manager-container">
-              <Header />
+              <HeaderContainer />
               <Notifications />
               <div className="route-container">
                 <Switch>
                   <Route exact path="/" render={() => <Redirect to={"/apps/fabric-browser"} />} />
                   <Route path="/apps/:appName" component={AppFrame} />
-                  <Route exact path="/accounts" component={Accounts} />
-                  <Route exact path="/accounts/transfer" component={TransferForm} />
-                  <Route exact path="/accounts/add-account" component={AccountForm} />
-                  <Route exact path="/accounts/log-in/:accountAddress" component={LoginForm} />
+                  <Route exact path="/accounts" component={AccountsContainer} />
+                  <Route exact path="/accounts/transfer" component={TransferFormContainer} />
+                  <Route exact path="/accounts/add-account" component={AccountFormContainer} />
+                  <Route exact path="/accounts/:accountAddress/profile" component={ProfileContainer} />
+                  <Route exact path="/accounts/:accountAddress/log-in" component={LoginFormContainer} />
                 </Switch>
               </div>
             </div>
