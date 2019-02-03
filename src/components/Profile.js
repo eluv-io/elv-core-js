@@ -59,7 +59,6 @@ class Profile extends React.Component {
           await this.props.GetPublicUserProfile({client: this.props.client.client, accountAddress: this.state.accountAddress});
 
           this.setState({
-            newName: "",
             modifyingName: false
           });
         }
@@ -93,9 +92,11 @@ class Profile extends React.Component {
     if(!metadata) { metadata = {}; }
 
     const metadataFields = Object.keys(metadata).map(key => {
-      let value = <span>{metadata[key]}</span>;
-      if(typeof key === "object") {
+      let value = metadata[key];
+      if(typeof value === "object") {
         value = <pre>{JSON.stringify(metadata[key], null, 2)}</pre>;
+      } else {
+        value = <span>{metadata[key]}</span>;
       }
 
       return (
@@ -153,7 +154,7 @@ class Profile extends React.Component {
         </div>
       );
     } else {
-      const StartEditing = () => this.setState({modifyingName: true, newName: this.UserProfile().publicMetadata.name});
+      const StartEditing = () => this.setState({modifyingName: true, newName: this.UserProfile().publicMetadata.name || ""});
       return (
         <h3 tabIndex={0} className="page-header modifiable-field" onClick={StartEditing} onKeyPress={StartEditing}>
           {name}
