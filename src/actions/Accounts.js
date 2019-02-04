@@ -111,6 +111,31 @@ export const LogIn = ({
   };
 };
 
+const InitializeAccount = async (account) => {
+  const accountClient = ElvClient.FromConfiguration({configuration: require("../../configuration.json")});
+  accountClient.SetSigner({signer: account.signer});
+
+  // TODO: Temporary
+  // New account has no funds, give it some
+  const testSigner = accountClient.GenerateWallet().AddAccount({privateKey: "0xca3a2b0329b2ed1ce491643917f4b13d1619088f73a03728bb4149ed3fda3fbf"});
+  const balance = await testSigner.provider.getBalance(account.accountAddress);
+  if(balance.eq(0)) {
+    const sendTransaction = await testSigner.sendTransaction({
+      to: account.accountAddress,
+      value: ethers.utils.parseEther("10")
+    });
+
+    await sendTransaction.wait();
+  }
+
+  // Create library if not yet created
+  await accountClient.userProfile.CreateAccountLibrary({
+    publicMetadata: {
+      name: account.accountName
+    }
+  });
+};
+
 export const AddAccount = ({
   client,
   accountManager,
@@ -129,28 +154,8 @@ export const AddAccount = ({
       password
     });
 
-    // TODO: Temporary
-    // New account has no funds, give it some
-    const testSigner = client.GenerateWallet().AddAccount({privateKey: "0xca3a2b0329b2ed1ce491643917f4b13d1619088f73a03728bb4149ed3fda3fbf"});
-    const balance = await testSigner.provider.getBalance(account.accountAddress);
-    if(balance.eq(0)) {
-      const sendTransaction = await testSigner.sendTransaction({
-        to: account.accountAddress,
-        value: ethers.utils.parseEther("10")
-      });
+    await InitializeAccount(account);
 
-      await sendTransaction.wait();
-    }
-
-    const accountClient = ElvClient.FromConfiguration({configuration: require("../../configuration.json")});
-    accountClient.SetSigner({signer: account.signer});
-
-    // Create library if not yet created
-    await accountClient.userProfile.CreateAccountLibrary({
-      publicMetadata: {
-        name: accountName
-      }
-    });
 
     dispatch(SwitchAccount({client, account, accountManager}));
     dispatch(SetAccounts({client, accountManager}));
