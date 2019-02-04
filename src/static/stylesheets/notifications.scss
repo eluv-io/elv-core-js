@@ -6,6 +6,7 @@
   position: absolute;
   top: 46px;
   width: 100%;
+  z-index: 10000;
 
   &:empty {
     height: 0;

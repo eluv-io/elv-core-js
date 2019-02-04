@@ -19,6 +19,11 @@ class Profile extends React.Component {
       newName: ""
     };
 
+    this.excludedTags = [
+      "collected_data",
+      "accessed_content"
+    ];
+
     this.Profile = this.Profile.bind(this);
     this.HandleProfileImageChange = this.HandleProfileImageChange.bind(this);
     this.HandleNameChange = this.HandleNameChange.bind(this);
@@ -28,24 +33,24 @@ class Profile extends React.Component {
     this.setState({
       requestId: this.props.WrapRequest({
         todo: async () => {
-          await this.props.GetProfileImage({client: this.props.client.client, accountAddress: this.state.accountAddress});
-          await this.props.GetPublicUserProfile({client: this.props.client.client, accountAddress: this.state.accountAddress});
-          await this.props.UpdateAccountBalance({client: this.props.client.client, accountAddress: this.state.accountAddress});
-
-          if(this.state.isCurrentAccount) {
-            await this.props.GetPrivateUserProfile({client: this.props.client.client});
-          }
-
-          this.setState({
-            newName: this.UserProfile().publicMetadata.name
-          });
+          await this.LoadProfile();
         }
       })
     });
   }
-  
-  UserProfile() {
-    return this.props.accounts.userProfiles[this.state.accountAddress];
+
+  async LoadProfile() {
+    await this.props.GetProfileImage({client: this.props.client.client, accountAddress: this.state.accountAddress});
+    await this.props.GetPublicUserProfile({client: this.props.client.client, accountAddress: this.state.accountAddress});
+    await this.props.UpdateAccountBalance({client: this.props.client.client, accountAddress: this.state.accountAddress});
+
+    if(this.state.isCurrentAccount) {
+      await this.props.GetPrivateUserProfile({client: this.props.client.client});
+    }
+
+    this.setState({
+      newName: this.UserProfile().publicMetadata.name
+    });
   }
 
   HandleNameChange(event) {
@@ -56,7 +61,7 @@ class Profile extends React.Component {
       updateProfileNameRequestId: this.props.WrapRequest({
         todo: async () => {
           await this.props.UpdatePublicProfileMetadata({client: this.props.client.client, metadataSubtree: "name", metadata: this.state.newName});
-          await this.props.GetPublicUserProfile({client: this.props.client.client, accountAddress: this.state.accountAddress});
+          await this.LoadProfile();
 
           this.setState({
             modifyingName: false
@@ -72,10 +77,14 @@ class Profile extends React.Component {
         todo: async () => {
           const image = await new Response(event.target.files[0]).blob();
           await this.props.SetProfileImage({client: this.props.client.client, image});
-          await this.props.GetProfileImage({client: this.props.client.client, accountAddress: this.state.accountAddress});
+          await this.LoadProfile();
         }
       })
     });
+  }
+
+  UserProfile() {
+    return this.props.accounts.userProfiles[this.state.accountAddress];
   }
 
   AccountActions() {
@@ -88,10 +97,48 @@ class Profile extends React.Component {
     );
   }
 
+  CollectedTags(tags) {
+    if(!tags) { return null; }
+
+    let sortedTags = Object.keys(tags)
+      .map(tag => { return {tag, ...tags[tag]}; })
+      .sort((a, b) => a.aggregate < b.aggregate ? 1 : -1)
+      .map(tag => {
+        return (
+          <tr key={`tag-row-${tag.tag}`}>
+            <td>{tag.tag}</td>
+            <td className="centered">{tag.aggregate.toFixed(2)}</td>
+            <td className="centered">{tag.occurrences}</td>
+          </tr>
+        );
+      });
+
+
+    return (
+      <div className="info-section">
+        <h4>Tags based on viewing history</h4>
+        <table>
+          <thead>
+            <tr>
+              <th className="header-wide">Tag</th>
+              <th className="centered">Aggregate Score</th>
+              <th className="centered">Occurrences</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sortedTags}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+
   MetadataField(header, metadata) {
     if(!metadata) { metadata = {}; }
 
     const metadataFields = Object.keys(metadata).map(key => {
+      if(this.excludedTags.includes(key)) { return null; }
+
       let value = metadata[key];
       if(typeof value === "object") {
         value = <pre>{JSON.stringify(metadata[key], null, 2)}</pre>;
@@ -168,9 +215,11 @@ class Profile extends React.Component {
 
     const balance = this.props.accounts.balances[this.state.accountAddress];
 
-    let privateMetadata;
+    let privateMetadata, collectedTags;
     if(this.state.isCurrentAccount) {
-      privateMetadata = this.MetadataField("Private Information", this.UserProfile().privateMetadata);
+      privateMetadata = this.UserProfile().privateMetadata;
+      collectedTags = this.CollectedTags(privateMetadata.collected_data);
+      privateMetadata = this.MetadataField("Private Information", privateMetadata);
     }
 
     return (
@@ -187,6 +236,7 @@ class Profile extends React.Component {
               <span className="page-subheader">{balance}</span>
             </div>
             { this.MetadataField("Public Information", this.UserProfile().publicMetadata) }
+            { collectedTags }
             { privateMetadata }
           </div>
         </div>
