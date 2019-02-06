@@ -2,8 +2,11 @@ import { connect } from "react-redux";
 import Thunk from "../utils/Thunk";
 import {WrapRequest} from "../actions/Requests";
 import {
-  AddAccount, AuthenticationFailure,
-  GetPrivateUserProfile, GetProfileImage,
+  AddAccount,
+  AuthenticationFailure,
+  DeletePrivateProfileMetadata,
+  GetPrivateUserProfile,
+  GetProfileImage,
   GetPublicUserProfile,
   LogIn,
   LogOut,
@@ -11,7 +14,9 @@ import {
   SendFunds,
   SetAccounts, SetProfileImage,
   SwitchAccount,
-  UpdateAccountBalance, UpdatePublicProfileMetadata
+  UpdateAccountBalance,
+  UpdatePrivateProfileMetadata,
+  UpdatePublicProfileMetadata
 } from "../actions/Accounts";
 import Accounts from "../components/Accounts";
 import AccountForm from "../components/AccountForm";
@@ -32,6 +37,8 @@ const mapDispatchToProps = dispatch =>
       GetPrivateUserProfile,
       SetProfileImage,
       UpdatePublicProfileMetadata,
+      UpdatePrivateProfileMetadata,
+      DeletePrivateProfileMetadata,
       LogIn,
       SwitchAccount,
       LogOut,
