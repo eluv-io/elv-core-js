@@ -35,6 +35,11 @@ h4 {
   font-size: 18px;
   font-weight: normal;
   margin: $spacing-xs 0;
+
+  &.subheader {
+    color: $color-text-light;
+    font-size: 14px;
+  }
 }
 
 a {
@@ -100,10 +105,15 @@ pre {
   margin-left: $spacing-s;
 }
 
+.full-width {
+  width: 100%;
+}
+
 .info-section {
   margin: $spacing-m 0;
 }
 
+.labelled-input,
 .labelled-field {
   display: flex;
   margin: $spacing-xs 0;
@@ -113,7 +123,7 @@ pre {
   }
 
   pre {
-    background-color: #f5f5f5;
+    background-color: $color-lightergray;
     border: 0;
     margin: 0 $spacing-m;
   }
@@ -139,11 +149,49 @@ table {
     border: 1px solid $color-lightgray;
   }
 
-  th, td {
-    padding: $spacing-xs $spacing-xs;
+  th,
+  td {
+    padding: $spacing-xs;
 
     &.centered {
       text-align: center;
+    }
+  }
+}
+
+.icon {
+  display: block;
+  height: 30px;
+  padding: 10px;
+  width: 30px;
+
+  &.dark {
+    color: $color-darkergray;
+  }
+}
+
+.icon-button {
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+
+  .icon {
+    height: auto;
+    margin: 0;
+    padding: 0;
+    width: auto;
+  }
+
+  &:hover {
+    .icon {
+      opacity: 0.8;
+    }
+  }
+
+  &:active {
+    .icon {
+      opacity: 0.9;
     }
   }
 }

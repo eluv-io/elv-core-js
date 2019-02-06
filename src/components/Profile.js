@@ -2,10 +2,14 @@ import React from "react";
 import connect from "react-redux/es/connect/connect";
 import Authenticate from "./Authenticate";
 import RequestElement from "./components/RequestElement";
-import {CroppedIcon, CroppedIconWithAction} from "./components/Icons";
+import {CroppedIcon, CroppedIconWithAction, IconButton} from "./components/Icons";
 import DefaultProfileImage from "../static/icons/account.svg";
 import Link from "react-router-dom/es/Link";
 import {EqualAddress} from "../utils/Helpers";
+import RadioSelect from "./components/RadioSelect";
+import Path from "path";
+
+import DeleteIcon from "../static/icons/trash.svg";
 
 class Profile extends React.Component {
   constructor(props) {
@@ -21,12 +25,16 @@ class Profile extends React.Component {
 
     this.excludedTags = [
       "collected_data",
-      "accessed_content"
+      "accessed_content",
+      "allowed_accessors",
+      "image"
     ];
 
     this.Profile = this.Profile.bind(this);
     this.HandleProfileImageChange = this.HandleProfileImageChange.bind(this);
     this.HandleNameChange = this.HandleNameChange.bind(this);
+    this.HandleAccessLevelChange = this.HandleAccessLevelChange.bind(this);
+    this.RevokeAccessor = this.RevokeAccessor.bind(this);
   }
 
   componentDidMount() {
@@ -83,6 +91,40 @@ class Profile extends React.Component {
     });
   }
 
+  HandleAccessLevelChange(event) {
+    this.setState({
+      updateProfileImageRequestId: this.props.WrapRequest({
+        todo: async () => {
+          await this.props.UpdatePrivateProfileMetadata({
+            client: this.props.client.client,
+            metadataSubtree: "access_level",
+            metadata: event.target.value
+          });
+
+          await this.LoadProfile();
+        }
+      })
+    });
+  }
+
+  RevokeAccessor(accessor) {
+    if(confirm("Are you sure you want to revoke profile access from " + accessor + "?")) {
+      this.setState({
+        updateProfileImageRequestId: this.props.WrapRequest({
+          todo: async () => {
+            await this.props.DeletePrivateProfileMetadata({
+              client: this.props.client.client,
+              metadataSubtree: Path.join("allowed_accessors", accessor)
+            });
+
+            await this.LoadProfile();
+          }
+        })
+      });
+    }
+  }
+
+
   UserProfile() {
     return this.props.accounts.userProfiles[this.state.accountAddress];
   }
@@ -93,6 +135,70 @@ class Profile extends React.Component {
         <Link className="action secondary" to="/accounts">
           Back
         </Link>
+      </div>
+    );
+  }
+
+  Permissions(privateMetadata) {
+    const permissionSelection = (
+      <RadioSelect
+        name="access_level"
+        label="Access Level"
+        options={[
+          ["Public access", "public"],
+          ["Prompt", "prompt"],
+          ["Private - No access", "private"],
+        ]}
+        selected={privateMetadata.access_level || "prompt"}
+        onChange={this.HandleAccessLevelChange}
+      />
+    );
+
+    let allowedAccessors = Object.keys(privateMetadata.allowed_accessors || {})
+      .sort((a, b) => privateMetadata.allowed_accessors[a] > privateMetadata.allowed_accessors[b] ? -1 : 1);
+
+    let allowedAccessorsTable;
+    if(allowedAccessors.length > 0) {
+      allowedAccessorsTable = (
+        <div className="info-section">
+          <h4>Allowed Accessors</h4>
+          <h4 className="subheader">These are applications to which you've granted access to your profile</h4>
+          <table>
+            <thead>
+              <tr>
+                <th>Application</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {allowedAccessors.map(accessor =>
+                <tr key={"accessor-row-" + accessor}>
+                  <td className="full-width">{accessor}</td>
+                  <td>
+                    <IconButton
+                      src={DeleteIcon}
+                      title="Revoke permissions"
+                      className="icon"
+                      onClick={() => this.RevokeAccessor(accessor)}
+                    />
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      );
+    }
+
+
+    return (
+      <div>
+        <div className="info-section">
+          <h4>Permissions</h4>
+          <h4 className="subheader">Here you can specify whether applications can request access to your personal information</h4>
+          { permissionSelection }
+        </div>
+        { allowedAccessorsTable }
       </div>
     );
   }
@@ -215,10 +321,11 @@ class Profile extends React.Component {
 
     const balance = this.props.accounts.balances[this.state.accountAddress];
 
-    let privateMetadata, collectedTags;
+    let privateMetadata, collectedTags, permissions;
     if(this.state.isCurrentAccount) {
       privateMetadata = this.UserProfile().privateMetadata;
       collectedTags = this.CollectedTags(privateMetadata.collected_data);
+      permissions = this.Permissions(privateMetadata);
       privateMetadata = this.MetadataField("Private Information", privateMetadata);
     }
 
@@ -238,6 +345,7 @@ class Profile extends React.Component {
             { this.MetadataField("Public Information", this.UserProfile().publicMetadata) }
             { collectedTags }
             { privateMetadata }
+            { permissions }
           </div>
         </div>
       </div>

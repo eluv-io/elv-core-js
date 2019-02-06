@@ -58,7 +58,27 @@ export const UpdatePublicProfileMetadata = ({client, metadataSubtree="/", metada
     await client.userProfile.ReplacePublicUserMetadata({metadataSubtree, metadata});
 
     dispatch(SetNotificationMessage({
-      message: "Successfully updated profile name"
+      message: "Successfully updated profile information"
+    }));
+  };
+};
+
+export const UpdatePrivateProfileMetadata = ({client, metadataSubtree="/", metadata}) => {
+  return async (dispatch) => {
+    await client.userProfile.ReplacePrivateUserMetadata({metadataSubtree, metadata});
+
+    dispatch(SetNotificationMessage({
+      message: "Successfully updated profile information"
+    }));
+  };
+};
+
+export const DeletePrivateProfileMetadata = ({client, metadataSubtree="/"}) => {
+  return async (dispatch) => {
+    await client.userProfile.DeletePrivateUserMetadata({metadataSubtree});
+
+    dispatch(SetNotificationMessage({
+      message: "Successfully updated profile information"
     }));
   };
 };

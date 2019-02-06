@@ -13,6 +13,8 @@ import Authenticate from "./Authenticate";
 import {GetAppLocation, HideHeader, SetAppLocation, ShowHeader} from "../actions/Routing";
 import Redirect from "react-router/es/Redirect";
 
+import { FrameClient } from "elv-client-js/src/FrameClient";
+
 // Ensure error objects can be properly serialized in messages
 if (!("toJSON" in Error.prototype)) {
   const excludedAttributes = [
@@ -172,6 +174,44 @@ class AppFrame extends React.Component {
     }
   }
 
+  async CheckAccess(event) {
+    if(FrameClient.PromptedMethods().includes(event.data.calledMethod)) {
+      const accessLevel = await this.props.client.client.userProfile.AccessLevel();
+
+      // No access to private profiles
+      if(accessLevel === "private") {return false;}
+
+      // Prompt for access
+      if(accessLevel === "prompt") {
+        const requestor = event.data.args.requestor;
+        if(!requestor) {
+          console.error("Requestor must be specified when requesting access to a user profile");
+          return false;
+        }
+
+        const accessAllowed = await this.props.client.client.userProfile.PrivateUserMetadata({
+          metadataSubtree: Path.join("allowed_accessors", requestor)
+        });
+
+        if(accessAllowed) { return true; }
+
+        if(!confirm(`Do you want to allow the application "${requestor}" to access your profile?`)) {
+          return false;
+        }
+
+        // Record permission
+        await this.props.client.client.userProfile.ReplacePrivateUserMetadata({
+          metadataSubtree: Path.join("allowed_accessors", requestor),
+          metadata: Date.now()
+        });
+      }
+
+      // Otherwise public access
+    }
+
+    return true;
+  }
+
   // Listen for API request messages from frame
   // TODO: Validate origin
   async ApiRequestListener(event) {
@@ -209,6 +249,11 @@ class AppFrame extends React.Component {
 
       // App requested an ElvClient method
       default:
+        if(!(await this.CheckAccess(event))) {
+          this.Respond(event, {error: new Error("Access denied")});
+          return;
+        }
+
         this.Respond(event, await this.props.client.client.CallFromFrameMessage(event.data));
     }
 

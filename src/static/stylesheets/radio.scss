@@ -1,22 +1,34 @@
 .radio-options {
   width: 100%;
 
+  &.inline {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .radio-option {
     display: flex;
 
-    label,
-    input {
-      width: auto;
+    &.inline {
+      input {
+        margin-right: $spacing-xs;
+      }
+
+      label {
+        min-width: 0;
+      }
     }
 
     input {
       cursor: pointer;
       padding: 0 10px;
+      width: auto;
     }
 
     label {
       cursor: pointer;
-      flex-grow: 1;
+      font-size: 14px;
+      width: 160px;
     }
   }
 }
