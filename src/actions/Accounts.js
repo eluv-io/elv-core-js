@@ -123,11 +123,6 @@ export const LogIn = ({
     const account = await accountManager.Authenticate({accountAddress, password});
 
     dispatch(SwitchAccount({client, account, accountManager}));
-
-    dispatch(SetNotificationMessage({
-      message: "Login successful",
-      redirect: true
-    }));
   };
 };
 
@@ -290,9 +285,11 @@ export const AuthenticationFailure = ({message, originalLocation}) => {
       location: originalLocation
     });
 
-    dispatch(SetErrorMessage({
-      message,
-      redirect: true
-    }));
+    if(message) {
+      dispatch(SetErrorMessage({
+        message,
+        redirect: true
+      }));
+    }
   };
 };
