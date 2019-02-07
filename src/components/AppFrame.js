@@ -148,32 +148,6 @@ class AppFrame extends React.Component {
     });
   }
 
-  Respond(event, responseMessage) {
-    responseMessage = {
-      ...responseMessage,
-      requestId: event.data.requestId,
-      type: "ElvFrameResponse"
-    };
-
-    // If the response is not cloneable, serialize it to remove any non-cloneable parts
-    if(!IsCloneable(responseMessage)) {
-      responseMessage = JSON.parse(JSON.stringify(responseMessage));
-    }
-
-    try {
-      // Try sending the response message as-is
-      event.source.postMessage(
-        responseMessage,
-        "*"
-      );
-    } catch(error) {
-      /* eslint-disable no-console */
-      console.error(responseMessage);
-      console.error(error);
-      /* eslint-enable no-console */
-    }
-  }
-
   async CheckAccess(event) {
     if(FrameClient.PromptedMethods().includes(event.data.calledMethod)) {
       const accessLevel = await this.props.client.client.userProfile.AccessLevel();
@@ -212,16 +186,45 @@ class AppFrame extends React.Component {
     return true;
   }
 
+  Respond(requestId, source, responseMessage) {
+    responseMessage = {
+      ...responseMessage,
+      requestId: requestId,
+      type: "ElvFrameResponse"
+    };
+
+    // If the response is not cloneable, serialize it to remove any non-cloneable parts
+    if(!IsCloneable(responseMessage)) {
+      responseMessage = JSON.parse(JSON.stringify(responseMessage));
+    }
+
+    try {
+      // Try sending the response message as-is
+      source.postMessage(
+        responseMessage,
+        "*"
+      );
+    } catch(error) {
+      /* eslint-disable no-console */
+      console.error(responseMessage);
+      console.error(error);
+      /* eslint-enable no-console */
+    }
+  }
+
   // Listen for API request messages from frame
   // TODO: Validate origin
   async ApiRequestListener(event) {
     // Ignore unrelated messages
     if(!event || !event.data || event.data.type !== "ElvFrameRequest") { return; }
 
+    const requestId = event.data.requestId;
+    const source = event.source;
+
     switch(event.data.operation) {
       // App requested its app path
       case "GetFramePath":
-        this.Respond(event, {response: GetAppLocation({basePath: this.state.basePath})});
+        this.Respond(requestId, source, {response: GetAppLocation({basePath: this.state.basePath})});
         break;
 
       // App requested to push its new app path
@@ -230,7 +233,7 @@ class AppFrame extends React.Component {
           basePath: this.state.basePath,
           appPath: event.data.path || "/"
         });
-        this.Respond(event, {response: "Set path " + event.data.path});
+        this.Respond(requestId, source, {response: "Set path " + event.data.path});
         break;
 
       case "ShowAccountsPage":
@@ -250,11 +253,12 @@ class AppFrame extends React.Component {
       // App requested an ElvClient method
       default:
         if(!(await this.CheckAccess(event))) {
-          this.Respond(event, {error: new Error("Access denied")});
+          this.Respond(requestId, source, {error: new Error("Access denied")});
           return;
         }
 
-        this.Respond(event, await this.props.client.client.CallFromFrameMessage(event.data));
+        const responder = (response) => this.Respond(response.requestId, source, response);
+        await this.props.client.client.CallFromFrameMessage(event.data, responder);
     }
 
 
