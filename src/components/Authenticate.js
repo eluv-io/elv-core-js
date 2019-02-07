@@ -11,7 +11,6 @@ const Authenticate = (Component) => {
     let errorMessage, redirectLocation;
     if(currentAccount) {
       redirectLocation = Path.join("/accounts", currentAccount.accountAddress, "log-in");
-      errorMessage = "Authentication Required";
     } else {
       errorMessage = "Please add an account";
       redirectLocation = Path.join("/accounts");
