@@ -14,6 +14,7 @@ import {GetAppLocation, HideHeader, SetAppLocation, ShowHeader} from "../actions
 import Redirect from "react-router/es/Redirect";
 
 import { FrameClient } from "elv-client-js/src/FrameClient";
+import {SetErrorMessage} from "../actions/Notifications";
 
 // Ensure error objects can be properly serialized in messages
 if (!("toJSON" in Error.prototype)) {
@@ -118,6 +119,7 @@ class AppFrame extends React.Component {
       appRef: React.createRef(),
       loginRequired: false,
       redirectLocation: "",
+      appName: this.props.match.params.appName,
       basePath: Path.join("/apps", this.props.match.params.appName)
     };
 
@@ -270,8 +272,20 @@ class AppFrame extends React.Component {
       return <Redirect push to={this.state.redirectLocation} />;
     }
 
-    // TODO: Don't hardcode this
-    const appUrl = "http://localhost:8080";
+    let appUrl;
+    if(this.state.appName === "fabric-browser") {
+      appUrl = "http://localhost:8080";
+    } else if(this.state.appName === "continuum") {
+      appUrl = "http://localhost:3000";
+    } else {
+      this.props.dispatch(
+        SetErrorMessage({
+          message: "Unknown application: " + this.state.appName
+        })
+      );
+
+      throw Error("Unknown application");
+    }
 
     return (
       <IFrame

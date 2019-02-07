@@ -1,12 +1,12 @@
 import React from "react";
 import {CroppedIcon, IconButton, ImageIcon} from "./components/Icons";
-import Link from "react-router-dom/es/Link";
 import connect from "react-redux/es/connect/connect";
 import Logo from "../static/images/logo-dark.png";
 import ShowButton from "../static/icons/show.svg";
 import {HideHeader, ShowHeader} from "../actions/Routing";
 import RequestElement from "./components/RequestElement";
 import DefaultProfileImage from "../static/icons/account.svg";
+import Action from "./components/Action";
 
 class Header extends React.Component {
   constructor(props) {
@@ -71,7 +71,7 @@ class Header extends React.Component {
     const accountImage = account ? this.UserProfile().profileImageUrl || DefaultProfileImage : DefaultProfileImage;
 
     return (
-      <Link to="/accounts" className="current-account">
+      <Action type="link" to="/accounts" className="current-account">
         <div className="account-info">
           <div className="account-name">
             { accountName }
@@ -81,7 +81,7 @@ class Header extends React.Component {
           </div>
         </div>
         <CroppedIcon icon={accountImage} containerClassname="profile-image"/>
-      </Link>
+      </Action>
     );
   }
 
@@ -89,11 +89,11 @@ class Header extends React.Component {
     return (
       <header className={this.props.routing.showHeader ? "header" : "header hidden-header"}>
         <IconButton className="toggle-header-button" src={ShowButton} title="Show Header" onClick={this.ShowHeader} />
-        <Link className="logo-link" to="/">
+        <Action type="link" className="logo-link" to="/">
           <div className="icon-container">
             <ImageIcon className="logo-icon" icon={Logo}/>
           </div>
-        </Link>
+        </Action>
         <div
           className="toggle-header-section"
           title="Hide Header"

@@ -1,10 +1,10 @@
 import React from "react";
-import Link from "react-router-dom/es/Link";
 import connect from "react-redux/es/connect/connect";
 import Redirect from "react-router/es/Redirect";
 import Path from "path";
 import Authenticate from "./Authenticate";
 import RequestElement from "./components/RequestElement";
+import Action from "./components/Action";
 
 class TransferForm extends React.Component {
   constructor(props) {
@@ -101,7 +101,7 @@ class TransferForm extends React.Component {
     return (
       <RequestElement requestId={this.state.requestId} requests={this.props.requests}>
         <div className="actions-container">
-          <Link to={Path.dirname(this.props.match.url)} className="action action-compact action-wide secondary">Cancel</Link>
+          <Action type="link" to={Path.dirname(this.props.match.url)} className="action action-compact action-wide secondary">Cancel</Action>
           <input type="submit" className="action action-compact action-wide" value="Submit" />
         </div>
       </RequestElement>

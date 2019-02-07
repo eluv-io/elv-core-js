@@ -1,8 +1,8 @@
 import React from "react";
-import Link from "react-router-dom/es/Link";
 import connect from "react-redux/es/connect/connect";
 import Redirect from "react-router/es/Redirect";
 import RequestElement from "./components/RequestElement";
+import Action from "./components/Action";
 
 class LoginForm extends React.Component {
   constructor(props) {
@@ -49,7 +49,7 @@ class LoginForm extends React.Component {
     return (
       <RequestElement requestId={this.state.requestId} requests={this.props.requests}>
         <div className="actions-container">
-          <Link to="/accounts" className="action action-compact action-wide secondary">Change Account</Link>
+          <Action type="link" to="/accounts" className="action action-compact action-wide secondary">Change Account</Action>
           <input type="submit" className="action action-compact action-wide" value="Submit" />
         </div>
       </RequestElement>

@@ -1,6 +1,5 @@
 import React from "react";
 import connect from "react-redux/es/connect/connect";
-import Link from "react-router-dom/es/Link";
 
 import {CroppedIcon} from "./components/Icons";
 import DefaultProfileImage from "../static/icons/account.svg";
@@ -8,6 +7,7 @@ import Redirect from "react-router/es/Redirect";
 import Path from "path";
 import RequestElement from "./components/RequestElement";
 import {FormatAddress} from "../utils/Helpers";
+import Action from "./components/Action";
 
 class Accounts extends React.Component {
   constructor(props) {
@@ -75,12 +75,12 @@ class Accounts extends React.Component {
 
     return (
       <div className="actions-container account-actions">
-        <Link className="action action-compact" to={Path.join(this.props.match.url, account.accountAddress, "profile")}>
+        <Action type="link" className="action action-compact" to={Path.join(this.props.match.url, account.accountAddress, "profile")}>
           Profile
-        </Link>
-        <Link className="action action-compact" to={Path.join(this.props.match.url, "transfer")}>
+        </Action>
+        <Action type="link" className="action action-compact" to={Path.join(this.props.match.url, "transfer")}>
           Transfer Funds
-        </Link>
+        </Action>
       </div>
     );
   }
@@ -107,12 +107,12 @@ class Accounts extends React.Component {
               { name }
             </div>
             <div className="actions-container remove-actions" onClick={(e) => { e.stopPropagation(); }} >
-              <button
-                className="action action-compact secondary"
+              <Action
+                className="action action-compact tertiary"
                 onClick={() => this.HandleRemoveAccount(account)}
               >
                 { currentAccount ? "Log Out" : "Remove" }
-              </button>
+              </Action>
             </div>
           </div>
           <div className="account-address" >
@@ -130,12 +130,15 @@ class Accounts extends React.Component {
 
     return (
       <div className="accounts-container main-content-container">
+        <div className="actions-container centered">
+          <Action type="link" to="/apps" className="action tertiary">Apps</Action>
+        </div>
         <div className="accounts">
           { accounts }
           <div className="actions-container add-account-container">
-            <Link className="action action-compact action-wide" to="/accounts/add-account">
+            <Action type="link" className="action action-compact action-wide" to="/accounts/add-account">
               Add Account
-            </Link>
+            </Action>
           </div>
         </div>
       </div>
