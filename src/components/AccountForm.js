@@ -1,9 +1,9 @@
 import React from "react";
-import Link from "react-router-dom/es/Link";
 import connect from "react-redux/es/connect/connect";
 import Redirect from "react-router/es/Redirect";
 import RadioSelect from "./components/RadioSelect";
 import RequestElement from "./components/RequestElement";
+import Action from "./components/Action";
 
 class AccountForm extends React.Component {
   constructor(props) {
@@ -59,7 +59,7 @@ class AccountForm extends React.Component {
     return (
       <RequestElement requestId={this.state.requestId} requests={this.props.requests}>
         <div className="actions-container">
-          <Link to="/accounts" className="action action-compact action-wide secondary">Cancel</Link>
+          <Action type="link" to="/accounts" className="action action-compact action-wide secondary">Cancel</Action>
           <input type="submit" className="action action-compact action-wide" value="Submit" />
         </div>
       </RequestElement>

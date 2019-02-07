@@ -182,8 +182,7 @@ export const AddAccount = ({
   };
 };
 
-// TODO: remove noFlash parameter when seed doesn't need it
-export const SwitchAccount = ({client, accountManager, account, noFlash=false}) => {
+export const SwitchAccount = ({client, accountManager, account}) => {
   return (dispatch) => {
     if(account) {
       accountManager.SwitchAccount({accountAddress: account.accountAddress});
@@ -207,10 +206,6 @@ export const SwitchAccount = ({client, accountManager, account, noFlash=false}) 
     dispatch(SetAccounts({accountManager}));
 
     dispatch({type: ActionTypes.accounts.clearSavedLocation});
-
-    if(!noFlash) {
-      dispatch(SetNotificationMessage({message: "Successfully switched accounts"}));
-    }
   };
 };
 

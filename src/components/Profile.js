@@ -4,12 +4,12 @@ import Authenticate from "./Authenticate";
 import RequestElement from "./components/RequestElement";
 import {CroppedIcon, CroppedIconWithAction, IconButton} from "./components/Icons";
 import DefaultProfileImage from "../static/icons/account.svg";
-import Link from "react-router-dom/es/Link";
 import {EqualAddress} from "../utils/Helpers";
 import RadioSelect from "./components/RadioSelect";
 import Path from "path";
 
 import DeleteIcon from "../static/icons/trash.svg";
+import Action from "./components/Action";
 
 class Profile extends React.Component {
   constructor(props) {
@@ -132,9 +132,9 @@ class Profile extends React.Component {
   AccountActions() {
     return (
       <div className="actions-container account-actions centered">
-        <Link className="action secondary" to="/accounts">
+        <Action type="link" className="action secondary" to="/accounts">
           Back
-        </Link>
+        </Action>
       </div>
     );
   }
@@ -190,13 +190,14 @@ class Profile extends React.Component {
       );
     }
 
-
     return (
       <div>
         <div className="info-section">
           <h4>Permissions</h4>
           <h4 className="subheader">Here you can specify whether applications can request access to your personal information</h4>
-          { permissionSelection }
+          <div className="indented">
+            { permissionSelection }
+          </div>
         </div>
         { allowedAccessorsTable }
       </div>
@@ -301,8 +302,8 @@ class Profile extends React.Component {
         <div className="page-header modify-field">
           <input placeholder="Name" value={this.state.newName} onChange={(event) => this.setState({newName: event.target.value})} onKeyPress={this.HandleNameChange}/>
           <div className="actions-container inline-actions-container">
-            <button className="action secondary action-compact" onClick={() => this.setState({modifyingName: false, newName: ""})}>Cancel</button>
-            <button className="action action-compact" onClick={this.HandleNameChange}>Submit</button>
+            <Action className="action secondary action-compact" onClick={() => this.setState({modifyingName: false, newName: ""})}>Cancel</Action>
+            <Action className="action action-compact" onClick={this.HandleNameChange}>Submit</Action>
           </div>
         </div>
       );

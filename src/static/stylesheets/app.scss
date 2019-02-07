@@ -34,4 +34,36 @@ iframe {
   width: 100%;
 }
 
+.app-list {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: $spacing-m;
+}
 
+.app-selection {
+  color: $color-text-light;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  flex-shrink: 1;
+  height: 350px;
+  justify-content: space-between;
+  padding: $spacing-xxl;
+
+  &:hover {
+    background: $color-lightergray;
+  }
+
+  .icon-container {
+    $image-size: 300px;
+    @include cropped-image($image-size, $image-size, 0%, $image-size, $image-size);
+  }
+
+  .app-name {
+    color: $color-text-light;
+    font-size: 22px;
+    font-weight: bolder;
+    text-align: center;
+  }
+}

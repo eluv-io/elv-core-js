@@ -24,6 +24,7 @@ import {
   ProfileContainer,
   TransferFormContainer
 } from "./containers/Accounts";
+import AppSelector from "./components/AppSelector";
 
 const InitializeClient = (signer) => {
   const client = ElvClient.FromConfiguration({configuration: require("../configuration.json")});
@@ -94,7 +95,8 @@ export class AccountManagerApp extends React.Component {
               <Notifications />
               <div className="route-container">
                 <Switch>
-                  <Route exact path="/" render={() => <Redirect to={"/apps/fabric-browser"} />} />
+                  <Route exact path="/" render={() => <Redirect to={"/apps"} />} />
+                  <Route exact path="/apps" component={AppSelector} />
                   <Route path="/apps/:appName" component={AppFrame} />
                   <Route exact path="/accounts" component={AccountsContainer} />
                   <Route exact path="/accounts/transfer" component={TransferFormContainer} />

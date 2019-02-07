@@ -17,7 +17,7 @@
 
 .accounts {
   background: $color-bg-dark;
-  border: 1px solid $color-midgray;
+  border: 1px solid $color-gray;
   margin: $spacing-xxs;
   width: 400px;
   z-index: 101;
@@ -32,7 +32,7 @@
   .account-container {
     align-items: center;
     background-color: $color-bg-dark;
-    border-bottom: 1px solid $color-midgray;
+    border-bottom: 1px solid $color-lightgray;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;

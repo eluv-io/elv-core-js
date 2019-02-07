@@ -1,11 +1,12 @@
 import InlineSVG from "svg-inline-react";
 import React from "react";
+import Action from "./Action";
 
 export const CroppedIcon = ({containerClassname, className, title, icon}) => {
   return (
     <div className={containerClassname || ""}>
       <div className="cropped-icon">
-        <ImageIcon icon={icon} title={title} className={className} />
+        <ImageIcon icon={icon} title={title} className={className || ""} />
       </div>
     </div>
   );
@@ -15,7 +16,7 @@ export const CroppedIconWithAction = ({containerClassname, className, title, ico
   return (
     <div className={containerClassname || ""}>
       <div className="cropped-icon">
-        <ImageIcon icon={icon} title={title} className={className} />
+        <ImageIcon icon={icon} title={title} className={className || ""} />
         <div className="hover-action">
           { children}
         </div>
@@ -38,8 +39,8 @@ export const ImageIcon = ({ className, title, icon }) => {
 
 export const IconButton = ({src, title, onClick, className=""}) => {
   return (
-    <button className={"icon-button " + className} type="button" role="button" title={title} onClick={onClick}>
+    <Action className={"icon-button " + className} type="button" role="button" title={title} onClick={onClick}>
       <InlineSVG className="icon dark clickable" src={src} />
-    </button>
+    </Action>
   );
 };
