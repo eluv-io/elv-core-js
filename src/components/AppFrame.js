@@ -16,6 +16,8 @@ import Redirect from "react-router/es/Redirect";
 import { FrameClient } from "elv-client-js/src/FrameClient";
 import {SetErrorMessage} from "../actions/Notifications";
 
+import Configuration from "../../configuration";
+
 // Ensure error objects can be properly serialized in messages
 if (!("toJSON" in Error.prototype)) {
   const excludedAttributes = [
@@ -274,9 +276,9 @@ class AppFrame extends React.Component {
 
     let appUrl;
     if(this.state.appName === "fabric-browser") {
-      appUrl = "http://localhost:8080";
+      appUrl = Configuration.apps["fabric-browser"];
     } else if(this.state.appName === "continuum") {
-      appUrl = "http://localhost:3000";
+      appUrl = Configuration.apps.continuum;
     } else {
       this.props.dispatch(
         SetErrorMessage({
