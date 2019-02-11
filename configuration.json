@@ -9,5 +9,9 @@
     "hostname": "localhost",
     "port": 8545,
     "use_https": false
+  },
+  "apps": {
+    "continuum": "http://localhost:3000",
+    "fabric-browser": "http://localhost:8080"
   }
 }

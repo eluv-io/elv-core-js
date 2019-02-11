@@ -36,7 +36,8 @@ class Accounts extends React.Component {
   }
 
   UserProfile(accountAddress) {
-    return this.props.accounts.userProfiles[FormatAddress(accountAddress)];
+    return this.props.accounts.userProfiles[FormatAddress(accountAddress)]
+      || {publicMetadata: {}, privateMetadata: {}, profileImageUrl: ""};
   }
 
   HandleRemoveAccount(account) {
