@@ -73,6 +73,7 @@ class IFrameBase extends React.Component {
         src={this.props.appUrl}
         sandbox={this.SandboxPermissions()}
         className={this.props.className}
+        allowFullScreen={true}
       />
     );
   }
