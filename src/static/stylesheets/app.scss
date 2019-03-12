@@ -37,6 +37,7 @@ iframe {
 .app-list {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   margin-top: $spacing-m;
 }
 
@@ -45,25 +46,24 @@ iframe {
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
-  flex-shrink: 1;
-  height: 350px;
-  justify-content: space-between;
-  padding: $spacing-xxl;
+  height: 150px;
+  padding: $spacing-xl;
+  width: 150px;
 
   &:hover {
     background: $color-lightergray;
   }
 
   .icon-container {
-    $image-size: 300px;
+    $image-size: 100px;
     @include cropped-image($image-size, $image-size, 0%, $image-size, $image-size);
   }
 
   .app-name {
     color: $color-text-light;
-    font-size: 22px;
+    font-size: 16px;
     font-weight: bolder;
+    padding: $spacing-s;
     text-align: center;
   }
 }

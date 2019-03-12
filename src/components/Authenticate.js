@@ -24,7 +24,6 @@ const Authenticate = (Component) => {
     }
 
     return <Redirect to={redirectLocation} />;
-
   };
 };
 

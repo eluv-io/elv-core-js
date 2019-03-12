@@ -275,12 +275,9 @@ class AppFrame extends React.Component {
       return <Redirect push to={this.state.redirectLocation} />;
     }
 
-    let appUrl;
-    if(this.state.appName === "fabric-browser") {
-      appUrl = Configuration.apps["fabric-browser"];
-    } else if(this.state.appName === "continuum") {
-      appUrl = Configuration.apps.continuum;
-    } else {
+    const appUrl = Configuration.apps[this.state.appName];
+
+    if(!appUrl) {
       this.props.dispatch(
         SetErrorMessage({
           message: "Unknown application: " + this.state.appName

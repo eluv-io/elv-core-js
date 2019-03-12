@@ -54,7 +54,7 @@
   .current-account {
     align-items: center;
     display: flex;
-    max-width: 250px;
+    max-width: 400px;
     width: auto;
 
     .account-name {
@@ -77,6 +77,7 @@
     .logo-icon {
       height: auto;
       max-width: 90px;
+      padding-left: 0;
       width: auto;
     }
   }

@@ -1,6 +1,7 @@
 import {SwitchAccount} from "../actions/Accounts";
 
 export const SeedAccounts = async (store, client, accountManager) => {
+  /*
   const seedAccounts = [
     {
       accountName: "Alice",
@@ -25,10 +26,10 @@ export const SeedAccounts = async (store, client, accountManager) => {
     }
   ];
 
-
   for(const accountInfo of seedAccounts) {
     await accountManager.AddAccount(accountInfo);
   }
+  */
 
   const currentAccount = accountManager.CurrentAccount() || accountManager.Accounts()[Object.keys(accountManager.Accounts())[0]];
 
