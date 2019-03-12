@@ -66,7 +66,8 @@ class Header extends React.Component {
 
   AccountInfo() {
     const account = this.props.accounts.currentAccount;
-    const accountName = account ? this.UserProfile().publicMetadata.name || "Unknown Account" : "Not logged in";
+    const accountName = account ?
+      this.UserProfile().publicMetadata.name || <div className="small-text">{account.accountAddress}</div> : "Not logged in";
     const accountBalance = account ? this.props.accounts.balances[account.accountAddress] : "";
     const accountImage = account ? this.UserProfile().profileImageUrl || DefaultProfileImage : DefaultProfileImage;
 

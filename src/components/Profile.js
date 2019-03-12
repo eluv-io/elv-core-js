@@ -264,7 +264,7 @@ class Profile extends React.Component {
     return (
       <div className="info-section">
         <h4>{header}</h4>
-        <div className="indented small-text">
+        <div className="indented">
           { metadataFields }
         </div>
       </div>
@@ -291,7 +291,7 @@ class Profile extends React.Component {
   }
 
   Name() {
-    const name = this.UserProfile().publicMetadata.name || "Unknown Account";
+    const name = this.UserProfile().publicMetadata.name || this.state.accountAddress;
 
     if(!this.state.isCurrentAccount) {
       return <h3 className="page-header">{name}</h3>;

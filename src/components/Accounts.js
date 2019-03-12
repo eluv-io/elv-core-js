@@ -88,7 +88,7 @@ class Accounts extends React.Component {
 
   Account(account) {
     const currentAccount = account.accountAddress === this.props.accounts.currentAccount.accountAddress;
-    const name = this.UserProfile(account.accountAddress).publicMetadata.name || "Unknown Account";
+    const name = this.UserProfile(account.accountAddress).publicMetadata.name ||  <div className="small-text">{account.accountAddress}</div>;
     const profileImage = this.UserProfile(account.accountAddress).profileImageUrl || DefaultProfileImage;
 
     return (

@@ -1,6 +1,6 @@
 {
   "fabric": {
-    "contentSpaceId": "ispcoGRVTmBEWmBz9T4pNNpxMEhRf7V",
+    "contentSpaceId": "ispc3npSux6gntRjEbxCQ855RQVzhR93",
     "hostname": "localhost",
     "port": 8008,
     "use_https": false
@@ -11,7 +11,8 @@
     "use_https": false
   },
   "apps": {
+    "fabric-browser": "http://localhost:8080",
     "continuum": "http://localhost:3000",
-    "fabric-browser": "http://localhost:8080"
+    "other3": "http://localhost:8000"
   }
 }

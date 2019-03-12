@@ -144,11 +144,8 @@ const InitializeAccount = async (account) => {
   }
 
   // Create library if not yet created
-  await accountClient.userProfile.CreateAccountLibrary({
-    publicMetadata: {
-      name: account.accountName
-    }
-  });
+  await accountClient.userProfile.CreateAccountLibrary({});
+  await accountClient.userProfile.ReplacePublicUserMetadata({metadataSubtree: "name", metadata: account.accountName});
 };
 
 export const AddAccount = ({
