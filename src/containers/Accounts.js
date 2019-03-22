@@ -4,45 +4,47 @@ import Accounts from "../components/Accounts";
 import {GetAccountBalance, RemoveAccount as Remove} from "../actions/Accounts";
 import {UnlockAccount as Unlock} from "../actions/Accounts";
 
-const SwitchAccount = (context) => {
-  return (address) => {
-    context.UpdateContext({currentAccount: context.accounts[address]});
-  };
-};
+class AccountsContainer extends React.Component {
+  constructor(props) {
+    super(props);
 
-const UnlockAccount = (context) => {
-  return async ({address, password}) => {
-    await Unlock({context, address, password});
-  };
-};
+    this.UnlockAccount = this.UnlockAccount.bind(this);
+    this.RemoveAccount = this.RemoveAccount.bind(this);
+  }
 
-const RemoveAccount = (context) => {
-  return (address) => {
-    Remove({context, address});
-  };
-};
+  componentDidMount() {
+    Object.keys(this.props.context.accounts).forEach(address => {
+      if (!this.props.context.accounts[address].balance) {
+        GetAccountBalance({context: this.props.context, address});
+      }
+    });
+  }
 
-const AccountsContainer = ({context, props}) => {
-  console.log("asd");
-  const actions = {
-    SwitchAccount: SwitchAccount(context),
-    UnlockAccount: UnlockAccount(context),
-    RemoveAccount: RemoveAccount(context),
-  };
+  shouldComponentUpdate(nextProps) {
+    return !(
+      this.props.context.accounts === nextProps.context.accounts &&
+      this.props.context.currentAccount === nextProps.context.currentAccount
+    );
+  }
 
-  Object.keys(context.accounts).forEach(address => {
-    if(!context.accounts[address].balance) {
-      GetAccountBalance({context, address})
-    }
-  });
+  async UnlockAccount({address, password}) {
+    await Unlock({context: this.props.context, address, password});
+  }
 
-  return (
-    <Accounts
-      accounts={context.accounts}
-      currentAccount={context.currentAccount}
-      actions={actions}
-    />
-  );
-};
+  RemoveAccount(address) {
+    Remove({context: this.props.context, address});
+  }
+
+  render() {
+    return (
+      <Accounts
+        accounts={this.props.context.accounts}
+        currentAccount={this.props.context.currentAccount}
+        UnlockAccount={this.UnlockAccount}
+        RemoveAccount={this.RemoveAccount}
+      />
+    );
+  }
+}
 
 export default ElvCoreConsumer(AccountsContainer);

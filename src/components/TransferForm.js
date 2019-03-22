@@ -49,7 +49,7 @@ class TransferForm extends React.Component {
       }
     });
 
-    await this.props.actions.Submit({
+    await this.props.Submit({
       recipient: this.state.recipient,
       ether: this.state.ether
     });

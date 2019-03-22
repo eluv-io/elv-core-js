@@ -19,7 +19,7 @@ class Header extends React.Component {
   }
 
   ToggleHeader(show) {
-    this.props.actions.ToggleHeader(show);
+    this.props.ToggleHeader(show);
   }
 
   AccountInfo() {

@@ -21,7 +21,7 @@ const TransferFormContainer = ({context, props}) => {
     .forEach(address => accounts[address] = context.accounts[address]);
 
   return (
-    <TransferForm accounts={accounts} currentAccount={context.currentAccount} actions={actions} />
+    <TransferForm accounts={accounts} currentAccount={context.currentAccount} {...actions} />
   );
 };
 

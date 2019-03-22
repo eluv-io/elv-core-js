@@ -35,7 +35,7 @@ class AccountForm extends React.Component {
   async HandleSubmit() {
     this.setState({status: {loading: true}});
 
-    await this.props.actions.Submit({
+    await this.props.Submit({
       credentialType: this.state.credentialType,
       privateKey: this.state.privateKey,
       encryptedPrivateKey: this.state.encryptedPrivateKey,
@@ -80,7 +80,7 @@ class AccountForm extends React.Component {
         return [
           <label key="generate-mnemonic-label" htmlFor="generateMnemonic">Generate Mnemonic</label>,
           <div key="generate-mnemonic-button" className="actions-container">
-            <Action onClick={() => this.setState({mnemonic: this.props.actions.GenerateMnemonic()})}>
+            <Action onClick={() => this.setState({mnemonic: this.props.GenerateMnemonic()})}>
               Generate Mnemonic
             </Action>
           </div>,

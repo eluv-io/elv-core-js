@@ -2,9 +2,10 @@ import "../static/stylesheets/navigation.scss";
 
 import React from "react";
 import NavLink from "react-router-dom/es/NavLink";
+import PropTypes from "prop-types";
 
 const Navigation = (props) => {
-  if(!props.currentAccount || !props.currentAccount.signer) {
+  if(!props.unlocked) {
     return (
       <div className="nav-container locked">
         <nav>
@@ -24,8 +25,10 @@ const Navigation = (props) => {
       </div>
     );
   }
+};
 
-
+Navigation.propTypes = {
+  unlocked: PropTypes.bool.isRequired
 };
 
 export default Navigation;
