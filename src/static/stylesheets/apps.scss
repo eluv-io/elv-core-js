@@ -10,10 +10,10 @@
 .app-selection {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  width: 250px;
   height: 250px;
+  justify-content: center;
   margin: $elv-spacing-xs;
+  width: 250px;
 
   &:hover {
     background: $elv-color-lightergray;
@@ -32,7 +32,7 @@
 }
 
 .app-frame {
-  width: 100%;
   border: 0;
   flex-grow: 1;
+  width: 100%;
 }
