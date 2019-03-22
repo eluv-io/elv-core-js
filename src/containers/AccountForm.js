@@ -30,7 +30,7 @@ const AccountFormContainer = ({context, props}) => {
   };
 
   return (
-    <AccountForm accounts={context.accounts} currentAccount={context.currentAccount} actions={actions} />
+    <AccountForm accounts={context.accounts} currentAccount={context.currentAccount} {...actions} />
   );
 };
 

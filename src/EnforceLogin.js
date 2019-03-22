@@ -12,7 +12,7 @@ class EnforceLogin extends React.PureComponent {
     } else if(this.props.showLoginModal) {
       return (
         <LoginModal
-          login={true}
+          prompt={true}
           address={this.props.currentAccount.address}
           Submit={(password) => this.props.actions.UnlockAccount({address: this.props.currentAccount.address, password})}
           Close={() => this.setState({showLoginModal: false})}

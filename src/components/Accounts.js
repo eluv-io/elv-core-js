@@ -24,7 +24,7 @@ class Accounts extends React.Component {
 
   async SelectAccount(address) {
     if(this.props.accounts[address].signer) {
-      await this.props.actions.UnlockAccount({address});
+      await this.props.UnlockAccount({address});
       return;
     }
 
@@ -35,12 +35,12 @@ class Accounts extends React.Component {
   }
 
   async UnlockAccount(password) {
-    await this.props.actions.UnlockAccount({address: this.state.selectedAddress, password});
+    await this.props.UnlockAccount({address: this.state.selectedAddress, password});
   }
 
   RemoveAccount(address) {
     if(confirm("Are you sure you want to remove this account?")) {
-      this.props.actions.RemoveAccount(address);
+      this.props.RemoveAccount(address);
     }
   }
 
@@ -78,9 +78,9 @@ class Accounts extends React.Component {
         />
         <CroppedIcon icon={AccountImage} className="account-image" />
         <div className="account-info">
-          <div>{account.name}</div>
-          <div>{account.address}</div>
-          <div>{account.balance}</div>
+          <div className="account-name">{account.name || "Account Name"}</div>
+          <div className="account-address">{account.address}</div>
+          <div className="account-balance">{account.balance}</div>
         </div>
         <div className="account-actions">
           { selectAccountButton }

@@ -67,13 +67,15 @@ header {
 }
 
 .profile-image {
-  $image-size: 35px;
+  margin-right: $elv-spacing-xxs;
+  $image-size: 30px;
   @include elv-cropped-image($image-size, $image-size, 50%, $image-size, $image-size);
 }
 
 .header-account-name,
 .header-account-balance {
   @include elv-ellipsis;
+  font-size: 14px;
   max-width: 250px;
 }
 

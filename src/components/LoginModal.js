@@ -1,3 +1,5 @@
+import "../static/stylesheets/login.scss";
+
 import React from "react";
 import PropTypes from "prop-types";
 import Modal from "elv-components-js/src/components/Modal";
@@ -65,7 +67,7 @@ class LoginModal extends React.PureComponent {
         formContent={this.FormContent()}
         status={this.state.status}
         cancelPath="/accounts"
-        cancelText="Switch Account"
+        cancelText={this.props.prompt ? "Switch Account" : "Cancel"}
         OnCancel={this.props.Close}
         OnSubmit={this.HandleSubmit}
         OnError={this.HandleError}
@@ -79,15 +81,16 @@ class LoginModal extends React.PureComponent {
         modalContent={
           this.PasswordForm()
         }
-        closable={!this.props.login && !this.state.status.loading}
+        closable={!this.props.prompt && !this.state.status.loading}
         OnClickOutside={this.props.Close}
+        className="login-modal"
       />
     );
   }
 }
 
 LoginModal.propTypes = {
-  login: PropTypes.bool,
+  prompt: PropTypes.bool,
   address: PropTypes.string.isRequired,
   Submit: PropTypes.func.isRequired,
   Close: PropTypes.func.isRequired

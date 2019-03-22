@@ -14,9 +14,6 @@ class Accounts extends React.Component {
 
     return (
       <div className="page-container">
-        <div className="actions-container flex-centered">
-          <Action type="link" to="/accounts/switch" title="Switch Accounts">Switch Accounts</Action>
-        </div>
         <div className="profile">
           <div className="account">
             <CroppedIcon icon={AccountImage} className="account-image" />
