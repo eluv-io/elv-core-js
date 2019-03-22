@@ -1,113 +1,59 @@
+import "../static/stylesheets/header.scss";
+
 import React from "react";
-import {CroppedIcon, IconButton, ImageIcon} from "./components/Icons";
-import connect from "react-redux/es/connect/connect";
-import Logo from "../static/images/logo-dark.png";
-import ShowButton from "../static/icons/show.svg";
-import {HideHeader, ShowHeader} from "../actions/Routing";
-import RequestElement from "./components/RequestElement";
-import DefaultProfileImage from "../static/icons/account.svg";
-import Action from "./components/Action";
+import {ElvCoreConsumer} from "../ElvCoreContext";
+import {CroppedIcon, IconButton, IconLink} from "elv-components-js/src/components/Icons";
+import Action from "elv-components-js/src/components/Action";
+import LoadingElement from "elv-components-js/src/components/LoadingElement";
+
+import Logo from "../static/images/Logo.png";
+import AccountImage from "../static/icons/User.svg";
+import ShowHeaderIcon from "../static/icons/ShowHeader.svg";
 
 class Header extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
-
-    this.ShowHeader = this.ShowHeader.bind(this);
-    this.HideHeader = this.HideHeader.bind(this);
     this.AccountInfo = this.AccountInfo.bind(this);
+    this.ToggleHeader = this.ToggleHeader.bind(this);
   }
 
-  UpdateAccountInfo() {
-    this.setState({
-      requestId: this.props.WrapRequest({
-        todo: async () => {
-          if(this.props.accounts.currentAccount) {
-            await this.props.GetProfileImage({
-              client: this.props.client.client,
-              accountAddress: this.props.accounts.currentAccount.accountAddress
-            });
-            await this.props.GetPublicUserProfile({
-              client: this.props.client.client,
-              accountAddress: this.props.accounts.currentAccount.accountAddress
-            });
-            await this.props.UpdateAccountBalance({
-              client: this.props.client.client,
-              accountAddress: this.props.accounts.currentAccount.accountAddress
-            });
-          }
-        }
-      })
-    });
-  }
-
-  componentDidMount() {
-    this.UpdateAccountInfo();
-  }
-
-  componentDidUpdate(oldProps) {
-    if(this.props.accounts.currentAccount !== oldProps.accounts.currentAccount) {
-      this.UpdateAccountInfo();
-    }
-  }
-
-  UserProfile() {
-    return this.props.accounts.userProfiles[this.props.accounts.currentAccount.accountAddress] || {publicMetadata: {}, privateMetadata: {}};
-  }
-
-  ShowHeader() {
-    this.props.dispatch(ShowHeader());
-  }
-
-  HideHeader() {
-    this.props.dispatch(HideHeader());
+  ToggleHeader(show) {
+    this.props.actions.ToggleHeader(show);
   }
 
   AccountInfo() {
-    const account = this.props.accounts.currentAccount;
-    const accountName = account ?
-      this.UserProfile().publicMetadata.name || <div className="small-text">{account.accountAddress}</div> : "Not logged in";
-    const accountBalance = account ? this.props.accounts.balances[account.accountAddress] : "";
-    const accountImage = account ? this.UserProfile().profileImageUrl || DefaultProfileImage : DefaultProfileImage;
-
     return (
-      <Action type="link" to="/accounts" className="current-account">
-        <div className="account-info">
-          <div className="account-name">
-            { accountName }
+      <Action type="link" to="/accounts" className="header-account" button={false}>
+        <CroppedIcon icon={AccountImage} className="profile-image"/>
+        <div className="header-account-info">
+          <div className="header-account-name">
+            {this.props.currentAccount && this.props.currentAccount.address || "Not Logged In"}
           </div>
-          <div className="account-balance">
-            { accountBalance }
+          <div className="header-account-balance">
+            {this.props.currentAccount && this.props.currentAccount.balance}
           </div>
         </div>
-        <CroppedIcon icon={accountImage} containerClassname="profile-image"/>
       </Action>
     );
   }
 
   render() {
     return (
-      <header className={this.props.routing.showHeader ? "header" : "header hidden-header"}>
-        <IconButton className="toggle-header-button" src={ShowButton} title="Show Header" onClick={this.ShowHeader} />
-        <Action type="link" className="logo-link" to="/">
-          <div className="icon-container">
-            <ImageIcon className="logo-icon" icon={Logo}/>
-          </div>
-        </Action>
+      <header className={this.props.showHeader ? "header" : "header hidden-header"}>
+        <IconButton className="toggle-header-button" icon={ShowHeaderIcon} title="Show Header" onClick={() => this.ToggleHeader(true)} />
+        <IconLink icon={Logo} to="/apps" className="logo" />
         <div
           className="toggle-header-section"
           title="Hide Header"
           tabIndex={0}
-          onClick={this.HideHeader}
-          onKeyPress={this.HideHeader}
+          onClick={() => this.ToggleHeader(false)}
+          onKeyPress={() => this.ToggleHeader(false)}
         />
-        <RequestElement requestId={this.state.requestId} requests={this.props.requests} render={this.AccountInfo} />
+        <LoadingElement loading={false} render={this.AccountInfo} />
       </header>
     );
   }
 }
 
-export default connect(
-  (state) => state
-)(Header);
+export default ElvCoreConsumer(Header);

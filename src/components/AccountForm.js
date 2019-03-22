@@ -1,32 +1,29 @@
 import React from "react";
-import connect from "react-redux/es/connect/connect";
-import Redirect from "react-router/es/Redirect";
-import RadioSelect from "./components/RadioSelect";
-import RequestElement from "./components/RequestElement";
-import Action from "./components/Action";
+import Form from "elv-components-js/src/components/Form";
+import Action from "elv-components-js/src/components/Action";
+import RadioSelect from "elv-components-js/src/components/RadioSelect";
 
 class AccountForm extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      accountName: "",
+      status: {
+        loading: false,
+        error: false,
+        errorMessage: ""
+      },
       credentialType: "privateKey",
       privateKey: "",
       encryptedPrivateKey: "",
       mnemonic: "",
-      password: "",
+      password: ""
     };
 
-    this.GenerateMnemonic = this.GenerateMnemonic.bind(this);
-    this.HandleInputChange = this.HandleInputChange.bind(this);
+    this.FormContent = this.FormContent.bind(this);
     this.HandleSubmit = this.HandleSubmit.bind(this);
-  }
-
-  GenerateMnemonic() {
-    this.setState({
-      mnemonic: this.props.accounts.accountManager.elvWallet.GenerateMnemonic()
-    });
+    this.HandleError = this.HandleError.bind(this);
+    this.HandleInputChange = this.HandleInputChange.bind(this);
   }
 
   HandleInputChange(event) {
@@ -35,140 +32,113 @@ class AccountForm extends React.Component {
     });
   }
 
-  HandleSubmit(event) {
-    event.preventDefault();
+  async HandleSubmit() {
+    this.setState({status: {loading: true}});
 
-    this.setState({
-      requestId: this.props.WrapRequest({
-        todo: async () => {
-          await this.props.AddAccount({
-            client: this.props.client.client,
-            accountManager: this.props.accounts.accountManager,
-            accountName: this.state.accountName,
-            privateKey: this.state.privateKey,
-            encryptedPrivateKey: this.state.encryptedPrivateKey,
-            mnemonic: this.state.mnemonic,
-            password: this.state.password
-          });
-        }
-      })
+    await this.props.actions.Submit({
+      credentialType: this.state.credentialType,
+      privateKey: this.state.privateKey,
+      encryptedPrivateKey: this.state.encryptedPrivateKey,
+      mnemonic: this.state.mnemonic,
+      password: this.state.password
     });
   }
 
-  Actions() {
-    return (
-      <RequestElement requestId={this.state.requestId} requests={this.props.requests}>
-        <div className="actions-container">
-          <Action type="link" to="/accounts" className="action action-compact action-wide secondary">Cancel</Action>
-          <input type="submit" className="action action-compact action-wide" value="Submit" />
-        </div>
-      </RequestElement>
-    );
+  HandleError(error) {
+    this.setState({
+      status: {
+        loading: false,
+        error: true,
+        errorMessage: error.message
+      }
+    });
   }
 
   Credentials() {
     switch(this.state.credentialType) {
       case "privateKey":
-        return (
-          <div className="labelled-input">
-            <label htmlFor="privateKey">Private Key</label>
-            <input
-              name="privateKey"
-              value={this.state.privateKey}
-              onChange={this.HandleInputChange}
-            />
-          </div>
-        );
+        return [
+          <label key="credential-label" htmlFor="privateKey">Private Key</label>,
+          <input
+            key="credential-input"
+            name="privateKey"
+            value={this.state.privateKey}
+            onChange={this.HandleInputChange}
+          />
+        ];
       case "encryptedPrivateKey":
-        return (
-          <div className="labelled-input">
-            <label className="textarea-label" htmlFor="encryptedPrivateKey">Encrypted Private Key</label>
-            <textarea
-              name="encryptedPrivateKey"
-              value={this.state.encryptedPrivateKey}
-              onChange={this.HandleInputChange}
-            />
-          </div>
-        );
+        return [
+          <label key="credential-label" className="align-top" htmlFor="encryptedPrivateKey">Encrypted Private Key</label>,
+          <textarea
+            key="credential-input"
+            name="encryptedPrivateKey"
+            value={this.state.encryptedPrivateKey}
+            onChange={this.HandleInputChange}
+          />
+        ];
       case "mnemonic":
-        return (
-          <div>
-            <div className="labelled-input">
-              <label htmlFor="generateMnemonic">Generate Mnemonic</label>
-              <div className="input-container">
-                <div className="actions-container inline-actions-container">
-                  <input
-                    className="action action-compact action-wide"
-                    type="button"
-                    name="generateMnemonic"
-                    value="Generate Mnemonic"
-                    onClick={this.GenerateMnemonic}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="labelled-input">
-              <label className="textarea-label" htmlFor="encryptedPrivateKey">Mnemonic</label>
-              <textarea
-                className="mnemonic-input"
-                name="mnemonic"
-                value={this.state.mnemonic}
-                onChange={this.HandleInputChange}
-              />
-            </div>
-          </div>
-        );
+        return [
+          <label key="generate-mnemonic-label" htmlFor="generateMnemonic">Generate Mnemonic</label>,
+          <div key="generate-mnemonic-button" className="actions-container">
+            <Action onClick={() => this.setState({mnemonic: this.props.actions.GenerateMnemonic()})}>
+              Generate Mnemonic
+            </Action>
+          </div>,
+          <label key="credential-label" className="align-top" htmlFor="encryptedPrivateKey">Mnemonic</label>,
+          <textarea
+            key="credential-input"
+            className="mnemonic-input"
+            name="mnemonic"
+            value={this.state.mnemonic}
+            onChange={this.HandleInputChange}
+          />
+        ];
     }
 
     return null;
   }
 
-  render() {
-    const request = this.props.requests[this.state.requestId];
-    if(request && request.completed) {
-      return <Redirect push to="/accounts" />;
-    }
-
+  FormContent() {
     return (
-      <form className="account-form main-content-container" onSubmit={this.HandleSubmit}>
-        <fieldset>
-          <legend>Add Account</legend>
-          <div className="form-content">
-            <div className="labelled-input">
-              <label htmlFor="accountName">Account Name</label>
-              <input name="accountName" value={this.state.accountName} onChange={this.HandleInputChange} />
-            </div>
+      <div className="form-content">
+        <label htmlFor="credentialType">Credential Type</label>
+        <RadioSelect
+          name="credentialType"
+          label="Credential Type"
+          options={
+            [
+              ["Private Key", "privateKey"],
+              ["Encrypted Private Key", "encryptedPrivateKey"],
+              ["Mnemonic", "mnemonic"]
+            ]
+          }
+          selected={this.state.credentialType}
+          onChange={this.HandleInputChange}
+        />
 
-            <RadioSelect
-              name="credentialType"
-              label="Credential Type"
-              options={
-                [
-                  ["Private Key", "privateKey"],
-                  ["Encrypted Private Key", "encryptedPrivateKey"],
-                  ["Mnemonic", "mnemonic"]
-                ]
-              }
-              selected={this.state.credentialType}
-              onChange={this.HandleInputChange}
-            />
+        { this.Credentials() }
 
-            { this.Credentials() }
+        <label htmlFor="password">Password</label>
+        <input name="password" type="password" value={this.state.password} required={true} onChange={this.HandleInputChange} />
+      </div>
+    );
+  }
 
-            <div className="labelled-input">
-              <label htmlFor="password">Password</label>
-              <input name="password" type="password" value={this.state.password} required={true} onChange={this.HandleInputChange} />
-            </div>
-          </div>
-
-          { this.Actions() }
-
-        </fieldset>
-      </form>
+  render() {
+    return (
+      <div className="page-container">
+        <Form
+          formContent={this.FormContent()}
+          legend="Add Account"
+          status={this.state.status}
+          OnSubmit={this.HandleSubmit}
+          OnError={this.HandleError}
+          redirectPath="/accounts/switch"
+          cancelPath="/accounts/switch"
+        />
+      </div>
     );
   }
 }
 
-export default connect(
-  (state) => state
-)(AccountForm);
+export default AccountForm;

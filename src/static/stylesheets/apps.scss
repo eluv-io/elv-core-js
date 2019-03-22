@@ -1,0 +1,38 @@
+@import "~elv-components-js/src/stylesheets/mixins";
+@import "~elv-components-js/src/stylesheets/variables/colors";
+@import "~elv-components-js/src/stylesheets/variables/spacing";
+
+.apps {
+  display: flex;
+  justify-content: space-around;
+}
+
+.app-selection {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 250px;
+  height: 250px;
+  margin: $elv-spacing-xs;
+
+  &:hover {
+    background: $elv-color-lightergray;
+    border: 1px solid $elv-color-lightgray;
+  }
+
+  .app-logo {
+    $image-size: 125px;
+    @include elv-cropped-image($image-size, $image-size, 0, $image-size, $image-size);
+  }
+
+  h4 {
+    font-size: 18px;
+    text-align: center;
+  }
+}
+
+.app-frame {
+  width: 100%;
+  border: 0;
+  flex-grow: 1;
+}
