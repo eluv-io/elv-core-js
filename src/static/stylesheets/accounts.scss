@@ -3,17 +3,17 @@
 @import "~elv-components-js/src/stylesheets/variables/spacing";
 
 .accounts {
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 
 .account {
-  position: relative;
-  display: flex;
-  width: 800px;
   border: 1px solid $elv-color-lightgray;
+  display: flex;
   padding: $elv-spacing-xs $elv-spacing-s;
+  position: relative;
+  width: 800px;
 
   &:not(.current-account) {
     background: $elv-color-lightestgray;
@@ -31,12 +31,12 @@
 }
 
 .account-lock-icon {
+  color: $elv-color-mediumgray;
+  height: 20px;
+  left: $elv-spacing-xxs;
   position: absolute;
   top: $elv-spacing-xs;
-  left: $elv-spacing-xxs;
-  height: 20px;
   width: 20px;
-  color: $elv-color-mediumgray;
 }
 
 .account-image {
