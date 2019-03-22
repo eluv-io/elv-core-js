@@ -1,111 +1,82 @@
+@import "~elv-components-js/src/stylesheets/variables/spacing";
+@import "~elv-components-js/src/stylesheets/variables/colors";
+@import "~elv-components-js/src/stylesheets/mixins";
 
-
-.header {
-  @include no-select;
-  align-items: center;
-  box-shadow: 0 2px 2px 0 $color-shadow-gray;
+header {
   display: flex;
-  height: 45px;
-  justify-content: space-between;
-  max-height: 45px;
-  min-height: 45px;
-  text-align: right;
-  transition: min-height 0.5s ease-in-out, height 0.5s ease-in-out;
+  position: relative;
   width: 100%;
-  z-index: 1000;
-
-  .toggle-header-section {
-    cursor: pointer;
-    height: 100%;
-    margin: 0 $spacing-m;
-    width: 100%;
-  }
-
-  .toggle-header-button {
-    background: transparent;
-    border: 0;
-    color: $color-lightgray;
-    cursor: pointer;
-    height: 40px;
-    left: 50%;
-    margin: 0;
-    opacity: 0;
-    padding: 0;
-    position: absolute;
-    right: 50%;
-    top: 0;
-    transition: visibility 0.35s, opacity 0.35s linear;
-    visibility: hidden;
-    width: 40px;
-    z-index: 1000;
-  }
-
-  .logo-link {
-    width: 200px;
-  }
-
-  .logo-link,
-  .current-account {
-    margin: 0 5px;
-    transition: visibility 0.35s ease-in, opacity 0.35s;
-    transition-delay: 0.5s;
-  }
-
-  .current-account {
-    align-items: center;
-    display: flex;
-    max-width: 400px;
-    width: auto;
-
-    .account-name {
-      @include ellipsis;
-      font-size: 16px;
-      font-weight: bold;
-    }
-
-    .account-balance {
-      color: $color-text-light;
-      font-size: 14px;
-    }
-  }
-
-  .icon-container {
-    $icon-size: 35px;
-    padding: 0 10px 0 15px;
-    width: $icon-size;
-
-    .logo-icon {
-      height: auto;
-      max-width: 90px;
-      padding-left: 0;
-      width: auto;
-    }
-  }
-
-  .profile-image {
-    $image-size: 35px;
-    @include cropped-image($image-size, $image-size, 50%, $image-size, $image-size);
-    margin: 0 $spacing-xxs 0 $spacing-xs;
-  }
+  height: 40px;
+  align-items: center;
+  box-shadow: 2px 1px 2px 0 $elv-color-lightgray;
 
   &.hidden-header {
-    background: transparent;
     height: 0;
-    min-height: 0;
-    transition-delay: 0.35s;
-
-    .logo-link,
-    .toggle-header-section,
-    .current-account {
-      opacity: 0;
-      transition-delay: 0s;
-      visibility: hidden;
-    }
+    visibility: hidden;
 
     .toggle-header-button {
-      opacity: 0.5;
-      transition-delay: 0.5s;
       visibility: visible;
     }
   }
+
+  .toggle-header-button {
+    visibility: hidden;
+    position: absolute;
+    left: calc(50% - 25px);
+    top: 5px;
+    height: 15px;
+    width: 50px;
+
+    &:hover {
+      background: $elv-color-lightergray;
+    }
+  }
+}
+
+.toggle-header-section {
+  flex-grow: 1;
+  cursor: pointer;
+  height: 100%;
+}
+
+.logo {
+  display: block;
+  height: 100%;
+  width: 150px;
+
+  .-elv-icon-wrapper {
+    display: flex;
+    height: 100%;
+    padding: 10px $elv-spacing-s;
+  }
+
+  img {
+    height: 100%;
+    width: auto;
+  }
+}
+
+.header-account {
+  height: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-width: 250px;
+  max-width: 350px;
+  padding: 0 $elv-spacing-s;
+}
+
+.profile-image {
+  $image-size: 35px;
+  @include elv-cropped-image($image-size, $image-size, 50%, $image-size, $image-size);
+}
+
+.header-account-name,
+.header-account-balance {
+  @include elv-ellipsis;
+  max-width: 250px;
+}
+
+.header-account-balance {
+  font-size: 11px;
 }

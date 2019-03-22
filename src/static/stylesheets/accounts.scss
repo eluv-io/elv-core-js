@@ -1,184 +1,55 @@
-.app-container,
-.account-manager-container {
-  height: 100%;
-  width: 100%;
-}
-
-.account-manager-container {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-
-  .logo {
-    margin: $spacing-s 0;
-    width: 200px;
-  }
-}
+@import "~elv-components-js/src/stylesheets/mixins";
+@import "~elv-components-js/src/stylesheets/variables/colors";
+@import "~elv-components-js/src/stylesheets/variables/spacing";
 
 .accounts {
-  background: $color-bg-dark;
-  border: 1px solid $color-gray;
-  margin: $spacing-xxs;
-  width: 400px;
-  z-index: 101;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-  .add-account-container {
-    @include centered;
-    background: $color-bg-white;
-    cursor: auto;
-    padding: $spacing-s 0;
+.account {
+  position: relative;
+  display: flex;
+  width: 800px;
+  border: 1px solid $elv-color-lightgray;
+  padding: $elv-spacing-xs $elv-spacing-s;
+
+  &:not(.current-account) {
+    background: $elv-color-lightergray;
   }
 
-  .account-container {
-    align-items: center;
-    background-color: $color-bg-dark;
-    border-bottom: 1px solid $color-lightgray;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    padding: $spacing-xs $spacing-s;
-
-    &:last-child {
-      border: 0;
-    }
-
-    &:hover {
-      background: $color-bg-white;
-      cursor: pointer;
-    }
-
-    .icon-container {
-      $image-width: 55px;
-      height: $image-width;
-      width: $image-width;
-
-      .cropped-image {
-        @include cropped-image($image-width, $image-width, 50%, $image-width, $image-width);
-      }
-    }
-
-    .info-container {
-      width: 300px;
-    }
-
-    .account-header {
-      display: flex;
-      justify-content: space-between;
-      padding-bottom: $spacing-xxs;
-      width: 100%;
-
-      .account-name {
-        @include ellipsis;
-        padding-right: $spacing-xxs;
-      }
-
-      .account-balance {
-        font-size: 12px;
-      }
-    }
-
-    .actions-container,
-    &.actions-container {
-      .action {
-        height: 2.2em;
-        margin: $spacing-xxs 0;
-      }
-    }
-
-    .account-actions {
-      display: flex;
-      justify-content: center;
-      padding-left: 65px;
-      width: 100%;
-
-      .action {
-        margin: $spacing-xxs;
-        width: 120px;
-      }
-    }
-
-    .account-address {
-      @include ellipsis;
-
-      color: $color-text-light;
-      font-size: 9px;
-      padding-bottom: $spacing-xxs;
-      width: 100%;
-    }
-
-    .account-remove {
-      z-index: 1002;
-    }
-  }
-
-  .current-account {
-    background: $color-bg-white;
-    padding: $spacing-s;
-
-    &:hover {
-      cursor: auto;
-    }
-
-    .profile-image {
-      $image-size: 80px;
-      @include cropped-image($image-size, $image-size, 50%, $image-size, $image-size);
-    }
-
-    .info-container {
-      width: 275px;
-    }
-  }
-
-  &.user-profile {
-    background: $color-bg-white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: $spacing-s $spacing-s $spacing-m;
-    width: 600px;
-
-    .profile-image-container {
-      @include centered;
-      height: 250px;
-      padding: $spacing-s 0 $spacing-xs;
-    }
-
-    .profile-image {
-      $image-size: 250px;
-      @include cropped-image($image-size, $image-size, 50%, $image-size, $image-size);
-    }
-
-    .change-profile-image {
-      @include centered;
-      cursor: pointer;
-      height: 100%;
-      width: 100%;
-      z-index: 1000;
-
-      span {
-        background: rgba(0, 0, 0, 0.75);
-        color: $color-white;
-        padding: $spacing-xs;
-      }
-    }
-
-    .modifiable-field {
-      cursor: pointer;
-    }
-
-    .modify-field {
-      display: flex;
-      justify-content: center;
-      width: 100%;
-
-      input {
-        margin-right: $spacing-s;
-      }
-    }
+  &:not(:last-child) {
+    border-bottom: 0;
   }
 }
 
-.profile-image {
-  $image-size: 50px;
-  @include cropped-image($image-size, $image-size, 50%, $image-size, $image-size);
+.account-lock-icon {
+  position: absolute;
+  top: $elv-spacing-xs;
+  left: $elv-spacing-xxs;
+  height: 20px;
+  width: 20px;
+  color: $elv-color-mediumgray;
 }
+
+.account-image {
+  $image-size: 100px;
+  @include elv-cropped-image($image-size, $image-size, 50%, $image-size, $image-size);
+}
+
+.account-info {
+  flex-grow: 1;
+  padding: $elv-spacing-xs $elv-spacing-s;
+}
+
+.account-actions {
+  display: flex;
+  flex-direction: column;
+  //justify-content: space-around;
+
+  button {
+    margin-bottom: $elv-spacing-xs;
+  }
+}
+

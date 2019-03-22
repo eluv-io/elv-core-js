@@ -1,45 +1,31 @@
+@import "~elv-components-js/src/stylesheets/variables/colors";
+@import "~elv-components-js/src/stylesheets/variables/spacing";
+
+* {
+  box-sizing: border-box;
+  flex-wrap: wrap;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  font-family: Helvetica Neue, sans-serif;
+  font-size: 16px;
+}
+
 html,
 body,
-.page-container {
-  font-family: Lato, sans-serif;
-  font-size: 16px;
-  height: 100%;
+.app,
+.router-container,
+.page-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  width: 100%;
   margin: 0;
   padding: 0;
-  width: 100%;
-}
-
-textarea {
-  font-family: Lato, sans-serif;
-}
-
-h1 {
-  font-size: 28px;
-  font-weight: bold;
-  margin: 0;
-}
-
-h2 {
-  font-size: 24px;
-  font-weight: bold;
-  margin: 0;
-}
-
-h3 {
-  font-size: 20px;
-  font-weight: normal;
-  margin: 0;
-}
-
-h4 {
-  font-size: 18px;
-  font-weight: normal;
-  margin: $spacing-xs 0;
-
-  &.subheader {
-    color: $color-text-light;
-    font-size: 14px;
-  }
 }
 
 a {
@@ -47,154 +33,64 @@ a {
 
   &,
   &:visited {
-    color: $color-darkgray;
+    color: $elv-color-darkgray;
   }
-
-  &.link {
-    display: block;
-  }
-
-  &.image-link {
-    display: flex;
-  }
-}
-
-input {
-  &[type="checkbox"] {
-    cursor: pointer;
-  }
-}
-
-.main-content-container {
-  align-items: center;
-  height: max-content;
-  padding: $spacing-ml 0 $spacing-m;
 }
 
 pre {
-  background: $color-lightergray;
-  border: 1px solid $color-gray;
+  background-color: $elv-color-white;
+  border: 1px solid $elv-color-gray;
   margin: 0;
   overflow: auto;
 
   padding: 10px;
   white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
+ul {
+  display: flex;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 
-.page-header-container {
-  @include centered;
+  li {
+    display: inline;
+  }
+}
+
+.page-container {
+  display: flex;
   flex-direction: column;
+  align-items: center;
+}
 
-  .page-header {
-    font-size: 20px;
-    margin: $spacing-xxs 0;
-  }
+.actions-container {
+  display: flex;
+  margin: $elv-spacing-s 0;
 
-  .page-subheader {
-    color: $color-text-light;
-    font-size: 12px;
+  *:not(:last-child) {
+    margin-right: $elv-spacing-xs;
   }
 }
 
-.small-text {
-  font-size: 12px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.flex-centered {
+  justify-content: center;
 }
 
-.indented {
-  margin-left: $spacing-s;
+// sass-lint:disable no-important
+.hidden {
+  display: none !important;
+}
+
+.bold {
+  font-weight: bold;
 }
 
 .full-width {
   width: 100%;
 }
 
-.info-section {
-  margin: $spacing-ml 0;
-}
-
-.labelled-input,
-.labelled-field {
-  display: flex;
-  margin: $spacing-xs 0;
-
-  label {
-    width: 120px;
-  }
-
-  pre {
-    background-color: $color-lightergray;
-    border: 0;
-    margin: 0 $spacing-m;
-  }
-}
-
-table {
-  border-collapse: collapse;
-  margin: $spacing-s 0;
-  padding: 0 $spacing-s;
-  width: 100%;
-
-  th {
-    font-size: 16px;
-    font-weight: normal;
-    text-align: left;
-
-    &.header-wide {
-      width: 50%;
-    }
-  }
-
-  tr {
-    border: 1px solid $color-lightgray;
-  }
-
-  th,
-  td {
-    padding: $spacing-xs;
-
-    &.centered {
-      text-align: center;
-    }
-  }
-}
-
-.icon {
-  display: block;
-  height: 25px;
-  padding: 10px;
-  width: 25px;
-
-  &.dark {
-    color: $color-darkergray;
-  }
-}
-
-.icon-button {
-  background-color: transparent;
-  border: 0;
+.clickable {
   cursor: pointer;
-  padding: 0;
-
-  .icon {
-    height: auto;
-    margin: 0;
-    padding: 0;
-    width: auto;
-  }
-
-  &:hover {
-    .icon {
-      opacity: 0.8;
-    }
-  }
-
-  &:active {
-    .icon {
-      opacity: 0.9;
-    }
-  }
 }

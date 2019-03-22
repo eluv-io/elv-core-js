@@ -1,82 +1,48 @@
-import { connect } from "react-redux";
-import Thunk from "../utils/Thunk";
-import {WrapRequest} from "../actions/Requests";
-import {
-  AddAccount,
-  AuthenticationFailure,
-  DeletePrivateProfileMetadata,
-  GetPrivateUserProfile,
-  GetProfileImage,
-  GetPublicUserProfile,
-  LogIn,
-  LogOut,
-  RemoveAccount,
-  SendFunds,
-  SetAccounts, SetProfileImage,
-  SwitchAccount,
-  UpdateAccountBalance,
-  UpdatePrivateProfileMetadata,
-  UpdatePublicProfileMetadata
-} from "../actions/Accounts";
+import React from "react";
+import {ElvCoreConsumer} from "../ElvCoreContext";
 import Accounts from "../components/Accounts";
-import AccountForm from "../components/AccountForm";
-import LoginForm from "../components/LoginForm";
-import Profile from "../components/Profile";
-import TransferForm from "../components/TransferForm";
-import Header from "../components/Header";
+import {GetAccountBalance, RemoveAccount as Remove} from "../actions/Accounts";
+import {UnlockAccount as Unlock} from "../actions/Accounts";
 
-const mapStateToProps = state => { return {...state}; };
+const SwitchAccount = (context) => {
+  return (address) => {
+    context.UpdateContext({currentAccount: context.accounts[address]});
+  };
+};
 
-const mapDispatchToProps = dispatch =>
-  Thunk(
-    dispatch,
-    [
-      WrapRequest,
-      GetProfileImage,
-      GetPublicUserProfile,
-      GetPrivateUserProfile,
-      SetProfileImage,
-      UpdatePublicProfileMetadata,
-      UpdatePrivateProfileMetadata,
-      DeletePrivateProfileMetadata,
-      LogIn,
-      SwitchAccount,
-      LogOut,
-      UpdateAccountBalance,
-      SetAccounts,
-      AddAccount,
-      RemoveAccount,
-      SendFunds,
-      AuthenticationFailure
-    ]
+const UnlockAccount = (context) => {
+  return async ({address, password}) => {
+    await Unlock({context, address, password});
+  };
+};
+
+const RemoveAccount = (context) => {
+  return (address) => {
+    Remove({context, address});
+  };
+};
+
+const AccountsContainer = ({context, props}) => {
+  console.log("asd");
+  const actions = {
+    SwitchAccount: SwitchAccount(context),
+    UnlockAccount: UnlockAccount(context),
+    RemoveAccount: RemoveAccount(context),
+  };
+
+  Object.keys(context.accounts).forEach(address => {
+    if(!context.accounts[address].balance) {
+      GetAccountBalance({context, address})
+    }
+  });
+
+  return (
+    <Accounts
+      accounts={context.accounts}
+      currentAccount={context.currentAccount}
+      actions={actions}
+    />
   );
+};
 
-export const HeaderContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Header);
-
-export const AccountsContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Accounts);
-
-export const AccountFormContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AccountForm);
-
-export const LoginFormContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LoginForm);
-
-export const ProfileContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Profile);
-
-export const TransferFormContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TransferForm);
+export default ElvCoreConsumer(AccountsContainer);

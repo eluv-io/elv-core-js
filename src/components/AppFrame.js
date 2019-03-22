@@ -6,42 +6,10 @@ from the core app, which owns user account information and keys
 */
 
 import React from "react";
-import connect from "react-redux/es/connect/connect";
 import Path from "path";
-import {UpdateAccountBalance} from "../actions/Accounts";
-import Authenticate from "./Authenticate";
-import {GetAppLocation, HideHeader, SetAppLocation, ShowHeader} from "../actions/Routing";
 import Redirect from "react-router/es/Redirect";
 
 import { FrameClient } from "elv-client-js/src/FrameClient";
-import {SetErrorMessage} from "../actions/Notifications";
-
-import Configuration from "../../configuration";
-
-// Ensure error objects can be properly serialized in messages
-if (!("toJSON" in Error.prototype)) {
-  const excludedAttributes = [
-    "columnNumber",
-    "fileName",
-    "lineNumber"
-  ];
-
-  Object.defineProperty(Error.prototype, "toJSON", {
-    value: function() {
-      let object = {};
-
-      Object.getOwnPropertyNames(this).forEach(key => {
-        if(!excludedAttributes.includes(key)) {
-          object[key] = this[key];
-        }
-      }, this);
-
-      return object;
-    },
-    configurable: true,
-    writable: true
-  });
-}
 
 class IFrameBase extends React.Component {
   SandboxPermissions() {
@@ -83,78 +51,22 @@ const IFrame = React.forwardRef(
   (props, appRef) => <IFrameBase appRef={appRef} {...props} />
 );
 
-const IsCloneable = (value) => {
-  if(Object(value) !== value) {
-    // Primitive valueue
-    return true;
-  }
-  
-  switch({}.toString.call(value).slice(8,-1)) { // Class
-    case "Boolean":     
-    case "Number":      
-    case "String":      
-    case "Date":
-    case "RegExp":      
-    case "Blob":        
-    case "FileList":
-    case "ImageData":   
-    case "ImageBitmap": 
-    case "ArrayBuffer":
-      return true;
-    case "Array":
-    case "Object":
-      return Object.keys(value).every(prop => IsCloneable(value[prop]));
-    case "Map":
-      return [...value.keys()].every(IsCloneable)
-        && [...value.values()].every(IsCloneable);
-    case "Set":
-      return [...value.keys()].every(IsCloneable);
-    default:
-      return false;
-  }
-};
-
 class AppFrame extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       appRef: React.createRef(),
-      loginRequired: false,
-      redirectLocation: "",
-      appName: this.props.match.params.appName,
-      basePath: Path.join("/apps", this.props.match.params.appName)
+      // TODO: pull directly out of props
+      basePath: Path.join("/apps", this.props.app.name)
     };
 
     this.ApiRequestListener = this.ApiRequestListener.bind(this);
   }
 
-  // Make request to update the current user's account balance
-  // Debounce to reduce unnecessary requests when multiple calls are made
-  UpdateAccountBalance() {
-    if(this.state.balanceUpdateTimeout) {
-      clearTimeout(this.state.balanceUpdateTimeout);
-    }
-
-    const timeout = setTimeout(() => {
-      this.props.dispatch(
-        UpdateAccountBalance({
-          client: this.props.client.client,
-          accountManager: this.props.accounts.accountManager,
-          accountAddress: this.props.accounts.currentAccount.accountAddress
-        })
-      );
-
-      this.setState({balanceUpdateTimeout: undefined});
-    }, 1000);
-
-    this.setState({
-      balanceUpdateTimeout: timeout
-    });
-  }
-
   async CheckAccess(event) {
     if(FrameClient.PromptedMethods().includes(event.data.calledMethod)) {
+      /*
       const accessLevel = await this.props.client.client.userProfile.AccessLevel();
 
       // No access to private profiles
@@ -184,6 +96,7 @@ class AppFrame extends React.Component {
           metadata: Date.now()
         });
       }
+      */
 
       // Otherwise public access
     }
@@ -192,25 +105,20 @@ class AppFrame extends React.Component {
   }
 
   Respond(requestId, source, responseMessage) {
-    responseMessage = {
+    responseMessage = this.props.client.utils.MakeClonable({
       ...responseMessage,
       requestId: requestId,
       type: "ElvFrameResponse"
-    };
-
-    // If the response is not cloneable, serialize it to remove any non-cloneable parts
-    if(!IsCloneable(responseMessage)) {
-      responseMessage = JSON.parse(JSON.stringify(responseMessage));
-    }
+    });
 
     try {
-      // Try sending the response message as-is
       source.postMessage(
         responseMessage,
         "*"
       );
     } catch(error) {
       /* eslint-disable no-console */
+      console.error("Error responding to message");
       console.error(responseMessage);
       console.error(error);
       /* eslint-enable no-console */
@@ -229,15 +137,16 @@ class AppFrame extends React.Component {
     switch(event.data.operation) {
       // App requested its app path
       case "GetFramePath":
-        this.Respond(requestId, source, {response: GetAppLocation({basePath: this.state.basePath})});
+        // TODO: Replace with match params
+        const appLocation = window.location.hash.replace(`#${this.state.basePath}`, "") || "/";
+
+        this.Respond(requestId, source, {response: appLocation});
         break;
 
       // App requested to push its new app path
       case "SetFramePath":
-        SetAppLocation({
-          basePath: this.state.basePath,
-          appPath: event.data.path || "/"
-        });
+        history.replaceState(null, null, `#${Path.join(this.state.basePath, event.data.path)}`);
+
         this.Respond(requestId, source, {response: "Set path " + event.data.path});
         break;
 
@@ -248,11 +157,11 @@ class AppFrame extends React.Component {
         break;
 
       case "ShowHeader":
-        this.props.dispatch(ShowHeader());
+        //this.props.dispatch(ShowHeader());
         break;
 
       case "HideHeader":
-        this.props.dispatch(HideHeader());
+        //this.props.dispatch(HideHeader());
         break;
 
       // App requested an ElvClient method
@@ -263,11 +172,10 @@ class AppFrame extends React.Component {
         }
 
         const responder = (response) => this.Respond(response.requestId, source, response);
-        await this.props.client.client.CallFromFrameMessage(event.data, responder);
+        await this.props.client.CallFromFrameMessage(event.data, responder);
     }
 
-
-    this.UpdateAccountBalance();
+    //this.UpdateAccountBalance();
   }
 
   render() {
@@ -275,22 +183,10 @@ class AppFrame extends React.Component {
       return <Redirect push to={this.state.redirectLocation} />;
     }
 
-    const appUrl = Configuration.apps[this.state.appName];
-
-    if(!appUrl) {
-      this.props.dispatch(
-        SetErrorMessage({
-          message: "Unknown application: " + this.state.appName
-        })
-      );
-
-      throw Error("Unknown application");
-    }
-
     return (
       <IFrame
         ref={this.state.appRef}
-        appUrl={appUrl}
+        appUrl={this.props.app.url}
         listener={this.ApiRequestListener}
         className="app-frame"
       />
@@ -298,7 +194,4 @@ class AppFrame extends React.Component {
   }
 }
 
-
-export default connect(
-  (state) => state
-)(Authenticate(AppFrame));
+export default AppFrame;

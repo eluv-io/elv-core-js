@@ -15,10 +15,9 @@
   ],
   "dependencies": {
     "@babel/polyfill": "^7.0.0-rc.1",
-    "classnames": "^2.2.6",
-    "connected-react-router": "^4.5.0",
     "elv-client-js": "git+https://github.com/eluv-io/elv-client-js.git#develop",
-    "ethers": "^4.0.23",
+    "elv-components-js": "git+https://github.com/eluv-io/elv-components-js.git",
+    "ethers": "^4.0.27",
     "node-fetch": "^2.3.0",
     "path": "^0.12.7",
     "prop-types": "^15.6.2",
@@ -27,10 +26,7 @@
     "react-redux": "^5.0.7",
     "react-required-if": "^1.0.3",
     "react-router": "^4.3.1",
-    "react-router-dom": "^4.3.1",
-    "redux": "^4.0.1",
-    "redux-immutable": "^4.0.0",
-    "redux-thunk": "^2.3.0"
+    "react-router-dom": "^4.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",
@@ -47,6 +43,7 @@
     "autoprefixer": "^9.1.5",
     "babel-cli": "^6.26.0",
     "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "^10.0.1",
     "babel-jest": "^24.1.0",
     "babel-loader": "^8.0.0-beta.4",
     "babel-plugin-syntax-async-functions": "^6.13.0",
