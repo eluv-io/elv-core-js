@@ -3,12 +3,12 @@
 @import "~elv-components-js/src/stylesheets/mixins";
 
 header {
-  display: flex;
-  position: relative;
-  width: 100%;
-  height: 40px;
   align-items: center;
   box-shadow: 2px 1px 2px 0 $elv-color-lightgray;
+  display: flex;
+  height: 40px;
+  position: relative;
+  width: 100%;
 
   &.hidden-header {
     height: 0;
@@ -20,11 +20,11 @@ header {
   }
 
   .toggle-header-button {
-    visibility: hidden;
-    position: absolute;
-    left: calc(50% - 25px);
-    top: 5px;
     height: 15px;
+    left: calc(50% - 25px);
+    position: absolute;
+    top: 5px;
+    visibility: hidden;
     width: 50px;
 
     &:hover {
@@ -34,8 +34,8 @@ header {
 }
 
 .toggle-header-section {
-  flex-grow: 1;
   cursor: pointer;
+  flex-grow: 1;
   height: 100%;
 }
 
@@ -57,19 +57,19 @@ header {
 }
 
 .header-account {
-  height: 100%;
-  display: flex;
-  justify-content: flex-end;
   align-items: center;
-  min-width: 250px;
+  display: flex;
+  height: 100%;
+  justify-content: flex-end;
   max-width: 350px;
+  min-width: 250px;
   padding: 0 $elv-spacing-s;
 }
 
 .profile-image {
-  margin-right: $elv-spacing-xxs;
   $image-size: 30px;
   @include elv-cropped-image($image-size, $image-size, 50%, $image-size, $image-size);
+  margin-right: $elv-spacing-xxs;
 }
 
 .header-account-name,

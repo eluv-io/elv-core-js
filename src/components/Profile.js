@@ -9,7 +9,7 @@ class Accounts extends React.Component {
   // TODO: Redirect to account switcher if no accounts
   render() {
     if(!this.props.currentAccount) {
-      return <Redirect to="/accounts" />
+      return <Redirect to="/accounts" />;
     }
 
     return (
