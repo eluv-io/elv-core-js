@@ -8,7 +8,7 @@ import LoginModal from "./LoginModal";
 import LockedIcon from "../static/icons/Locked.svg";
 import UnlockedIcon from "../static/icons/Unlocked.svg";
 import AccountImage from "../static/icons/User.svg";
-import {ImageIcon} from "../../src.old/components/components/Icons";
+import {ImageIcon} from "elv-components-js/src/components/Icons";
 
 class Accounts extends React.Component {
   constructor(props) {
