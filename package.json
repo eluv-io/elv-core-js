@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "serve": "webpack-dev-server --hot --port 8082",
+    "serve": "webpack-dev-server --hot --port 8083",
     "build": "NODE_ENV=production webpack -p --progress --colors",
     "lint": "npm run fix-scss ; npm run lint-scss ; npm run fix-js",
     "lint-show": "npm run lint-scss ; npm run lint-js",
@@ -16,7 +16,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.0.0-rc.1",
     "elv-client-js": "git+https://github.com/eluv-io/elv-client-js.git#develop",
-    "elv-components-js": "git+https://github.com/eluv-io/elv-components-js.git",
+    "elv-components-js": "git+https://github.com/eluv-io/elv-components-js.git#develop",
     "ethers": "^4.0.27",
     "node-fetch": "^2.3.0",
     "path": "^0.12.7",
