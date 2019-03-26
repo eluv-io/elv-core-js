@@ -94,6 +94,34 @@
     }
   }
 
+  .private-key-container {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin: $elv-spacing-xs 0;
+
+    button {
+      height: 25px;
+      margin-right: $elv-spacing-xs;
+      width: 25px;
+    }
+  }
+
+  .private-key {
+    display: flex;
+    font-size: 13px;
+    font-style: italic;
+    opacity: 0;
+    overflow: hidden;
+    transition: width 0.75s, opacity 1.25s;
+    width: 0;
+
+    &.visible {
+      opacity: 1;
+      width: 460px;
+    }
+  }
+
   .info-section {
     margin-bottom: 50px;
 
