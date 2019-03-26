@@ -8,6 +8,7 @@ import RadioSelect from "elv-components-js/src/components/RadioSelect";
 import Path from "path";
 
 import XIcon from "../static/icons/X.svg";
+import KeyIcon from "../static/icons/Key.svg";
 
 class Profile extends React.Component {
   constructor(props) {
@@ -16,7 +17,8 @@ class Profile extends React.Component {
     this.state = {
       browseRef: React.createRef(),
       newName: "",
-      updating: false
+      updating: false,
+      showKey: false
     };
 
     this.excludedTags = [
@@ -189,6 +191,18 @@ class Profile extends React.Component {
     );
   }
 
+  PrivateKey() {
+
+    return (
+      <span className="private-key-container">
+        <IconButton icon={KeyIcon} title={`${this.state.showKey ? "Hide" : "Show"} Private Key`} onClick={() => this.setState({showKey: !this.state.showKey})}/>
+        <span className={`private-key ${this.state.showKey ? "visible" : ""}`}>
+          { this.state.showKey ? this.props.account.signer.privateKey : "" }
+        </span>
+      </span>
+    );
+  }
+
   ProfileImage() {
     const profileImage = this.props.account.profileImage || DefaultProfileImage;
     const updateIndicator = this.state.updating ? <div className="update-indicator"><BallClipRotate /></div> : undefined;
@@ -254,6 +268,7 @@ class Profile extends React.Component {
               { this.Name() }
               <div className="page-subheader">{this.props.account.address}</div>
               <div className="page-subheader">{balance}</div>
+              { this.PrivateKey() }
             </div>
             { this.MetadataField("Public Information", this.props.account.profile) }
             { privateMetadata }
