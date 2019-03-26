@@ -32,7 +32,7 @@ class Apps extends React.PureComponent {
 
   render() {
     return (
-      <div className="page-container">
+      <div className="page-content">
         <div className="apps">
           { Object.keys(this.props.apps).map(name => this.App(name))}
         </div>

@@ -11,7 +11,7 @@
 .account {
   border: 1px solid $elv-color-lightgray;
   display: flex;
-  padding: $elv-spacing-xs $elv-spacing-s;
+  padding: $elv-spacing-xs $elv-spacing-m;
   position: relative;
   width: 800px;
 
@@ -48,6 +48,7 @@
   padding: $elv-spacing-xs $elv-spacing-s;
 
   .account-name {
+    font-weight: 600;
     margin-bottom: $elv-spacing-xs;
   }
 
@@ -64,7 +65,6 @@
 .account-actions {
   display: flex;
   flex-direction: column;
-  //justify-content: space-around;
 
   button {
     margin-bottom: $elv-spacing-xs;

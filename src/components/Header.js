@@ -7,7 +7,7 @@ import Action from "elv-components-js/src/components/Action";
 import LoadingElement from "elv-components-js/src/components/LoadingElement";
 
 import Logo from "../static/images/Logo.png";
-import AccountImage from "../static/icons/User.svg";
+import DefaultAccountImage from "../static/icons/User.svg";
 import ShowHeaderIcon from "../static/icons/ShowHeader.svg";
 
 class Header extends React.Component {
@@ -23,15 +23,17 @@ class Header extends React.Component {
   }
 
   AccountInfo() {
+    const profileImage = (this.props.account && this.props.account.profileImage) || DefaultAccountImage;
+    const profileName = (this.props.account && (this.props.account.profile.name || this.props.account.address)) || "Not Logged In";
     return (
       <Action type="link" to="/accounts" className="header-account" button={false}>
-        <CroppedIcon icon={AccountImage} className="profile-image"/>
+        <CroppedIcon icon={profileImage} className="header-profile-image"/>
         <div className="header-account-info">
           <div className="header-account-name">
-            {this.props.currentAccount && this.props.currentAccount.address || "Not Logged In"}
+            {profileName}
           </div>
           <div className="header-account-balance">
-            {this.props.currentAccount && this.props.currentAccount.balance}
+            {this.props.account && this.props.account.balance}
           </div>
         </div>
       </Action>
@@ -46,6 +48,7 @@ class Header extends React.Component {
         <div
           className="toggle-header-section"
           title="Hide Header"
+          aria-label="Hide Header"
           tabIndex={0}
           onClick={() => this.ToggleHeader(false)}
           onKeyPress={() => this.ToggleHeader(false)}

@@ -1,0 +1,144 @@
+@import "~elv-components-js/src/stylesheets/variables/colors";
+@import "~elv-components-js/src/stylesheets/variables/spacing";
+@import "~elv-components-js/src/stylesheets/mixins";
+
+
+.profile-image-container {
+  position: relative;
+
+  .update-indicator {
+    left: -16px;
+    position: absolute;
+    top: -1px;
+    z-index: 9999;
+
+    .animated-icon {
+      height: 100%;
+      width: 100%;
+
+      div {
+        border-width: 8px;
+        color: $elv-color-lightblue;
+        height: 202px;
+        opacity: 0.6;
+        width: 202px;
+      }
+    }
+  }
+}
+
+.profile {
+  border: 1px solid $elv-color-lightgray;
+  margin-bottom: 50px;
+  padding: $elv-spacing-m;
+  position: relative;
+  width: 800px;
+
+  .profile-image-container-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  h3 {
+    font-size: 20px;
+    margin: 0;
+  }
+
+  h4,
+  h5 {
+    margin: $elv-spacing-m 0;
+  }
+
+  .profile-image {
+    $image-size: 200px;
+    @include elv-cropped-image($image-size, $image-size, 50%, $image-size, $image-size);
+  }
+
+  .user-info {
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .modifiable-field {
+    align-items: center;
+    display: flex;
+    height: 45px;
+    justify-content: center;
+    margin: $elv-spacing-xxs;
+
+    &:not(.modifying) {
+      cursor: pointer;
+
+      &:hover {
+        background: $elv-color-lightestgray;
+      }
+    }
+
+    input {
+      font-size: 16px;
+      height: 30px;
+      width: 250px;
+    }
+
+    .modifiable-field-input {
+      align-items: center;
+      display: flex;
+      position: relative;
+      width: 250px;
+
+      .cancel-button {
+        height: 20px;
+        position: absolute;
+        right: 5px;
+      }
+    }
+  }
+
+  .info-section {
+    margin-bottom: 50px;
+
+    h4 {
+      border-bottom: 1px solid $elv-color-lightgray;
+      font-size: 18px;
+      font-weight: 400;
+      padding: $elv-spacing-xs 0;
+    }
+  }
+
+  .application-permission {
+    align-items: center;
+    display: flex;
+
+    label {
+      width: 300px;
+    }
+
+    button {
+      height: 20px;
+      width: 20px;
+    }
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  th,
+  td {
+    font-weight: normal;
+    padding: $elv-spacing-xs;
+    text-align: center;
+  }
+
+  tr {
+    border: 1px solid $elv-color-lightgray;
+    height: 20px;
+  }
+
+  tbody {
+    font-size: 14px;
+  }
+}
+
+

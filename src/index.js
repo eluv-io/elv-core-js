@@ -24,22 +24,20 @@ class ElvCore extends React.Component {
       <ElvCoreProvider>
         <HeaderContainer />
         <NavigationContainer />
-        <div className="page-content">
-          <EnforceLoginContainer>
-            <Switch>
-              <Route exact path="/apps" component={AppsContainer} />
-              <Route path="/apps/:app" component={AppFrameContainer} />
+        <EnforceLoginContainer>
+          <Switch>
+            <Route exact path="/apps" component={AppsContainer} />
+            <Route path="/apps/:app" component={AppFrameContainer} />
 
-              <Route exact path="/profile" component={ProfileContainer} />
+            <Route exact path="/profile" component={ProfileContainer} />
 
-              <Route exact path="/accounts" component={AccountsContainer} />
-              <Route exact path="/accounts/add" component={AccountFormContainer} />
+            <Route exact path="/accounts" component={AccountsContainer} />
+            <Route exact path="/accounts/add" component={AccountFormContainer} />
 
-              <Route exact path="/transfer" component={TransferFormContainer} />
-              <Route render={() => <Redirect to="/accounts"/>} />
-            </Switch>
-          </EnforceLoginContainer>
-        </div>
+            <Route exact path="/transfer" component={TransferFormContainer} />
+            <Route render={() => <Redirect to="/accounts"/>} />
+          </Switch>
+        </EnforceLoginContainer>
       </ElvCoreProvider>
     );
   }

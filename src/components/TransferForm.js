@@ -111,7 +111,7 @@ class TransferForm extends React.Component {
     }
 
     return (
-      <div className="page-container">
+      <div className="page-content">
         <Form
           legend="Transfer Funds"
           formContent={this.FormContent()}

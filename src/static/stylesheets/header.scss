@@ -6,6 +6,8 @@ header {
   align-items: center;
   box-shadow: 2px 1px 2px 0 $elv-color-lightgray;
   display: flex;
+  flex-grow: 0;
+  flex-shrink: 0;
   height: 40px;
   position: relative;
   width: 100%;
@@ -42,7 +44,6 @@ header {
 .logo {
   display: block;
   height: 100%;
-  width: 150px;
 
   .-elv-icon-wrapper {
     display: flex;
@@ -60,25 +61,35 @@ header {
   align-items: center;
   display: flex;
   height: 100%;
-  justify-content: flex-end;
+  justify-content: center;
   max-width: 350px;
-  min-width: 250px;
-  padding: 0 $elv-spacing-s;
+  min-width: 150px;
+  padding: 0 $elv-spacing-m 0 $elv-spacing-s;
 }
 
-.profile-image {
+.header-profile-image {
   $image-size: 30px;
   @include elv-cropped-image($image-size, $image-size, 50%, $image-size, $image-size);
-  margin-right: $elv-spacing-xxs;
+  margin-right: $elv-spacing-xs;
 }
 
 .header-account-name,
 .header-account-balance {
   @include elv-ellipsis;
-  font-size: 14px;
   max-width: 250px;
+}
+
+.header-account-name {
+  font-size: 16px;
 }
 
 .header-account-balance {
   font-size: 11px;
+}
+
+.logo,
+.header-account {
+  &:hover {
+    opacity: 0.9;
+  }
 }
