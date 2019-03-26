@@ -93,7 +93,7 @@ LoginModal.propTypes = {
   prompt: PropTypes.bool,
   address: PropTypes.string.isRequired,
   Submit: PropTypes.func.isRequired,
-  Close: PropTypes.func.isRequired
+  Close: PropTypes.func
 };
 
 export default LoginModal;

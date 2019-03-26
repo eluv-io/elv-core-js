@@ -2,12 +2,25 @@ import React from "react";
 import {ElvCoreConsumer} from "../ElvCoreContext";
 import Header from "../components/Header";
 import {GetAccountBalance} from "../actions/Accounts";
+import {PublicProfileInfo} from "../actions/Profiles";
 
 class HeaderContainer extends React.Component {
   constructor(props) {
     super(props);
 
     this.ToggleHeader = this.ToggleHeader.bind(this);
+  }
+
+  componentDidMount() {
+    if(this.props.context.currentAccount) {
+      PublicProfileInfo({context: this.props.context, address: this.props.context.currentAccount});
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if(this.props.context.currentAccount && (prevProps.context.currentAccount !== this.props.context.currentAccount)) {
+      PublicProfileInfo({context: this.props.context, address: this.props.context.currentAccount});
+    }
   }
 
   shouldComponentUpdate(nextProps) {
@@ -32,7 +45,7 @@ class HeaderContainer extends React.Component {
     }
 
     return (
-      <Header showHeader={this.props.context.showHeader} ToggleHeader={this.ToggleHeader} currentAccount={currentAccount} />
+      <Header showHeader={this.props.context.showHeader} ToggleHeader={this.ToggleHeader} account={currentAccount} />
     );
   }
 }

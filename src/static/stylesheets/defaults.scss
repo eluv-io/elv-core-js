@@ -3,7 +3,8 @@
 
 * {
   box-sizing: border-box;
-  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
 }
 
 html {
@@ -13,19 +14,25 @@ html {
 body {
   font-family: Helvetica Neue, sans-serif;
   font-size: 16px;
+  height: 100%;
+  overflow: overlay;
 }
 
 html,
 body,
 .app,
-.router-container,
-.page-content {
+.router-container {
+  height: 100%;
+  width: 100%;
+}
+
+.app {
+  display: inline-block;
+}
+
+.router-container {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
-  margin: 0;
-  padding: 0;
-  width: 100%;
 }
 
 a {
@@ -65,7 +72,7 @@ ul {
   }
 }
 
-.page-container {
+.page-content {
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -99,4 +106,16 @@ ul {
 
 .clickable {
   cursor: pointer;
+}
+
+.indented {
+  margin-left: $elv-spacing-m;
+}
+
+.labelled-field {
+  label {
+    display: inline-block;
+    font-style: italic;
+    width: 200px;
+  }
 }

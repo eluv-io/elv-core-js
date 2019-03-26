@@ -2,13 +2,12 @@ import "../static/stylesheets/accounts.scss";
 
 import React from "react";
 import Action from "elv-components-js/src/components/Action";
-import {CroppedIcon} from "elv-components-js/src/components/Icons";
+import {CroppedIcon, ImageIcon} from "elv-components-js/src/components/Icons";
 import LoginModal from "./LoginModal";
 
 import LockedIcon from "../static/icons/Locked.svg";
 import UnlockedIcon from "../static/icons/Unlocked.svg";
-import AccountImage from "../static/icons/User.svg";
-import {ImageIcon} from "elv-components-js/src/components/Icons";
+import DefaultAccountImage from "../static/icons/User.svg";
 
 class Accounts extends React.Component {
   constructor(props) {
@@ -69,6 +68,8 @@ class Accounts extends React.Component {
       );
     }
 
+    const profileImage = account.profileImage || DefaultAccountImage;
+
     return (
       <div key={`account-${account.address}`} className={isCurrentAccount ? "account current-account" : "account"}>
         <ImageIcon
@@ -76,9 +77,9 @@ class Accounts extends React.Component {
           title={accountLocked ? "Account Locked" : "Account Unlocked"}
           className="account-lock-icon"
         />
-        <CroppedIcon icon={AccountImage} className="account-image" />
+        <CroppedIcon icon={profileImage} title="Profile Image" className="account-image" />
         <div className="account-info">
-          <div className="account-name">{account.name || "Account Name"}</div>
+          <div className="account-name">{account.profile.name || "\u00a0"}</div>
           <div className="account-address">{account.address}</div>
           <div className="account-balance">{account.balance}</div>
         </div>
@@ -92,7 +93,7 @@ class Accounts extends React.Component {
 
   render() {
     return (
-      <div className="page-container">
+      <div className="page-content">
         { this.LoginModal() }
         <div className="actions-container flex-centered">
           <Action type="link" to="/accounts/add" title="Add Account">Add Account</Action>

@@ -46,7 +46,6 @@ module.exports = {
       filename: "index.html",
       inlineSource: ".(js|css)$"
     }),
-    new HtmlWebpackInlineSourcePlugin()
   ],
   module: {
     rules: [

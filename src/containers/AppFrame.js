@@ -11,8 +11,17 @@ const AppFrameContainer = ({context, props}) => {
     return <Redirect to="/apps" />;
   }
 
+  const ToggleHeader = (show) => {
+    context.UpdateContext({showHeader: show});
+  };
+
   return (
-    <AppFrame client={context.client} app={{name, url}} />
+    <AppFrame
+      client={context.client}
+      app={{name, url}}
+      ShowHeader={() => ToggleHeader(true)}
+      HideHeader={() => ToggleHeader(false)}
+    />
   );
 };
 

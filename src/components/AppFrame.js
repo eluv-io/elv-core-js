@@ -37,6 +37,7 @@ class IFrameBase extends React.Component {
   render() {
     return (
       <iframe
+        title={`Eluvio Core Application: ${this.props.appName}`}
         ref={this.props.appRef}
         src={this.props.appUrl}
         sandbox={this.SandboxPermissions()}
@@ -66,8 +67,7 @@ class AppFrame extends React.Component {
 
   async CheckAccess(event) {
     if(FrameClient.PromptedMethods().includes(event.data.calledMethod)) {
-      /*
-      const accessLevel = await this.props.client.client.userProfile.AccessLevel();
+      const accessLevel = await this.props.client.userProfile.AccessLevel();
 
       // No access to private profiles
       if(accessLevel === "private") {return false;}
@@ -76,11 +76,13 @@ class AppFrame extends React.Component {
       if(accessLevel === "prompt") {
         const requestor = event.data.args.requestor;
         if(!requestor) {
+          /* eslint-disable no-console */
           console.error("Requestor must be specified when requesting access to a user profile");
+          /* eslint-enable no-console */
           return false;
         }
 
-        const accessAllowed = await this.props.client.client.userProfile.PrivateUserMetadata({
+        const accessAllowed = await this.props.client.userProfile.PrivateUserMetadata({
           metadataSubtree: Path.join("allowed_accessors", requestor)
         });
 
@@ -91,12 +93,11 @@ class AppFrame extends React.Component {
         }
 
         // Record permission
-        await this.props.client.client.userProfile.ReplacePrivateUserMetadata({
+        await this.props.client.userProfile.ReplacePrivateUserMetadata({
           metadataSubtree: Path.join("allowed_accessors", requestor),
           metadata: Date.now()
         });
       }
-      */
 
       // Otherwise public access
     }
@@ -157,11 +158,11 @@ class AppFrame extends React.Component {
         break;
 
       case "ShowHeader":
-        //this.props.dispatch(ShowHeader());
+        this.props.ShowHeader();
         break;
 
       case "HideHeader":
-        //this.props.dispatch(HideHeader());
+        this.props.HideHeader();
         break;
 
       // App requested an ElvClient method
@@ -186,6 +187,7 @@ class AppFrame extends React.Component {
     return (
       <IFrame
         ref={this.state.appRef}
+        appName={this.props.app.name}
         appUrl={this.props.app.url}
         listener={this.ApiRequestListener}
         className="app-frame"

@@ -3,6 +3,7 @@ import {ElvCoreConsumer} from "../ElvCoreContext";
 import Accounts from "../components/Accounts";
 import {GetAccountBalance, RemoveAccount as Remove} from "../actions/Accounts";
 import {UnlockAccount as Unlock} from "../actions/Accounts";
+import {PublicProfileInfo} from "../actions/Profiles";
 
 class AccountsContainer extends React.Component {
   constructor(props) {
@@ -17,6 +18,8 @@ class AccountsContainer extends React.Component {
       if (!this.props.context.accounts[address].balance) {
         GetAccountBalance({context: this.props.context, address});
       }
+
+      PublicProfileInfo({context: this.props.context, address});
     });
   }
 

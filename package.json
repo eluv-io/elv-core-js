@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "serve": "webpack-dev-server --hot --port 8083",
+    "serve": "webpack-dev-server --hot --port 8082",
     "build": "NODE_ENV=production webpack -p --progress --colors",
     "lint": "npm run fix-scss ; npm run lint-scss ; npm run fix-js",
     "lint-show": "npm run lint-scss ; npm run lint-js",

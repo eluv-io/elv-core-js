@@ -126,7 +126,7 @@ class AccountForm extends React.Component {
 
   render() {
     return (
-      <div className="page-container">
+      <div className="page-content">
         <Form
           formContent={this.FormContent()}
           legend="Add Account"
