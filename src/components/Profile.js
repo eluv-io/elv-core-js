@@ -39,7 +39,9 @@ class Profile extends React.Component {
 
     this.setState({updating: true});
 
-    fn().then(() => this.setState({updating: false}));
+    fn()
+      .then(() => this.setState({updating: false}))
+      .catch((error) => this.setState({updating: false, error}));
   }
 
   HandleNameChange() {
@@ -74,7 +76,7 @@ class Profile extends React.Component {
 
   Permissions(privateMetadata) {
     const permissionSelection = (
-      <select name="access_level" aria-label="Access Level" onChange={this.HandleAccessLevelChange}>
+      <select defaultValue={privateMetadata.access_level || "prompt"} name="access_level" aria-label="Access Level" onChange={this.HandleAccessLevelChange}>
         <option value="public">Public Access</option>
         <option value="prompt">Prompt</option>
         <option value="private">Private</option>
@@ -181,7 +183,6 @@ class Profile extends React.Component {
   }
 
   PrivateKey() {
-
     return (
       <span className="private-key-container">
         <IconButton icon={KeyIcon} title={`${this.state.showKey ? "Hide" : "Show"} Private Key`} onClick={() => this.setState({showKey: !this.state.showKey})}/>
@@ -202,7 +203,7 @@ class Profile extends React.Component {
           <CroppedIconWithAction
             icon={profileImage}
             title="Profile Image"
-            actionText="Profile Image"
+            actionText="Set Profile Image"
             onClick={() => this.state.browseRef.current.click()}
             className="profile-image"
           >
@@ -214,13 +215,20 @@ class Profile extends React.Component {
   }
 
   Name() {
-    const name = this.props.account.profile.name || "Account Name";
+    const name = this.props.account.profile.name;
 
     if(this.state.modifyingName) {
       return (
         <div className="modifiable-field modifying">
           <div className="modifiable-field-input">
-            <input placeholder="Name" value={this.state.newName} onChange={(event) => this.setState({newName: event.target.value})} onKeyPress={onEnterPressed(this.HandleNameChange)}/>
+            <input
+              autoFocus
+              placeholder="Name"
+              value={this.state.newName}
+              onChange={(event) => this.setState({newName: event.target.value})}
+              onKeyPress={onEnterPressed(this.HandleNameChange)}
+              onBlur={this.HandleNameChange}
+            />
             <IconButton icon={XIcon} title="Cancel" className="cancel-button" onClick={() => this.setState({modifyingName: false})}/>
           </div>
         </div>
@@ -230,11 +238,22 @@ class Profile extends React.Component {
       return (
         <div className="modifiable-field">
           <h3 tabIndex={0} className="page-header modifiable-field" onClick={StartEditing} onKeyPress={StartEditing}>
-            {name}
+            {name || "Account Name"}
           </h3>
         </div>
       );
     }
+  }
+
+  ErrorMessage() {
+    if(!this.state.error) { return; }
+
+    return (
+      <span>
+        {this.state.error.message}
+        <IconButton icon={XIcon} title="Clear" className="clear-button" onClick={() => this.setState({error: undefined})}/>
+      </span>
+    );
   }
 
   render() {
@@ -251,6 +270,7 @@ class Profile extends React.Component {
     return (
       <div className="page-content">
         <div className="profile">
+          <div className="error-message">{this.ErrorMessage()}</div>
           { this.ProfileImage() }
           <div className="profile-info">
             <div className="user-info">

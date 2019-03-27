@@ -30,7 +30,6 @@
 .profile {
   border: 1px solid $elv-color-lightgray;
   margin-bottom: 50px;
-  padding: $elv-spacing-m;
   position: relative;
   width: 800px;
 
@@ -47,6 +46,35 @@
   h4,
   h5 {
     margin: $elv-spacing-m 0;
+  }
+
+  .error-message {
+    align-items: center;
+    background-color: $elv-color-mediumred;
+    color: $elv-color-white;
+    display: flex;
+    height: 30px;
+    justify-content: center;
+    margin-bottom: $elv-spacing-xs;
+    position: relative;
+
+    &:empty {
+      visibility: hidden;
+    }
+
+    .clear-button {
+      height: 20px;
+      position: absolute;
+      right: 5px;
+
+      i {
+        color: $elv-color-white;
+      }
+    }
+  }
+
+  .profile-info {
+    padding: 0 $elv-spacing-m;
   }
 
   .profile-image {

@@ -73,7 +73,7 @@ class TransferForm extends React.Component {
     let options = Object.values(this.props.accounts)
       .map(account => (
         <option key={"account-selection-" + account.address} value={account.address}>
-          { account.address }
+          {`${account.profile.name || account.address} (${account.balance})` }
         </option>
       ));
 
@@ -84,7 +84,7 @@ class TransferForm extends React.Component {
     );
 
     return (
-      <select name="selectedRecipient" value={this.state.selectedRecipient} onChange={this.HandleInputChange} required={true}>
+      <select className="recipient-select" name="selectedRecipient" value={this.state.selectedRecipient} onChange={this.HandleInputChange} required={true}>
         { options }
       </select>
     );

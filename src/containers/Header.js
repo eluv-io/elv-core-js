@@ -14,9 +14,11 @@ class HeaderContainer extends React.Component {
   componentDidMount() {
     if(this.props.context.currentAccount) {
       PublicProfileInfo({context: this.props.context, address: this.props.context.currentAccount});
+      GetAccountBalance({context: this.props.context, address: this.props.context.currentAccount});
     }
   }
 
+  // Update when account changes
   componentDidUpdate(prevProps) {
     if(this.props.context.currentAccount && (prevProps.context.currentAccount !== this.props.context.currentAccount)) {
       PublicProfileInfo({context: this.props.context, address: this.props.context.currentAccount});
@@ -39,10 +41,6 @@ class HeaderContainer extends React.Component {
 
   render() {
     const currentAccount = this.props.context.accounts[this.props.context.currentAccount];
-
-    if(currentAccount && !currentAccount.balance) {
-      GetAccountBalance({context: this.props.context, address: this.props.context.currentAccount});
-    }
 
     return (
       <Header showHeader={this.props.context.showHeader} ToggleHeader={this.ToggleHeader} account={currentAccount} />

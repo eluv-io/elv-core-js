@@ -63,7 +63,7 @@ class Accounts extends React.Component {
     if(!isCurrentAccount || accountLocked) {
       selectAccountButton = (
         <Action onClick={() => this.SelectAccount(account.address)}>
-          {accountLocked ? "Unlock Account" : "Use Account"}
+          {accountLocked ? "Unlock" : "Use Account"}
         </Action>
       );
     }
@@ -78,14 +78,16 @@ class Accounts extends React.Component {
           className="account-lock-icon"
         />
         <CroppedIcon icon={profileImage} title="Profile Image" className="account-image" />
-        <div className="account-info">
-          <div className="account-name">{account.profile.name || "\u00a0"}</div>
-          <div className="account-address">{account.address}</div>
-          <div className="account-balance">{account.balance}</div>
-        </div>
-        <div className="account-actions">
-          { selectAccountButton }
-          <Action className="delete-action" onClick={() => this.RemoveAccount(account.address)}>Remove Account</Action>
+        <div className="account-main">
+          <div className="account-info">
+            <div className="account-name">{account.profile.name || "\u00a0"}</div>
+            <div className="account-address">{account.address}</div>
+            <div className="account-balance">{account.balance}</div>
+          </div>
+          <div className="account-actions">
+            { selectAccountButton }
+            <Action className="delete-action" onClick={() => this.RemoveAccount(account.address)}>Remove</Action>
+          </div>
         </div>
       </div>
     );
@@ -95,11 +97,11 @@ class Accounts extends React.Component {
     return (
       <div className="page-content">
         { this.LoginModal() }
-        <div className="actions-container flex-centered">
-          <Action type="link" to="/accounts/add" title="Add Account">Add Account</Action>
-        </div>
         <div className="accounts">
           { Object.values(this.props.accounts).map(account => this.Account(account)) }
+        </div>
+        <div className="actions-container flex-centered">
+          <Action type="link" to="/accounts/add" title="Add Account">Add Account</Action>
         </div>
       </div>
     );
