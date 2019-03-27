@@ -4,7 +4,7 @@ import React from "react";
 import {CroppedIconWithAction, IconButton} from "elv-components-js/src/components/Icons";
 import {BallClipRotate} from "elv-components-js/src/components/AnimatedIcons";
 import DefaultProfileImage from "../static/icons/User.svg";
-import Path from "path";
+import UrlJoin from "url-join";
 
 import XIcon from "../static/icons/X.svg";
 import KeyIcon from "../static/icons/Key.svg";
@@ -69,7 +69,7 @@ class Profile extends React.Component {
   async RevokeAccessor(accessor) {
     this.Update(async () => {
       if (confirm(`Are you sure you want to revoke profile access from ${accessor}?`)) {
-        await this.props.DeletePrivateUserMetadata({metadataSubtree: Path.join("allowed_accessors", accessor)});
+        await this.props.DeletePrivateUserMetadata({metadataSubtree: UrlJoin("allowed_accessors", accessor)});
       }
     });
   }
