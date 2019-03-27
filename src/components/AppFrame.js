@@ -6,7 +6,7 @@ from the core app, which owns user account information and keys
 */
 
 import React from "react";
-import Path from "path";
+import UrlJoin from "url-join";
 import Redirect from "react-router/es/Redirect";
 
 import { FrameClient } from "elv-client-js/src/FrameClient";
@@ -59,7 +59,7 @@ class AppFrame extends React.Component {
     this.state = {
       appRef: React.createRef(),
       // TODO: pull directly out of props
-      basePath: Path.join("/apps", this.props.app.name)
+      basePath: UrlJoin("/apps", this.props.app.name)
     };
 
     this.ApiRequestListener = this.ApiRequestListener.bind(this);
@@ -83,7 +83,7 @@ class AppFrame extends React.Component {
         }
 
         const accessAllowed = await this.props.client.userProfile.PrivateUserMetadata({
-          metadataSubtree: Path.join("allowed_accessors", requestor)
+          metadataSubtree: UrlJoin("allowed_accessors", requestor)
         });
 
         if(accessAllowed) { return true; }
@@ -94,7 +94,7 @@ class AppFrame extends React.Component {
 
         // Record permission
         await this.props.client.userProfile.ReplacePrivateUserMetadata({
-          metadataSubtree: Path.join("allowed_accessors", requestor),
+          metadataSubtree: UrlJoin("allowed_accessors", requestor),
           metadata: Date.now()
         });
       }
@@ -146,7 +146,7 @@ class AppFrame extends React.Component {
 
       // App requested to push its new app path
       case "SetFramePath":
-        history.replaceState(null, null, `#${Path.join(this.state.basePath, event.data.path)}`);
+        history.replaceState(null, null, `#${UrlJoin(this.state.basePath, event.data.path)}`);
 
         this.Respond(requestId, source, {response: "Set path " + event.data.path});
         break;
