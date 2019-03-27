@@ -22,10 +22,11 @@ header {
   }
 
   .toggle-header-button {
-    height: 15px;
+    border-radius: 5px;
+    height: 25px;
     left: calc(50% - 25px);
     position: absolute;
-    top: 5px;
+    top: -4px;
     visibility: hidden;
     width: 50px;
 
