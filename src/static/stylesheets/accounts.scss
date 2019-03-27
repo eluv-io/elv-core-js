@@ -13,7 +13,7 @@
   display: flex;
   padding: $elv-spacing-xs $elv-spacing-m;
   position: relative;
-  width: 800px;
+  width: 525px;
 
   &:not(.current-account) {
     background: $elv-color-lightestgray;
@@ -39,13 +39,22 @@
 }
 
 .account-image {
-  $image-size: 100px;
+  $image-size: 110px;
   @include elv-cropped-image($image-size, $image-size, 50%, $image-size, $image-size);
+  align-items: center;
+  display: flex;
+  padding: $elv-spacing-xs;
+}
+
+.account-main {
+  display: flex;
+  flex-direction: column;
+  padding: $elv-spacing-xs $elv-spacing-m;
 }
 
 .account-info {
   flex-grow: 1;
-  padding: $elv-spacing-xs $elv-spacing-s;
+  margin-bottom: $elv-spacing-xs;
 
   .account-name {
     font-weight: 600;
@@ -64,10 +73,9 @@
 
 .account-actions {
   display: flex;
-  flex-direction: column;
 
   button {
-    margin-bottom: $elv-spacing-xs;
+    margin-right: $elv-spacing-xs;
   }
 }
 

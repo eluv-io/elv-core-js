@@ -8,9 +8,11 @@ import {
   ReplacePublicUserMetadata,
   UpdateUserProfileImage
 } from "../actions/Profiles";
+import {GetAccountBalance} from "../actions/Accounts";
 
 class ProfileContainer extends React.PureComponent {
   componentDidMount() {
+    GetAccountBalance({context: this.props.context, address: this.props.context.currentAccount});
     PublicProfileInfo({context: this.props.context, address: this.props.context.currentAccount});
     PrivateProfileInfo({context: this.props.context});
   }

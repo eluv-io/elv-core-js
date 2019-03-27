@@ -1,3 +1,18 @@
+export const UpdateProfiles = async ({context}) => {
+  let updatedAccounts = context.accounts;
+
+  await Promise.all(Object.keys(updatedAccounts).map(async address => {
+    updatedAccounts[address].balance = "Φ" + context.client.utils.ToBigNumber(
+      await context.client.GetBalance({address})
+    ).toFixed(3);
+
+    updatedAccounts[address].profile = await context.client.userProfile.PublicUserMetadata({accountAddress: address}) || {};
+    updatedAccounts[address].profileImage = await context.client.userProfile.UserProfileImage({accountAddress: address});
+  }));
+
+  await context.MergeContext("accounts", updatedAccounts);
+};
+
 export const UserProfileImage = async ({context, address}) => {
   const profileImage = await context.client.userProfile.UserProfileImage({accountAddress: address});
 

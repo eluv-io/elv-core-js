@@ -55,7 +55,13 @@ class LoginModal extends React.PureComponent {
     return (
       <div className="form-content">
         <label htmlFor="password">Password</label>
-        <input name="password" type="password" value={this.state.password} onChange={this.HandleInputChange}/>
+        <input
+          name="password"
+          type="password"
+          value={this.state.password}
+          autoFocus
+          onChange={this.HandleInputChange}
+        />
       </div>
     );
   }
