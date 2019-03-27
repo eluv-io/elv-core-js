@@ -4,11 +4,11 @@ import React from "react";
 import {CroppedIconWithAction, IconButton} from "elv-components-js/src/components/Icons";
 import {BallClipRotate} from "elv-components-js/src/components/AnimatedIcons";
 import DefaultProfileImage from "../static/icons/User.svg";
-import RadioSelect from "elv-components-js/src/components/RadioSelect";
 import Path from "path";
 
 import XIcon from "../static/icons/X.svg";
 import KeyIcon from "../static/icons/Key.svg";
+import {onEnterPressed} from "elv-components-js/src/utils/Events";
 
 class Profile extends React.Component {
   constructor(props) {
@@ -42,10 +42,7 @@ class Profile extends React.Component {
     fn().then(() => this.setState({updating: false}));
   }
 
-  HandleNameChange(event) {
-    // Submit when enter is pressed
-    if(event.key && event.key.toLowerCase() !== "enter") { return; }
-
+  HandleNameChange() {
     this.Update(async () => {
       await this.props.ReplacePublicUserMetadata({metadataSubtree: "name", metadata: this.state.newName});
 
@@ -77,17 +74,11 @@ class Profile extends React.Component {
 
   Permissions(privateMetadata) {
     const permissionSelection = (
-      <RadioSelect
-        name="access_level"
-        label="Access Level"
-        options={[
-          ["Public access", "public"],
-          ["Prompt", "prompt"],
-          ["Private - No access", "private"],
-        ]}
-        selected={privateMetadata.access_level || "prompt"}
-        onChange={this.HandleAccessLevelChange}
-      />
+      <select name="access_level" aria-label="Access Level" onChange={this.HandleAccessLevelChange}>
+        <option value="public">Public Access</option>
+        <option value="prompt">Prompt</option>
+        <option value="private">Private</option>
+      </select>
     );
 
     let allowedAccessors = Object.keys(privateMetadata.allowed_accessors || {})
@@ -98,9 +89,7 @@ class Profile extends React.Component {
         <div className="info-section">
           <h4>Permissions</h4>
           <h5 className="subheader">Here you can specify whether applications can request access to your personal information</h5>
-          <div className="indented">
-            { permissionSelection }
-          </div>
+          { permissionSelection }
         </div>
         <div className="info-section">
           <h4>Applications</h4>
@@ -231,7 +220,7 @@ class Profile extends React.Component {
       return (
         <div className="modifiable-field modifying">
           <div className="modifiable-field-input">
-            <input placeholder="Name" value={this.state.newName} onChange={(event) => this.setState({newName: event.target.value})} onKeyPress={this.HandleNameChange}/>
+            <input placeholder="Name" value={this.state.newName} onChange={(event) => this.setState({newName: event.target.value})} onKeyPress={onEnterPressed(this.HandleNameChange)}/>
             <IconButton icon={XIcon} title="Cancel" className="cancel-button" onClick={() => this.setState({modifyingName: false})}/>
           </div>
         </div>
