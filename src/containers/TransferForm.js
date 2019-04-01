@@ -13,6 +13,7 @@ class TransferFormContainer extends React.PureComponent {
 
   async Submit({recipient, ether}) {
     await SendFunds({context: this.props.context, recipient, ether});
+    await new Promise(resolve => setTimeout(resolve, 1000));
   }
 
   componentDidMount() {
