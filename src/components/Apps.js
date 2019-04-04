@@ -4,7 +4,7 @@ import React from "react";
 
 import GenericAppLogo from "../static/icons/App.svg";
 import FabricBrowserLogo from "../static/images/FabricBrowser.png";
-import ContinuumLogo from "../static/images/Continuum.svg";
+import ContinuumLogo from "../static/images/Continuum.png";
 import {CroppedIcon} from "elv-components-js/src/components/Icons";
 import Action from "elv-components-js/src/components/Action";
 

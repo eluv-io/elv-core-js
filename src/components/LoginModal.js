@@ -38,7 +38,9 @@ class LoginModal extends React.PureComponent {
 
     await this.props.Submit(this.state.password);
 
-    this.props.Close();
+    if(this.props.Close) {
+      this.props.Close();
+    }
   }
 
   HandleError(error) {
