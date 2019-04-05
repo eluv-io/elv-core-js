@@ -15,7 +15,7 @@
   ],
   "dependencies": {
     "@babel/polyfill": "^7.4.3",
-    "elv-client-js": "git+https://github.com/eluv-io/elv-client-js.git#6307c57fa4092463a19f10b4bb700f121cc7b446",
+    "elv-client-js": "git+https://github.com/eluv-io/elv-client-js.git#70a67712921c0ab2598da7b3dc64b7ce0939149c",
     "elv-components-js": "git+https://github.com/eluv-io/elv-components-js.git#9786175f882ffc5f62d9811fc5cd5f26afd1de19",
     "ethers": "^4.0.27",
     "node-fetch": "^2.3.0",
