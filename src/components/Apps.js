@@ -21,7 +21,7 @@ class Apps extends React.PureComponent {
     }
 
     return (
-      <Action key={`app-${name}`} type="link" to={`/apps/${name}`} button={false}>
+      <Action key={`app-${name}`} label={`Go to ${displayName}`} type="link" to={`/apps/${name}`} button={false}>
         <div className="app-selection">
           <CroppedIcon icon={image} className="app-logo" />
           <h4>{displayName}</h4>

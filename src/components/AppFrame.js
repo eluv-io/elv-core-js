@@ -37,7 +37,8 @@ class IFrameBase extends React.Component {
   render() {
     return (
       <iframe
-        title={`Eluvio Core Application: ${this.props.appName}`}
+        label={`Eluvio Core Application: ${this.props.appName}`}
+        aria-label={`Eluvio Core Application: ${this.props.appName}`}
         ref={this.props.appRef}
         src={this.props.appUrl}
         sandbox={this.SandboxPermissions()}

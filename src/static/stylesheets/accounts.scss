@@ -38,6 +38,10 @@
   width: 20px;
 }
 
+.account-unlocked-icon {
+  color: $elv-color-darkergray;
+}
+
 .account-image {
   $image-size: 110px;
   @include elv-cropped-image($image-size, $image-size, 50%, $image-size, $image-size);
@@ -68,6 +72,12 @@
 
   .account-balance {
     font-size: 13px;
+
+    .token-icon {
+      height: 15px;
+      margin-right: 3px;
+      width: auto;
+    }
   }
 }
 

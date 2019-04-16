@@ -8,7 +8,7 @@ header {
   display: flex;
   flex-grow: 0;
   flex-shrink: 0;
-  height: 40px;
+  height: 45px;
   position: relative;
   width: 100%;
 
@@ -49,7 +49,7 @@ header {
   .-elv-icon-wrapper {
     display: flex;
     height: 100%;
-    padding: 10px $elv-spacing-s;
+    padding: $elv-spacing-ss $elv-spacing-s;
   }
 
   img {
@@ -66,6 +66,12 @@ header {
   max-width: 350px;
   min-width: 150px;
   padding: 0 $elv-spacing-m 0 $elv-spacing-s;
+
+  .token-icon {
+    height: 15px;
+    margin-right: 1px;
+    width: auto;
+  }
 }
 
 .header-profile-image {
@@ -77,11 +83,18 @@ header {
 .header-account-name,
 .header-account-balance {
   @include elv-ellipsis;
-  max-width: 250px;
+  align-items: center;
+  display: flex;
+  max-width: 300px;
+  width: 100%;
 }
 
 .header-account-name {
   font-size: 16px;
+}
+
+.header-account-name-address {
+  font-size: 12px;
 }
 
 .header-account-balance {

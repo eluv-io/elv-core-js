@@ -9,6 +9,7 @@ import UrlJoin from "url-join";
 import XIcon from "../static/icons/X.svg";
 import KeyIcon from "../static/icons/Key.svg";
 import {onEnterPressed} from "elv-components-js/src/utils/Events";
+import Balance from "./Balance";
 
 class Profile extends React.Component {
   constructor(props) {
@@ -102,7 +103,7 @@ class Profile extends React.Component {
                 <label>{accessor}</label>
                 <IconButton
                   icon={XIcon}
-                  title={`Revoke profile access from ${accessor}`}
+                  label={`Revoke profile access from ${accessor}`}
                   onClick={() => this.RevokeAccessor(accessor)}
                 />
               </div>
@@ -185,7 +186,7 @@ class Profile extends React.Component {
   PrivateKey() {
     return (
       <span className="private-key-container">
-        <IconButton icon={KeyIcon} title={`${this.state.showKey ? "Hide" : "Show"} Private Key`} onClick={() => this.setState({showKey: !this.state.showKey})}/>
+        <IconButton icon={KeyIcon} label={`${this.state.showKey ? "Hide" : "Show"} Private Key`} onClick={() => this.setState({showKey: !this.state.showKey})}/>
         <span className={`private-key ${this.state.showKey ? "visible" : ""}`}>
           { this.state.showKey ? this.props.account.signer.privateKey : "" }
         </span>
@@ -202,7 +203,7 @@ class Profile extends React.Component {
           {updateIndicator}
           <CroppedIconWithAction
             icon={profileImage}
-            title="Profile Image"
+            label="Profile Image"
             actionText="Set Profile Image"
             onClick={() => this.state.browseRef.current.click()}
             className="profile-image"
@@ -229,7 +230,7 @@ class Profile extends React.Component {
               onKeyPress={onEnterPressed(this.HandleNameChange)}
               onBlur={this.HandleNameChange}
             />
-            <IconButton icon={XIcon} title="Cancel" className="cancel-button" onClick={() => this.setState({modifyingName: false})}/>
+            <IconButton icon={XIcon} label="Cancel" className="cancel-button" onClick={() => this.setState({modifyingName: false})}/>
           </div>
         </div>
       );
@@ -251,14 +252,12 @@ class Profile extends React.Component {
     return (
       <span>
         {this.state.error.message}
-        <IconButton icon={XIcon} title="Clear" className="clear-button" onClick={() => this.setState({error: undefined})}/>
+        <IconButton icon={XIcon} label="Clear" className="clear-button" onClick={() => this.setState({error: undefined})}/>
       </span>
     );
   }
 
   render() {
-    const balance = this.props.account.balance;
-
     let privateMetadata, collectedTags, permissions;
     //privateMetadata = this.UserProfile().privateMetadata;
     //TODO: get private metadata
@@ -276,7 +275,7 @@ class Profile extends React.Component {
             <div className="user-info">
               { this.Name() }
               <div className="page-subheader">{this.props.account.address}</div>
-              <div className="page-subheader">{balance}</div>
+              <div className="page-subheader"><Balance balance={this.props.account.balance} /></div>
               { this.PrivateKey() }
             </div>
             { this.MetadataField("Public Information", this.props.account.profile) }

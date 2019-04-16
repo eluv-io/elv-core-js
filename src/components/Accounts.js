@@ -8,6 +8,7 @@ import LoginModal from "./LoginModal";
 import LockedIcon from "../static/icons/Locked.svg";
 import UnlockedIcon from "../static/icons/Unlocked.svg";
 import DefaultAccountImage from "../static/icons/User.svg";
+import Balance from "./Balance";
 
 class Accounts extends React.Component {
   constructor(props) {
@@ -74,15 +75,15 @@ class Accounts extends React.Component {
       <div key={`account-${account.address}`} className={isCurrentAccount ? "account current-account" : "account"}>
         <ImageIcon
           icon={accountLocked ? LockedIcon : UnlockedIcon}
-          title={accountLocked ? "Account Locked" : "Account Unlocked"}
-          className="account-lock-icon"
+          label={accountLocked ? "Account Locked" : "Account Unlocked"}
+          className={`account-lock-icon ${accountLocked ? "" : "account-unlocked-icon"}`}
         />
-        <CroppedIcon icon={profileImage} title="Profile Image" className="account-image" />
+        <CroppedIcon icon={profileImage} label="Profile Image" className="account-image" />
         <div className="account-main">
           <div className="account-info">
             <div className="account-name">{account.profile.name || "\u00a0"}</div>
             <div className="account-address">{account.address}</div>
-            <div className="account-balance">{account.balance}</div>
+            <Balance balance={account.balance} />
           </div>
           <div className="account-actions">
             { selectAccountButton }
@@ -101,7 +102,7 @@ class Accounts extends React.Component {
           { Object.values(this.props.accounts).map(account => this.Account(account)) }
         </div>
         <div className="actions-container flex-centered">
-          <Action type="link" to="/accounts/add" title="Add Account">Add Account</Action>
+          <Action type="link" to="/accounts/add" label="Add Account">Add Account</Action>
         </div>
       </div>
     );
