@@ -33,6 +33,17 @@
   position: relative;
   width: 800px;
 
+  .page-subheader {
+    display: flex;
+    justify-content: center;
+  }
+
+  .token-icon {
+    height: 15px;
+    margin-right: 3px;
+    width: auto;
+  }
+
   .profile-image-container-container {
     display: flex;
     justify-content: center;

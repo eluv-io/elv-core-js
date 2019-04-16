@@ -2,7 +2,7 @@ export const UpdateProfiles = async ({context}) => {
   let updatedAccounts = context.accounts;
 
   await Promise.all(Object.keys(updatedAccounts).map(async address => {
-    updatedAccounts[address].balance = "Φ" + context.client.utils.ToBigNumber(
+    updatedAccounts[address].balance = context.client.utils.ToBigNumber(
       await context.client.GetBalance({address})
     ).toFixed(3);
 

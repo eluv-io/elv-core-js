@@ -1,5 +1,5 @@
 export const GetAccountBalance = async ({context, address}) => {
-  const balance = "Φ" + context.client.utils.ToBigNumber(
+  const balance = context.client.utils.ToBigNumber(
     await context.client.GetBalance({address})
   ).toFixed(3);
 
