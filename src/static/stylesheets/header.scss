@@ -1,6 +1,4 @@
-@import "~elv-components-js/src/stylesheets/variables/spacing";
-@import "~elv-components-js/src/stylesheets/variables/colors";
-@import "~elv-components-js/src/stylesheets/mixins";
+@import "~elv-components-js/src/stylesheets/styles";
 
 header {
   align-items: center;
@@ -80,17 +78,13 @@ header {
   margin-right: $elv-spacing-xs;
 }
 
-.header-account-name,
-.header-account-balance {
+.header-account-name {
   @include elv-ellipsis;
   align-items: center;
   display: flex;
+  font-size: 16px;
   max-width: 300px;
   width: 100%;
-}
-
-.header-account-name {
-  font-size: 16px;
 }
 
 .header-account-name-address {
@@ -98,7 +92,9 @@ header {
 }
 
 .header-account-balance {
-  font-size: 11px;
+  span {
+    font-size: 11px;
+  }
 }
 
 .logo,
