@@ -1,10 +1,8 @@
 const webpack = require("webpack");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
 const Path = require("path");
 const autoprefixer = require("autoprefixer");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const HtmlWebpackInlineSourcePlugin = require("html-webpack-inline-source-plugin");
 
 module.exports = {
   entry: "./src/index.js",
@@ -44,7 +42,7 @@ module.exports = {
       inject: "body",
       cache: false,
       filename: "index.html",
-      inlineSource: ".(js|css)$"
+      favicon: "node_modules/elv-components-js/src/icons/favicon.png"
     }),
   ],
   module: {
