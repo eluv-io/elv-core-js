@@ -2,8 +2,8 @@ import "../static/stylesheets/login.scss";
 
 import React from "react";
 import PropTypes from "prop-types";
-import Modal from "elv-components-js/src/components/Modal";
-import Form from "elv-components-js/src/components/Form";
+import {Modal} from "elv-components-js";
+import {Form} from "elv-components-js";
 
 class LoginModal extends React.PureComponent {
   constructor(props) {

@@ -5,8 +5,7 @@ import React from "react";
 import GenericAppLogo from "../static/icons/App.svg";
 import FabricBrowserLogo from "../static/images/FabricBrowser.png";
 import ContinuumLogo from "../static/images/Continuum.png";
-import {CroppedIcon} from "elv-components-js/src/components/Icons";
-import Action from "elv-components-js/src/components/Action";
+import {Action, CroppedIcon} from "elv-components-js";
 
 class Apps extends React.PureComponent {
   App(name) {

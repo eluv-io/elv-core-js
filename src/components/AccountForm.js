@@ -1,7 +1,7 @@
 import React from "react";
-import Form from "elv-components-js/src/components/Form";
-import Action from "elv-components-js/src/components/Action";
-import RadioSelect from "elv-components-js/src/components/RadioSelect";
+import {Form} from "elv-components-js";
+import {Action} from "elv-components-js";
+import {RadioSelect} from "elv-components-js";
 
 class AccountForm extends React.Component {
   constructor(props) {

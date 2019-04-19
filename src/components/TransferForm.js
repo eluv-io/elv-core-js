@@ -1,5 +1,5 @@
 import React from "react";
-import Form from "elv-components-js/src/components/Form";
+import {Form} from "elv-components-js";
 import Redirect from "react-router/es/Redirect";
 
 class TransferForm extends React.Component {

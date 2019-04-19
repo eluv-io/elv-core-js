@@ -1,6 +1,4 @@
-@import "~elv-components-js/src/stylesheets/variables/colors";
-@import "~elv-components-js/src/stylesheets/variables/spacing";
-@import "~elv-components-js/src/stylesheets/defaults";
+@import "~elv-components-js/src/stylesheets/styles";
 
 * {
   box-sizing: border-box;
@@ -130,9 +128,4 @@ select {
       font-size: 15px;
     }
   }
-}
-
-.account-balance {
-  align-items: center;
-  display: flex;
 }

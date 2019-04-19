@@ -1,15 +1,14 @@
 import "../static/stylesheets/profile.scss";
 
 import React from "react";
-import {CroppedIconWithAction, IconButton} from "elv-components-js/src/components/Icons";
-import {BallClipRotate} from "elv-components-js/src/components/AnimatedIcons";
+import {Balance, CroppedIconWithAction, IconButton, BallClipRotate} from "elv-components-js";
+import {onEnterPressed} from "elv-components-js";
+
 import DefaultProfileImage from "../static/icons/User.svg";
 import UrlJoin from "url-join";
 
 import XIcon from "../static/icons/X.svg";
 import KeyIcon from "../static/icons/Key.svg";
-import {onEnterPressed} from "elv-components-js/src/utils/Events";
-import Balance from "./Balance";
 
 class Profile extends React.Component {
   constructor(props) {
@@ -275,7 +274,7 @@ class Profile extends React.Component {
             <div className="user-info">
               { this.Name() }
               <div className="page-subheader">{this.props.account.address}</div>
-              <div className="page-subheader"><Balance balance={this.props.account.balance} /></div>
+              <div className="page-subheader"><Balance balance={this.props.account.balance} className="account-balance" /></div>
               { this.PrivateKey() }
             </div>
             { this.MetadataField("Public Information", this.props.account.profile) }

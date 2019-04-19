@@ -1,7 +1,4 @@
-@import "~elv-components-js/src/stylesheets/variables/colors";
-@import "~elv-components-js/src/stylesheets/variables/spacing";
-@import "~elv-components-js/src/stylesheets/mixins";
-
+@import "~elv-components-js/src/stylesheets/styles";
 
 .profile-image-container {
   position: relative;
@@ -36,12 +33,17 @@
   .page-subheader {
     display: flex;
     justify-content: center;
+    padding: $elv-spacing-xxs 0;
   }
 
-  .token-icon {
-    height: 15px;
-    margin-right: 3px;
-    width: auto;
+  .account-balance {
+    font-size: 14px;
+
+    img {
+      height: 20px;
+      margin-right: 3px;
+      width: auto;
+    }
   }
 
   .profile-image-container-container {

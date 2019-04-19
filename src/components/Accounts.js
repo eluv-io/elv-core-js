@@ -1,14 +1,12 @@
 import "../static/stylesheets/accounts.scss";
 
 import React from "react";
-import Action from "elv-components-js/src/components/Action";
-import {CroppedIcon, ImageIcon} from "elv-components-js/src/components/Icons";
+import {Action, Balance, CroppedIcon, ImageIcon} from "elv-components-js";
 import LoginModal from "./LoginModal";
 
 import LockedIcon from "../static/icons/Locked.svg";
 import UnlockedIcon from "../static/icons/Unlocked.svg";
 import DefaultAccountImage from "../static/icons/User.svg";
-import Balance from "./Balance";
 
 class Accounts extends React.Component {
   constructor(props) {
@@ -83,7 +81,7 @@ class Accounts extends React.Component {
           <div className="account-info">
             <div className="account-name">{account.profile.name || "\u00a0"}</div>
             <div className="account-address">{account.address}</div>
-            <Balance balance={account.balance} />
+            <Balance balance={account.balance} className="account-balance" />
           </div>
           <div className="account-actions">
             { selectAccountButton }

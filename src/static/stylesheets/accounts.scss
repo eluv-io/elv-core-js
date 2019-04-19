@@ -1,6 +1,4 @@
-@import "~elv-components-js/src/stylesheets/mixins";
-@import "~elv-components-js/src/stylesheets/variables/colors";
-@import "~elv-components-js/src/stylesheets/variables/spacing";
+@import "~elv-components-js/src/stylesheets/styles";
 
 .accounts {
   align-items: center;
@@ -68,16 +66,6 @@
   .account-address {
     font-size: 14px;
     margin-bottom: $elv-spacing-xxs;
-  }
-
-  .account-balance {
-    font-size: 13px;
-
-    .token-icon {
-      height: 15px;
-      margin-right: 3px;
-      width: auto;
-    }
   }
 }
 

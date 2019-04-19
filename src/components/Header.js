@@ -2,14 +2,18 @@ import "../static/stylesheets/header.scss";
 
 import React from "react";
 import {ElvCoreConsumer} from "../ElvCoreContext";
-import {CroppedIcon, IconButton, IconLink} from "elv-components-js/src/components/Icons";
-import Action from "elv-components-js/src/components/Action";
-import LoadingElement from "elv-components-js/src/components/LoadingElement";
+import {
+  Action,
+  Balance,
+  LoadingElement,
+  CroppedIcon,
+  IconButton,
+  IconLink
+} from "elv-components-js";
 
 import Logo from "../static/images/Logo.png";
 import DefaultAccountImage from "../static/icons/User.svg";
 import ShowHeaderIcon from "../static/icons/ShowHeader.svg";
-import Balance from "./Balance";
 
 class Header extends React.Component {
   constructor(props) {
