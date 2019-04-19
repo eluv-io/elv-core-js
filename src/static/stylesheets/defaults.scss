@@ -11,7 +11,9 @@ html {
 }
 
 body {
-  font-family: Helvetica Neue, sans-serif;
+  background-color: $elv-color-bg-light;
+  color: $elv-color-text-dark;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 16px;
   height: 100%;
   overflow: overlay;
