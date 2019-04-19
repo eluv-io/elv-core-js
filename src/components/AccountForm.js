@@ -107,6 +107,7 @@ class AccountForm extends React.Component {
         <RadioSelect
           name="credentialType"
           label="Credential Type"
+          inline={true}
           options={
             [
               ["Private Key", "privateKey"],
