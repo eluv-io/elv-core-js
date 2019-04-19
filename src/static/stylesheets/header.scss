@@ -6,7 +6,7 @@ header {
   display: flex;
   flex-grow: 0;
   flex-shrink: 0;
-  height: 45px;
+  height: 40px;
   position: relative;
   width: 100%;
 
@@ -47,7 +47,7 @@ header {
   .-elv-icon-wrapper {
     display: flex;
     height: 100%;
-    padding: $elv-spacing-ss $elv-spacing-s;
+    padding: 10px $elv-spacing-s;
   }
 
   img {

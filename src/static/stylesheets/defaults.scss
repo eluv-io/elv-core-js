@@ -1,23 +1,5 @@
+@import "~elv-components-js/src/stylesheets/defaults";
 @import "~elv-components-js/src/stylesheets/styles";
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  height: 100%;
-}
-
-body {
-  background-color: $elv-color-bg-light;
-  color: $elv-color-text-dark;
-  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-size: 16px;
-  height: 100%;
-  overflow: overlay;
-}
 
 html,
 body,
@@ -30,37 +12,6 @@ body,
 .router-container {
   display: flex;
   flex-direction: column;
-}
-
-a {
-  text-decoration: none;
-
-  &,
-  &:visited {
-    color: $elv-color-darkgray;
-  }
-}
-
-pre {
-  background-color: $elv-color-white;
-  border: 1px solid $elv-color-gray;
-  margin: 0;
-  overflow: auto;
-
-  padding: 10px;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-}
-
-ul {
-  display: flex;
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-
-  li {
-    display: inline;
-  }
 }
 
 .form-container {
