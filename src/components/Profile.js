@@ -1,8 +1,7 @@
 import "../static/stylesheets/profile.scss";
 
 import React from "react";
-import {Balance, CroppedIconWithAction, IconButton, BallClipRotate} from "elv-components-js";
-import {onEnterPressed} from "elv-components-js";
+import {Balance, Confirm, CroppedIconWithAction, IconButton, BallClipRotate, onEnterPressed} from "elv-components-js";
 
 import DefaultProfileImage from "../static/icons/User.svg";
 import UrlJoin from "url-join";
@@ -67,10 +66,9 @@ class Profile extends React.Component {
   }
 
   async RevokeAccessor(accessor) {
-    this.Update(async () => {
-      if (confirm(`Are you sure you want to revoke profile access from ${accessor}?`)) {
-        await this.props.DeletePrivateUserMetadata({metadataSubtree: UrlJoin("allowed_accessors", accessor)});
-      }
+    await Confirm({
+      message: <span>Are you sure you want to revoke profile access from <b>{accessor}</b>?</span>,
+      onConfirm: async () => await this.props.DeletePrivateUserMetadata({metadataSubtree: UrlJoin("allowed_accessors", accessor)})
     });
   }
 
