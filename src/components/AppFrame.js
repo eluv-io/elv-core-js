@@ -9,7 +9,8 @@ import React from "react";
 import UrlJoin from "url-join";
 import Redirect from "react-router/es/Redirect";
 
-import { FrameClient } from "elv-client-js/src/FrameClient";
+import {FrameClient} from "elv-client-js/src/FrameClient";
+import {Confirm} from "elv-components-js";
 
 class IFrameBase extends React.Component {
   SandboxPermissions() {
@@ -89,14 +90,15 @@ class AppFrame extends React.Component {
 
         if(accessAllowed) { return true; }
 
-        if(!confirm(`Do you want to allow the application "${requestor}" to access your profile?`)) {
-          return false;
-        }
-
-        // Record permission
-        await this.props.client.userProfile.ReplacePrivateUserMetadata({
-          metadataSubtree: UrlJoin("allowed_accessors", requestor),
-          metadata: Date.now()
+        return await Confirm({
+          message: `Do you want to allow the application "${requestor}" to access your profile?`,
+          onConfirm: async () => {
+            // Record permission
+            await this.props.client.userProfile.ReplacePrivateUserMetadata({
+              metadataSubtree: UrlJoin("allowed_accessors", requestor),
+              metadata: Date.now()
+            });
+          }
         });
       }
 

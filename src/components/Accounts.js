@@ -1,7 +1,7 @@
 import "../static/stylesheets/accounts.scss";
 
 import React from "react";
-import {Action, Balance, CroppedIcon, ImageIcon} from "elv-components-js";
+import {Action, Balance, Confirm, CroppedIcon, ImageIcon} from "elv-components-js";
 import LoginModal from "./LoginModal";
 
 import LockedIcon from "../static/icons/Locked.svg";
@@ -37,9 +37,10 @@ class Accounts extends React.Component {
   }
 
   RemoveAccount(address) {
-    if(confirm("Are you sure you want to remove this account?")) {
-      this.props.RemoveAccount(address);
-    }
+    Confirm({
+      message: "Are you sure you want to remove this account?",
+      onConfirm: () => this.props.RemoveAccount(address)
+    });
   }
 
   LoginModal() {
