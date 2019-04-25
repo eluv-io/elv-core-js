@@ -90,21 +90,6 @@ class TransferForm extends React.Component {
     );
   }
 
-  FormContent() {
-    return (
-      <div className="form-content">
-        <label htmlFor="recipient">Recipient</label>
-        { this.RecipientSelector() }
-
-        <label htmlFor="recipient">Recipient Address</label>
-        <input name="recipient" value={this.state.recipient} disabled={!this.state.manualEntry} onChange={this.HandleInputChange} />
-
-        <label htmlFor="ether">Ether</label>
-        <input name="ether" type="number" step="0.0000001" value={this.state.ether} required={true} onChange={this.HandleInputChange} />
-      </div>
-    );
-  }
-
   render() {
     if(this.state.completed) {
       return <Redirect to="/accounts" />;
@@ -114,11 +99,21 @@ class TransferForm extends React.Component {
       <div className="page-content">
         <Form
           legend="Transfer Funds"
-          formContent={this.FormContent()}
           status={this.state.status}
           OnSubmit={this.HandleSubmit}
           OnError={this.HandleError}
-        />
+        >
+          <div className="form-content">
+            <label htmlFor="recipient">Recipient</label>
+            { this.RecipientSelector() }
+
+            <label htmlFor="recipient">Recipient Address</label>
+            <input name="recipient" value={this.state.recipient} disabled={!this.state.manualEntry} onChange={this.HandleInputChange} />
+
+            <label htmlFor="ether">Ether</label>
+            <input name="ether" type="number" step="0.0000001" value={this.state.ether} required={true} onChange={this.HandleInputChange} />
+          </div>
+        </Form>
       </div>
     );
   }
