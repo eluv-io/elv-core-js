@@ -53,46 +53,34 @@ class LoginModal extends React.PureComponent {
     });
   }
 
-  FormContent() {
-    return (
-      <div className="form-content">
-        <label htmlFor="password">Password</label>
-        <input
-          name="password"
-          type="password"
-          value={this.state.password}
-          autoFocus
-          onChange={this.HandleInputChange}
-        />
-      </div>
-    );
-  }
-
-  PasswordForm() {
-    return (
-      <Form
-        legend={"Enter your password to unlock this account"}
-        formContent={this.FormContent()}
-        status={this.state.status}
-        cancelPath="/accounts"
-        cancelText={this.props.prompt ? "Switch Account" : "Cancel"}
-        OnCancel={this.props.Close}
-        OnSubmit={this.HandleSubmit}
-        OnError={this.HandleError}
-      />
-    );
-  }
-
   render() {
     return (
       <Modal
-        modalContent={
-          this.PasswordForm()
-        }
         closable={!this.props.prompt && !this.state.status.loading}
         OnClickOutside={this.props.Close}
         className="login-modal"
-      />
+      >
+        <Form
+          legend={"Enter your password to unlock this account"}
+          status={this.state.status}
+          cancelPath="/accounts"
+          cancelText={this.props.prompt ? "Switch Account" : "Cancel"}
+          OnCancel={this.props.Close}
+          OnSubmit={this.HandleSubmit}
+          OnError={this.HandleError}
+        >
+          <div className="form-content">
+            <label htmlFor="password">Password</label>
+            <input
+              name="password"
+              type="password"
+              value={this.state.password}
+              autoFocus
+              onChange={this.HandleInputChange}
+            />
+          </div>
+        </Form>
+      </Modal>
     );
   }
 }
