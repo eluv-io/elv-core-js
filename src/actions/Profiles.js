@@ -6,15 +6,16 @@ export const UpdateProfiles = async ({context}) => {
       await context.client.GetBalance({address})
     ).toFixed(3);
 
-    updatedAccounts[address].profile = await context.client.userProfile.PublicUserMetadata({accountAddress: address}) || {};
-    updatedAccounts[address].profileImage = await context.client.userProfile.UserProfileImage({accountAddress: address});
+    //updatedAccounts[address].profile = await context.client.userProfile.PublicUserMetadata({accountAddress: address}) || {};
+    //updatedAccounts[address].profileImage = await context.client.userProfile.UserProfileImage({accountAddress: address});
   }));
 
   await context.MergeContext("accounts", updatedAccounts);
 };
 
 export const UserProfileImage = async ({context, address}) => {
-  const profileImage = await context.client.userProfile.UserProfileImage({accountAddress: address});
+  //const profileImage = await context.client.userProfile.UserProfileImage({accountAddress: address});
+  const profileImage = undefined;
 
   await context.MergeContext("accounts", address, {profileImage});
 };
@@ -22,7 +23,8 @@ export const UserProfileImage = async ({context, address}) => {
 export const PublicProfileInfo = async ({context, address}) => {
   if(!address) { return; }
 
-  const profileInfo = await context.client.userProfile.PublicUserMetadata({accountAddress: address}) || {};
+  //const profileInfo = await context.client.userProfile.PublicUserMetadata({accountAddress: address}) || {};
+  const profileInfo = {};
   await context.MergeContext("accounts", address, "profile", profileInfo);
 
   await UserProfileImage({context, address});
@@ -31,7 +33,8 @@ export const PublicProfileInfo = async ({context, address}) => {
 export const PrivateProfileInfo = async ({context}) => {
   if(!context.currentAccount) { return; }
 
-  const profileInfo = await context.client.userProfile.PrivateUserMetadata() || {};
+  //const profileInfo = await context.client.userProfile.PrivateUserMetadata() || {};
+  const profileInfo = {};
   await context.MergeContext("accounts", context.currentAccount, "privateProfile", profileInfo);
 };
 

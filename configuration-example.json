@@ -1,15 +1,5 @@
 {
-  "fabric": {
-    "contentSpaceId": "ispc458u7vxkS2o9XyE3HoqEKZuZ9h8w",
-    "hostname": "localhost",
-    "port": 8008,
-    "use_https": false
-  },
-  "ethereum": {
-    "hostname": "localhost",
-    "port": 8545,
-    "use_https": false
-  },
+  "config-url": "http://main.localhost:8008/config",
   "apps": {
     "fabric-browser": "http://localhost:8080",
     "continuum": "https://localhost:3000",
