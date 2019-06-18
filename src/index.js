@@ -1,3 +1,4 @@
+import "@babel/polyfill";
 import "./static/stylesheets/defaults.scss";
 
 import React from "react";

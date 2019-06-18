@@ -120,7 +120,7 @@ class AppFrame extends React.Component {
         responseMessage,
         "*"
       );
-    } catch(error) {
+    } catch (error) {
       /* eslint-disable no-console */
       console.error("Error responding to message");
       console.error(responseMessage);
@@ -138,7 +138,7 @@ class AppFrame extends React.Component {
     const requestId = event.data.requestId;
     const source = event.source;
 
-    switch(event.data.operation) {
+    switch (event.data.operation) {
       // App requested its app path
       case "GetFramePath":
         // TODO: Replace with match params

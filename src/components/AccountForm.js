@@ -56,7 +56,7 @@ class AccountForm extends React.Component {
   }
 
   Credentials() {
-    switch(this.state.credentialType) {
+    switch (this.state.credentialType) {
       case "privateKey":
         return [
           <label key="credential-label" htmlFor="privateKey">Private Key</label>,
