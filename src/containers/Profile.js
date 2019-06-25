@@ -2,10 +2,10 @@ import React from "react";
 import {ElvCoreConsumer} from "../ElvCoreContext";
 import Profile from "../components/Profile";
 import {
-  DeletePrivateUserMetadata,
-  PrivateProfileInfo,
-  PublicProfileInfo, ReplacePrivateUserMetadata,
-  ReplacePublicUserMetadata,
+  UserMetadata,
+  ReplaceUserMetadata,
+  DeleteUserMetadata,
+  UserProfileImage,
   UpdateUserProfileImage
 } from "../actions/Profiles";
 import {GetAccountBalance} from "../actions/Accounts";
@@ -13,8 +13,8 @@ import {GetAccountBalance} from "../actions/Accounts";
 class ProfileContainer extends React.PureComponent {
   componentDidMount() {
     GetAccountBalance({context: this.props.context, address: this.props.context.currentAccount});
-    PublicProfileInfo({context: this.props.context, address: this.props.context.currentAccount});
-    PrivateProfileInfo({context: this.props.context});
+    UserMetadata({context: this.props.context});
+    UserProfileImage({context: this.props.context});
   }
 
   render() {
@@ -24,9 +24,8 @@ class ProfileContainer extends React.PureComponent {
       <Profile
         account={currentAccount}
         UpdateUserProfileImage={(image) => UpdateUserProfileImage({context: this.props.context, image})}
-        ReplacePublicUserMetadata={({metadataSubtree="/", metadata}) => ReplacePublicUserMetadata({context: this.props.context, metadataSubtree, metadata})}
-        ReplacePrivateUserMetadata={({metadataSubtree="/", metadata}) => ReplacePrivateUserMetadata({context: this.props.context, metadataSubtree, metadata})}
-        DeletePrivateUserMetadata={({metadataSubtree="/"}) => DeletePrivateUserMetadata({context: this.props.context, metadataSubtree})}
+        ReplaceUserMetadata={({metadataSubtree="/", metadata}) => ReplaceUserMetadata({context: this.props.context, metadataSubtree, metadata})}
+        DeleteUserMetadata={({metadataSubtree="/"}) => DeleteUserMetadata({context: this.props.context, metadataSubtree})}
       />
     );
   }

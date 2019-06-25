@@ -10,9 +10,10 @@ class NavigationContainer extends React.PureComponent {
     }
 
     const currentAccount = this.props.context.accounts[this.props.context.currentAccount];
+    const balance = (currentAccount && parseFloat(currentAccount.balance)) || 0;
 
     return (
-      <Navigation unlocked={!!currentAccount && !!currentAccount.signer} />
+      <Navigation unlocked={!!currentAccount && !!currentAccount.signer} balance={balance} />
     );
   }
 }

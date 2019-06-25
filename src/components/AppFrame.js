@@ -69,7 +69,7 @@ class AppFrame extends React.Component {
 
   async CheckAccess(event) {
     if(FrameClient.PromptedMethods().includes(event.data.calledMethod)) {
-      const accessLevel = await this.props.client.userProfile.AccessLevel();
+      const accessLevel = await this.props.client.userProfileClient.AccessLevel();
 
       // No access to private profiles
       if(accessLevel === "private") {return false;}
@@ -84,7 +84,7 @@ class AppFrame extends React.Component {
           return false;
         }
 
-        const accessAllowed = await this.props.client.userProfile.PrivateUserMetadata({
+        const accessAllowed = await this.props.client.userProfileClient.UserMetadata({
           metadataSubtree: UrlJoin("allowed_accessors", requestor)
         });
 
@@ -94,7 +94,7 @@ class AppFrame extends React.Component {
           message: `Do you want to allow the application "${requestor}" to access your profile?`,
           onConfirm: async () => {
             // Record permission
-            await this.props.client.userProfile.ReplacePrivateUserMetadata({
+            await this.props.client.userProfileClient.ReplaceUserMetadata({
               metadataSubtree: UrlJoin("allowed_accessors", requestor),
               metadata: Date.now()
             });

@@ -5,9 +5,14 @@ import NavLink from "react-router-dom/es/NavLink";
 import PropTypes from "prop-types";
 
 const Navigation = (props) => {
-  if(!props.unlocked) {
+  const lowBalance = props.balance < 0.1;
+  const lowBalanceWarning = lowBalance ?
+    <div className="warning">This account has an insufficient balance. Please fund the account.</div> :
+    null;
+  if(!props.unlocked || lowBalance) {
     return (
       <div className="nav-container locked">
+        { lowBalanceWarning }
         <nav>
           <NavLink activeClassName="active" to="/accounts">Accounts</NavLink>
         </nav>
@@ -28,7 +33,8 @@ const Navigation = (props) => {
 };
 
 Navigation.propTypes = {
-  unlocked: PropTypes.bool.isRequired
+  unlocked: PropTypes.bool.isRequired,
+  balance: PropTypes.number.isRequired
 };
 
 export default Navigation;

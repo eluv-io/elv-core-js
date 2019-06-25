@@ -61,8 +61,7 @@ export const AddAccount = async ({context, privateKey, password}) => {
       address,
       signer,
       encryptedPrivateKey,
-      profile: {},
-      privateProfile: {}
+      profile: {}
     }
   };
 
