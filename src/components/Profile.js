@@ -45,7 +45,7 @@ class Profile extends React.Component {
 
   HandleNameChange() {
     this.Update(async () => {
-      await this.props.ReplacePublicUserMetadata({metadataSubtree: "name", metadata: this.state.newName});
+      await this.props.ReplaceUserMetadata({metadataSubtree: "name", metadata: this.state.newName});
 
       this.setState({
         modifyingName: false
@@ -61,28 +61,28 @@ class Profile extends React.Component {
 
   async HandleAccessLevelChange(event) {
     this.Update(async () =>
-      await this.props.ReplacePrivateUserMetadata({metadataSubtree: "access_level", metadata: event.target.value})
+      await this.props.ReplaceUserMetadata({metadataSubtree: "access_level", metadata: event.target.value})
     );
   }
 
   async RevokeAccessor(accessor) {
     await Confirm({
       message: <span>Are you sure you want to revoke profile access from <b>{accessor}</b>?</span>,
-      onConfirm: async () => await this.props.DeletePrivateUserMetadata({metadataSubtree: UrlJoin("allowed_accessors", accessor)})
+      onConfirm: async () => await this.props.DeleteUserMetadata({metadataSubtree: UrlJoin("allowed_accessors", accessor)})
     });
   }
 
-  Permissions(privateMetadata) {
+  Permissions(metadata) {
     const permissionSelection = (
-      <select defaultValue={privateMetadata.access_level || "prompt"} name="access_level" aria-label="Access Level" onChange={this.HandleAccessLevelChange}>
+      <select value={metadata.access_level || "prompt"} name="access_level" aria-label="Access Level" onChange={this.HandleAccessLevelChange}>
         <option value="public">Public Access</option>
         <option value="prompt">Prompt</option>
         <option value="private">Private</option>
       </select>
     );
 
-    let allowedAccessors = Object.keys(privateMetadata.allowed_accessors || {})
-      .sort((a, b) => privateMetadata.allowed_accessors[a] > privateMetadata.allowed_accessors[b] ? -1 : 1);
+    let allowedAccessors = Object.keys(metadata.allowed_accessors || {})
+      .sort((a, b) => metadata.allowed_accessors[a] > metadata.allowed_accessors[b] ? -1 : 1);
 
     return (
       <div>
@@ -255,13 +255,9 @@ class Profile extends React.Component {
   }
 
   render() {
-    let privateMetadata, collectedTags, permissions;
-    //privateMetadata = this.UserProfile().privateMetadata;
-    //TODO: get private metadata
-    privateMetadata = this.props.account.privateProfile;
-    collectedTags = this.CollectedTags(privateMetadata.collected_data);
-    permissions = this.Permissions(privateMetadata);
-    privateMetadata = this.MetadataField("Private Information", privateMetadata);
+    const metadata = this.props.account.profile;
+    const collectedTags = this.CollectedTags(metadata.collected_data);
+    const permissions = this.Permissions(metadata);
 
     return (
       <div className="page-content">
@@ -275,8 +271,7 @@ class Profile extends React.Component {
               <div className="page-subheader"><Balance balance={this.props.account.balance} className="account-balance" /></div>
               { this.PrivateKey() }
             </div>
-            { this.MetadataField("Public Information", this.props.account.profile) }
-            { privateMetadata }
+            { this.MetadataField("Profile Information", metadata) }
             { permissions }
             { collectedTags }
           </div>

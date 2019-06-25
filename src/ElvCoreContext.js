@@ -10,7 +10,6 @@ if(storedAccounts) {
   storedAccounts = JSON.parse(atob(storedAccounts));
   Object.keys(storedAccounts).forEach(address => {
     storedAccounts[address].profile = {};
-    storedAccounts[address].privateProfile = {};
   });
 } else {
   storedAccounts = {};

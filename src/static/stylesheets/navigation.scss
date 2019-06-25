@@ -4,6 +4,7 @@
   @include elv-no-select;
   align-items: center;
   display: flex;
+  flex-direction: column;
   flex-grow: 0;
   flex-shrink: 0;
   justify-content: center;
@@ -14,6 +15,11 @@
     nav {
       width: 300px;
     }
+  }
+
+  .warning {
+    font-weight: bold;
+    margin-bottom: $elv-spacing-s;
   }
 }
 

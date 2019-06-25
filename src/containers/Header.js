@@ -2,7 +2,6 @@ import React from "react";
 import {ElvCoreConsumer} from "../ElvCoreContext";
 import Header from "../components/Header";
 import {GetAccountBalance} from "../actions/Accounts";
-import {PublicProfileInfo} from "../actions/Profiles";
 
 class HeaderContainer extends React.Component {
   constructor(props) {
@@ -13,15 +12,7 @@ class HeaderContainer extends React.Component {
 
   componentDidMount() {
     if(this.props.context.currentAccount) {
-      PublicProfileInfo({context: this.props.context, address: this.props.context.currentAccount});
       GetAccountBalance({context: this.props.context, address: this.props.context.currentAccount});
-    }
-  }
-
-  // Update when account changes
-  componentDidUpdate(prevProps) {
-    if(this.props.context.currentAccount && (prevProps.context.currentAccount !== this.props.context.currentAccount)) {
-      PublicProfileInfo({context: this.props.context, address: this.props.context.currentAccount});
     }
   }
 
