@@ -29,7 +29,7 @@ class Header extends React.Component {
 
   AccountInfo() {
     const profileImage = (this.props.account && this.props.account.profileImage) || DefaultAccountImage;
-    const profileName = (this.props.account && (this.props.account.profile.name || this.props.account.address)) || "Not Logged In";
+    const profileName = (this.props.account && (this.props.account.name || this.props.account.address)) || "Not Logged In";
     const addressAsName = this.props.account && profileName === this.props.account.address;
 
     return (

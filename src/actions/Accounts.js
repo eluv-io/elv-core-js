@@ -19,6 +19,26 @@ const SetCurrentAccount = async ({context, signer, address}) => {
   );
 };
 
+export const SaveAccounts = async ({accounts}) => {
+  delete accounts["undefined"];
+
+  // Save address and encrypted private key to localstorage
+  let savedAccounts = {};
+  Object.values(accounts).forEach(account =>
+    savedAccounts[account.address] = {
+      name: account.name,
+      profileImage: account.profileImage,
+      address: account.address,
+      encryptedPrivateKey: account.encryptedPrivateKey
+    }
+  );
+
+  localStorage.setItem(
+    "elv-accounts",
+    btoa(JSON.stringify(savedAccounts))
+  );
+};
+
 const UpdateAccounts = async ({context, accounts, currentAccount}) => {
   // Update account balances
   Object.keys(accounts).forEach(address => GetAccountBalance({context, address}));
@@ -29,19 +49,7 @@ const UpdateAccounts = async ({context, accounts, currentAccount}) => {
   // Update app context
   await context.UpdateContext({accounts});
 
-  // Save address and encrypted private key to localstorage
-  let savedAccounts = {};
-  Object.values(accounts).forEach(account =>
-    savedAccounts[account.address] = {
-      address: account.address,
-      encryptedPrivateKey: account.encryptedPrivateKey
-    }
-  );
-
-  localStorage.setItem(
-    "elv-accounts",
-    btoa(JSON.stringify(savedAccounts))
-  );
+  await SaveAccounts({accounts});
 };
 
 export const AddAccount = async ({context, privateKey, password}) => {

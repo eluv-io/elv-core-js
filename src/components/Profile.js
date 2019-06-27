@@ -213,7 +213,7 @@ class Profile extends React.Component {
   }
 
   Name() {
-    const name = this.props.account.profile.name;
+    const name = this.props.account.name;
 
     if(this.state.modifyingName) {
       return (
@@ -255,7 +255,7 @@ class Profile extends React.Component {
   }
 
   render() {
-    const metadata = this.props.account.profile;
+    const metadata = this.props.account.profile || {};
     const collectedTags = this.CollectedTags(metadata.collected_data);
     const permissions = this.Permissions(metadata);
 

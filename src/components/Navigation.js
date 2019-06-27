@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 
 const Navigation = (props) => {
   const lowBalance = props.balance < 0.1;
-  const lowBalanceWarning = lowBalance ?
+  const lowBalanceWarning = props.unlocked && lowBalance ?
     <div className="warning">This account has an insufficient balance. Please fund the account.</div> :
     null;
   if(!props.unlocked || lowBalance) {
