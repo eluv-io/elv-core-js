@@ -1,22 +1,14 @@
 import React from "react";
 
-import {ElvClient} from "elv-client-js";
+import { ElvClient } from "elv-client-js";
 import ClientConfiguration from "../configuration";
+
+import { SaveAccounts } from "./actions/Accounts";
 
 const {Provider, Consumer} = React.createContext();
 
-let storedAccounts = localStorage.getItem("elv-accounts");
-if(storedAccounts) {
-  storedAccounts = JSON.parse(atob(storedAccounts));
-  Object.keys(storedAccounts).forEach(address => {
-    storedAccounts[address].profile = {};
-  });
-} else {
-  storedAccounts = {};
-}
-
 const initialState = {
-  accounts: storedAccounts,
+  accounts: {},
   apps: ClientConfiguration.apps,
   currentAccount: localStorage.getItem("elv-current-account"),
   client: undefined,
@@ -26,6 +18,11 @@ const initialState = {
 export class ElvCoreProvider extends React.Component {
   constructor(props) {
     super(props);
+
+    let storedAccounts = localStorage.getItem("elv-accounts");
+    if(storedAccounts) {
+      initialState.accounts = JSON.parse(atob(storedAccounts));
+    }
 
     this.state = initialState;
 
@@ -62,7 +59,12 @@ export class ElvCoreProvider extends React.Component {
       pointer[lastKey] = newValue;
     }
 
-    return new Promise(resolve => this.setState(newContext, resolve));
+    await new Promise(resolve => this.setState(newContext, resolve));
+
+    // Keep saved accounts up to date
+    await SaveAccounts({accounts: newContext.accounts});
+
+    return newContext;
   }
 
   async UpdateContext(newContext) {

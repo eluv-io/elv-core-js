@@ -80,7 +80,7 @@ class Accounts extends React.Component {
         <CroppedIcon icon={profileImage} label="Profile Image" className="account-image" />
         <div className="account-main">
           <div className="account-info">
-            <div className="account-name">{account.profile.name || "\u00a0"}</div>
+            <div className="account-name">{account.name || "\u00a0"}</div>
             <div className="account-address">{account.address}</div>
             <Balance balance={account.balance} className="account-balance" />
           </div>
