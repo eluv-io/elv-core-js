@@ -17,7 +17,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.4.3",
     "elv-client-js": "git+https://github.com/eluv-io/elv-client-js.git#develop",
-    "elv-components-js": "git+https://github.com/eluv-io/elv-components-js.git#b24995d4f494e323b2247f46d192098b15c746a6",
+    "elv-components-js": "git+https://github.com/eluv-io/elv-components-js.git#6b2c17db03eb757c2ff608fbbe43366db0015e65",
     "path": "^0.12.7",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
