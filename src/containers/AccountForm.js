@@ -23,7 +23,7 @@ const GenerateMnemonic = (context) => {
   return () => context.client.GenerateWallet().GenerateMnemonic();
 };
 
-const AccountFormContainer = ({context, props}) => {
+const AccountFormContainer = ({context}) => {
   const actions = {
     GenerateMnemonic: GenerateMnemonic(context),
     Submit: Submit(context)

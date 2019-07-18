@@ -1,15 +1,11 @@
 import React from "react";
-
 import { ElvClient } from "elv-client-js";
-import ClientConfiguration from "../configuration";
-
 import { SaveAccounts } from "./actions/Accounts";
 
 const {Provider, Consumer} = React.createContext();
 
 const initialState = {
   accounts: {},
-  apps: ClientConfiguration.apps,
   currentAccount: localStorage.getItem("elv-current-account"),
   client: undefined,
   showHeader: true
@@ -26,13 +22,23 @@ export class ElvCoreProvider extends React.Component {
 
     this.state = initialState;
 
-    ElvClient.FromConfigurationUrl({configUrl: ClientConfiguration["config-url"]})
-      .then(client => this.setState({client}))
-      // eslint-disable-next-line no-console
-      .catch(error => console.error(error));
+    this.Initialize();
 
     this.MergeContext = this.MergeContext.bind(this);
     this.UpdateContext = this.UpdateContext.bind(this);
+  }
+
+  async Initialize() {
+    const client = await ElvClient.FromConfigurationUrl({
+      configUrl: EluvioConfiguration["config-url"]
+    });
+
+    window.client = client;
+
+    this.setState({
+      client,
+      apps: EluvioConfiguration.apps
+    });
   }
 
   async MergeContext(...args) {
