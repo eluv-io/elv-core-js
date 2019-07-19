@@ -1,8 +1,0 @@
-{
-  "config-url": "http://main.localhost:8008/config",
-  "apps": {
-    "fabric-browser": "http://localhost:8080",
-    "continuum": "https://localhost:3000",
-    "Other": "some url"
-  }
-}
