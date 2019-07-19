@@ -192,7 +192,11 @@ class Profile extends React.Component {
   }
 
   ProfileImage() {
-    const profileImage = this.props.account.profileImage || DefaultProfileImage;
+    const profileImage =
+      (this.props.account.profile || {}).image ||
+      this.props.account.profileImage ||
+      DefaultProfileImage;
+
     const updateIndicator = this.state.updating ? <div className="update-indicator"><BallClipRotate /></div> : undefined;
     return (
       <div className="profile-image-container-container">
@@ -213,7 +217,7 @@ class Profile extends React.Component {
   }
 
   Name() {
-    const name = this.props.account.name;
+    const name = (this.props.account.profile || {}).name || this.props.account.name;
 
     if(this.state.modifyingName) {
       return (
