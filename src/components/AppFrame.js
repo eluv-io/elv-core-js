@@ -38,11 +38,11 @@ class IFrameBase extends React.Component {
   render() {
     return (
       <iframe
-        label={`Eluvio Core Application: ${this.props.appName}`}
         aria-label={`Eluvio Core Application: ${this.props.appName}`}
         ref={this.props.appRef}
         src={this.props.appUrl}
         sandbox={this.SandboxPermissions()}
+        allow="encrypted-media *"
         className={this.props.className}
         allowFullScreen={true}
       />
