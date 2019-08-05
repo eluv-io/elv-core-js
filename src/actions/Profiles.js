@@ -3,7 +3,10 @@ export const UpdateProfiles = async ({context}) => {
 
   await Promise.all(Object.keys(updatedAccounts).map(async address => {
     if(context.client.signer) {
-      updatedAccounts[address].name = await context.client.userProfileClient.PublicUserMetadata({address, metadataSubtree: "name"});
+      const name = await context.client.userProfileClient.PublicUserMetadata({address, metadataSubtree: "name"});
+
+      // Name must not be an object because it is rendered directly
+      updatedAccounts[address].name = typeof name === "string" ? name : "";
       updatedAccounts[address].profileImage = await context.client.userProfileClient.UserProfileImage({address});
     }
     updatedAccounts[address].balance = context.client.utils.ToBigNumber(

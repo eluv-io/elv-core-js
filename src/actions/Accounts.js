@@ -26,7 +26,7 @@ export const SaveAccounts = async ({accounts}) => {
   let savedAccounts = {};
   Object.values(accounts).forEach(account =>
     savedAccounts[account.address] = {
-      name: account.name,
+      name: (account.name || "").toString(),
       profileImage: account.profileImage,
       address: account.address,
       encryptedPrivateKey: account.encryptedPrivateKey

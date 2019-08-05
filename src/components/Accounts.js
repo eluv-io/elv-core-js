@@ -86,7 +86,7 @@ class Accounts extends React.Component {
           </div>
           <div className="account-actions">
             { selectAccountButton }
-            <Action className="delete-action" onClick={() => this.RemoveAccount(account.address)}>Remove</Action>
+            <Action className="danger" onClick={() => this.RemoveAccount(account.address)}>Remove</Action>
           </div>
         </div>
       </div>

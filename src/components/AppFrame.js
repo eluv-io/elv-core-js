@@ -21,7 +21,8 @@ class IFrameBase extends React.Component {
       "allow-pointer-lock",
       "allow-orientation-lock",
       "allow-popups",
-      "allow-presentation"
+      "allow-presentation",
+      "allow-same-origin"
     ].join(" ");
   }
 
