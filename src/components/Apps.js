@@ -4,9 +4,8 @@ import React from "react";
 
 import GenericAppLogo from "../static/icons/App.svg";
 import FabricBrowserLogo from "../static/images/FabricBrowser.png";
-import ContinuumLogo from "../static/images/Continuum.svg";
-import {CroppedIcon} from "elv-components-js/src/components/Icons";
-import Action from "elv-components-js/src/components/Action";
+import ContinuumLogo from "../static/images/Continuum.png";
+import {Action, CroppedIcon} from "elv-components-js";
 
 class Apps extends React.PureComponent {
   App(name) {
@@ -21,7 +20,7 @@ class Apps extends React.PureComponent {
     }
 
     return (
-      <Action key={`app-${name}`} type="link" to={`/apps/${name}`} button={false}>
+      <Action key={`app-${name}`} label={`Go to ${displayName}`} type="link" to={`/apps/${name}`} button={false}>
         <div className="app-selection">
           <CroppedIcon icon={image} className="app-logo" />
           <h4>{displayName}</h4>
@@ -32,7 +31,7 @@ class Apps extends React.PureComponent {
 
   render() {
     return (
-      <div className="page-container">
+      <div className="page-content">
         <div className="apps">
           { Object.keys(this.props.apps).map(name => this.App(name))}
         </div>

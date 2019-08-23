@@ -2,8 +2,8 @@ import "../static/stylesheets/login.scss";
 
 import React from "react";
 import PropTypes from "prop-types";
-import Modal from "elv-components-js/src/components/Modal";
-import Form from "elv-components-js/src/components/Form";
+import {Modal} from "elv-components-js";
+import {Form} from "elv-components-js";
 
 class LoginModal extends React.PureComponent {
   constructor(props) {
@@ -38,7 +38,9 @@ class LoginModal extends React.PureComponent {
 
     await this.props.Submit(this.state.password);
 
-    this.props.Close();
+    if(this.props.Close) {
+      this.props.Close();
+    }
   }
 
   HandleError(error) {
@@ -51,40 +53,34 @@ class LoginModal extends React.PureComponent {
     });
   }
 
-  FormContent() {
-    return (
-      <div className="form-content">
-        <label htmlFor="password">Password</label>
-        <input name="password" type="password" value={this.state.password} onChange={this.HandleInputChange}/>
-      </div>
-    );
-  }
-
-  PasswordForm() {
-    return (
-      <Form
-        legend={"Enter your password to unlock this account"}
-        formContent={this.FormContent()}
-        status={this.state.status}
-        cancelPath="/accounts"
-        cancelText={this.props.prompt ? "Switch Account" : "Cancel"}
-        OnCancel={this.props.Close}
-        OnSubmit={this.HandleSubmit}
-        OnError={this.HandleError}
-      />
-    );
-  }
-
   render() {
     return (
       <Modal
-        modalContent={
-          this.PasswordForm()
-        }
         closable={!this.props.prompt && !this.state.status.loading}
         OnClickOutside={this.props.Close}
         className="login-modal"
-      />
+      >
+        <Form
+          legend={"Enter your password to unlock this account"}
+          status={this.state.status}
+          cancelPath="/accounts"
+          cancelText={this.props.prompt ? "Switch Account" : "Cancel"}
+          OnCancel={this.props.Close}
+          OnSubmit={this.HandleSubmit}
+          OnError={this.HandleError}
+        >
+          <div className="form-content">
+            <label htmlFor="password">Password</label>
+            <input
+              name="password"
+              type="password"
+              value={this.state.password}
+              autoFocus
+              onChange={this.HandleInputChange}
+            />
+          </div>
+        </Form>
+      </Modal>
     );
   }
 }
@@ -93,7 +89,7 @@ LoginModal.propTypes = {
   prompt: PropTypes.bool,
   address: PropTypes.string.isRequired,
   Submit: PropTypes.func.isRequired,
-  Close: PropTypes.func.isRequired
+  Close: PropTypes.func
 };
 
 export default LoginModal;

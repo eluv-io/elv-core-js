@@ -1,7 +1,7 @@
 import React from "react";
-import Form from "elv-components-js/src/components/Form";
-import Action from "elv-components-js/src/components/Action";
-import RadioSelect from "elv-components-js/src/components/RadioSelect";
+import {Form} from "elv-components-js";
+import {Action} from "elv-components-js";
+import {RadioSelect} from "elv-components-js";
 
 class AccountForm extends React.Component {
   constructor(props) {
@@ -20,7 +20,6 @@ class AccountForm extends React.Component {
       password: ""
     };
 
-    this.FormContent = this.FormContent.bind(this);
     this.HandleSubmit = this.HandleSubmit.bind(this);
     this.HandleError = this.HandleError.bind(this);
     this.HandleInputChange = this.HandleInputChange.bind(this);
@@ -42,6 +41,8 @@ class AccountForm extends React.Component {
       mnemonic: this.state.mnemonic,
       password: this.state.password
     });
+
+    this.setState({status: {loading: false, completed: true}});
   }
 
   HandleError(error) {
@@ -55,7 +56,7 @@ class AccountForm extends React.Component {
   }
 
   Credentials() {
-    switch(this.state.credentialType) {
+    switch (this.state.credentialType) {
       case "privateKey":
         return [
           <label key="credential-label" htmlFor="privateKey">Private Key</label>,
@@ -98,44 +99,40 @@ class AccountForm extends React.Component {
     return null;
   }
 
-  FormContent() {
-    return (
-      <div className="form-content">
-        <label htmlFor="credentialType">Credential Type</label>
-        <RadioSelect
-          name="credentialType"
-          label="Credential Type"
-          options={
-            [
-              ["Private Key", "privateKey"],
-              ["Encrypted Private Key", "encryptedPrivateKey"],
-              ["Mnemonic", "mnemonic"]
-            ]
-          }
-          selected={this.state.credentialType}
-          onChange={this.HandleInputChange}
-        />
-
-        { this.Credentials() }
-
-        <label htmlFor="password">Password</label>
-        <input name="password" type="password" value={this.state.password} required={true} onChange={this.HandleInputChange} />
-      </div>
-    );
-  }
-
   render() {
     return (
-      <div className="page-container">
+      <div className="page-content">
         <Form
-          formContent={this.FormContent()}
           legend="Add Account"
           status={this.state.status}
           OnSubmit={this.HandleSubmit}
           OnError={this.HandleError}
           redirectPath="/accounts/switch"
           cancelPath="/accounts/switch"
-        />
+        >
+          <div className="form-content">
+            <label htmlFor="credentialType">Credential Type</label>
+            <RadioSelect
+              name="credentialType"
+              label="Credential Type"
+              inline={true}
+              options={
+                [
+                  ["Private Key", "privateKey"],
+                  ["Encrypted Private Key", "encryptedPrivateKey"],
+                  ["Mnemonic", "mnemonic"]
+                ]
+              }
+              selected={this.state.credentialType}
+              onChange={this.HandleInputChange}
+            />
+
+            { this.Credentials() }
+
+            <label htmlFor="password">Password</label>
+            <input name="password" type="password" value={this.state.password} required={true} onChange={this.HandleInputChange} />
+          </div>
+        </Form>
       </div>
     );
   }

@@ -2,27 +2,35 @@ import React from "react";
 import {ElvCoreConsumer} from "../ElvCoreContext";
 import TransferForm from "../components/TransferForm";
 import {SendFunds} from "../actions/Accounts";
+import {UpdateProfiles} from "../actions/Profiles";
 
-const Submit = (context) => {
-  return async ({recipient, ether}) => {
-    await SendFunds({context, recipient, ether});
-  };
-};
+class TransferFormContainer extends React.PureComponent {
+  constructor(props) {
+    super(props);
 
-const TransferFormContainer = ({context, props}) => {
-  const actions = {
-    Submit: Submit(context)
-  };
+    this.Submit = this.Submit.bind(this);
+  }
 
-  // Filter out current account
-  let accounts = {};
-  Object.keys(context.accounts)
-    .filter(address => address !== context.currentAccount)
-    .forEach(address => accounts[address] = context.accounts[address]);
+  async Submit({recipient, ether}) {
+    await SendFunds({context: this.props.context, recipient, ether});
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
 
-  return (
-    <TransferForm accounts={accounts} currentAccount={context.currentAccount} {...actions} />
-  );
-};
+  componentDidMount() {
+    UpdateProfiles({context: this.props.context});
+  }
+
+  render() {
+    // Filter out current account
+    let accounts = {};
+    Object.keys(this.props.context.accounts)
+      .filter(address => address !== this.props.context.currentAccount)
+      .forEach(address => accounts[address] = this.props.context.accounts[address]);
+
+    return (
+      <TransferForm accounts={accounts} currentAccount={this.props.context.currentAccount} Submit={this.Submit} />
+    );
+  }
+}
 
 export default ElvCoreConsumer(TransferFormContainer);

@@ -1,6 +1,4 @@
-@import "~elv-components-js/src/stylesheets/mixins";
-@import "~elv-components-js/src/stylesheets/variables/colors";
-@import "~elv-components-js/src/stylesheets/variables/spacing";
+@import "~elv-components-js/src/stylesheets/styles";
 
 .apps {
   display: flex;
@@ -27,12 +25,13 @@
 
   h4 {
     font-size: 18px;
+    margin: $elv-spacing-s 0;
     text-align: center;
   }
 }
 
 .app-frame {
   border: 0;
-  flex-grow: 1;
+  height: 100%;
   width: 100%;
 }

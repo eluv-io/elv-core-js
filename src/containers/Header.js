@@ -10,6 +10,12 @@ class HeaderContainer extends React.Component {
     this.ToggleHeader = this.ToggleHeader.bind(this);
   }
 
+  componentDidMount() {
+    if(this.props.context.currentAccount) {
+      GetAccountBalance({context: this.props.context, address: this.props.context.currentAccount});
+    }
+  }
+
   shouldComponentUpdate(nextProps) {
     const thisCurrent = this.props.context.accounts[this.props.context.currentAccount];
     const nextCurrent = nextProps.context.accounts[nextProps.context.currentAccount];
@@ -27,12 +33,8 @@ class HeaderContainer extends React.Component {
   render() {
     const currentAccount = this.props.context.accounts[this.props.context.currentAccount];
 
-    if(currentAccount && !currentAccount.balance) {
-      GetAccountBalance({context: this.props.context, address: this.props.context.currentAccount});
-    }
-
     return (
-      <Header showHeader={this.props.context.showHeader} ToggleHeader={this.ToggleHeader} currentAccount={currentAccount} />
+      <Header showHeader={this.props.context.showHeader} ToggleHeader={this.ToggleHeader} account={currentAccount} />
     );
   }
 }

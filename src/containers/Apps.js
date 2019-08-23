@@ -2,7 +2,7 @@ import React from "react";
 import {ElvCoreConsumer} from "../ElvCoreContext";
 import Apps from "../components/Apps";
 
-const AppsContainer = ({context, props}) => {
+const AppsContainer = ({context}) => {
   return (
     <Apps apps={context.apps} />
   );

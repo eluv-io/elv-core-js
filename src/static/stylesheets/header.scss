@@ -1,11 +1,11 @@
-@import "~elv-components-js/src/stylesheets/variables/spacing";
-@import "~elv-components-js/src/stylesheets/variables/colors";
-@import "~elv-components-js/src/stylesheets/mixins";
+@import "~elv-components-js/src/stylesheets/styles";
 
 header {
   align-items: center;
   box-shadow: 2px 1px 2px 0 $elv-color-lightgray;
   display: flex;
+  flex-grow: 0;
+  flex-shrink: 0;
   height: 40px;
   position: relative;
   width: 100%;
@@ -20,15 +20,23 @@ header {
   }
 
   .toggle-header-button {
-    height: 15px;
+    border-radius: 5px;
+    display: flex;
+    height: 25px;
+    justify-content: center;
     left: calc(50% - 25px);
     position: absolute;
-    top: 5px;
+    top: -2px;
     visibility: hidden;
     width: 50px;
 
     &:hover {
       background: $elv-color-lightergray;
+    }
+
+    svg {
+      color: transparent;
+      fill: $elv-color-darkergray;
     }
   }
 }
@@ -42,7 +50,6 @@ header {
 .logo {
   display: block;
   height: 100%;
-  width: 150px;
 
   .-elv-icon-wrapper {
     display: flex;
@@ -60,25 +67,46 @@ header {
   align-items: center;
   display: flex;
   height: 100%;
-  justify-content: flex-end;
+  justify-content: center;
   max-width: 350px;
-  min-width: 250px;
-  padding: 0 $elv-spacing-s;
+  min-width: 150px;
+  padding: 0 $elv-spacing-m 0 $elv-spacing-s;
+
+  .token-icon {
+    height: 15px;
+    margin-right: 1px;
+    width: auto;
+  }
 }
 
-.profile-image {
+.header-profile-image {
   $image-size: 30px;
   @include elv-cropped-image($image-size, $image-size, 50%, $image-size, $image-size);
-  margin-right: $elv-spacing-xxs;
+  margin-right: $elv-spacing-xs;
 }
 
-.header-account-name,
-.header-account-balance {
+.header-account-name {
   @include elv-ellipsis;
-  font-size: 14px;
-  max-width: 250px;
+  align-items: center;
+  display: flex;
+  font-size: 16px;
+  max-width: 300px;
+  width: 100%;
+}
+
+.header-account-name-address {
+  font-size: 12px;
 }
 
 .header-account-balance {
-  font-size: 11px;
+  span {
+    font-size: 11px;
+  }
+}
+
+.logo,
+.header-account {
+  &:hover {
+    opacity: 0.9;
+  }
 }

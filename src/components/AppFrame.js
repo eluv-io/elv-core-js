@@ -6,10 +6,11 @@ from the core app, which owns user account information and keys
 */
 
 import React from "react";
-import Path from "path";
+import UrlJoin from "url-join";
 import Redirect from "react-router/es/Redirect";
 
-import { FrameClient } from "elv-client-js/src/FrameClient";
+import {FrameClient} from "elv-client-js/src/FrameClient";
+import {Confirm} from "elv-components-js";
 
 class IFrameBase extends React.Component {
   SandboxPermissions() {
@@ -20,7 +21,8 @@ class IFrameBase extends React.Component {
       "allow-pointer-lock",
       "allow-orientation-lock",
       "allow-popups",
-      "allow-presentation"
+      "allow-presentation",
+      "allow-same-origin"
     ].join(" ");
   }
 
@@ -37,9 +39,11 @@ class IFrameBase extends React.Component {
   render() {
     return (
       <iframe
+        aria-label={`Eluvio Core Application: ${this.props.appName}`}
         ref={this.props.appRef}
         src={this.props.appUrl}
         sandbox={this.SandboxPermissions()}
+        allow="encrypted-media *"
         className={this.props.className}
         allowFullScreen={true}
       />
@@ -58,7 +62,7 @@ class AppFrame extends React.Component {
     this.state = {
       appRef: React.createRef(),
       // TODO: pull directly out of props
-      basePath: Path.join("/apps", this.props.app.name)
+      basePath: UrlJoin("/apps", this.props.app.name)
     };
 
     this.ApiRequestListener = this.ApiRequestListener.bind(this);
@@ -66,8 +70,7 @@ class AppFrame extends React.Component {
 
   async CheckAccess(event) {
     if(FrameClient.PromptedMethods().includes(event.data.calledMethod)) {
-      /*
-      const accessLevel = await this.props.client.client.userProfile.AccessLevel();
+      const accessLevel = await this.props.client.userProfileClient.AccessLevel();
 
       // No access to private profiles
       if(accessLevel === "private") {return false;}
@@ -76,27 +79,29 @@ class AppFrame extends React.Component {
       if(accessLevel === "prompt") {
         const requestor = event.data.args.requestor;
         if(!requestor) {
+          /* eslint-disable no-console */
           console.error("Requestor must be specified when requesting access to a user profile");
+          /* eslint-enable no-console */
           return false;
         }
 
-        const accessAllowed = await this.props.client.client.userProfile.PrivateUserMetadata({
-          metadataSubtree: Path.join("allowed_accessors", requestor)
+        const accessAllowed = await this.props.client.userProfileClient.UserMetadata({
+          metadataSubtree: UrlJoin("allowed_accessors", requestor)
         });
 
         if(accessAllowed) { return true; }
 
-        if(!confirm(`Do you want to allow the application "${requestor}" to access your profile?`)) {
-          return false;
-        }
-
-        // Record permission
-        await this.props.client.client.userProfile.ReplacePrivateUserMetadata({
-          metadataSubtree: Path.join("allowed_accessors", requestor),
-          metadata: Date.now()
+        return await Confirm({
+          message: `Do you want to allow the application "${requestor}" to access your profile?`,
+          onConfirm: async () => {
+            // Record permission
+            await this.props.client.userProfileClient.ReplaceUserMetadata({
+              metadataSubtree: UrlJoin("allowed_accessors", requestor),
+              metadata: Date.now()
+            });
+          }
         });
       }
-      */
 
       // Otherwise public access
     }
@@ -116,7 +121,7 @@ class AppFrame extends React.Component {
         responseMessage,
         "*"
       );
-    } catch(error) {
+    } catch (error) {
       /* eslint-disable no-console */
       console.error("Error responding to message");
       console.error(responseMessage);
@@ -134,7 +139,7 @@ class AppFrame extends React.Component {
     const requestId = event.data.requestId;
     const source = event.source;
 
-    switch(event.data.operation) {
+    switch (event.data.operation) {
       // App requested its app path
       case "GetFramePath":
         // TODO: Replace with match params
@@ -145,7 +150,7 @@ class AppFrame extends React.Component {
 
       // App requested to push its new app path
       case "SetFramePath":
-        history.replaceState(null, null, `#${Path.join(this.state.basePath, event.data.path)}`);
+        history.replaceState(null, null, `#${UrlJoin(this.state.basePath, event.data.path)}`);
 
         this.Respond(requestId, source, {response: "Set path " + event.data.path});
         break;
@@ -157,11 +162,11 @@ class AppFrame extends React.Component {
         break;
 
       case "ShowHeader":
-        //this.props.dispatch(ShowHeader());
+        this.props.ShowHeader();
         break;
 
       case "HideHeader":
-        //this.props.dispatch(HideHeader());
+        this.props.HideHeader();
         break;
 
       // App requested an ElvClient method
@@ -186,6 +191,7 @@ class AppFrame extends React.Component {
     return (
       <IFrame
         ref={this.state.appRef}
+        appName={this.props.app.name}
         appUrl={this.props.app.url}
         listener={this.ApiRequestListener}
         className="app-frame"

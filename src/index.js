@@ -1,3 +1,4 @@
+import "@babel/polyfill";
 import "./static/stylesheets/defaults.scss";
 
 import React from "react";
@@ -18,39 +19,29 @@ import AccountFormContainer from "./containers/AccountForm";
 import TransferFormContainer from "./containers/TransferForm";
 import EnforceLoginContainer from "./EnforceLogin";
 
-class ElvCore extends React.Component {
-  render() {
-    return (
-      <ElvCoreProvider>
-        <HeaderContainer />
-        <NavigationContainer />
-        <div className="page-content">
-          <EnforceLoginContainer>
-            <Switch>
-              <Route exact path="/apps" component={AppsContainer} />
-              <Route path="/apps/:app" component={AppFrameContainer} />
-
-              <Route exact path="/profile" component={ProfileContainer} />
-
-              <Route exact path="/accounts" component={AccountsContainer} />
-              <Route exact path="/accounts/add" component={AccountFormContainer} />
-
-              <Route exact path="/transfer" component={TransferFormContainer} />
-              <Route render={() => <Redirect to="/accounts"/>} />
-            </Switch>
-          </EnforceLoginContainer>
-        </div>
-      </ElvCoreProvider>
-    );
-  }
-}
-
 class App extends React.PureComponent {
   render() {
     return (
       <HashRouter>
         <div className="router-container">
-          <ElvCore />
+          <ElvCoreProvider>
+            <HeaderContainer />
+            <NavigationContainer />
+            <EnforceLoginContainer>
+              <Switch>
+                <Route exact path="/apps" component={AppsContainer} />
+                <Route path="/apps/:app" component={AppFrameContainer} />
+
+                <Route exact path="/profile" component={ProfileContainer} />
+
+                <Route exact path="/accounts" component={AccountsContainer} />
+                <Route exact path="/accounts/add" component={AccountFormContainer} />
+
+                <Route exact path="/transfer" component={TransferFormContainer} />
+                <Route render={() => <Redirect to="/accounts"/>} />
+              </Switch>
+            </EnforceLoginContainer>
+          </ElvCoreProvider>
         </div>
       </HashRouter>
     );

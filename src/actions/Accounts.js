@@ -1,21 +1,17 @@
 export const GetAccountBalance = async ({context, address}) => {
-  const balance = "Φ" + context.client.utils.ToBigNumber(
+  const balance = context.client.utils.ToBigNumber(
     await context.client.GetBalance({address})
   ).toFixed(3);
 
   await context.MergeContext("accounts", address, {balance});
 };
 
-const SetCurrentAccount = async (context, signer, address) => {
-  const client = context.client;
-  client.SetSigner({signer});
+const SetCurrentAccount = async ({context, signer, address}) => {
+  address = context.client.utils.FormatAddress(address);
 
-  address = client.utils.FormatAddress(address);
+  signer ? context.client.SetSigner({signer}) : context.client.ClearSigner();
 
-  await context.UpdateContext({
-    signer,
-    currentAccount: address
-  });
+  await context.UpdateContext({currentAccount: address});
 
   localStorage.setItem(
     "elv-current-account",
@@ -23,35 +19,15 @@ const SetCurrentAccount = async (context, signer, address) => {
   );
 };
 
-const UpdateAccounts = async (context, accounts) => {
-  let formattedAccounts = {};
-
-  // Ensure all accounts have properly formatted addresses
-  Object.keys(accounts).forEach(address => {
-    const formattedAddress = context.client.utils.FormatAddress(address);
-
-    formattedAccounts[formattedAddress] = accounts[address];
-
-    // If existing account format is incorrect, update the contained address and delete the old key
-    if(formattedAddress !== address) {
-      formattedAccounts[formattedAddress] = {
-        address: formattedAddress
-      };
-
-      delete accounts[address];
-    }
-  });
-
-  // Update account balances
-  Object.keys(accounts).forEach(address => GetAccountBalance({context, address}));
-
-  // Update app context
-  await context.UpdateContext({accounts: formattedAccounts});
+export const SaveAccounts = async ({accounts}) => {
+  delete accounts["undefined"];
 
   // Save address and encrypted private key to localstorage
   let savedAccounts = {};
-  Object.values(formattedAccounts).forEach(account =>
+  Object.values(accounts).forEach(account =>
     savedAccounts[account.address] = {
+      name: (account.name || "").toString(),
+      profileImage: account.profileImage,
       address: account.address,
       encryptedPrivateKey: account.encryptedPrivateKey
     }
@@ -61,6 +37,19 @@ const UpdateAccounts = async (context, accounts) => {
     "elv-accounts",
     btoa(JSON.stringify(savedAccounts))
   );
+};
+
+const UpdateAccounts = async ({context, accounts, currentAccount}) => {
+  // Update account balances
+  Object.keys(accounts).forEach(address => GetAccountBalance({context, address}));
+
+  const signer = accounts[currentAccount] && accounts[currentAccount].signer;
+  await SetCurrentAccount({context, signer, address: currentAccount});
+
+  // Update app context
+  await context.UpdateContext({accounts});
+
+  await SaveAccounts({accounts});
 };
 
 export const AddAccount = async ({context, privateKey, password}) => {
@@ -79,12 +68,12 @@ export const AddAccount = async ({context, privateKey, password}) => {
     [address]: {
       address,
       signer,
-      encryptedPrivateKey
+      encryptedPrivateKey,
+      profile: {}
     }
   };
 
-  await UpdateAccounts(context, updatedAccounts);
-  await SetCurrentAccount(context, signer, address);
+  await UpdateAccounts({context, accounts: updatedAccounts, currentAccount: address});
 };
 
 export const RemoveAccount = ({context, address}) => {
@@ -96,7 +85,8 @@ export const RemoveAccount = ({context, address}) => {
 
   delete updatedAccounts[address];
 
-  UpdateAccounts(context, updatedAccounts);
+  const currentAccount = context.currentAccount === address ? undefined : context.currentAccount;
+  UpdateAccounts({context, accounts: updatedAccounts, currentAccount});
 };
 
 export const UnlockAccount = async ({context, address, password}) => {
@@ -116,8 +106,7 @@ export const UnlockAccount = async ({context, address, password}) => {
     [address]: account
   };
 
-  await UpdateAccounts(context, updatedAccounts);
-  await SetCurrentAccount(context, account.signer, address);
+  await UpdateAccounts({context, accounts: updatedAccounts, currentAccount: address});
 };
 
 export const SendFunds = async ({context, recipient, ether}) => {

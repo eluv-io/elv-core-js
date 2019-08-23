@@ -1,22 +1,13 @@
 import React from "react";
-
-import {ElvClient} from "elv-client-js/src/ElvClient";
-import ClientConfiguration from "../configuration";
+import { ElvClient } from "elv-client-js";
+import { SaveAccounts } from "./actions/Accounts";
 
 const {Provider, Consumer} = React.createContext();
 
-let storedAccounts = localStorage.getItem("elv-accounts");
-if(storedAccounts) {
-  storedAccounts = JSON.parse(atob(storedAccounts));
-} else {
-  storedAccounts = {};
-}
-
 const initialState = {
-  accounts: storedAccounts,
-  apps: ClientConfiguration.apps,
+  accounts: {},
   currentAccount: localStorage.getItem("elv-current-account"),
-  client: ElvClient.FromConfiguration({configuration: ClientConfiguration}),
+  client: undefined,
   showHeader: true
 };
 
@@ -24,10 +15,30 @@ export class ElvCoreProvider extends React.Component {
   constructor(props) {
     super(props);
 
+    let storedAccounts = localStorage.getItem("elv-accounts");
+    if(storedAccounts) {
+      initialState.accounts = JSON.parse(atob(storedAccounts));
+    }
+
     this.state = initialState;
+
+    this.Initialize();
 
     this.MergeContext = this.MergeContext.bind(this);
     this.UpdateContext = this.UpdateContext.bind(this);
+  }
+
+  async Initialize() {
+    const client = await ElvClient.FromConfigurationUrl({
+      configUrl: EluvioConfiguration["config-url"]
+    });
+
+    window.client = client;
+
+    this.setState({
+      client,
+      apps: EluvioConfiguration.apps
+    });
   }
 
   async MergeContext(...args) {
@@ -54,7 +65,12 @@ export class ElvCoreProvider extends React.Component {
       pointer[lastKey] = newValue;
     }
 
-    return new Promise(resolve => this.setState(newContext, resolve));
+    await new Promise(resolve => this.setState(newContext, resolve));
+
+    // Keep saved accounts up to date
+    await SaveAccounts({accounts: newContext.accounts});
+
+    return newContext;
   }
 
   async UpdateContext(newContext) {
@@ -64,6 +80,8 @@ export class ElvCoreProvider extends React.Component {
   }
 
   render() {
+    if(!this.state.client) { return null; }
+
     const context = {
       ...this.state,
       MergeContext: this.MergeContext,

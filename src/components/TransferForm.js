@@ -1,5 +1,5 @@
 import React from "react";
-import Form from "elv-components-js/src/components/Form";
+import {Form} from "elv-components-js";
 import Redirect from "react-router/es/Redirect";
 
 class TransferForm extends React.Component {
@@ -73,7 +73,7 @@ class TransferForm extends React.Component {
     let options = Object.values(this.props.accounts)
       .map(account => (
         <option key={"account-selection-" + account.address} value={account.address}>
-          { account.address }
+          {`${account.name || account.address} (${account.balance})` }
         </option>
       ));
 
@@ -84,24 +84,9 @@ class TransferForm extends React.Component {
     );
 
     return (
-      <select name="selectedRecipient" value={this.state.selectedRecipient} onChange={this.HandleInputChange} required={true}>
+      <select className="recipient-select" name="selectedRecipient" value={this.state.selectedRecipient} onChange={this.HandleInputChange} required={true}>
         { options }
       </select>
-    );
-  }
-
-  FormContent() {
-    return (
-      <div className="form-content">
-        <label htmlFor="recipient">Recipient</label>
-        { this.RecipientSelector() }
-
-        <label htmlFor="recipient">Recipient Address</label>
-        <input name="recipient" value={this.state.recipient} disabled={!this.state.manualEntry} onChange={this.HandleInputChange} />
-
-        <label htmlFor="ether">Ether</label>
-        <input name="ether" type="number" step="0.0000001" value={this.state.ether} required={true} onChange={this.HandleInputChange} />
-      </div>
     );
   }
 
@@ -111,14 +96,24 @@ class TransferForm extends React.Component {
     }
 
     return (
-      <div className="page-container">
+      <div className="page-content">
         <Form
           legend="Transfer Funds"
-          formContent={this.FormContent()}
           status={this.state.status}
           OnSubmit={this.HandleSubmit}
           OnError={this.HandleError}
-        />
+        >
+          <div className="form-content">
+            <label htmlFor="recipient">Recipient</label>
+            { this.RecipientSelector() }
+
+            <label htmlFor="recipient">Recipient Address</label>
+            <input name="recipient" value={this.state.recipient} disabled={!this.state.manualEntry} onChange={this.HandleInputChange} />
+
+            <label htmlFor="ether">Ether</label>
+            <input name="ether" type="number" step="0.0000001" value={this.state.ether} required={true} onChange={this.HandleInputChange} />
+          </div>
+        </Form>
       </div>
     );
   }

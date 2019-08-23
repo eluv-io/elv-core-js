@@ -8,6 +8,10 @@ rules:
   - convention: hyphenatedlowercase
   leading-zero:
   - 0
+  nesting-depth:
+    - 1
+    -
+      max-depth: 3
   quotes:
   - 1
   - style: double

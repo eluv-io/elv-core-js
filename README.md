@@ -25,50 +25,9 @@ See [ElvClient documentation](https://github.com/eluv-io/elv-client-js) for more
 Then open http://localhost:8082 in your browser
 
 ##### Configuration
-Edit ```./configuration.json``` to point to your fabric and ethereum nodes
+Edit ```./configuration.json``` to point to the appropriate Eluvio configuration URL and any additional apps.
 
 
 #### Running from static build 
 
 Simply open dist/index.html in your browser
-
-##### Configuration
-
-Edit the following line in the packed javascript file ```dist/index.js``` 
-to point to your fabric and ethereum nodes
-
-```javascript
-module.exports = {"fabric":{"hostname":"localhost","port":8008,"use_https":false},"ethereum":{"hostname":"localhost","port":7545,"use_https":false}};
-```
-
-
-#### IMPORTANT: CORS Configuration
-
-##### Fabric
-
-Ensure your qfab daemon configuration has the following options set
-in the "api#cors" section
-
-```json
-"allowed_origins": [
-  "*"
-],
-"allowed_methods": [
-  "GET",
-  "PUT",
-  "POST",
-  "OPTIONS",
-  "DELETE"
-],
- "allowed_headers": [
-  "*"
- ]
-```
-
-##### Ethereum
-
-If you are running Geth, ensure you have the rpccorsdomain flag set:
-
-```geth --rpccorsdomain "*" ...```
-
-Ganache should allow CORS requests by default

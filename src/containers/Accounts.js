@@ -1,10 +1,11 @@
 import React from "react";
 import {ElvCoreConsumer} from "../ElvCoreContext";
 import Accounts from "../components/Accounts";
-import {GetAccountBalance, RemoveAccount as Remove} from "../actions/Accounts";
+import {RemoveAccount as Remove} from "../actions/Accounts";
 import {UnlockAccount as Unlock} from "../actions/Accounts";
+import {UpdateProfiles} from "../actions/Profiles";
 
-class AccountsContainer extends React.Component {
+class AccountsContainer extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -13,22 +14,12 @@ class AccountsContainer extends React.Component {
   }
 
   componentDidMount() {
-    Object.keys(this.props.context.accounts).forEach(address => {
-      if (!this.props.context.accounts[address].balance) {
-        GetAccountBalance({context: this.props.context, address});
-      }
-    });
-  }
-
-  shouldComponentUpdate(nextProps) {
-    return !(
-      this.props.context.accounts === nextProps.context.accounts &&
-      this.props.context.currentAccount === nextProps.context.currentAccount
-    );
+    UpdateProfiles({context: this.props.context});
   }
 
   async UnlockAccount({address, password}) {
     await Unlock({context: this.props.context, address, password});
+    UpdateProfiles({context: this.props.context});
   }
 
   RemoveAccount(address) {
