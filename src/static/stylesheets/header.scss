@@ -21,15 +21,22 @@ header {
 
   .toggle-header-button {
     border-radius: 5px;
+    display: flex;
     height: 25px;
+    justify-content: center;
     left: calc(50% - 25px);
     position: absolute;
-    top: -4px;
+    top: -2px;
     visibility: hidden;
     width: 50px;
 
     &:hover {
       background: $elv-color-lightergray;
+    }
+
+    svg {
+      color: transparent;
+      fill: $elv-color-darkergray;
     }
   }
 }
