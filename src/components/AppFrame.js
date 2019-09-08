@@ -9,6 +9,7 @@ import React from "react";
 import UrlJoin from "url-join";
 import Redirect from "react-router/es/Redirect";
 
+import {ElvClient} from "elv-client-js";
 import {FrameClient} from "elv-client-js/src/FrameClient";
 import {Confirm} from "elv-components-js";
 
@@ -68,9 +69,18 @@ class AppFrame extends React.Component {
     this.ApiRequestListener = this.ApiRequestListener.bind(this);
   }
 
+  async componentDidMount() {
+    const appClient = await ElvClient.FromConfigurationUrl({
+      configUrl: EluvioConfiguration["config-url"]
+    });
+    appClient.SetSigner({signer: this.props.client.signer});
+
+    this.setState({appClient});
+  }
+
   async CheckAccess(event) {
     if(FrameClient.PromptedMethods().includes(event.data.calledMethod)) {
-      const accessLevel = await this.props.client.userProfileClient.AccessLevel();
+      const accessLevel = await this.state.appClient.userProfileClient.AccessLevel();
 
       // No access to private profiles
       if(accessLevel === "private") {return false;}
@@ -85,7 +95,7 @@ class AppFrame extends React.Component {
           return false;
         }
 
-        const accessAllowed = await this.props.client.userProfileClient.UserMetadata({
+        const accessAllowed = await this.state.appClient.userProfileClient.UserMetadata({
           metadataSubtree: UrlJoin("allowed_accessors", requestor)
         });
 
@@ -95,7 +105,7 @@ class AppFrame extends React.Component {
           message: `Do you want to allow the application "${requestor}" to access your profile?`,
           onConfirm: async () => {
             // Record permission
-            await this.props.client.userProfileClient.ReplaceUserMetadata({
+            await this.state.appClient.userProfileClient.ReplaceUserMetadata({
               metadataSubtree: UrlJoin("allowed_accessors", requestor),
               metadata: Date.now()
             });
@@ -110,7 +120,7 @@ class AppFrame extends React.Component {
   }
 
   Respond(requestId, source, responseMessage) {
-    responseMessage = this.props.client.utils.MakeClonable({
+    responseMessage = this.state.appClient.utils.MakeClonable({
       ...responseMessage,
       requestId: requestId,
       type: "ElvFrameResponse"
@@ -177,7 +187,7 @@ class AppFrame extends React.Component {
         }
 
         const responder = (response) => this.Respond(response.requestId, source, response);
-        await this.props.client.CallFromFrameMessage(event.data, responder);
+        await this.state.appClient.CallFromFrameMessage(event.data, responder);
     }
 
     //this.UpdateAccountBalance();
@@ -186,6 +196,10 @@ class AppFrame extends React.Component {
   render() {
     if(this.state.redirectLocation) {
       return <Redirect push to={this.state.redirectLocation} />;
+    }
+
+    if(!this.state.appClient) {
+      return null;
     }
 
     return (
