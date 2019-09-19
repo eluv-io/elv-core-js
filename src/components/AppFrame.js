@@ -9,7 +9,6 @@ import React from "react";
 import UrlJoin from "url-join";
 import Redirect from "react-router/es/Redirect";
 
-import {ElvClient} from "elv-client-js";
 import {FrameClient} from "elv-client-js/src/FrameClient";
 import {Confirm} from "elv-components-js";
 
@@ -63,64 +62,65 @@ class AppFrame extends React.Component {
     this.state = {
       appRef: React.createRef(),
       // TODO: pull directly out of props
-      basePath: UrlJoin("/apps", this.props.app.name)
+      basePath: encodeURI(UrlJoin("/apps", this.props.app.name))
     };
 
     this.ApiRequestListener = this.ApiRequestListener.bind(this);
   }
 
-  async componentDidMount() {
-    const appClient = await ElvClient.FromConfigurationUrl({
-      configUrl: EluvioConfiguration["config-url"]
-    });
-    appClient.SetSigner({signer: this.props.client.signer});
-
-    this.setState({appClient});
+  // Ensure region is reset if app changed it
+  async componentWillUnmount() {
+    await this.props.client.ResetRegion();
   }
 
   async CheckAccess(event) {
     if(FrameClient.PromptedMethods().includes(event.data.calledMethod)) {
-      const accessLevel = await this.state.appClient.userProfileClient.AccessLevel();
+      const accessLevel = await this.props.client.userProfileClient.AccessLevel();
 
       // No access to private profiles
-      if(accessLevel === "private") {return false;}
+      if(accessLevel === "private") { return false; }
 
       // Prompt for access
       if(accessLevel === "prompt") {
-        const requestor = event.data.args.requestor;
-        if(!requestor) {
-          /* eslint-disable no-console */
-          console.error("Requestor must be specified when requesting access to a user profile");
-          /* eslint-enable no-console */
-          return false;
-        }
-
-        const accessAllowed = await this.state.appClient.userProfileClient.UserMetadata({
+        const requestor = this.props.app.name;
+        const accessAllowed = await this.props.client.userProfileClient.UserMetadata({
           metadataSubtree: UrlJoin("allowed_accessors", requestor)
         });
 
-        if(accessAllowed) { return true; }
+        const confirmed =
+          accessAllowed ||
+          await Confirm({
+            message: `Do you want to allow the application "${requestor}" to access your profile?`,
+            onConfirm: async () => {
+              // Record permission
+              await this.props.client.userProfileClient.ReplaceUserMetadata({
+                metadataSubtree: UrlJoin("allowed_accessors", requestor),
+                metadata: Date.now()
+              });
+            }
+          });
 
-        return await Confirm({
-          message: `Do you want to allow the application "${requestor}" to access your profile?`,
-          onConfirm: async () => {
-            // Record permission
-            await this.state.appClient.userProfileClient.ReplaceUserMetadata({
-              metadataSubtree: UrlJoin("allowed_accessors", requestor),
-              metadata: Date.now()
-            });
-          }
-        });
+        if(!confirmed) {
+          return false;
+        }
       }
 
       // Otherwise public access
+    }
+
+    // If making a user metadata call, namespace metadata under app subtree
+    if(FrameClient.MetadataMethods().includes(event.data.calledMethod)) {
+      event.data.args = {
+        ...event.data.args,
+        metadataSubtree: UrlJoin(this.props.app.name, event.data.args.metadataSubtree || "")
+      };
     }
 
     return true;
   }
 
   Respond(requestId, source, responseMessage) {
-    responseMessage = this.state.appClient.utils.MakeClonable({
+    responseMessage = this.props.client.utils.MakeClonable({
       ...responseMessage,
       requestId: requestId,
       type: "ElvFrameResponse"
@@ -187,10 +187,8 @@ class AppFrame extends React.Component {
         }
 
         const responder = (response) => this.Respond(response.requestId, source, response);
-        await this.state.appClient.CallFromFrameMessage(event.data, responder);
+        await this.props.client.CallFromFrameMessage(event.data, responder);
     }
-
-    //this.UpdateAccountBalance();
   }
 
   render() {
@@ -198,7 +196,7 @@ class AppFrame extends React.Component {
       return <Redirect push to={this.state.redirectLocation} />;
     }
 
-    if(!this.state.appClient) {
+    if(!this.props.client) {
       return null;
     }
 
