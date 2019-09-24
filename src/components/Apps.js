@@ -8,7 +8,7 @@ import UrlJoin from "url-join";
 class Apps extends React.PureComponent {
   App(name) {
     const displayName = name;
-    const logoUrl = UrlJoin(this.props.apps[name], "logo.png");
+    const logoUrl = UrlJoin(this.props.apps[name], "Logo.png");
 
     return (
       <Action key={`app-${name}`} label={`Go to ${displayName}`} type="link" to={`/apps/${name}`} button={false}>

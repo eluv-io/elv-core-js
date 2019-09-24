@@ -1,7 +1,15 @@
 import "../static/stylesheets/profile.scss";
 
 import React from "react";
-import {Balance, Confirm, CroppedIconWithAction, IconButton, BallClipRotate, onEnterPressed} from "elv-components-js";
+import {
+  Balance,
+  Confirm,
+  CroppedIconWithAction,
+  IconButton,
+  BallClipRotate,
+  onEnterPressed,
+  TraversableJson
+} from "elv-components-js";
 
 import DefaultProfileImage from "../static/icons/User.svg";
 import UrlJoin from "url-join";
@@ -19,13 +27,6 @@ class Profile extends React.Component {
       updating: false,
       showKey: false
     };
-
-    this.excludedTags = [
-      "collected_data",
-      "accessed_content",
-      "allowed_accessors",
-      "image"
-    ];
 
     this.HandleProfileImageChange = this.HandleProfileImageChange.bind(this);
     this.HandleNameChange = this.HandleNameChange.bind(this);
@@ -45,7 +46,10 @@ class Profile extends React.Component {
 
   HandleNameChange() {
     this.Update(async () => {
-      await this.props.ReplaceUserMetadata({metadataSubtree: "name", metadata: this.state.newName});
+      await this.props.ReplaceUserMetadata({
+        metadataSubtree: UrlJoin("public", "name"),
+        metadata: this.state.newName
+      });
 
       this.setState({
         modifyingName: false
@@ -149,37 +153,6 @@ class Profile extends React.Component {
     );
   }
 
-  MetadataField(header, metadata) {
-    if(!metadata) { metadata = {}; }
-
-    const metadataFields = Object.keys(metadata).map(key => {
-      if(this.excludedTags.includes(key)) { return null; }
-
-      let value = metadata[key];
-      if(typeof value === "object") {
-        value = <pre>{JSON.stringify(metadata[key], null, 2)}</pre>;
-      } else {
-        value = <span>{metadata[key]}</span>;
-      }
-
-      return (
-        <div className="labelled-field" key={`${header}-${key}`}>
-          <label>{key}</label>
-          {value}
-        </div>
-      );
-    });
-
-    return (
-      <div className="info-section">
-        <h4>{header}</h4>
-        <div className="indented">
-          { metadataFields }
-        </div>
-      </div>
-    );
-  }
-
   PrivateKey() {
     return (
       <span className="private-key-container">
@@ -275,7 +248,12 @@ class Profile extends React.Component {
               <div className="page-subheader"><Balance balance={this.props.account.balance} className="account-balance" /></div>
               { this.PrivateKey() }
             </div>
-            { this.MetadataField("Profile Information", metadata) }
+            <div className="info-section">
+              <h4>Profile Information</h4>
+              <div className="indented">
+                <TraversableJson json={metadata} />
+              </div>
+            </div>
             { permissions }
             { collectedTags }
           </div>
