@@ -1,11 +1,9 @@
 import "../static/stylesheets/header.scss";
 
 import React from "react";
-import {ElvCoreConsumer} from "../ElvCoreContext";
 import {
   Action,
   Balance,
-  LoadingElement,
   CroppedIcon,
   IconButton,
   IconLink
@@ -14,7 +12,12 @@ import {
 import Logo from "../static/images/Logo.png";
 import DefaultAccountImage from "../static/icons/User.svg";
 import ShowHeaderIcon from "../static/icons/ShowHeader.svg";
+import {inject, observer} from "mobx-react";
 
+@inject("root")
+@inject("accounts")
+@inject("profiles")
+@observer
 class Header extends React.Component {
   constructor(props) {
     super(props);
@@ -24,23 +27,31 @@ class Header extends React.Component {
   }
 
   ToggleHeader(show) {
-    this.props.ToggleHeader(show);
+    this.props.root.ToggleHeader(show);
   }
 
   AccountInfo() {
-    const profileImage = (this.props.account && this.props.account.profileImage) || DefaultAccountImage;
-    const profileName = (this.props.account && (this.props.account.name || this.props.account.address)) || "Not Logged In";
-    const addressAsName = this.props.account && profileName === this.props.account.address;
+    const account = this.props.accounts.currentAccount;
+    const profile = this.props.profiles.currentProfile;
+
+    const profileName = account ? profile.metadata.public.name || account.address : "Not Logged In";
+    const addressAsName = account ? profileName === account.address : "";
 
     return (
       <Action type="link" label="Go to Accounts Page" to="/accounts" className="header-account" button={false}>
-        <CroppedIcon icon={profileImage} label={"Profile Image"} className="header-profile-image"/>
+        <CroppedIcon
+          key={`account-image-${account.address}`}
+          icon={profile.imageUrl || DefaultAccountImage}
+          alternateIcon={DefaultAccountImage}
+          label={"Profile Image"}
+          className="header-profile-image"
+        />
         <div className="header-account-info">
           <div className={`header-account-name ${addressAsName ? "header-account-name-address" : ""}`}>
             {profileName}
           </div>
           <div className="header-account-balance">
-            <Balance balance={this.props.account && this.props.account.balance} className="header-account-balance"/>
+            <Balance balance={account ? account.balance : ""} className="header-account-balance"/>
           </div>
         </div>
       </Action>
@@ -49,21 +60,21 @@ class Header extends React.Component {
 
   render() {
     return (
-      <header className={this.props.showHeader ? "header" : "header hidden-header"}>
+      <header className={this.props.root.showHeader ? "header" : "header hidden-header"}>
         <IconButton className="toggle-header-button" icon={ShowHeaderIcon} label="Show Header" onClick={() => this.ToggleHeader(true)} />
         <IconLink icon={Logo} to="/apps" className="logo" />
         <div
           className="toggle-header-section"
-          label="Hide Header"
+          title="Hide Header"
           aria-label="Hide Header"
           tabIndex={0}
           onClick={() => this.ToggleHeader(false)}
           onKeyPress={() => this.ToggleHeader(false)}
         />
-        <LoadingElement loading={false} render={this.AccountInfo} />
+        { this.AccountInfo() }
       </header>
     );
   }
 }
 
-export default ElvCoreConsumer(Header);
+export default Header;

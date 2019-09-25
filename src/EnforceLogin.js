@@ -1,13 +1,16 @@
 import React from "react";
 import withRouter from "react-router/es/withRouter";
-import {ElvCoreConsumer} from "./ElvCoreContext";
 import Redirect from "react-router/es/Redirect";
 import LoginModal from "./components/LoginModal";
-import {UnlockAccount} from "./actions/Accounts";
+import {inject, observer} from "mobx-react";
+import {LoadingElement} from "elv-components-js";
 
+@inject("accounts")
+@inject("root")
+@observer
 class EnforceLogin extends React.PureComponent {
   render() {
-    const currentAccount = this.props.context.accounts[this.props.context.currentAccount];
+    const currentAccount = this.props.accounts.currentAccount;
     const onAccountsPage = this.props.location.pathname.startsWith("/accounts");
 
     if(onAccountsPage) {
@@ -20,8 +23,7 @@ class EnforceLogin extends React.PureComponent {
           prompt={true}
           address={currentAccount.address}
           Submit={
-            async (password) => await UnlockAccount({
-              context: this.props.context,
+            async (password) => await this.props.accounts.UnlockAccount({
               address: currentAccount.address,
               password
             })
@@ -29,9 +31,16 @@ class EnforceLogin extends React.PureComponent {
         />
       );
     } else {
-      return this.props.children;
+      return (
+        <LoadingElement
+          loading={!this.props.root.signerSet}
+          fullPage={true}
+        >
+          { this.props.children }
+        </LoadingElement>
+      );
     }
   }
 }
 
-export default withRouter(ElvCoreConsumer(EnforceLogin));
+export default withRouter(EnforceLogin);

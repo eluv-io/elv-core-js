@@ -89,18 +89,19 @@ header {
   @include elv-ellipsis;
   align-items: center;
   display: flex;
-  font-size: 16px;
+  font-size: $elv-font-m;
   max-width: 300px;
   width: 100%;
 }
 
 .header-account-name-address {
-  font-size: 12px;
+  font-size: $elv-font-s;
 }
 
 .header-account-balance {
   span {
-    font-size: 11px;
+    font-size: $elv-font-s;
+    font-weight: 300;
   }
 }
 

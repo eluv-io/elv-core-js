@@ -11,6 +11,8 @@ import Redirect from "react-router/es/Redirect";
 
 import {FrameClient} from "elv-client-js/src/FrameClient";
 import {Confirm} from "elv-components-js";
+import {inject, observer} from "mobx-react";
+import withRouter from "react-router/es/withRouter";
 
 class IFrameBase extends React.Component {
   SandboxPermissions() {
@@ -55,14 +57,21 @@ const IFrame = React.forwardRef(
   (props, appRef) => <IFrameBase appRef={appRef} {...props} />
 );
 
+@inject("root")
+@observer
 class AppFrame extends React.Component {
   constructor(props) {
     super(props);
 
+    const appName = this.props.match.params.app;
+    const appUrl = EluvioConfiguration.apps[appName];
+
     this.state = {
       appRef: React.createRef(),
+      appName,
+      appUrl,
       // TODO: pull directly out of props
-      basePath: encodeURI(UrlJoin("/apps", this.props.app.name))
+      basePath: encodeURI(UrlJoin("/apps", appName))
     };
 
     this.ApiRequestListener = this.ApiRequestListener.bind(this);
@@ -70,20 +79,20 @@ class AppFrame extends React.Component {
 
   // Ensure region is reset if app changed it
   async componentWillUnmount() {
-    await this.props.client.ResetRegion();
+    await this.props.root.client.ResetRegion();
   }
 
   async CheckAccess(event) {
     if(FrameClient.PromptedMethods().includes(event.data.calledMethod)) {
-      const accessLevel = await this.props.client.userProfileClient.AccessLevel();
+      const accessLevel = await this.props.root.client.userProfileClient.AccessLevel();
 
       // No access to private profiles
       if(accessLevel === "private") { return false; }
 
       // Prompt for access
       if(accessLevel === "prompt") {
-        const requestor = this.props.app.name;
-        const accessAllowed = await this.props.client.userProfileClient.UserMetadata({
+        const requestor = this.state.appName;
+        const accessAllowed = await this.props.root.client.userProfileClient.UserMetadata({
           metadataSubtree: UrlJoin("allowed_accessors", requestor)
         });
 
@@ -93,7 +102,7 @@ class AppFrame extends React.Component {
             message: `Do you want to allow the application "${requestor}" to access your profile?`,
             onConfirm: async () => {
               // Record permission
-              await this.props.client.userProfileClient.ReplaceUserMetadata({
+              await this.props.root.client.userProfileClient.ReplaceUserMetadata({
                 metadataSubtree: UrlJoin("allowed_accessors", requestor),
                 metadata: Date.now()
               });
@@ -112,7 +121,7 @@ class AppFrame extends React.Component {
     if(FrameClient.MetadataMethods().includes(event.data.calledMethod)) {
       event.data.args = {
         ...event.data.args,
-        metadataSubtree: UrlJoin(this.props.app.name, event.data.args.metadataSubtree || "")
+        metadataSubtree: UrlJoin(this.state.appName, event.data.args.metadataSubtree || "")
       };
     }
 
@@ -120,7 +129,7 @@ class AppFrame extends React.Component {
   }
 
   Respond(requestId, source, responseMessage) {
-    responseMessage = this.props.client.utils.MakeClonable({
+    responseMessage = this.props.root.client.utils.MakeClonable({
       ...responseMessage,
       requestId: requestId,
       type: "ElvFrameResponse"
@@ -172,11 +181,11 @@ class AppFrame extends React.Component {
         break;
 
       case "ShowHeader":
-        this.props.ShowHeader();
+        this.props.root.ToggleHeader(true);
         break;
 
       case "HideHeader":
-        this.props.HideHeader();
+        this.props.root.ToggleHeader(false);
         break;
 
       // App requested an ElvClient method
@@ -187,7 +196,7 @@ class AppFrame extends React.Component {
         }
 
         const responder = (response) => this.Respond(response.requestId, source, response);
-        await this.props.client.CallFromFrameMessage(event.data, responder);
+        await this.props.root.client.CallFromFrameMessage(event.data, responder);
     }
   }
 
@@ -196,15 +205,15 @@ class AppFrame extends React.Component {
       return <Redirect push to={this.state.redirectLocation} />;
     }
 
-    if(!this.props.client) {
+    if(!this.props.root.client) {
       return null;
     }
 
     return (
       <IFrame
         ref={this.state.appRef}
-        appName={this.props.app.name}
-        appUrl={this.props.app.url}
+        appName={this.state.appName}
+        appUrl={this.state.appUrl}
         listener={this.ApiRequestListener}
         className="app-frame"
       />
@@ -212,4 +221,4 @@ class AppFrame extends React.Component {
   }
 }
 
-export default AppFrame;
+export default withRouter(AppFrame);

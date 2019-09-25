@@ -2,39 +2,50 @@ import "../static/stylesheets/navigation.scss";
 
 import React from "react";
 import NavLink from "react-router-dom/es/NavLink";
-import PropTypes from "prop-types";
+import {inject, observer} from "mobx-react";
+import withRouter from "react-router/es/withRouter";
 
-const Navigation = (props) => {
-  const lowBalance = props.balance < 0.1;
-  const lowBalanceWarning = props.unlocked && lowBalance ?
-    <div className="warning">This account has an insufficient balance. Please fund the account.</div> :
-    null;
-  if(!props.unlocked || lowBalance) {
-    return (
-      <div className="nav-container locked">
-        { lowBalanceWarning }
-        <nav>
-          <NavLink activeClassName="active" to="/accounts">Accounts</NavLink>
-        </nav>
-      </div>
-    );
-  } else {
-    return (
-      <div className="nav-container">
-        <nav>
-          <NavLink exact={true} activeClassName="active" to="/apps">Apps</NavLink>
-          <NavLink activeClassName="active" to="/profile">Profile</NavLink>
-          <NavLink activeClassName="active" to="/accounts">Accounts</NavLink>
-          <NavLink exact={true} activeClassName="active" to="/transfer">Transfer</NavLink>
-        </nav>
-      </div>
-    );
+@inject("accounts")
+@observer
+class Navigation extends React.Component {
+  render() {
+    if(this.props.location && this.props.location.pathname.match(/^\/apps\/.+$/)) {
+      // App frame is visible - hide navigation
+      return null;
+    }
+
+    const account = this.props.accounts.currentAccount;
+
+    if(!account) {
+      return (
+        <div className="nav-container locked">
+          <nav>
+            <NavLink activeClassName="active" to="/accounts">Accounts</NavLink>
+          </nav>
+        </div>
+      );
+    } else if(account.balance < 0.1) {
+      return (
+        <div className="nav-container locked">
+          <div className="warning">This account has an insufficient balance. Please fund the account.</div>
+          <nav>
+            <NavLink activeClassName="active" to="/accounts">Accounts</NavLink>
+          </nav>
+        </div>
+      );
+    } else {
+      return (
+        <div className="nav-container">
+          <nav>
+            <NavLink exact={true} activeClassName="active" to="/apps">Apps</NavLink>
+            <NavLink activeClassName="active" to="/profile">Profile</NavLink>
+            <NavLink activeClassName="active" to="/accounts">Accounts</NavLink>
+            <NavLink exact={true} activeClassName="active" to="/transfer">Transfer</NavLink>
+          </nav>
+        </div>
+      );
+    }
   }
-};
+}
 
-Navigation.propTypes = {
-  unlocked: PropTypes.bool.isRequired,
-  balance: PropTypes.number.isRequired
-};
-
-export default Navigation;
+export default withRouter(Navigation);

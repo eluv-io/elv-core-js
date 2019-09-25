@@ -69,7 +69,7 @@ body,
 }
 
 .small-text {
-  font-size: 13px;
+  font-size: $elv-font-s;
 }
 
 select {
@@ -78,7 +78,35 @@ select {
   // Increase specificity
   &.recipient-select {
     &.recipient-select {
-      font-size: 15px;
+      font-size: $elv-font-m;
     }
+  }
+}
+
+// Hide alt image text
+img {
+  &.-elv-icon {
+    color: transparent;
+  }
+}
+
+.-elv-cropped-icon {
+  @include elv-no-select;
+
+  position: relative;
+
+  &::after {
+    border-radius: 50%;
+    box-shadow: 0 0 12px -5px $elv-color-darkgray inset;
+    content: "";
+    display: block;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+
+  svg {
+    stroke: $elv-color-lightgray;
   }
 }

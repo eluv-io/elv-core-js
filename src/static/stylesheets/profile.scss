@@ -30,14 +30,24 @@
   position: relative;
   width: 800px;
 
+  .traversable-json {
+    overflow-x: auto;
+
+    .json-entry {
+      overflow: initial;
+    }
+  }
+
   .page-subheader {
     display: flex;
+    font-size: $elv-font-m;
+    font-weight: 200;
     justify-content: center;
     padding: $elv-spacing-xxs 0;
   }
 
   .account-balance {
-    font-size: 14px;
+    font-size: $elv-font-m;
 
     img {
       height: 20px;
@@ -52,7 +62,7 @@
   }
 
   h3 {
-    font-size: 20px;
+    font-size: $elv-font-xxl;
     margin: 0;
   }
 
@@ -96,7 +106,7 @@
   }
 
   .user-info {
-    font-size: 14px;
+    font-size: $elv-font-m;
     text-align: center;
   }
 
@@ -116,8 +126,9 @@
     }
 
     input {
-      font-size: 16px;
-      height: 30px;
+      font-size: $elv-font-l;
+      height: $elv-spacing-l;
+      padding-left: $elv-spacing-xs;
       width: 250px;
     }
 
@@ -150,7 +161,7 @@
 
   .private-key {
     display: flex;
-    font-size: 13px;
+    font-size: $elv-font-m;
     font-style: italic;
     opacity: 0;
     overflow: hidden;
@@ -168,18 +179,29 @@
 
     h4 {
       border-bottom: 1px solid $elv-color-lightgray;
-      font-size: 18px;
-      font-weight: 400;
+      font-size: $elv-font-xl;
+      font-weight: 300;
       padding: $elv-spacing-xs 0;
     }
   }
 
+  .application-permissions {
+    width: 25rem;
+  }
+
   .application-permission {
     align-items: center;
+    border-radius: 3px;
     display: flex;
+    padding: $elv-spacing-xs;
+
+    &:hover {
+      background-color: $elv-color-lightgray;
+    }
 
     label {
-      width: 300px;
+      @include elv-ellipsis;
+      width: 25rem;
     }
 
     button {
@@ -206,7 +228,7 @@
   }
 
   tbody {
-    font-size: 14px;
+    font-size: $elv-font-m;
   }
 }
 

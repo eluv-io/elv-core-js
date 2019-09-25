@@ -8,7 +8,7 @@ import UrlJoin from "url-join";
 class Apps extends React.PureComponent {
   App(name) {
     const displayName = name;
-    const logoUrl = UrlJoin(this.props.apps[name], "Logo.png");
+    const logoUrl = UrlJoin(EluvioConfiguration.apps[name], "Logo.png");
 
     return (
       <Action key={`app-${name}`} label={`Go to ${displayName}`} type="link" to={`/apps/${name}`} button={false}>
@@ -24,7 +24,7 @@ class Apps extends React.PureComponent {
     return (
       <div className="page-content">
         <div className="apps">
-          { Object.keys(this.props.apps).map(name => this.App(name))}
+          { Object.keys(EluvioConfiguration.apps).map(name => this.App(name))}
         </div>
       </div>
     );

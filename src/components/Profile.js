@@ -16,7 +16,11 @@ import UrlJoin from "url-join";
 
 import XIcon from "../static/icons/X.svg";
 import KeyIcon from "../static/icons/Key.svg";
+import {inject, observer} from "mobx-react";
 
+@inject("accounts")
+@inject("profiles")
+@observer
 class Profile extends React.Component {
   constructor(props) {
     super(props);
@@ -34,6 +38,10 @@ class Profile extends React.Component {
     this.RevokeAccessor = this.RevokeAccessor.bind(this);
   }
 
+  async componentDidMount() {
+    await this.props.profiles.UpdateUserMetadata();
+  }
+
   Update(fn) {
     if(this.state.updating) { return; }
 
@@ -45,8 +53,16 @@ class Profile extends React.Component {
   }
 
   HandleNameChange() {
+    const profile = this.props.profiles.currentProfile;
+
+    if(this.state.newName === profile.metadata.public.name) {
+      this.setState({modifyingName: false});
+
+      return;
+    }
+
     this.Update(async () => {
-      await this.props.ReplaceUserMetadata({
+      await this.props.profiles.ReplaceUserMetadata({
         metadataSubtree: UrlJoin("public", "name"),
         metadata: this.state.newName
       });
@@ -59,20 +75,23 @@ class Profile extends React.Component {
 
   async HandleProfileImageChange(event) {
     this.Update(async () =>
-      await this.props.UpdateUserProfileImage(event.target.files[0])
+      await this.props.profiles.ReplaceUserProfileImage(event.target.files[0])
     );
   }
 
   async HandleAccessLevelChange(event) {
     this.Update(async () =>
-      await this.props.ReplaceUserMetadata({metadataSubtree: "access_level", metadata: event.target.value})
+      await this.props.profiles.ReplaceUserMetadata({
+        metadataSubtree: "access_level",
+        metadata: event.target.value
+      })
     );
   }
 
   async RevokeAccessor(accessor) {
     await Confirm({
       message: <span>Are you sure you want to revoke profile access from <b>{accessor}</b>?</span>,
-      onConfirm: async () => await this.props.DeleteUserMetadata({metadataSubtree: UrlJoin("allowed_accessors", accessor)})
+      onConfirm: async () => await this.props.profiles.DeleteUserMetadata({metadataSubtree: UrlJoin("allowed_accessors", accessor)})
     });
   }
 
@@ -98,7 +117,7 @@ class Profile extends React.Component {
         <div className="info-section">
           <h4>Applications</h4>
           <h5 className="subheader">The following applications have access to your private profile</h5>
-          <div className="indented">
+          <div className="indented application-permissions">
             {allowedAccessors.map(accessor =>
               <div className="labelled-field application-permission" key={"accessor-row-" + accessor}>
                 <label>{accessor}</label>
@@ -153,30 +172,28 @@ class Profile extends React.Component {
     );
   }
 
-  PrivateKey() {
+  PrivateKey(signer) {
     return (
       <span className="private-key-container">
         <IconButton icon={KeyIcon} label={`${this.state.showKey ? "Hide" : "Show"} Private Key`} onClick={() => this.setState({showKey: !this.state.showKey})}/>
         <span className={`private-key ${this.state.showKey ? "visible" : ""}`}>
-          { this.state.showKey ? this.props.account.signer.privateKey : "" }
+          { this.state.showKey ? signer.privateKey : "" }
         </span>
       </span>
     );
   }
 
-  ProfileImage() {
-    const profileImage =
-      (this.props.account.profile || {}).image ||
-      this.props.account.profileImage ||
-      DefaultProfileImage;
-
+  ProfileImage(imageUrl) {
     const updateIndicator = this.state.updating ? <div className="update-indicator"><BallClipRotate /></div> : undefined;
+
     return (
       <div className="profile-image-container-container">
         <div className="profile-image-container">
           {updateIndicator}
           <CroppedIconWithAction
-            icon={profileImage}
+            icon={imageUrl}
+            alternateIcon={DefaultProfileImage}
+            useLoadingIndicator={true}
             label="Profile Image"
             actionText="Set Profile Image"
             onClick={() => this.state.browseRef.current.click()}
@@ -189,9 +206,7 @@ class Profile extends React.Component {
     );
   }
 
-  Name() {
-    const name = (this.props.account.profile || {}).name || this.props.account.name;
-
+  Name(name) {
     if(this.state.modifyingName) {
       return (
         <div className="modifiable-field modifying">
@@ -232,26 +247,31 @@ class Profile extends React.Component {
   }
 
   render() {
-    const metadata = this.props.account.profile || {};
-    const collectedTags = this.CollectedTags(metadata.collected_data);
-    const permissions = this.Permissions(metadata);
+    const account = this.props.accounts.currentAccount;
+    const profile = this.props.profiles.currentProfile;
+    const collectedTags = this.CollectedTags(profile.metadata.collected_data);
+    const permissions = this.Permissions(profile.metadata);
 
     return (
       <div className="page-content">
         <div className="profile">
           <div className="error-message">{this.ErrorMessage()}</div>
-          { this.ProfileImage() }
+          { this.ProfileImage(profile.imageUrl) }
           <div className="profile-info">
             <div className="user-info">
-              { this.Name() }
-              <div className="page-subheader">{this.props.account.address}</div>
-              <div className="page-subheader"><Balance balance={this.props.account.balance} className="account-balance" /></div>
-              { this.PrivateKey() }
+              { this.Name(profile.metadata.public.name) }
+              <div className="page-subheader">
+                { account.address }
+              </div>
+              <div className="page-subheader">
+                <Balance balance={account.balance} className="account-balance" />
+              </div>
+              { this.PrivateKey(account.signer) }
             </div>
             <div className="info-section">
               <h4>Profile Information</h4>
               <div className="indented">
-                <TraversableJson json={metadata} />
+                <TraversableJson json={profile.metadata} />
               </div>
             </div>
             { permissions }
