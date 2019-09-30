@@ -40,7 +40,7 @@ class Header extends React.Component {
     return (
       <Action type="link" label="Go to Accounts Page" to="/accounts" className="header-account" button={false}>
         <CroppedIcon
-          key={`account-image-${account.address}`}
+          key={`account-image-${account ? account.address : "unknown-account"}`}
           icon={profile.imageUrl || DefaultAccountImage}
           alternateIcon={DefaultAccountImage}
           label={"Profile Image"}

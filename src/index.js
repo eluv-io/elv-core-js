@@ -79,9 +79,12 @@ class App extends React.PureComponent {
 
 render(
   (
-    <Provider {...Stores}>
-      <App />
-    </Provider>
+    <React.Fragment>
+      <Provider {...Stores}>
+        <App />
+      </Provider>
+      <div className="app-version">{EluvioConfiguration.version}</div>
+    </React.Fragment>
   ),
   document.getElementById("app")
 );

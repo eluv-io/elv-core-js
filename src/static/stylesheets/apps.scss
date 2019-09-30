@@ -21,11 +21,29 @@
   .app-logo {
     $image-size: 125px;
     @include elv-cropped-image($image-size, $image-size, 0, $image-size, $image-size);
+
+    .-elv-cropped-icon {
+      &::after {
+        box-shadow: none;
+      }
+
+      svg {
+        &.-elv-icon {
+          border-radius: 50%;
+          box-shadow: 0 0 12px -5px $elv-color-darkgray inset;
+          padding: $elv-spacing-xs;
+          stroke: $elv-color-lightblue;
+          stroke-opacity: 0.7;
+          stroke-width: 0.5px;
+        }
+      }
+    }
   }
 
   h4 {
-    font-size: $elv-font-l;
-    margin: $elv-spacing-s 0;
+    font-size: $elv-font-xl;
+    font-weight: 300;
+    margin: $elv-spacing-m 0;
     text-align: center;
   }
 }

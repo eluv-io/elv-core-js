@@ -1,6 +1,10 @@
 @import "~elv-components-js/src/stylesheets/defaults";
 @import "~elv-components-js/src/stylesheets/styles";
 
+.app-version {
+  display: none;
+}
+
 html,
 body,
 .app,
