@@ -40,7 +40,7 @@ class AccountStore {
 
     yield Promise.all(
       Object.keys(this.accounts).map(async address => {
-        await this.GetAccountBalance(address);
+        await this.AccountBalance(address);
         await this.rootStore.profilesStore.UpdatePublicMetadata(address);
       })
     );
@@ -49,7 +49,7 @@ class AccountStore {
   });
 
   @action.bound
-  GetAccountBalance = flow(function * (address) {
+  AccountBalance = flow(function * (address) {
     const client = this.rootStore.client;
 
     address = client.utils.FormatAddress(address);
@@ -82,7 +82,7 @@ class AccountStore {
 
     this.rootStore.InitializeClient(this.accounts[address].signer);
 
-    yield this.GetAccountBalance(address);
+    yield this.AccountBalance(address);
 
     this.SetCurrentAccount({signer: this.accounts[address].signer});
   });
@@ -91,8 +91,8 @@ class AccountStore {
     recipient = this.rootStore.client.utils.FormatAddress(recipient);
 
     yield this.rootStore.client.SendFunds({recipient, ether});
-    yield this.GetAccountBalance(this.currentAccountAddress);
-    yield this.GetAccountBalance(recipient);
+    yield this.AccountBalance(this.currentAccountAddress);
+    yield this.AccountBalance(recipient);
   });
 
   GenerateMnemonic() {
@@ -108,7 +108,7 @@ class AccountStore {
       this.rootStore.client.utils.FormatAddress(signer.address) :
       undefined;
 
-    this.GetAccountBalance(this.currentAccountAddress);
+    this.AccountBalance(this.currentAccountAddress);
 
     localStorage.setItem(
       "elv-current-account",

@@ -13,6 +13,7 @@ import {FrameClient} from "elv-client-js/src/FrameClient";
 import {Confirm} from "elv-components-js";
 import {inject, observer} from "mobx-react";
 import withRouter from "react-router/es/withRouter";
+import {Debounce} from "elv-components-js";
 
 class IFrameBase extends React.Component {
   SandboxPermissions() {
@@ -58,6 +59,7 @@ const IFrame = React.forwardRef(
 );
 
 @inject("root")
+@inject("accounts")
 @observer
 class AppFrame extends React.Component {
   constructor(props) {
@@ -73,6 +75,12 @@ class AppFrame extends React.Component {
       // TODO: pull directly out of props
       basePath: encodeURI(UrlJoin("/apps", appName))
     };
+
+    // Update account balance when making requests
+    this.UpdateBalance = Debounce(
+      () => this.props.accounts.AccountBalance(this.props.accounts.currentAccountAddress),
+      5000
+    );
 
     this.ApiRequestListener = this.ApiRequestListener.bind(this);
   }
@@ -147,6 +155,8 @@ class AppFrame extends React.Component {
       console.error(error);
       /* eslint-enable no-console */
     }
+
+    this.UpdateBalance();
   }
 
   // Listen for API request messages from frame
