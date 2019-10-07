@@ -10,7 +10,7 @@ import Redirect from "react-router/es/Redirect";
 import * as Stores from "./stores";
 import {inject, observer, Provider} from "mobx-react";
 
-import {LoadingElement} from "elv-components-js";
+import {Action, LoadingElement} from "elv-components-js";
 
 import EnforceLogin from "./EnforceLogin";
 
@@ -29,6 +29,25 @@ import TransferFormPage from "./components/TransferForm";
 @observer
 class App extends React.PureComponent {
   render() {
+    if(this.props.root.configError) {
+      return (
+        <div className="page-error">
+          <div className="page-error-container">
+            <h1>
+              Unable to load client configuration
+            </h1>
+            <h1>
+              {EluvioConfiguration["config-url"]}
+            </h1>
+
+            <Action onClick={this.props.root.InitializeClient}>
+              Retry
+            </Action>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <HashRouter>
         <LoadingElement

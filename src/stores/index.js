@@ -9,6 +9,7 @@ configure({
 });
 
 class RootStore {
+  @observable configError = false;
   @observable client;
   @observable signerSet = false;
   @observable showHeader = true;
@@ -23,9 +24,16 @@ class RootStore {
 
   @action.bound
   InitializeClient = flow(function * (signer) {
-    this.client = yield ElvClient.FromConfigurationUrl({
-      configUrl: EluvioConfiguration["config-url"]
-    });
+    this.configError = false;
+
+    try {
+      this.client = yield ElvClient.FromConfigurationUrl({
+        configUrl: EluvioConfiguration["config-url"]
+      });
+    } catch (error) {
+      this.configError = true;
+      return;
+    }
 
     if(signer) {
       this.client.SetSigner({signer});

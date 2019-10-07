@@ -8,7 +8,8 @@
 html,
 body,
 .app,
-.router-container {
+.router-container,
+.page-error {
   height: 100%;
   width: 100%;
 }
@@ -21,6 +22,33 @@ body,
 .form-container {
   form {
     width: 700px;
+  }
+}
+
+.page-error {
+  align-items: flex-start;
+  display: flex;
+  justify-content: center;
+
+  .page-error-container {
+    align-items: center;
+    border: 1px solid $elv-color-mediumgray;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: $elv-spacing-xxl;
+
+    padding: $elv-spacing-l;
+  }
+
+  h1 {
+    font-size: $elv-font-l;
+    font-weight: 600;
+    padding: $elv-spacing-xxs 0;
+  }
+
+  button {
+    margin-top: $elv-spacing-l;
   }
 }
 
