@@ -11,15 +11,10 @@ class LoginModal extends React.PureComponent {
 
     this.state = {
       password: "",
-      status: {
-        loading: false,
-        error: false
-      }
     };
 
     this.HandleInputChange = this.HandleInputChange.bind(this);
     this.HandleSubmit = this.HandleSubmit.bind(this);
-    this.HandleError = this.HandleError.bind(this);
   }
 
   HandleInputChange(event) {
@@ -29,13 +24,6 @@ class LoginModal extends React.PureComponent {
   }
 
   async HandleSubmit() {
-    this.setState({
-      status: {
-        loading: true,
-        error: false
-      }
-    });
-
     await this.props.Submit(this.state.password);
 
     if(this.props.Close) {
@@ -43,31 +31,19 @@ class LoginModal extends React.PureComponent {
     }
   }
 
-  HandleError(error) {
-    this.setState({
-      status: {
-        loading: false,
-        error: true,
-        errorMessage: error.message
-      }
-    });
-  }
-
   render() {
     return (
       <Modal
-        closable={!this.props.prompt && !this.state.status.loading}
+        closable={!this.props.prompt}
         OnClickOutside={this.props.Close}
         className="login-modal"
       >
         <Form
           legend={"Enter your password to unlock this account"}
-          status={this.state.status}
           cancelPath="/accounts"
           cancelText={this.props.prompt ? "Switch Account" : "Cancel"}
           OnCancel={this.props.Close}
           OnSubmit={this.HandleSubmit}
-          OnError={this.HandleError}
         >
           <div className="form-content">
             <label htmlFor="password">Password</label>

@@ -11,11 +11,6 @@ class AccountForm extends React.Component {
     super(props);
 
     this.state = {
-      status: {
-        loading: false,
-        error: false,
-        errorMessage: ""
-      },
       credentialType: "privateKey",
       privateKey: "",
       encryptedPrivateKey: "",
@@ -42,50 +37,13 @@ class AccountForm extends React.Component {
     }
   }
 
-  HandleError(error) {
-    this.setState({
-      status: {
-        loading: false,
-        error: true,
-        errorMessage: error.message
-      }
-    });
-  }
-
   async HandleSubmit() {
-    this.setState({
-      status: {
-        loading: true,
-        error: false,
-        errorMessage: ""
-      }
+    await this.props.accounts.AddAccount({
+      privateKey: this.state.privateKey,
+      encryptedPrivateKey: this.state.encryptedPrivateKey,
+      mnemonic: this.state.mnemonic,
+      password: this.state.password
     });
-
-    try {
-      await this.props.accounts.AddAccount({
-        privateKey: this.state.privateKey,
-        encryptedPrivateKey: this.state.encryptedPrivateKey,
-        mnemonic: this.state.mnemonic,
-        password: this.state.password
-      });
-
-      this.setState({
-        status: {
-          completed: true,
-          loading: false,
-          error: false,
-          errorMessage: ""
-        }
-      });
-    } catch (error) {
-      this.setState({
-        status: {
-          loading: false,
-          error: true,
-          errorMessage: error.message
-        }
-      });
-    }
   }
 
   Credentials() {
@@ -137,7 +95,6 @@ class AccountForm extends React.Component {
       <div className="page-content">
         <Form
           legend="Add Account"
-          status={this.state.status}
           OnSubmit={this.HandleSubmit}
           OnError={this.HandleError}
           redirectPath="/accounts/switch"

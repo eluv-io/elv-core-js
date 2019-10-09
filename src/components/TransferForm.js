@@ -13,17 +13,11 @@ class TransferForm extends React.Component {
     this.state = {
       ether: 0,
       recipient: Object.keys(this.props.accounts.accounts)[0],
-      manualEntry: Object.keys(this.props.accounts.accounts).length === 0,
-      status: {
-        loading: false,
-        error: false,
-        errorMessage: ""
-      }
+      manualEntry: Object.keys(this.props.accounts.accounts).length === 0
     };
 
     this.HandleInputChange = this.HandleInputChange.bind(this);
     this.HandleSubmit = this.HandleSubmit.bind(this);
-    this.HandleError = this.HandleError.bind(this);
   }
 
   HandleInputChange(event) {
@@ -47,46 +41,9 @@ class TransferForm extends React.Component {
   }
 
   async HandleSubmit() {
-    this.setState({
-      status: {
-        loading: true,
-        error: false,
-        errorMessage: ""
-      }
-    });
-
-    try {
-      await this.props.accounts.SendFunds({
-        recipient: this.state.recipient,
-        ether: this.state.ether
-      });
-
-      this.setState({
-        status: {
-          completed: true,
-          loading: false,
-          error: false,
-          errorMessage: ""
-        }
-      });
-    } catch (error) {
-      this.setState({
-        status: {
-          loading: false,
-          error: true,
-          errorMessage: error.message
-        }
-      });
-    }
-  }
-
-  HandleError(error) {
-    this.setState({
-      status: {
-        loading: false,
-        error: true,
-        errorMessage: error.message
-      }
+    await this.props.accounts.SendFunds({
+      recipient: this.state.recipient,
+      ether: this.state.ether
     });
   }
 
@@ -123,7 +80,6 @@ class TransferForm extends React.Component {
       <div className="page-content">
         <Form
           legend="Transfer Funds"
-          status={this.state.status}
           redirectPath="/accounts"
           OnSubmit={this.HandleSubmit}
           OnError={this.HandleError}
