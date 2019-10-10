@@ -19,7 +19,6 @@ class AccountForm extends React.Component {
     };
 
     this.HandleSubmit = this.HandleSubmit.bind(this);
-    this.HandleError = this.HandleError.bind(this);
     this.HandleInputChange = this.HandleInputChange.bind(this);
   }
 
@@ -96,7 +95,6 @@ class AccountForm extends React.Component {
         <Form
           legend="Add Account"
           OnSubmit={this.HandleSubmit}
-          OnError={this.HandleError}
           redirectPath="/accounts/switch"
           cancelPath="/accounts/switch"
         >
