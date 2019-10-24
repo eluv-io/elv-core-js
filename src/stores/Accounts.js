@@ -41,7 +41,7 @@ class AccountStore {
     yield Promise.all(
       Object.keys(this.accounts).map(async address => {
         await this.AccountBalance(address);
-        await this.rootStore.profilesStore.UpdatePublicMetadata(address);
+        await this.rootStore.profilesStore.PublicMetadata(address);
       })
     );
 
@@ -127,7 +127,7 @@ class AccountStore {
     } else if(encryptedPrivateKey) {
       signer = yield wallet.AddAccountFromEncryptedPK({encryptedPrivateKey, password});
     } else {
-      signer = wallet.AddAccount({privateKey});
+      signer = wallet.AddAccount({privateKey: privateKey.trim()});
     }
 
     encryptedPrivateKey = yield wallet.GenerateEncryptedPrivateKey({
@@ -149,7 +149,7 @@ class AccountStore {
 
     this.SetCurrentAccount({signer});
 
-    yield this.rootStore.profilesStore.UpdatePublicMetadata(address);
+    yield this.rootStore.profilesStore.PublicMetadata(address);
   });
 
   @action.bound

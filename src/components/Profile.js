@@ -39,7 +39,7 @@ class Profile extends React.Component {
   }
 
   async componentDidMount() {
-    await this.props.profiles.UpdateUserMetadata();
+    await this.props.profiles.UserMetadata();
   }
 
   Update(fn) {

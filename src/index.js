@@ -10,7 +10,7 @@ import Redirect from "react-router/es/Redirect";
 import * as Stores from "./stores";
 import {inject, observer, Provider} from "mobx-react";
 
-import {Action, LoadingElement} from "elv-components-js";
+import {Action, ErrorHandler, LoadingElement} from "elv-components-js";
 
 import EnforceLogin from "./EnforceLogin";
 
@@ -96,11 +96,13 @@ class App extends React.PureComponent {
   }
 }
 
+const AppComponent = ErrorHandler(App);
+
 render(
   (
     <React.Fragment>
       <Provider {...Stores}>
-        <App />
+        <AppComponent />
       </Provider>
       <div className="app-version">{EluvioConfiguration.version}</div>
     </React.Fragment>

@@ -13,7 +13,7 @@ class ProfilesStore {
   }
 
   @action.bound
-  UpdatePublicMetadata = flow(function * (address) {
+  PublicMetadata = flow(function * (address) {
     if(!this.profiles[address]) {
       this.profiles[address] = {
         metadata: {
@@ -28,10 +28,12 @@ class ProfilesStore {
     if(!this.profiles[address].imageUrl && this.profiles[address].metadata.public.image) {
       this.profiles[address].imageUrl = yield this.rootStore.client.userProfileClient.UserProfileImage({address});
     }
+
+    yield this.rootStore.accountStore.AccountBalance(address);
   });
 
   @action.bound
-  UpdateUserMetadata = flow(function * () {
+  UserMetadata = flow(function * () {
     if(!this.rootStore.accountStore.currentAccountAddress) { return; }
 
     const address = this.rootStore.accountStore.currentAccountAddress;
@@ -52,6 +54,8 @@ class ProfilesStore {
     if(!this.profiles[address].imageUrl && this.profiles[address].metadata.public.image) {
       this.profiles[address].imageUrl = yield this.rootStore.client.userProfileClient.UserProfileImage({address});
     }
+
+    yield this.rootStore.accountStore.AccountBalance(address);
   });
 
   @action.bound
@@ -60,7 +64,7 @@ class ProfilesStore {
 
     yield this.rootStore.client.userProfileClient.SetUserProfileImage({image});
 
-    yield this.UpdateUserMetadata();
+    yield this.UserMetadata();
 
     const address = this.rootStore.accountStore.currentAccountAddress;
 
@@ -74,7 +78,7 @@ class ProfilesStore {
 
     yield this.rootStore.client.userProfileClient.ReplaceUserMetadata({metadataSubtree, metadata});
 
-    yield this.UpdateUserMetadata();
+    yield this.UserMetadata();
   });
 
   @action.bound
@@ -83,7 +87,7 @@ class ProfilesStore {
 
     yield this.rootStore.client.userProfileClient.DeleteUserMetadata({metadataSubtree});
 
-    yield this.UpdateUserMetadata();
+    yield this.UserMetadata();
   });
 }
 

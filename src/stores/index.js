@@ -3,6 +3,8 @@ import {ElvClient} from "elv-client-js";
 import AccountStore from "./Accounts";
 import ProfilesStore from "./Profiles";
 
+import SpaceContract from "elv-client-js/src/contracts/BaseContentSpace";
+
 // Force strict mode so mutations are only allowed within actions.
 configure({
   enforceActions: "always"
@@ -31,6 +33,8 @@ class RootStore {
         configUrl: EluvioConfiguration["config-url"]
       });
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
       this.configError = true;
       return;
     }
@@ -46,6 +50,18 @@ class RootStore {
       this.client.SetSigner({
         signer: wallet.AddAccountFromMnemonic({mnemonic: wallet.GenerateMnemonic()})
       });
+    }
+
+    try {
+      yield this.client.CallContractMethod({
+        contractAddress: this.client.contentSpaceAddress,
+        abi: SpaceContract.abi,
+        methodName: "version"
+      });
+    } catch (error) {
+      this.configError = true;
+      // eslint-disable-next-line no-console
+      console.log(error);
     }
   });
 
