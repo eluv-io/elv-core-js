@@ -2,12 +2,13 @@ import "../static/stylesheets/accounts.scss";
 
 import React from "react";
 import {inject, observer} from "mobx-react";
-import {Action, Balance, Confirm, CroppedIcon, ImageIcon} from "elv-components-js";
+import {Action, Balance, Confirm, CroppedIcon, IconButton, ImageIcon} from "elv-components-js";
 import LoginModal from "./LoginModal";
 
 import LockedIcon from "../static/icons/Locked.svg";
 import UnlockedIcon from "../static/icons/Unlocked.svg";
 import DefaultAccountImage from "../static/icons/User.svg";
+import RemoveAccountIcon from "../static/icons/X.svg";
 
 @inject("accounts")
 @inject("profiles")
@@ -22,6 +23,7 @@ class Accounts extends React.Component {
     };
 
     this.UnlockAccount = this.UnlockAccount.bind(this);
+    this.LockAccount = this.LockAccount.bind(this);
   }
 
   async SelectAccount(address) {
@@ -38,6 +40,10 @@ class Accounts extends React.Component {
 
   async UnlockAccount(password) {
     await this.props.accounts.UnlockAccount({address: this.state.selectedAddress, password});
+  }
+
+  LockAccount(address) {
+    this.props.accounts.LockAccount({address});
   }
 
   RemoveAccount(address) {
@@ -69,8 +75,20 @@ class Accounts extends React.Component {
     let selectAccountButton;
     if(!isCurrentAccount || accountLocked) {
       selectAccountButton = (
-        <Action onClick={() => this.SelectAccount(account.address)}>
-          {accountLocked ? "Unlock" : "Use Account"}
+        <Action
+          className={accountLocked ? "secondary" : "primary"}
+          onClick={() => this.SelectAccount(account.address)}
+        >
+          {accountLocked ? "Unlock Account" : "Use Account"}
+        </Action>
+      );
+    }
+
+    let lockAccountButton;
+    if(!accountLocked) {
+      lockAccountButton = (
+        <Action className="danger" onClick={() => this.LockAccount(account.address)}>
+          Lock Account
         </Action>
       );
     }
@@ -83,6 +101,12 @@ class Accounts extends React.Component {
           icon={accountLocked ? LockedIcon : UnlockedIcon}
           label={accountLocked ? "Account Locked" : "Account Unlocked"}
           className={`account-lock-icon ${accountLocked ? "" : "account-unlocked-icon"}`}
+        />
+        <IconButton
+          icon={RemoveAccountIcon}
+          label={"Remove Account"}
+          onClick={() => this.RemoveAccount(account.address)}
+          className={"account-remove-icon"}
         />
         <CroppedIcon
           icon={profileImage}
@@ -99,7 +123,7 @@ class Accounts extends React.Component {
           </div>
           <div className="account-actions">
             { selectAccountButton }
-            <Action className="danger" onClick={() => this.RemoveAccount(account.address)}>Remove</Action>
+            { lockAccountButton }
           </div>
         </div>
       </div>

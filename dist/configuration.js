@@ -3,6 +3,7 @@ const EluvioConfiguration = {
   "apps": {
     "Eluvio Fabric Browser": "http://localhost:8080",
     "Eluvio Video Editor": "http://localhost:8083",
+    "Eluvio Stream Sample": "http://localhost:8084"
   },
   "version": "local"
 };

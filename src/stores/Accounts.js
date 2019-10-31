@@ -64,6 +64,15 @@ class AccountStore {
   });
 
   @action.bound
+  LockAccount({address}) {
+    if(!(Object.keys(this.accounts).includes(address))) {
+      return;
+    }
+
+    this.accounts[address].signer = undefined;
+  }
+
+  @action.bound
   UnlockAccount = flow(function * ({address, password}) {
     const client = this.rootStore.client;
     address = client.utils.FormatAddress(address);

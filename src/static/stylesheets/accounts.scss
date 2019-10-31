@@ -22,9 +22,8 @@
   }
 
   &.current-account {
-    border: 1px solid $elv-color-lighterblue;
+    border: 0;
     border-radius: 5px;
-    //border: 0;
     box-shadow: $elv-color-mediumblue 0 0 6px;
     z-index: 10;
   }
@@ -40,6 +39,24 @@
 
   .account-unlocked-icon {
     color: $elv-color-darkergray;
+  }
+
+  .account-remove-icon {
+    height: 20px;
+    position: absolute;
+    right: $elv-spacing-xxs;
+    top: $elv-spacing-xs;
+    width: 20px;
+
+    svg {
+      stroke: $elv-color-lightgray;
+    }
+
+    &:hover {
+      svg {
+        stroke: $elv-color-mediumred;
+      }
+    }
   }
 }
 
@@ -78,6 +95,12 @@
 
   button {
     margin-right: $elv-spacing-xs;
+
+    &.-elv-button {
+      &.-elv-button {
+        font-size: $elv-font-s;
+      }
+    }
   }
 }
 
