@@ -40,7 +40,7 @@ class App extends React.PureComponent {
               {EluvioConfiguration["config-url"]}
             </h1>
 
-            <Action onClick={this.props.root.InitializeClient}>
+            <Action onClick={() => this.props.root.InitializeClient()}>
               Retry
             </Action>
           </div>
@@ -57,7 +57,7 @@ class App extends React.PureComponent {
             <div className="router-container">
               <Header />
               <Navigation />
-              <EnforceLogin>
+              <EnforceLogin key={`app-${this.props.accounts.currentAccountAddress}`}>
                 <Switch>
                   <Route exact path="/apps">
                     <AppsPage />

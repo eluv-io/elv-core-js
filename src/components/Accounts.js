@@ -75,10 +75,7 @@ class Accounts extends React.Component {
     let selectAccountButton;
     if(!isCurrentAccount || accountLocked) {
       selectAccountButton = (
-        <Action
-          className={accountLocked ? "secondary" : "primary"}
-          onClick={() => this.SelectAccount(account.address)}
-        >
+        <Action onClick={() => this.SelectAccount(account.address)}>
           {accountLocked ? "Unlock Account" : "Use Account"}
         </Action>
       );

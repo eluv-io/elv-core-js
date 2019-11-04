@@ -110,12 +110,18 @@ class AccountStore {
   }
 
   @action.bound
-  SetCurrentAccount({signer}) {
-    this.rootStore.InitializeClient(signer);
+  SetCurrentAccount({address, signer}) {
+    address = this.rootStore.client.utils.FormatAddress(address);
 
-    this.currentAccountAddress = signer ?
-      this.rootStore.client.utils.FormatAddress(signer.address) :
-      undefined;
+    signer = signer || this.accounts[address].signer;
+
+    if(signer) {
+      this.rootStore.InitializeClient(signer);
+
+      this.currentAccountAddress = this.rootStore.client.utils.FormatAddress(signer.address);
+    } else {
+      this.currentAccountAddress = address;
+    }
 
     this.AccountBalance(this.currentAccountAddress);
 
