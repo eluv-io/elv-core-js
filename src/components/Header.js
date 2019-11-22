@@ -5,7 +5,8 @@ import {
   Balance,
   CroppedIcon,
   IconButton,
-  IconLink
+  IconLink,
+  onEnterPressed
 } from "elv-components-js";
 import {inject, observer} from "mobx-react";
 
@@ -26,7 +27,14 @@ const Account = ({
   onLock,
   className
 }) => (
-  <div aria-roledescription="button" onClick={onClick} className={className} key={`account-${address}`}>
+  <div
+    aria-roledescription="button"
+    tabIndex={0}
+    onClick={onClick}
+    onKeyPress={onEnterPressed(onClick)}
+    className={className}
+    key={`account-${address}`}
+  >
     <CroppedIcon
       icon={imageUrl || DefaultAccountImage}
       alternateIcon={DefaultAccountImage}

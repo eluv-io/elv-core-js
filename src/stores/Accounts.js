@@ -162,9 +162,9 @@ class AccountStore {
 
     this.SaveAccounts();
 
-    this.SetCurrentAccount({signer});
-
     yield this.rootStore.profilesStore.PublicMetadata(address);
+
+    this.SetCurrentAccount({signer});
   });
 
   @action.bound

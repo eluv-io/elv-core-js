@@ -95,8 +95,8 @@ class AccountForm extends React.Component {
         <Form
           legend="Add Account"
           OnSubmit={this.HandleSubmit}
-          redirectPath="/accounts/switch"
-          cancelPath="/accounts/switch"
+          redirectPath="/accounts"
+          cancelPath="/accounts"
         >
           <div className="form-content">
             <label htmlFor="credentialType">Credential Type</label>
