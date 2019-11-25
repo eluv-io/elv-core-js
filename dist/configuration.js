@@ -5,6 +5,7 @@ const EluvioConfiguration = {
     "Eluvio Video Editor": "http://localhost:8083",
     "Eluvio Stream Sample": "http://localhost:8084",
     "Eluvio Site Sample": "http://localhost:8085",
+    "Continuum": "https://continuum.test.contentfabric.io"
   },
   "version": "local"
 };

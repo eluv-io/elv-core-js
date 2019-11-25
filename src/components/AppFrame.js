@@ -74,7 +74,9 @@ class AppFrame extends React.Component {
       appName,
       appUrl,
       // TODO: pull directly out of props
-      basePath: encodeURI(UrlJoin("/apps", appName))
+      basePath: encodeURI(UrlJoin("/apps", appName)),
+      profileAccessAllowed: false,
+      confirmPromise: undefined
     };
 
     // Update account balance when making requests
@@ -101,25 +103,41 @@ class AppFrame extends React.Component {
       // Prompt for access
       if(accessLevel === "prompt") {
         const requestor = this.state.appName;
-        const accessAllowed = await this.props.root.client.userProfileClient.UserMetadata({
-          metadataSubtree: UrlJoin("allowed_accessors", requestor)
-        });
-
-        const confirmed =
-          accessAllowed ||
-          await Confirm({
-            message: `Do you want to allow the application "${requestor}" to access your profile?`,
-            onConfirm: async () => {
-              // Record permission
-              await this.props.root.client.userProfileClient.ReplaceUserMetadata({
-                metadataSubtree: UrlJoin("allowed_accessors", requestor),
-                metadata: Date.now()
-              });
-            }
+        const accessAllowed =
+          this.state.profileAccessAllowed ||
+          await this.props.root.client.userProfileClient.UserMetadata({
+            metadataSubtree: UrlJoin("allowed_accessors", requestor)
           });
 
-        if(!confirmed) {
-          return false;
+        if(!accessAllowed) {
+          if(!this.state.confirmPromise) {
+            this.setState({
+              confirmPromise: Confirm({
+                message: `Do you want to allow the application "${requestor}" to access your profile?`,
+                onConfirm: async () => {
+                  // Record permission
+                  await this.props.root.client.userProfileClient.ReplaceUserMetadata({
+                    metadataSubtree: UrlJoin("allowed_accessors", requestor),
+                    metadata: Date.now()
+                  });
+
+                  await new Promise(resolve =>
+                    this.setState({
+                      profileAccessAllowed: true
+                    }, resolve)
+                  );
+                }
+              })
+            });
+          }
+
+          await this.state.confirmPromise;
+
+          this.setState({confirmPromise: undefined});
+
+          if(!this.state.profileAccessAllowed) {
+            return false;
+          }
         }
       }
 
