@@ -67,14 +67,15 @@ class AppFrame extends React.Component {
     super(props);
 
     const appName = this.props.match.params.app;
-    const appUrl = EluvioConfiguration.apps[appName];
+    const basePath = encodeURI(UrlJoin("/apps", appName));
+    const appPath = window.location.hash.replace(`#${basePath}`, "") || "";
+    const appUrl = UrlJoin(EluvioConfiguration.apps[appName], appPath);
 
     this.state = {
       appRef: React.createRef(),
       appName,
       appUrl,
-      // TODO: pull directly out of props
-      basePath: encodeURI(UrlJoin("/apps", appName)),
+      basePath,
       profileAccessAllowed: false,
       confirmPromise: undefined
     };
@@ -198,7 +199,15 @@ class AppFrame extends React.Component {
 
       // App requested to push its new app path
       case "SetFramePath":
-        history.replaceState(null, null, `#${UrlJoin(this.state.basePath, event.data.path)}`);
+        let appPath = event.data.path.replace(/^\/+/, "");
+        if(appPath.startsWith("#")) {
+          // UrlJoin eats leading slash if followed by #
+          appPath = UrlJoin(this.state.basePath, "/", appPath);
+        } else {
+          appPath = UrlJoin(this.state.basePath, appPath);
+        }
+
+        history.replaceState(null, null, `#${appPath}`);
 
         this.Respond(requestId, source, {response: "Set path " + event.data.path});
         break;
