@@ -3,10 +3,11 @@
 header {
   align-items: center;
   box-shadow: 2px 1px 2px 0 $elv-color-lightgray;
-  display: flex;
-  flex-grow: 0;
-  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: 40px;
   height: 40px;
+  max-height: 40px;
   position: relative;
   width: 100%;
 
@@ -43,7 +44,6 @@ header {
 
 .toggle-header-section {
   cursor: pointer;
-  flex-grow: 1;
   height: 100%;
 }
 
@@ -67,7 +67,8 @@ header {
   height: 100%;
 }
 
-.header-account {
+.header-account,
+.accounts-button-container {
   @include elv-no-select;
 
   align-items: center;
@@ -76,9 +77,9 @@ header {
   display: flex;
   height: 100%;
   justify-content: flex-start;
-  max-width: 15rem;
+  max-width: 16rem;
   padding: 0 $elv-spacing-m 0 $elv-spacing-s;
-  width: 15rem;
+  width: 16rem;
   z-index: 1000;
 
   &:hover {
@@ -97,7 +98,7 @@ header {
     height: $elv-spacing-m;
     padding: $elv-spacing-xxs;
     position: absolute;
-    right: $elv-spacing-xs;
+    right: $elv-spacing-s;
     top: $elv-spacing-xs;
 
     svg {
@@ -120,9 +121,18 @@ header {
   }
 }
 
+.header-account {
+  &:focus {
+    background: $elv-color-lightergray;
+    outline: none;
+  }
+}
+
 .header-profile-image {
   $image-size: 30px;
   @include elv-cropped-image($image-size, $image-size, 50%, $image-size, $image-size);
+  background: $elv-color-bg-white;
+  border-radius: 100%;
   margin-right: $elv-spacing-xs;
 }
 
@@ -153,20 +163,43 @@ header {
   display: flex;
   flex-direction: column;
   position: absolute;
+  right: 0;
   top: 40px;
-  width: 15rem;
+  width: 16rem;
 }
 
-.account-selection {
+.header-accounts {
+  max-height: 80vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+.account-selection,
+.accounts-button-container {
   background: $elv-color-white;
   border: 1px solid $elv-color-lightgray;
   border-bottom: 0;
   border-right: 0;
   justify-content: flex-start;
+  max-height: 3.5rem;
   min-height: 3.5rem;
   position: relative;
+}
 
-  &:last-child {
-    border-bottom: 1px solid $elv-color-lightgray;
+.accounts-button-container {
+  border-bottom: 1px solid $elv-color-lightgray;
+  max-height: 2.5rem;
+  min-height: 2.5rem;
+  text-align: center;
+
+  a {
+    color: $elv-color-text-lighter;
+    font-size: $elv-font-m;
+    font-weight: 500;
+    width: 100%;
   }
 }

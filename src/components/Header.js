@@ -16,6 +16,7 @@ import ShowHeaderIcon from "../static/icons/ShowHeader.svg";
 import LockedIcon from "../static/icons/Locked.svg";
 import UnlockedIcon from "../static/icons/Unlocked.svg";
 import withRouter from "react-router/withRouter";
+import {Link} from "react-router-dom";
 
 const Account = ({
   name,
@@ -100,31 +101,41 @@ class Header extends React.Component {
 
     return (
       <div className="header-account-selection">
-        {
-          this.props.accounts.sortedAccounts
-            .filter(address => address !== this.props.accounts.currentAccountAddress)
-            .map(address => {
-              const account = this.props.accounts.accounts[address];
-              const profile = this.props.profiles.profiles[address];
+        <div className="header-accounts">
+          {
+            this.props.accounts.sortedAccounts
+              .filter(address => address !== this.props.accounts.currentAccountAddress)
+              .map(address => {
+                const account = this.props.accounts.accounts[address];
+                const profile = this.props.profiles.profiles[address];
 
-              return Account({
-                name: profile.metadata.public.name,
-                address: account.address,
-                imageUrl: profile.imageUrl,
-                balance: account.balance,
-                locked: !account.signer,
-                onClick: () => {
-                  this.props.accounts.SetCurrentAccount({address: account.address});
-                  this.setState({showSelection: false});
-                },
-                onLock: event => {
-                  event.stopPropagation();
-                  this.props.accounts.LockAccount({address: account.address});
-                },
-                className: "header-account account-selection"
-              });
-            })
-        }
+                return Account({
+                  name: profile.metadata.public.name,
+                  address: account.address,
+                  imageUrl: profile.imageUrl,
+                  balance: account.balance,
+                  locked: !account.signer,
+                  onClick: () => {
+                    this.props.accounts.SetCurrentAccount({address: account.address});
+                    this.setState({showSelection: false});
+                  },
+                  onLock: event => {
+                    event.stopPropagation();
+                    this.props.accounts.LockAccount({address: account.address});
+                  },
+                  className: "header-account account-selection"
+                });
+              })
+          }
+        </div>
+        <div className="accounts-button-container">
+          <Link
+            className="accounts-button" to="/accounts"
+            onClick={() => this.setState({showSelection: false})}
+          >
+            Manage Accounts
+          </Link>
+        </div>
       </div>
     );
   }
