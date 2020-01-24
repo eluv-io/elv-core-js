@@ -1,13 +1,12 @@
-
-      const EluvioConfiguration = {
-        "config-url": "https://demo.net955210.contentfabric.io/config",
-        "apps": {
-           "Continuum": "https://continuum.demo.contentfabric.io",
-           "Eluvio Fabric Browser": "https://core.demo.contentfabric.io/browse",
-           "Eluvio Video Editor": "https://core.demo.contentfabric.io/video-editor",
-           "Stream Sample": "https://core.demo.contentfabric.io/stream-sample",
-           "Site Sample": "https://core.demo.contentfabric.io/site-sample"
-        },
-        "version": "elv-core-js@6a507eb71e35858c57c6eef92b2db7c33afbf155"
-      };
-      
+const EluvioConfiguration = {
+  "config-url": "https://main.net955210.contentfabric.io/config",
+  //"config-url": "https://main.net955305.contentfabric.io/config",
+  "apps": {
+    "Eluvio Fabric Browser": "http://localhost:8080",
+    "Eluvio Video Editor": "http://localhost:8083",
+    "Eluvio Stream Sample": "http://localhost:8084",
+    "Eluvio Site Sample": "http://localhost:8085",
+    "Continuum": "https://continuum.test.contentfabric.io"
+  },
+  "version": "local"
+};
