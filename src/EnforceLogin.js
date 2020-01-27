@@ -1,6 +1,5 @@
 import React from "react";
-import withRouter from "react-router/es/withRouter";
-import Redirect from "react-router/es/Redirect";
+import {Redirect, withRouter} from "react-router";
 import LoginModal from "./components/LoginModal";
 import {inject, observer} from "mobx-react";
 import {LoadingElement} from "elv-components-js";

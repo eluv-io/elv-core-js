@@ -3,9 +3,8 @@ import "./static/stylesheets/defaults.scss";
 
 import React from "react";
 import { render } from "react-dom";
-import { Route, Switch } from "react-router-dom";
-import HashRouter from "react-router-dom/es/HashRouter";
-import Redirect from "react-router/es/Redirect";
+import { Route, Switch, HashRouter } from "react-router-dom";
+import { Redirect } from "react-router";
 
 import * as Stores from "./stores";
 import {inject, observer, Provider} from "mobx-react";

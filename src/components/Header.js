@@ -15,7 +15,7 @@ import DefaultAccountImage from "../static/icons/User.svg";
 import ShowHeaderIcon from "../static/icons/ShowHeader.svg";
 import LockedIcon from "../static/icons/Locked.svg";
 import UnlockedIcon from "../static/icons/Unlocked.svg";
-import withRouter from "react-router/withRouter";
+import {withRouter} from "react-router";
 import {Link} from "react-router-dom";
 
 const Account = ({

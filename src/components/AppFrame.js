@@ -7,12 +7,11 @@ from the core app, which owns user account information and keys
 
 import React from "react";
 import UrlJoin from "url-join";
-import Redirect from "react-router/es/Redirect";
+import {Redirect, withRouter} from "react-router";
 
 import {FrameClient} from "elv-client-js/src/FrameClient";
 import {Confirm} from "elv-components-js";
 import {inject, observer} from "mobx-react";
-import withRouter from "react-router/es/withRouter";
 import {Debounce} from "elv-components-js";
 
 class IFrameBase extends React.Component {

@@ -1,9 +1,9 @@
 import "../static/stylesheets/navigation.scss";
 
 import React from "react";
-import NavLink from "react-router-dom/es/NavLink";
+import {NavLink} from "react-router-dom";
 import {inject, observer} from "mobx-react";
-import withRouter from "react-router/es/withRouter";
+import {withRouter} from "react-router";
 
 @inject("accounts")
 @observer

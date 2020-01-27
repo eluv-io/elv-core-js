@@ -1,6 +1,6 @@
 import React from "react";
 import {Form} from "elv-components-js";
-import Redirect from "react-router/es/Redirect";
+import {Redirect} from "react-router";
 import {inject, observer} from "mobx-react";
 
 @inject("accounts")
