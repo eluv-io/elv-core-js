@@ -25,10 +25,6 @@ class LoginModal extends React.PureComponent {
 
   async HandleSubmit() {
     await this.props.Submit(this.state.password);
-
-    if(this.props.Close) {
-      this.props.Close();
-    }
   }
 
   render() {
@@ -44,6 +40,7 @@ class LoginModal extends React.PureComponent {
           cancelText={this.props.prompt ? "Switch Account" : "Cancel"}
           OnCancel={this.props.Close}
           OnSubmit={this.HandleSubmit}
+          OnComplete={this.props.Close}
         >
           <div className="form-content">
             <label htmlFor="password">Password</label>
