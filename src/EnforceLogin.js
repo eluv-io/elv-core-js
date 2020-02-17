@@ -12,9 +12,13 @@ class EnforceLogin extends React.PureComponent {
   render() {
     const currentAccount = this.props.accounts.currentAccount;
 
+    const loginPaths = AppRoutes
+      .map(({path}) => "/" + path.split("/")[1])
+      .filter(p => p !== "/accounts");
+
     const accountRequired =
-      !!AppRoutes.find(({path}) => path === this.props.location.pathname) &&
-      !this.props.location.pathname.startsWith("/accounts");
+      !!(this.props.location.pathname &&
+      loginPaths.find(path => this.props.location.pathname.startsWith(path)));
 
     if(!accountRequired) {
       return this.props.children;

@@ -65,22 +65,22 @@ header {
 
 .account-info-container {
   height: 100%;
-  min-width: 300px;
+  max-width: 16rem;
+  min-width: 16rem;
   position: relative;
 }
 
 .header-account,
 .accounts-button-container {
   @include elv-no-select;
-
   align-items: center;
   border: 0;
   cursor: pointer;
   display: flex;
   height: 100%;
   justify-content: flex-start;
-  max-width: 16rem;
   padding: 0 $elv-spacing-m 0 $elv-spacing-s;
+  position: relative;
   width: 16rem;
   z-index: 1000;
 
@@ -124,6 +124,8 @@ header {
 }
 
 .header-account {
+  width: 100%;
+
   &:focus {
     background: $elv-color-lightergray;
     outline: none;
