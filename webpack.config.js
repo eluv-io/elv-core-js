@@ -96,7 +96,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.(txt|bin|abi)$/i,
+        test: /\.(txt|bin|abi|html)$/i,
         loader: "raw-loader"
       }
     ]

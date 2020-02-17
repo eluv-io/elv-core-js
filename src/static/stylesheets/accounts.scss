@@ -9,6 +9,7 @@
 .account {
   border: 1px solid $elv-color-lightgray;
   display: flex;
+  min-height: 8rem;
   padding: $elv-spacing-xs $elv-spacing-m;
   position: relative;
   width: 525px;

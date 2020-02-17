@@ -1,5 +1,29 @@
 @import "~elv-components-js/src/stylesheets/styles";
 
+.site-nav-container {
+  @include elv-no-select;
+  display: flex;
+  font-size: $elv-font-s;
+  height: 2rem;
+  justify-content: flex-end;
+
+  nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    height: 2rem;
+    width: 20rem;
+
+    a {
+      color: $elv-color-text-lighter;
+
+      &.active {
+        background-color: $elv-color-lightestgray;
+        color: $elv-color-text-light;
+      }
+    }
+  }
+}
+
 .nav-container {
   @include elv-no-select;
   align-items: center;
@@ -8,7 +32,7 @@
   flex-grow: 0;
   flex-shrink: 0;
   justify-content: center;
-  margin: $elv-spacing-m 0 $elv-spacing-s;
+  margin: $elv-spacing-s 0;
   width: 100%;
 
   &.locked {
@@ -21,22 +45,25 @@
     font-weight: bold;
     margin-bottom: $elv-spacing-s;
   }
+
+  a {
+    &.active {
+      border-top: 2px solid $elv-color-lightgray;
+    }
+  }
 }
 
 nav {
   display: flex;
+  height: 3rem;
   justify-content: space-between;
   width: 800px;
 
   a {
+    align-items: center;
+    display: flex;
     flex-grow: 1;
-    padding: $elv-spacing-s;
-    text-align: center;
-
-    &.active {
-      border-bottom: 0;
-      border-top: 2px solid $elv-color-lightgray;
-    }
+    justify-content: center;
 
     &:hover {
       background: $elv-color-lightergray;

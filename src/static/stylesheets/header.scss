@@ -65,6 +65,8 @@ header {
 
 .account-info-container {
   height: 100%;
+  min-width: 300px;
+  position: relative;
 }
 
 .header-account,
@@ -136,13 +138,17 @@ header {
   margin-right: $elv-spacing-xs;
 }
 
+.header-account-info {
+  width: 100%;
+}
+
 .header-account-name {
   @include elv-ellipsis;
   align-items: center;
-  display: flex;
+  display: block;
   font-size: $elv-font-m;
   max-width: 300px;
-  width: 100%;
+  width: 90%;
 }
 
 .header-account-name-address {

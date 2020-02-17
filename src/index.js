@@ -16,12 +16,7 @@ import EnforceLogin from "./EnforceLogin";
 import Header from "./components/Header";
 import Navigation from "./components/Navigation";
 
-import AccountsPage from "./components/Accounts";
-import AccountsFormPage from "./components/AccountForm";
-import AppsPage from "./components/Apps";
-import AppFramePage from "./components/AppFrame";
-import ProfilePage from "./components/Profile";
-import TransferFormPage from "./components/TransferForm";
+import {AppRoutes, SiteRoutes} from "./Routes";
 
 @inject("root")
 @inject("accounts")
@@ -58,29 +53,17 @@ class App extends React.PureComponent {
               <Navigation />
               <EnforceLogin key={`app-${this.props.accounts.currentAccountAddress}`}>
                 <Switch>
-                  <Route exact path="/apps">
-                    <AppsPage />
-                  </Route>
+                  {
+                    SiteRoutes.map(({path, component}) =>
+                      <Route key={`route-${path}`} exact path={path} component={component}/>
+                    )
+                  }
 
-                  <Route path="/apps/:app">
-                    <AppFramePage />
-                  </Route>
-
-                  <Route exact path="/profile">
-                    <ProfilePage />
-                  </Route>
-
-                  <Route exact path="/accounts">
-                    <AccountsPage />
-                  </Route>
-
-                  <Route exact path="/accounts/add" >
-                    <AccountsFormPage />
-                  </Route>
-
-                  <Route exact path="/transfer">
-                    <TransferFormPage />
-                  </Route>
+                  {
+                    AppRoutes.map(({path, component}) =>
+                      <Route key={`route-${path}`} exact path={path} component={component}/>
+                    )
+                  }
 
                   <Route>
                     <Redirect to="/accounts"/>
