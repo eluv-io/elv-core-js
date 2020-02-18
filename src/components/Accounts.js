@@ -134,7 +134,7 @@ class Accounts extends React.Component {
         <div className="accounts">
           { this.props.accounts.sortedAccounts.map(address => this.Account(address)) }
         </div>
-        <div className="actions-container flex-centered">
+        <div className="actions-container flex-centered add-account">
           <Action type="link" to="/accounts/add" label="Add Account">Add Account</Action>
         </div>
       </div>

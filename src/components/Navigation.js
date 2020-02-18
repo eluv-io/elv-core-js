@@ -4,13 +4,30 @@ import React from "react";
 import {NavLink} from "react-router-dom";
 import {inject, observer} from "mobx-react";
 import {withRouter} from "react-router";
+import {AppRoutes} from "../Routes";
 
 @inject("accounts")
 @observer
 class Navigation extends React.Component {
-  render() {
-    if(this.props.location && this.props.location.pathname.match(/^\/apps\/.+$/)) {
-      // App frame is visible - hide navigation
+  SiteNav() {
+    return (
+      <div className="site-nav-container">
+        <nav>
+          <NavLink
+            isActive={() => !!AppRoutes.find(({path}) => path === this.props.location.pathname)}
+            activeClassName="active" to="/accounts"
+          >
+            Account
+          </NavLink>
+          <NavLink activeClassName="active" to="/offerings">Offerings</NavLink>
+          <NavLink activeClassName="active" to="/terms">Terms</NavLink>
+        </nav>
+      </div>
+    );
+  }
+
+  AppNav() {
+    if(!AppRoutes.find(({path}) => path === this.props.location.pathname)) {
       return null;
     }
 
@@ -45,6 +62,20 @@ class Navigation extends React.Component {
         </div>
       );
     }
+  }
+
+  render() {
+    if(this.props.location && this.props.location.pathname.match(/^\/apps\/.+$/)) {
+      // App frame is visible - hide navigation
+      return null;
+    }
+
+    return (
+      <React.Fragment>
+        { this.SiteNav() }
+        { this.AppNav() }
+      </React.Fragment>
+    );
   }
 }
 
