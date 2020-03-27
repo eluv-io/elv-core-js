@@ -3,8 +3,6 @@ import {ElvClient} from "elv-client-js";
 import AccountStore from "./Accounts";
 import ProfilesStore from "./Profiles";
 
-import SpaceContract from "elv-client-js/src/contracts/BaseContentSpace";
-
 // Force strict mode so mutations are only allowed within actions.
 configure({
   enforceActions: "always"
@@ -58,7 +56,6 @@ class RootStore {
 
       yield this.client.CallContractMethod({
         contractAddress: this.client.contentSpaceAddress,
-        abi: SpaceContract.abi,
         methodName: "version"
       });
 

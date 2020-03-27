@@ -25,7 +25,7 @@ class ProfilesStore {
     this.profiles[address].metadata.public =
       (yield this.rootStore.client.userProfileClient.PublicUserMetadata({address})) || {};
 
-    if(!this.profiles[address].imageUrl && this.profiles[address].metadata.public.image) {
+    if(!this.profiles[address].imageUrl && this.profiles[address].metadata.public.profile_image) {
       this.profiles[address].imageUrl = yield this.rootStore.client.userProfileClient.UserProfileImage({address});
     }
 
@@ -51,8 +51,9 @@ class ProfilesStore {
       this.profiles[address].metadata.public = {};
     }
 
-    if(!this.profiles[address].imageUrl && this.profiles[address].metadata.public.image) {
-      this.profiles[address].imageUrl = yield this.rootStore.client.userProfileClient.UserProfileImage({address});
+    if(!this.profiles[address].imageUrl && this.profiles[address].metadata.public.profile_image) {
+      this.profiles[address].imageUrl = (yield this.rootStore.client.userProfileClient.UserProfileImage({address}))
+        + `&cache=${Math.random()}`;
     }
 
     yield this.rootStore.accountStore.AccountBalance(address);
@@ -69,7 +70,8 @@ class ProfilesStore {
     const address = this.rootStore.accountStore.currentAccountAddress;
 
     this.profiles[address].imageUrl =
-      yield this.rootStore.client.userProfileClient.UserProfileImage({address});
+      (yield this.rootStore.client.userProfileClient.UserProfileImage({address}))
+      + `&cache=${Math.random()}` ;
   });
 
   @action.bound
