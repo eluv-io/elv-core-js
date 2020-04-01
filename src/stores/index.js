@@ -40,6 +40,8 @@ class RootStore {
       this.client.ToggleLogging(true);
     }
 
+    window.client = this.client;
+
     try {
       if(signer) {
         this.client.SetSigner({signer});
