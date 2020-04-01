@@ -12,7 +12,7 @@ This client will pass messages to ElvCore corresponding to specific API calls. U
 message, ElvCore will make the request using the current user's credentials, then pass the result back to
 the contained app as another messsage. 
 
-See [ElvClient documentation](https://github.com/eluv-io/elv-client-js) for more details)
+See [ElvClient documentation](https://github.com/eluv-io/elv-client-js) for more details
 
 ### Running ElvCore
 #### Running with NPM

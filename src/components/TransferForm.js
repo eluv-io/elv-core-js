@@ -1,25 +1,23 @@
 import React from "react";
 import {Form} from "elv-components-js";
-import Redirect from "react-router/es/Redirect";
+import {Redirect} from "react-router";
+import {inject, observer} from "mobx-react";
 
+@inject("accounts")
+@inject("profiles")
+@observer
 class TransferForm extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       ether: 0,
-      recipient: Object.keys(this.props.accounts)[0],
-      manualEntry: Object.keys(this.props.accounts).length === 0,
-      status: {
-        loading: false,
-        error: false,
-        errorMessage: ""
-      }
+      recipient: Object.keys(this.props.accounts.accounts)[0],
+      manualEntry: Object.keys(this.props.accounts.accounts).length === 0
     };
 
     this.HandleInputChange = this.HandleInputChange.bind(this);
     this.HandleSubmit = this.HandleSubmit.bind(this);
-    this.HandleError = this.HandleError.bind(this);
   }
 
   HandleInputChange(event) {
@@ -43,39 +41,22 @@ class TransferForm extends React.Component {
   }
 
   async HandleSubmit() {
-    this.setState({
-      status: {
-        loading: true
-      }
-    });
-
-    await this.props.Submit({
+    await this.props.accounts.SendFunds({
       recipient: this.state.recipient,
       ether: this.state.ether
-    });
-
-    this.setState({
-      completed: true
-    });
-  }
-
-  HandleError(error) {
-    this.setState({
-      status: {
-        loading: false,
-        error: true,
-        errorMessage: error.message
-      }
     });
   }
 
   RecipientSelector() {
-    let options = Object.values(this.props.accounts)
-      .map(account => (
-        <option key={"account-selection-" + account.address} value={account.address}>
-          {`${account.name || account.address} (${account.balance})` }
-        </option>
-      ));
+    let options = Object.values(this.props.accounts.accounts)
+      .map(account => {
+        const profile = this.props.profiles.profiles[account.address];
+        return (
+          <option key={"account-selection-" + account.address} value={account.address}>
+            {`${profile.metadata.public.name || account.address} (${account.balance})`}
+          </option>
+        );
+      });
 
     options.push(
       <option key={"account-selection-other"} value="other">
@@ -99,7 +80,7 @@ class TransferForm extends React.Component {
       <div className="page-content">
         <Form
           legend="Transfer Funds"
-          status={this.state.status}
+          redirectPath="/accounts"
           OnSubmit={this.HandleSubmit}
           OnError={this.HandleError}
         >

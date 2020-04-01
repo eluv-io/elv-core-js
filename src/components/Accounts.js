@@ -1,13 +1,18 @@
 import "../static/stylesheets/accounts.scss";
 
 import React from "react";
-import {Action, Balance, Confirm, CroppedIcon, ImageIcon} from "elv-components-js";
+import {inject, observer} from "mobx-react";
+import {Action, Balance, Confirm, CroppedIcon, IconButton, ImageIcon} from "elv-components-js";
 import LoginModal from "./LoginModal";
 
 import LockedIcon from "../static/icons/Locked.svg";
 import UnlockedIcon from "../static/icons/Unlocked.svg";
 import DefaultAccountImage from "../static/icons/User.svg";
+import RemoveAccountIcon from "../static/icons/X.svg";
 
+@inject("accounts")
+@inject("profiles")
+@observer
 class Accounts extends React.Component {
   constructor(props) {
     super(props);
@@ -18,11 +23,12 @@ class Accounts extends React.Component {
     };
 
     this.UnlockAccount = this.UnlockAccount.bind(this);
+    this.LockAccount = this.LockAccount.bind(this);
   }
 
   async SelectAccount(address) {
-    if(this.props.accounts[address].signer) {
-      await this.props.UnlockAccount({address});
+    if(this.props.accounts.accounts[address].signer) {
+      await this.props.accounts.UnlockAccount({address});
       return;
     }
 
@@ -33,13 +39,17 @@ class Accounts extends React.Component {
   }
 
   async UnlockAccount(password) {
-    await this.props.UnlockAccount({address: this.state.selectedAddress, password});
+    await this.props.accounts.UnlockAccount({address: this.state.selectedAddress, password});
+  }
+
+  LockAccount(address) {
+    this.props.accounts.LockAccount({address});
   }
 
   RemoveAccount(address) {
     Confirm({
       message: "Are you sure you want to remove this account?",
-      onConfirm: () => this.props.RemoveAccount(address)
+      onConfirm: () => this.props.accounts.RemoveAccount(address)
     });
   }
 
@@ -55,20 +65,32 @@ class Accounts extends React.Component {
     );
   }
 
-  Account(account) {
-    const isCurrentAccount = this.props.currentAccount === account.address;
+  Account(address) {
+    const account = this.props.accounts.accounts[address];
+    const profile = this.props.profiles.profiles[address];
+
+    const isCurrentAccount = this.props.accounts.currentAccountAddress === account.address;
     const accountLocked = !account.signer;
 
     let selectAccountButton;
     if(!isCurrentAccount || accountLocked) {
       selectAccountButton = (
         <Action onClick={() => this.SelectAccount(account.address)}>
-          {accountLocked ? "Unlock" : "Use Account"}
+          {accountLocked ? "Unlock Account" : "Use Account"}
         </Action>
       );
     }
 
-    const profileImage = account.profileImage || DefaultAccountImage;
+    let lockAccountButton;
+    if(!accountLocked) {
+      lockAccountButton = (
+        <Action className="danger" onClick={() => this.LockAccount(account.address)}>
+          Lock Account
+        </Action>
+      );
+    }
+
+    const profileImage = profile.imageUrl || DefaultAccountImage;
 
     return (
       <div key={`account-${account.address}`} className={isCurrentAccount ? "account current-account" : "account"}>
@@ -77,16 +99,28 @@ class Accounts extends React.Component {
           label={accountLocked ? "Account Locked" : "Account Unlocked"}
           className={`account-lock-icon ${accountLocked ? "" : "account-unlocked-icon"}`}
         />
-        <CroppedIcon icon={profileImage} label="Profile Image" className="account-image" />
+        <IconButton
+          icon={RemoveAccountIcon}
+          label={"Remove Account"}
+          onClick={() => this.RemoveAccount(account.address)}
+          className={"account-remove-icon"}
+        />
+        <CroppedIcon
+          icon={profileImage}
+          alternateIcon={DefaultAccountImage}
+          label="Profile Image"
+          className="account-image"
+          useLoadingIndicator={true}
+        />
         <div className="account-main">
           <div className="account-info">
-            <div className="account-name">{account.name || "\u00a0"}</div>
+            <div className="account-name">{profile.metadata.public.name || "\u00a0"}</div>
             <div className="account-address">{account.address}</div>
             <Balance balance={account.balance} className="account-balance" />
           </div>
           <div className="account-actions">
             { selectAccountButton }
-            <Action className="danger" onClick={() => this.RemoveAccount(account.address)}>Remove</Action>
+            { lockAccountButton }
           </div>
         </div>
       </div>
@@ -98,9 +132,9 @@ class Accounts extends React.Component {
       <div className="page-content">
         { this.LoginModal() }
         <div className="accounts">
-          { Object.values(this.props.accounts).map(account => this.Account(account)) }
+          { this.props.accounts.sortedAccounts.map(address => this.Account(address)) }
         </div>
-        <div className="actions-container flex-centered">
+        <div className="actions-container flex-centered add-account">
           <Action type="link" to="/accounts/add" label="Add Account">Add Account</Action>
         </div>
       </div>

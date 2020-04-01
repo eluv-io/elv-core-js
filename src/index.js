@@ -3,52 +3,91 @@ import "./static/stylesheets/defaults.scss";
 
 import React from "react";
 import { render } from "react-dom";
-import { Route, Switch } from "react-router-dom";
-import HashRouter from "react-router-dom/es/HashRouter";
-import Redirect from "react-router/es/Redirect";
+import { Route, Switch, HashRouter } from "react-router-dom";
+import { Redirect } from "react-router";
 
-import {ElvCoreProvider} from "./ElvCoreContext";
+import * as Stores from "./stores";
+import {inject, observer, Provider} from "mobx-react";
 
-import HeaderContainer from "./containers/Header";
-import NavigationContainer from "./containers/Navigation";
-import AppsContainer from "./containers/Apps";
-import AppFrameContainer from "./containers/AppFrame";
-import ProfileContainer from "./containers/Profile";
-import AccountsContainer from "./containers/Accounts";
-import AccountFormContainer from "./containers/AccountForm";
-import TransferFormContainer from "./containers/TransferForm";
-import EnforceLoginContainer from "./EnforceLogin";
+import {Action, ErrorHandler, LoadingElement} from "elv-components-js";
 
+import EnforceLogin from "./EnforceLogin";
+
+import Header from "./components/Header";
+import Navigation from "./components/Navigation";
+
+import {AppRoutes, SiteRoutes} from "./Routes";
+
+@inject("root")
+@inject("accounts")
+@observer
 class App extends React.PureComponent {
   render() {
+    if(this.props.root.configError) {
+      return (
+        <div className="page-error">
+          <div className="page-error-container">
+            <h1>
+              Unable to load client configuration
+            </h1>
+            <h1>
+              {EluvioConfiguration["config-url"]}
+            </h1>
+
+            <Action onClick={() => this.props.root.InitializeClient()}>
+              Retry
+            </Action>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <HashRouter>
-        <div className="router-container">
-          <ElvCoreProvider>
-            <HeaderContainer />
-            <NavigationContainer />
-            <EnforceLoginContainer>
-              <Switch>
-                <Route exact path="/apps" component={AppsContainer} />
-                <Route path="/apps/:app" component={AppFrameContainer} />
+        <LoadingElement
+          loading={!this.props.root.client || !this.props.accounts.accountsLoaded}
+          fullPage={true}
+          render={() => (
+            <div className="router-container">
+              <Header />
+              <Navigation />
+              <EnforceLogin key={`app-${this.props.accounts.currentAccountAddress}`}>
+                <Switch>
+                  {
+                    SiteRoutes.map(({path, component}) =>
+                      <Route key={`route-${path}`} exact path={path} component={component}/>
+                    )
+                  }
 
-                <Route exact path="/profile" component={ProfileContainer} />
+                  {
+                    AppRoutes.map(({path, component}) =>
+                      <Route key={`route-${path}`} exact path={path} component={component}/>
+                    )
+                  }
 
-                <Route exact path="/accounts" component={AccountsContainer} />
-                <Route exact path="/accounts/add" component={AccountFormContainer} />
-
-                <Route exact path="/transfer" component={TransferFormContainer} />
-                <Route render={() => <Redirect to="/accounts"/>} />
-              </Switch>
-            </EnforceLoginContainer>
-          </ElvCoreProvider>
-        </div>
+                  <Route>
+                    <Redirect to="/accounts"/>
+                  </Route>
+                </Switch>
+              </EnforceLogin>
+            </div>
+          )}
+        />
       </HashRouter>
     );
   }
 }
 
+const AppComponent = ErrorHandler(App);
+
 render(
-  <App />,
+  (
+    <React.Fragment>
+      <Provider {...Stores}>
+        <AppComponent />
+      </Provider>
+      <div className="app-version">{EluvioConfiguration.version}</div>
+    </React.Fragment>
+  ),
   document.getElementById("app")
 );

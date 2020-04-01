@@ -9,12 +9,13 @@
 .account {
   border: 1px solid $elv-color-lightgray;
   display: flex;
+  min-height: 8rem;
   padding: $elv-spacing-xs $elv-spacing-m;
   position: relative;
   width: 525px;
 
   &:not(.current-account) {
-    background: $elv-color-lightestgray;
+    color: $elv-color-text-light;
   }
 
   &:not(:last-child) {
@@ -22,22 +23,42 @@
   }
 
   &.current-account {
-    border: 1px solid $elv-color-mediumgray;
+    border: 0;
+    border-radius: 5px;
+    box-shadow: $elv-color-mediumblue 0 0 6px;
     z-index: 10;
   }
-}
 
-.account-lock-icon {
-  color: $elv-color-mediumgray;
-  height: 20px;
-  left: $elv-spacing-xxs;
-  position: absolute;
-  top: $elv-spacing-xs;
-  width: 20px;
-}
+  .account-lock-icon {
+    color: $elv-color-mediumgray;
+    height: 20px;
+    left: $elv-spacing-xxs;
+    position: absolute;
+    top: $elv-spacing-xs;
+    width: 20px;
+  }
 
-.account-unlocked-icon {
-  color: $elv-color-darkergray;
+  .account-unlocked-icon {
+    color: $elv-color-darkergray;
+  }
+
+  .account-remove-icon {
+    height: 20px;
+    position: absolute;
+    right: $elv-spacing-xxs;
+    top: $elv-spacing-xs;
+    width: 20px;
+
+    svg {
+      stroke: $elv-color-lightgray;
+    }
+
+    &:hover {
+      svg {
+        stroke: $elv-color-mediumred;
+      }
+    }
+  }
 }
 
 .account-image {
@@ -64,7 +85,8 @@
   }
 
   .account-address {
-    font-size: 13px;
+    font-size: $elv-font-s;
+    font-weight: 200;
     margin-bottom: $elv-spacing-xxs;
   }
 }
@@ -74,6 +96,19 @@
 
   button {
     margin-right: $elv-spacing-xs;
+
+    &.-elv-button {
+      &.-elv-button {
+        font-size: $elv-font-s;
+      }
+    }
   }
 }
 
+.account-balance {
+  font-weight: 300;
+}
+
+.add-account {
+  margin: $elv-spacing-m 0 $elv-spacing-xl;
+}

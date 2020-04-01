@@ -2,17 +2,15 @@ import React from "react";
 import {Form} from "elv-components-js";
 import {Action} from "elv-components-js";
 import {RadioSelect} from "elv-components-js";
+import {inject, observer} from "mobx-react";
 
+@inject("accounts")
+@observer
 class AccountForm extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      status: {
-        loading: false,
-        error: false,
-        errorMessage: ""
-      },
       credentialType: "privateKey",
       privateKey: "",
       encryptedPrivateKey: "",
@@ -21,7 +19,6 @@ class AccountForm extends React.Component {
     };
 
     this.HandleSubmit = this.HandleSubmit.bind(this);
-    this.HandleError = this.HandleError.bind(this);
     this.HandleInputChange = this.HandleInputChange.bind(this);
   }
 
@@ -29,29 +26,22 @@ class AccountForm extends React.Component {
     this.setState({
       [event.target.name]: event.target.value
     });
+
+    if(event.target.name === "credentialType") {
+      this.setState({
+        privateKey: "",
+        encryptedPrivateKey: "",
+        mnemonic: ""
+      });
+    }
   }
 
   async HandleSubmit() {
-    this.setState({status: {loading: true}});
-
-    await this.props.Submit({
-      credentialType: this.state.credentialType,
+    await this.props.accounts.AddAccount({
       privateKey: this.state.privateKey,
       encryptedPrivateKey: this.state.encryptedPrivateKey,
       mnemonic: this.state.mnemonic,
       password: this.state.password
-    });
-
-    this.setState({status: {loading: false, completed: true}});
-  }
-
-  HandleError(error) {
-    this.setState({
-      status: {
-        loading: false,
-        error: true,
-        errorMessage: error.message
-      }
     });
   }
 
@@ -81,7 +71,7 @@ class AccountForm extends React.Component {
         return [
           <label key="generate-mnemonic-label" htmlFor="generateMnemonic">Generate Mnemonic</label>,
           <div key="generate-mnemonic-button" className="actions-container">
-            <Action onClick={() => this.setState({mnemonic: this.props.GenerateMnemonic()})}>
+            <Action onClick={() => this.setState({mnemonic: this.props.accounts.GenerateMnemonic()})}>
               Generate Mnemonic
             </Action>
           </div>,
@@ -104,11 +94,9 @@ class AccountForm extends React.Component {
       <div className="page-content">
         <Form
           legend="Add Account"
-          status={this.state.status}
           OnSubmit={this.HandleSubmit}
-          OnError={this.HandleError}
-          redirectPath="/accounts/switch"
-          cancelPath="/accounts/switch"
+          redirectPath="/accounts"
+          cancelPath="/accounts"
         >
           <div className="form-content">
             <label htmlFor="credentialType">Credential Type</label>

@@ -7,10 +7,12 @@ from the core app, which owns user account information and keys
 
 import React from "react";
 import UrlJoin from "url-join";
-import Redirect from "react-router/es/Redirect";
+import {Redirect, withRouter} from "react-router";
 
 import {FrameClient} from "elv-client-js/src/FrameClient";
 import {Confirm} from "elv-components-js";
+import {inject, observer} from "mobx-react";
+import {Debounce} from "elv-components-js";
 
 class IFrameBase extends React.Component {
   SandboxPermissions() {
@@ -22,7 +24,8 @@ class IFrameBase extends React.Component {
       "allow-orientation-lock",
       "allow-popups",
       "allow-presentation",
-      "allow-same-origin"
+      "allow-same-origin",
+      "allow-downloads-without-user-activation"
     ].join(" ");
   }
 
@@ -55,62 +58,105 @@ const IFrame = React.forwardRef(
   (props, appRef) => <IFrameBase appRef={appRef} {...props} />
 );
 
+@inject("root")
+@inject("accounts")
+@observer
 class AppFrame extends React.Component {
   constructor(props) {
     super(props);
 
+    const appName = this.props.match.params.app;
+    const basePath = encodeURI(UrlJoin("/apps", appName));
+    const appPath = window.location.hash.replace(`#${basePath}`, "") || "";
+    const appUrl = UrlJoin(EluvioConfiguration.apps[appName], appPath);
+
     this.state = {
       appRef: React.createRef(),
-      // TODO: pull directly out of props
-      basePath: UrlJoin("/apps", this.props.app.name)
+      appName,
+      appUrl,
+      basePath,
+      profileAccessAllowed: false,
+      confirmPromise: undefined
     };
+
+    // Update account balance when making requests
+    this.UpdateBalance = Debounce(
+      () => this.props.accounts.AccountBalance(this.props.accounts.currentAccountAddress),
+      5000
+    );
 
     this.ApiRequestListener = this.ApiRequestListener.bind(this);
   }
 
+  // Ensure region is reset if app changed it
+  async componentWillUnmount() {
+    await this.props.root.client.ResetRegion();
+  }
+
   async CheckAccess(event) {
     if(FrameClient.PromptedMethods().includes(event.data.calledMethod)) {
-      const accessLevel = await this.props.client.userProfileClient.AccessLevel();
+      const accessLevel = await this.props.root.client.userProfileClient.AccessLevel();
 
       // No access to private profiles
-      if(accessLevel === "private") {return false;}
+      if(accessLevel === "private") { return false; }
 
       // Prompt for access
       if(accessLevel === "prompt") {
-        const requestor = event.data.args.requestor;
-        if(!requestor) {
-          /* eslint-disable no-console */
-          console.error("Requestor must be specified when requesting access to a user profile");
-          /* eslint-enable no-console */
-          return false;
-        }
+        const requestor = this.state.appName;
+        const accessAllowed =
+          this.state.profileAccessAllowed ||
+          await this.props.root.client.userProfileClient.UserMetadata({
+            metadataSubtree: UrlJoin("allowed_accessors", requestor)
+          });
 
-        const accessAllowed = await this.props.client.userProfileClient.UserMetadata({
-          metadataSubtree: UrlJoin("allowed_accessors", requestor)
-        });
+        if(!accessAllowed) {
+          if(!this.state.confirmPromise) {
+            this.setState({
+              confirmPromise: Confirm({
+                message: `Do you want to allow the application "${requestor}" to access your profile?`,
+                onConfirm: async () => {
+                  // Record permission
+                  await this.props.root.client.userProfileClient.ReplaceUserMetadata({
+                    metadataSubtree: UrlJoin("allowed_accessors", requestor),
+                    metadata: Date.now()
+                  });
 
-        if(accessAllowed) { return true; }
-
-        return await Confirm({
-          message: `Do you want to allow the application "${requestor}" to access your profile?`,
-          onConfirm: async () => {
-            // Record permission
-            await this.props.client.userProfileClient.ReplaceUserMetadata({
-              metadataSubtree: UrlJoin("allowed_accessors", requestor),
-              metadata: Date.now()
+                  await new Promise(resolve =>
+                    this.setState({
+                      profileAccessAllowed: true
+                    }, resolve)
+                  );
+                }
+              })
             });
           }
-        });
+
+          await this.state.confirmPromise;
+
+          this.setState({confirmPromise: undefined});
+
+          if(!this.state.profileAccessAllowed) {
+            return false;
+          }
+        }
       }
 
       // Otherwise public access
+    }
+
+    // If making a user metadata call, namespace metadata under app subtree
+    if(FrameClient.MetadataMethods().includes(event.data.calledMethod)) {
+      event.data.args = {
+        ...event.data.args,
+        metadataSubtree: UrlJoin(this.state.appName, event.data.args.metadataSubtree || "")
+      };
     }
 
     return true;
   }
 
   Respond(requestId, source, responseMessage) {
-    responseMessage = this.props.client.utils.MakeClonable({
+    responseMessage = this.props.root.client.utils.MakeClonable({
       ...responseMessage,
       requestId: requestId,
       type: "ElvFrameResponse"
@@ -128,6 +174,8 @@ class AppFrame extends React.Component {
       console.error(error);
       /* eslint-enable no-console */
     }
+
+    this.UpdateBalance();
   }
 
   // Listen for API request messages from frame
@@ -150,7 +198,15 @@ class AppFrame extends React.Component {
 
       // App requested to push its new app path
       case "SetFramePath":
-        history.replaceState(null, null, `#${UrlJoin(this.state.basePath, event.data.path)}`);
+        let appPath = event.data.path.replace(/^\/+/, "");
+        if(appPath.startsWith("#")) {
+          // UrlJoin eats leading slash if followed by #
+          appPath = UrlJoin(this.state.basePath, "/", appPath);
+        } else {
+          appPath = UrlJoin(this.state.basePath, appPath);
+        }
+
+        history.replaceState(null, null, `#${appPath}`);
 
         this.Respond(requestId, source, {response: "Set path " + event.data.path});
         break;
@@ -162,11 +218,11 @@ class AppFrame extends React.Component {
         break;
 
       case "ShowHeader":
-        this.props.ShowHeader();
+        this.props.root.ToggleHeader(true);
         break;
 
       case "HideHeader":
-        this.props.HideHeader();
+        this.props.root.ToggleHeader(false);
         break;
 
       // App requested an ElvClient method
@@ -177,10 +233,8 @@ class AppFrame extends React.Component {
         }
 
         const responder = (response) => this.Respond(response.requestId, source, response);
-        await this.props.client.CallFromFrameMessage(event.data, responder);
+        await this.props.root.client.CallFromFrameMessage(event.data, responder);
     }
-
-    //this.UpdateAccountBalance();
   }
 
   render() {
@@ -188,11 +242,15 @@ class AppFrame extends React.Component {
       return <Redirect push to={this.state.redirectLocation} />;
     }
 
+    if(!this.props.root.client) {
+      return null;
+    }
+
     return (
       <IFrame
         ref={this.state.appRef}
-        appName={this.props.app.name}
-        appUrl={this.props.app.url}
+        appName={this.state.appName}
+        appUrl={this.state.appUrl}
         listener={this.ApiRequestListener}
         className="app-frame"
       />
@@ -200,4 +258,4 @@ class AppFrame extends React.Component {
   }
 }
 
-export default AppFrame;
+export default withRouter(AppFrame);
