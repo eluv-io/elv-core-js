@@ -165,12 +165,12 @@
     font-style: italic;
     opacity: 0;
     overflow: hidden;
-    transition: width 0.75s, opacity 1.25s;
+    transition: opacity 1.25s;
     width: 0;
 
     &.visible {
       opacity: 1;
-      width: 500px;
+      width: auto;
     }
   }
 

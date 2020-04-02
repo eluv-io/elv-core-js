@@ -1,5 +1,5 @@
 import {configure, observable, action, flow} from "mobx";
-import {ElvClient} from "elv-client-js";
+import {ElvClient} from "@eluvio/elv-client-js";
 import AccountStore from "./Accounts";
 import ProfilesStore from "./Profiles";
 
