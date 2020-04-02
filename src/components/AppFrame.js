@@ -9,7 +9,7 @@ import React from "react";
 import UrlJoin from "url-join";
 import {Redirect, withRouter} from "react-router";
 
-import {FrameClient} from "elv-client-js/src/FrameClient";
+import {FrameClient} from "@eluvio/elv-client-js/src/FrameClient";
 import {Confirm} from "elv-components-js";
 import {inject, observer} from "mobx-react";
 import {Debounce} from "elv-components-js";
