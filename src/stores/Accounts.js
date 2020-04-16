@@ -91,9 +91,7 @@ class AccountStore {
 
     this.rootStore.InitializeClient(this.accounts[address].signer);
 
-    yield this.AccountBalance(address);
-
-    this.SetCurrentAccount({signer: this.accounts[address].signer});
+    yield this.SetCurrentAccount({signer: this.accounts[address].signer});
   });
 
   SendFunds = flow(function * ({recipient, ether}) {
@@ -110,26 +108,36 @@ class AccountStore {
   }
 
   @action.bound
-  SetCurrentAccount({address, signer}) {
-    address = this.rootStore.client.utils.FormatAddress(address);
+  SetTenantId = flow(function * ({id}) {
+    yield this.rootStore.client.userProfileClient.SetTenantId({id});
+    this.accounts[this.currentAccountAddress].tenantId = yield this.rootStore.client.userProfileClient.TenantId();
+  });
+
+  @action.bound
+  SetCurrentAccount = flow(function * ({address, signer}) {
+    address = this.rootStore.client.utils.FormatAddress(address || signer.address);
 
     signer = signer || this.accounts[address].signer;
 
     if(signer) {
-      this.rootStore.InitializeClient(signer);
-
-      this.currentAccountAddress = this.rootStore.client.utils.FormatAddress(signer.address);
-    } else {
-      this.currentAccountAddress = address;
+      yield this.rootStore.InitializeClient(signer);
     }
 
-    this.AccountBalance(this.currentAccountAddress);
+    this.accounts[address].signer = signer;
+
+    yield this.AccountBalance(address);
+
+    if(this.accounts[address].balance > 0.1) {
+      this.accounts[address].tenantId = yield this.rootStore.client.userProfileClient.TenantId();
+    }
 
     localStorage.setItem(
       "elv-current-account",
-      this.currentAccountAddress.toString()
+      address.toString()
     );
-  }
+
+    this.currentAccountAddress = address;
+  });
 
   @action.bound
   AddAccount = flow(function * ({privateKey, encryptedPrivateKey, mnemonic, password}) {
@@ -164,7 +172,7 @@ class AccountStore {
 
     yield this.rootStore.profilesStore.PublicMetadata(address);
 
-    this.SetCurrentAccount({signer});
+    yield this.SetCurrentAccount({signer});
   });
 
   @action.bound

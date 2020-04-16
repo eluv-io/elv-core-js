@@ -38,7 +38,7 @@ class Accounts extends React.Component {
     });
   }
 
-  async UnlockAccount(password) {
+  async UnlockAccount({password}) {
     await this.props.accounts.UnlockAccount({address: this.state.selectedAddress, password});
   }
 
@@ -58,7 +58,10 @@ class Accounts extends React.Component {
 
     return (
       <LoginModal
+        key="password-prompt"
+        legend={"Enter your password to unlock this account"}
         address={this.state.selectedAddress}
+        fields={[{name: "password", label: "Password", type: "password"}]}
         Submit={this.UnlockAccount}
         Close={() => this.setState({showLoginModal: false})}
       />

@@ -10,6 +10,7 @@ import {AppRoutes} from "../Routes";
 @observer
 class Navigation extends React.Component {
   SiteNav() {
+    // <a href="https://github.com/eluv-io" target="_blank">Docs</a>
     return (
       <div className="site-nav-container">
         <nav>
@@ -19,6 +20,7 @@ class Navigation extends React.Component {
           >
             Account
           </NavLink>
+
           <NavLink activeClassName="active" to="/offerings">Offerings</NavLink>
           <NavLink activeClassName="active" to="/terms">Terms</NavLink>
         </nav>

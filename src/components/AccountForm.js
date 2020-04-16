@@ -43,6 +43,8 @@ class AccountForm extends React.Component {
       mnemonic: this.state.mnemonic,
       password: this.state.password
     });
+
+    this.props.history.push("/accounts");
   }
 
   Credentials() {

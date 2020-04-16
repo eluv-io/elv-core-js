@@ -9,6 +9,14 @@ import {AppRoutes} from "./Routes";
 @inject("root")
 @observer
 class EnforceLogin extends React.PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      unlocking: false
+    };
+  }
+
   render() {
     const currentAccount = this.props.accounts.currentAccount;
 
@@ -24,17 +32,37 @@ class EnforceLogin extends React.PureComponent {
       return this.props.children;
     } else if(!currentAccount || currentAccount.balance < 0.1) {
       return <Redirect to="/accounts"/>;
-    } else if(!currentAccount.signer) {
+    } else if(this.state.unlocking || !currentAccount.signer) {
       return (
         <LoginModal
+          key="password-prompt"
+          legend={"Enter your password to unlock this account"}
           prompt={true}
-          address={currentAccount.address}
+          fields={[{name: "password", label: "Password", type: "password"}]}
           Submit={
-            async (password) => await this.props.accounts.UnlockAccount({
-              address: currentAccount.address,
-              password
-            })
+            async ({password}) => {
+              try {
+                this.setState({unlocking: true});
+
+                await this.props.accounts.UnlockAccount({
+                  address: currentAccount.address,
+                  password
+                });
+              } finally {
+                this.setState({unlocking: false});
+              }
+            }
           }
+        />
+      );
+    } else if(!currentAccount.tenantId) {
+      return (
+        <LoginModal
+          key="tenant-id-prompt"
+          legend={"This account is not associated with a tenant. Please enter your tenant ID to proceed."}
+          prompt={true}
+          fields={[{name: "tenantId", label: "Tenant ID", placeholder: "iten..."}]}
+          Submit={async ({tenantId}) => await this.props.accounts.SetTenantId({id: tenantId})}
         />
       );
     } else {
