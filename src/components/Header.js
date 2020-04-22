@@ -60,9 +60,9 @@ const Account = ({
   </div>
 );
 
-@inject("root")
-@inject("accounts")
-@inject("profiles")
+@inject("rootStore")
+@inject("accountsStore")
+@inject("profilesStore")
 @observer
 class Header extends React.Component {
   constructor(props) {
@@ -93,7 +93,7 @@ class Header extends React.Component {
   }
 
   ToggleHeader(show) {
-    this.props.root.ToggleHeader(show);
+    this.props.rootStore.ToggleHeader(show);
   }
 
   AccountSelection() {
@@ -103,11 +103,11 @@ class Header extends React.Component {
       <div className="header-account-selection">
         <div className="header-accounts">
           {
-            this.props.accounts.sortedAccounts
-              .filter(address => address !== this.props.accounts.currentAccountAddress)
+            this.props.accountsStore.sortedAccounts
+              .filter(address => address !== this.props.accountsStore.currentAccountAddress)
               .map(address => {
-                const account = this.props.accounts.accounts[address];
-                const profile = this.props.profiles.profiles[address];
+                const account = this.props.accountsStore.accounts[address];
+                const profile = this.props.profilesStore.profiles[address];
 
                 return Account({
                   name: profile.metadata.public.name,
@@ -116,12 +116,12 @@ class Header extends React.Component {
                   balance: account.balance,
                   locked: !account.signer,
                   onClick: () => {
-                    this.props.accounts.SetCurrentAccount({address: account.address});
+                    this.props.accountsStore.SetCurrentAccount({address: account.address});
                     this.setState({showSelection: false});
                   },
                   onLock: event => {
                     event.stopPropagation();
-                    this.props.accounts.LockAccount({address: account.address});
+                    this.props.accountsStore.LockAccount({address: account.address});
                   },
                   className: "header-account account-selection"
                 });
@@ -141,8 +141,8 @@ class Header extends React.Component {
   }
 
   AccountInfo() {
-    const account = this.props.accounts.currentAccount;
-    const profile = this.props.profiles.currentProfile;
+    const account = this.props.accountsStore.currentAccount;
+    const profile = this.props.profilesStore.currentProfile;
 
     if(account) {
       return Account({
@@ -155,7 +155,7 @@ class Header extends React.Component {
         onLock: event => {
           event.stopPropagation();
 
-          this.props.accounts.LockAccount({address: account.address});
+          this.props.accountsStore.LockAccount({address: account.address});
           this.setState({showSelection: false});
 
           this.props.history.push("/accounts");
@@ -172,7 +172,7 @@ class Header extends React.Component {
 
   render() {
     return (
-      <header className={this.props.root.showHeader ? "header" : "header hidden-header"}>
+      <header className={this.props.rootStore.showHeader ? "header" : "header hidden-header"}>
         <IconButton className="toggle-header-button" icon={ShowHeaderIcon} label="Show Header" onClick={() => this.ToggleHeader(true)} />
         <IconLink icon={Logo} to="/apps" className="logo" />
         <div

@@ -79,8 +79,8 @@ class RootStore {
   }
 }
 
-const rootStore = new RootStore();
+const root = new RootStore();
 
-export const root = rootStore;
-export const accounts = rootStore.accountStore;
-export const profiles = rootStore.profilesStore;
+export const rootStore = root;
+export const accountsStore = rootStore.accountStore;
+export const profilesStore = rootStore.profilesStore;

@@ -18,12 +18,12 @@ import Navigation from "./components/Navigation";
 
 import {AppRoutes, SiteRoutes} from "./Routes";
 
-@inject("root")
-@inject("accounts")
+@inject("rootStore")
+@inject("accountsStore")
 @observer
 class App extends React.PureComponent {
   render() {
-    if(this.props.root.configError) {
+    if(this.props.rootStore.configError) {
       return (
         <div className="page-error">
           <div className="page-error-container">
@@ -34,7 +34,7 @@ class App extends React.PureComponent {
               {EluvioConfiguration["config-url"]}
             </h1>
 
-            <Action onClick={() => this.props.root.InitializeClient()}>
+            <Action onClick={() => this.props.rootStore.InitializeClient()}>
               Retry
             </Action>
           </div>
@@ -45,13 +45,13 @@ class App extends React.PureComponent {
     return (
       <HashRouter>
         <LoadingElement
-          loading={!this.props.root.client || !this.props.accounts.accountsLoaded}
+          loading={!this.props.rootStore.client || !this.props.accountsStore.accountsLoaded}
           fullPage={true}
           render={() => (
             <div className="router-container">
               <Header />
               <Navigation />
-              <EnforceLogin key={`app-${this.props.accounts.currentAccountAddress}`}>
+              <EnforceLogin key={`app-${this.props.accountsStore.currentAccountAddress}`}>
                 <Switch>
                   {
                     SiteRoutes.map(({path, component}) =>

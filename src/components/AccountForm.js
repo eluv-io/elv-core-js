@@ -4,7 +4,7 @@ import {Action} from "elv-components-js";
 import {RadioSelect} from "elv-components-js";
 import {inject, observer} from "mobx-react";
 
-@inject("accounts")
+@inject("accountsStore")
 @observer
 class AccountForm extends React.Component {
   constructor(props) {
@@ -37,7 +37,7 @@ class AccountForm extends React.Component {
   }
 
   async HandleSubmit() {
-    await this.props.accounts.AddAccount({
+    await this.props.accountsStore.AddAccount({
       privateKey: this.state.privateKey,
       encryptedPrivateKey: this.state.encryptedPrivateKey,
       mnemonic: this.state.mnemonic,
@@ -73,7 +73,7 @@ class AccountForm extends React.Component {
         return [
           <label key="generate-mnemonic-label" htmlFor="generateMnemonic">Generate Mnemonic</label>,
           <div key="generate-mnemonic-button" className="actions-container">
-            <Action onClick={() => this.setState({mnemonic: this.props.accounts.GenerateMnemonic()})}>
+            <Action onClick={() => this.setState({mnemonic: this.props.accountsStore.GenerateMnemonic()})}>
               Generate Mnemonic
             </Action>
           </div>,

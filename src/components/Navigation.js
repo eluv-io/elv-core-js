@@ -6,7 +6,7 @@ import {inject, observer} from "mobx-react";
 import {withRouter} from "react-router";
 import {AppRoutes} from "../Routes";
 
-@inject("accounts")
+@inject("accountsStore")
 @observer
 class Navigation extends React.Component {
   SiteNav() {
@@ -33,7 +33,7 @@ class Navigation extends React.Component {
       return null;
     }
 
-    const account = this.props.accounts.currentAccount;
+    const account = this.props.accountsStore.currentAccount;
 
     if(!account) {
       return (

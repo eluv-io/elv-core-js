@@ -5,8 +5,8 @@ import {inject, observer} from "mobx-react";
 import {LoadingElement} from "elv-components-js";
 import {AppRoutes} from "./Routes";
 
-@inject("accounts")
-@inject("root")
+@inject("accountsStore")
+@inject("rootStore")
 @observer
 class EnforceLogin extends React.PureComponent {
   constructor(props) {
@@ -18,7 +18,7 @@ class EnforceLogin extends React.PureComponent {
   }
 
   render() {
-    const currentAccount = this.props.accounts.currentAccount;
+    const currentAccount = this.props.accountsStore.currentAccount;
 
     const loginPaths = AppRoutes
       .map(({path}) => "/" + path.split("/")[1])
@@ -44,7 +44,7 @@ class EnforceLogin extends React.PureComponent {
               try {
                 this.setState({unlocking: true});
 
-                await this.props.accounts.UnlockAccount({
+                await this.props.accountsStore.UnlockAccount({
                   address: currentAccount.address,
                   password
                 });
@@ -62,13 +62,13 @@ class EnforceLogin extends React.PureComponent {
           legend={"This account is not associated with a tenant. Please enter your tenant ID to proceed."}
           prompt={true}
           fields={[{name: "tenantId", label: "Tenant ID", placeholder: "iten..."}]}
-          Submit={async ({tenantId}) => await this.props.accounts.SetTenantId({id: tenantId})}
+          Submit={async ({tenantId}) => await this.props.accountsStore.SetTenantId({id: tenantId})}
         />
       );
     } else {
       return (
         <LoadingElement
-          loading={!this.props.root.signerSet}
+          loading={!this.props.rootStore.signerSet}
           fullPage={true}
         >
           { this.props.children }

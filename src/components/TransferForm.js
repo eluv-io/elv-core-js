@@ -3,8 +3,8 @@ import {Form} from "elv-components-js";
 import {Redirect} from "react-router";
 import {inject, observer} from "mobx-react";
 
-@inject("accounts")
-@inject("profiles")
+@inject("accountsStore")
+@inject("profilesStore")
 @observer
 class TransferForm extends React.Component {
   constructor(props) {
@@ -12,8 +12,8 @@ class TransferForm extends React.Component {
 
     this.state = {
       ether: 0,
-      recipient: Object.keys(this.props.accounts.accounts)[0],
-      manualEntry: Object.keys(this.props.accounts.accounts).length === 0
+      recipient: Object.keys(this.props.accountsStore.accounts)[0],
+      manualEntry: Object.keys(this.props.accountsStore.accounts).length === 0
     };
 
     this.HandleInputChange = this.HandleInputChange.bind(this);
@@ -41,16 +41,16 @@ class TransferForm extends React.Component {
   }
 
   async HandleSubmit() {
-    await this.props.accounts.SendFunds({
+    await this.props.accountsStore.SendFunds({
       recipient: this.state.recipient,
       ether: this.state.ether
     });
   }
 
   RecipientSelector() {
-    let options = Object.values(this.props.accounts.accounts)
+    let options = Object.values(this.props.accountsStore.accounts)
       .map(account => {
-        const profile = this.props.profiles.profiles[account.address];
+        const profile = this.props.profilesStore.profiles[account.address];
         return (
           <option key={"account-selection-" + account.address} value={account.address}>
             {`${profile.metadata.public.name || account.address} (${account.balance})`}
