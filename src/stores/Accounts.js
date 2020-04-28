@@ -109,6 +109,8 @@ class AccountStore {
 
   @action.bound
   SetTenantId = flow(function * ({id}) {
+    id = id.trim();
+
     yield this.rootStore.client.userProfileClient.SetTenantId({id});
     this.accounts[this.currentAccountAddress].tenantId = yield this.rootStore.client.userProfileClient.TenantId();
   });

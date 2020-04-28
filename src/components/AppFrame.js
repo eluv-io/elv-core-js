@@ -44,6 +44,7 @@ class IFrameBase extends React.Component {
       <iframe
         aria-label={`Eluvio Core Application: ${this.props.appName}`}
         ref={this.props.appRef}
+        allow="encrypted-media *"
         src={this.props.appUrl}
         sandbox={this.SandboxPermissions()}
         className={this.props.className}
