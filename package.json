@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "bump-version": "npm --git-tag-version --no-commit-hooks version patch",
     "serve": "webpack-dev-server --hot --port 8082",
     "build": "rm -rf dist/* && NODE_ENV=production node ./node_modules/webpack-cli/bin/cli.js -p --progress --colors --devtool none",
     "build-debug": "NODE_ENV=production node ./node_modules/webpack-cli/bin/cli.js -p --progress --colors --devtool eval-source-map",

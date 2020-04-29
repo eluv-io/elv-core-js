@@ -15,7 +15,6 @@ module.exports = {
   },
   devServer: {
     disableHostCheck: true,
-    https: true,
     inline: true,
     port: 8080,
     headers: {

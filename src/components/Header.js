@@ -112,7 +112,7 @@ class Header extends React.Component {
                 return Account({
                   name: profile.metadata.public.name,
                   address: account.address,
-                  imageUrl: profile.imageUrl,
+                  imageUrl: this.props.profilesStore.ResizeImage(profile.imageUrl, 200),
                   balance: account.balance,
                   locked: !account.signer,
                   onClick: () => {
@@ -148,7 +148,7 @@ class Header extends React.Component {
       return Account({
         name: profile.metadata.public.name,
         address: account.address,
-        imageUrl: profile.imageUrl,
+        imageUrl: this.props.profilesStore.ResizeImage(profile.imageUrl, 200),
         balance: account.balance,
         locked: !account.signer,
         onClick: () => this.setState({showSelection: !this.state.showSelection}),

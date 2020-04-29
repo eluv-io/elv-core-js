@@ -93,7 +93,7 @@ class Accounts extends React.Component {
       );
     }
 
-    const profileImage = profile.imageUrl || DefaultAccountImage;
+    const profileImage = this.props.profilesStore.ResizeImage(profile.imageUrl, 200) || DefaultAccountImage;
 
     return (
       <div key={`account-${account.address}`} className={isCurrentAccount ? "account current-account" : "account"}>

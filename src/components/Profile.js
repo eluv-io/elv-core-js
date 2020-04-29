@@ -45,7 +45,7 @@ class Profile extends React.Component {
   Update(fn) {
     if(this.state.updating) { return; }
 
-    this.setState({updating: true});
+    this.setState({updating: true, error: undefined});
 
     fn()
       .then(() => this.setState({updating: false}))
@@ -191,7 +191,7 @@ class Profile extends React.Component {
         <div className="profile-image-container">
           {updateIndicator}
           <CroppedIconWithAction
-            icon={imageUrl}
+            icon={this.props.profilesStore.ResizeImage(imageUrl, 500)}
             alternateIcon={DefaultProfileImage}
             useLoadingIndicator={true}
             label="Profile Image"
