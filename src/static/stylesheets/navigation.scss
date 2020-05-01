@@ -15,7 +15,7 @@
 
     a {
       color: $elv-color-text-lighter;
-      flex: 1 1 0;
+      flex: 1 1 auto;
 
       &.active {
         background-color: $elv-color-lightestgray;
