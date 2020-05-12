@@ -55,7 +55,9 @@ class EnforceLogin extends React.PureComponent {
           }
         />
       );
-    } else if(!currentAccount.tenantId) {
+    // Temporarily disabled
+    // eslint-disable-next-line no-constant-condition
+    } else if(false && !currentAccount.tenantId) {
       return (
         <LoginModal
           key="tenant-id-prompt"

@@ -24,7 +24,9 @@ class ProfilesStore {
     if(!this.profiles[address]) {
       this.profiles[address] = {
         metadata: {
-          public: {}
+          public: {
+            name: ""
+          }
         }
       };
     }
@@ -32,6 +34,10 @@ class ProfilesStore {
     try {
       this.profiles[address].metadata.public =
         (yield this.rootStore.client.userProfileClient.PublicUserMetadata({address})) || {};
+
+      if(!this.profiles[address].metadata.public.name) {
+        this.profiles[address].metadata.public.name = "";
+      }
 
       if(!this.profiles[address].imageUrl && this.profiles[address].metadata.public.profile_image) {
         this.profiles[address].imageUrl = yield this.rootStore.client.userProfileClient.UserProfileImage({address});
