@@ -67,8 +67,8 @@ class AppFrame extends React.Component {
 
     const appName = this.props.match.params.app;
     const basePath = encodeURI(UrlJoin("/apps", appName));
-    const appPath = window.location.hash.replace(`#${basePath}`, "") || "";
-    const appUrl = UrlJoin(EluvioConfiguration.apps[appName], appPath);
+    const appPath = window.location.hash.split("#").slice(2).join("");
+    const appUrl = UrlJoin(EluvioConfiguration.apps[appName], "#", appPath);
 
     this.state = {
       appRef: React.createRef(),
@@ -214,6 +214,12 @@ class AppFrame extends React.Component {
       case "ShowAccountsPage":
         this.setState({
           redirectLocation: "/accounts"
+        });
+        break;
+
+      case "ShowAppsPage":
+        this.setState({
+          redirectLocation: "/apps"
         });
         break;
 
