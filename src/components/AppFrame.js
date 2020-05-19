@@ -218,6 +218,7 @@ class AppFrame extends React.Component {
         break;
 
       case "ShowAppsPage":
+        this.props.rootStore.ToggleHeader(true);
         this.setState({
           redirectLocation: "/apps"
         });
