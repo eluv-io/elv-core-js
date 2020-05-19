@@ -66,9 +66,9 @@ class AppFrame extends React.Component {
     super(props);
 
     const appName = this.props.match.params.app;
-    const basePath = encodeURI(UrlJoin("/apps", appName));
-    const appPath = window.location.hash.split("#").slice(2).join("");
-    const appUrl = UrlJoin(EluvioConfiguration.apps[appName], "#", appPath);
+    const basePath = UrlJoin("/apps", appName);
+    const appPath = window.location.hash.replace(basePath, "").replace(encodeURI(basePath), "").substr(1) || "";
+    const appUrl = UrlJoin(EluvioConfiguration.apps[appName], appPath);
 
     this.state = {
       appRef: React.createRef(),
