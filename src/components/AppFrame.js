@@ -17,6 +17,7 @@ import {Debounce} from "elv-components-js";
 class IFrameBase extends React.Component {
   SandboxPermissions() {
     return [
+      "allow-downloads",
       "allow-scripts",
       "allow-forms",
       "allow-modals",

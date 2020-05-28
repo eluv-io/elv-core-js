@@ -70,6 +70,7 @@ class EnforceLogin extends React.PureComponent {
     } else {
       return (
         <LoadingElement
+          key={`login-protected-${this.props.accountsStore.currentAccountAddress}`}
           loading={!this.props.rootStore.signerSet}
           fullPage={true}
         >

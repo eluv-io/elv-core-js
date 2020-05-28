@@ -39,7 +39,7 @@ module.exports = {
       to: Path.join(__dirname, "dist", "configuration.js")
     }]),
     new HtmlWebpackPlugin({
-      title: "Eluvio Fabric Browser",
+      title: "Eluvio",
       template: Path.join(__dirname, "src", "index.html"),
       inject: "body",
       cache: false,
