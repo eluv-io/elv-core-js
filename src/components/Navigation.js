@@ -6,10 +6,11 @@ import {inject, observer} from "mobx-react";
 import {withRouter} from "react-router";
 import {AppRoutes} from "../Routes";
 
-@inject("accounts")
+@inject("accountsStore")
 @observer
 class Navigation extends React.Component {
   SiteNav() {
+    // <a href="https://github.com/eluv-io" target="_blank">Docs</a>
     return (
       <div className="site-nav-container">
         <nav>
@@ -19,6 +20,7 @@ class Navigation extends React.Component {
           >
             Account
           </NavLink>
+
           <NavLink activeClassName="active" to="/offerings">Offerings</NavLink>
           <NavLink activeClassName="active" to="/terms">Terms</NavLink>
         </nav>
@@ -31,7 +33,7 @@ class Navigation extends React.Component {
       return null;
     }
 
-    const account = this.props.accounts.currentAccount;
+    const account = this.props.accountsStore.currentAccount;
 
     if(!account) {
       return (

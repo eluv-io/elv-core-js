@@ -12,21 +12,39 @@ class ProfilesStore {
     this.rootStore = rootStore;
   }
 
+  ResizeImage(imageUrl, height) {
+    return client.utils.ResizeImage({
+      imageUrl,
+      height
+    });
+  }
+
   @action.bound
   PublicMetadata = flow(function * (address) {
     if(!this.profiles[address]) {
       this.profiles[address] = {
         metadata: {
-          public: {}
+          public: {
+            name: ""
+          }
         }
       };
     }
 
-    this.profiles[address].metadata.public =
-      (yield this.rootStore.client.userProfileClient.PublicUserMetadata({address})) || {};
+    try {
+      this.profiles[address].metadata.public =
+        (yield this.rootStore.client.userProfileClient.PublicUserMetadata({address})) || {};
 
-    if(!this.profiles[address].imageUrl && this.profiles[address].metadata.public.profile_image) {
-      this.profiles[address].imageUrl = yield this.rootStore.client.userProfileClient.UserProfileImage({address});
+      if(!this.profiles[address].metadata.public.name) {
+        this.profiles[address].metadata.public.name = "";
+      }
+
+      if(!this.profiles[address].imageUrl && this.profiles[address].metadata.public.profile_image) {
+        this.profiles[address].imageUrl = yield this.rootStore.client.userProfileClient.UserProfileImage({address});
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(`Unable to list public metadata for user ${address}: ${error.message}`);
     }
 
     yield this.rootStore.accountStore.AccountBalance(address);
@@ -52,8 +70,7 @@ class ProfilesStore {
     }
 
     if(!this.profiles[address].imageUrl && this.profiles[address].metadata.public.profile_image) {
-      this.profiles[address].imageUrl = (yield this.rootStore.client.userProfileClient.UserProfileImage({address}))
-        + `&cache=${Math.random()}`;
+      this.profiles[address].imageUrl = (yield this.rootStore.client.userProfileClient.UserProfileImage({address}));
     }
 
     yield this.rootStore.accountStore.AccountBalance(address);

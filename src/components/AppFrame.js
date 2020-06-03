@@ -17,6 +17,7 @@ import {Debounce} from "elv-components-js";
 class IFrameBase extends React.Component {
   SandboxPermissions() {
     return [
+      "allow-downloads",
       "allow-scripts",
       "allow-forms",
       "allow-modals",
@@ -44,9 +45,9 @@ class IFrameBase extends React.Component {
       <iframe
         aria-label={`Eluvio Core Application: ${this.props.appName}`}
         ref={this.props.appRef}
+        allow="encrypted-media *"
         src={this.props.appUrl}
         sandbox={this.SandboxPermissions()}
-        allow="encrypted-media *"
         className={this.props.className}
         allowFullScreen={true}
       />
@@ -58,16 +59,16 @@ const IFrame = React.forwardRef(
   (props, appRef) => <IFrameBase appRef={appRef} {...props} />
 );
 
-@inject("root")
-@inject("accounts")
+@inject("rootStore")
+@inject("accountsStore")
 @observer
 class AppFrame extends React.Component {
   constructor(props) {
     super(props);
 
     const appName = this.props.match.params.app;
-    const basePath = encodeURI(UrlJoin("/apps", appName));
-    const appPath = window.location.hash.replace(`#${basePath}`, "") || "";
+    const basePath = UrlJoin("/apps", appName);
+    const appPath = window.location.hash.replace(basePath, "").replace(encodeURI(basePath), "").substr(1) || "";
     const appUrl = UrlJoin(EluvioConfiguration.apps[appName], appPath);
 
     this.state = {
@@ -81,7 +82,7 @@ class AppFrame extends React.Component {
 
     // Update account balance when making requests
     this.UpdateBalance = Debounce(
-      () => this.props.accounts.AccountBalance(this.props.accounts.currentAccountAddress),
+      () => this.props.accountsStore.AccountBalance(this.props.accountsStore.currentAccountAddress),
       5000
     );
 
@@ -90,12 +91,12 @@ class AppFrame extends React.Component {
 
   // Ensure region is reset if app changed it
   async componentWillUnmount() {
-    await this.props.root.client.ResetRegion();
+    await this.props.rootStore.client.ResetRegion();
   }
 
   async CheckAccess(event) {
     if(FrameClient.PromptedMethods().includes(event.data.calledMethod)) {
-      const accessLevel = await this.props.root.client.userProfileClient.AccessLevel();
+      const accessLevel = await this.props.rootStore.client.userProfileClient.AccessLevel();
 
       // No access to private profiles
       if(accessLevel === "private") { return false; }
@@ -105,7 +106,7 @@ class AppFrame extends React.Component {
         const requestor = this.state.appName;
         const accessAllowed =
           this.state.profileAccessAllowed ||
-          await this.props.root.client.userProfileClient.UserMetadata({
+          await this.props.rootStore.client.userProfileClient.UserMetadata({
             metadataSubtree: UrlJoin("allowed_accessors", requestor)
           });
 
@@ -116,7 +117,7 @@ class AppFrame extends React.Component {
                 message: `Do you want to allow the application "${requestor}" to access your profile?`,
                 onConfirm: async () => {
                   // Record permission
-                  await this.props.root.client.userProfileClient.ReplaceUserMetadata({
+                  await this.props.rootStore.client.userProfileClient.ReplaceUserMetadata({
                     metadataSubtree: UrlJoin("allowed_accessors", requestor),
                     metadata: Date.now()
                   });
@@ -156,7 +157,7 @@ class AppFrame extends React.Component {
   }
 
   Respond(requestId, source, responseMessage) {
-    responseMessage = this.props.root.client.utils.MakeClonable({
+    responseMessage = this.props.rootStore.client.utils.MakeClonable({
       ...responseMessage,
       requestId: requestId,
       type: "ElvFrameResponse"
@@ -217,12 +218,19 @@ class AppFrame extends React.Component {
         });
         break;
 
+      case "ShowAppsPage":
+        this.props.rootStore.ToggleHeader(true);
+        this.setState({
+          redirectLocation: "/apps"
+        });
+        break;
+
       case "ShowHeader":
-        this.props.root.ToggleHeader(true);
+        this.props.rootStore.ToggleHeader(true);
         break;
 
       case "HideHeader":
-        this.props.root.ToggleHeader(false);
+        this.props.rootStore.ToggleHeader(false);
         break;
 
       // App requested an ElvClient method
@@ -233,7 +241,7 @@ class AppFrame extends React.Component {
         }
 
         const responder = (response) => this.Respond(response.requestId, source, response);
-        await this.props.root.client.CallFromFrameMessage(event.data, responder);
+        await this.props.rootStore.client.CallFromFrameMessage(event.data, responder);
     }
   }
 
@@ -242,7 +250,7 @@ class AppFrame extends React.Component {
       return <Redirect push to={this.state.redirectLocation} />;
     }
 
-    if(!this.props.root.client) {
+    if(!this.props.rootStore.client) {
       return null;
     }
 

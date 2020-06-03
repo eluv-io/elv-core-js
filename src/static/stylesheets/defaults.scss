@@ -11,6 +11,9 @@ body,
 .router-container,
 .page-error {
   display: flex;
+  flex-direction: column;
+  height: auto;
+  min-height: 100vh;
   width: 100%;
 }
 
@@ -142,4 +145,8 @@ img {
   svg {
     stroke: $elv-color-lightgray;
   }
+}
+
+.-elv-loading-element-fullpage {
+  flex: 1 1 auto;
 }

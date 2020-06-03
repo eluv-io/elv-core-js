@@ -10,8 +10,8 @@ import UnlockedIcon from "../static/icons/Unlocked.svg";
 import DefaultAccountImage from "../static/icons/User.svg";
 import RemoveAccountIcon from "../static/icons/X.svg";
 
-@inject("accounts")
-@inject("profiles")
+@inject("accountsStore")
+@inject("profilesStore")
 @observer
 class Accounts extends React.Component {
   constructor(props) {
@@ -27,8 +27,8 @@ class Accounts extends React.Component {
   }
 
   async SelectAccount(address) {
-    if(this.props.accounts.accounts[address].signer) {
-      await this.props.accounts.UnlockAccount({address});
+    if(this.props.accountsStore.accounts[address].signer) {
+      await this.props.accountsStore.UnlockAccount({address});
       return;
     }
 
@@ -38,18 +38,18 @@ class Accounts extends React.Component {
     });
   }
 
-  async UnlockAccount(password) {
-    await this.props.accounts.UnlockAccount({address: this.state.selectedAddress, password});
+  async UnlockAccount({password}) {
+    await this.props.accountsStore.UnlockAccount({address: this.state.selectedAddress, password});
   }
 
   LockAccount(address) {
-    this.props.accounts.LockAccount({address});
+    this.props.accountsStore.LockAccount({address});
   }
 
   RemoveAccount(address) {
     Confirm({
       message: "Are you sure you want to remove this account?",
-      onConfirm: () => this.props.accounts.RemoveAccount(address)
+      onConfirm: () => this.props.accountsStore.RemoveAccount(address)
     });
   }
 
@@ -58,7 +58,10 @@ class Accounts extends React.Component {
 
     return (
       <LoginModal
+        key="password-prompt"
+        legend={"Enter your password to unlock this account"}
         address={this.state.selectedAddress}
+        fields={[{name: "password", label: "Password", type: "password"}]}
         Submit={this.UnlockAccount}
         Close={() => this.setState({showLoginModal: false})}
       />
@@ -66,10 +69,10 @@ class Accounts extends React.Component {
   }
 
   Account(address) {
-    const account = this.props.accounts.accounts[address];
-    const profile = this.props.profiles.profiles[address];
+    const account = this.props.accountsStore.accounts[address];
+    const profile = this.props.profilesStore.profiles[address];
 
-    const isCurrentAccount = this.props.accounts.currentAccountAddress === account.address;
+    const isCurrentAccount = this.props.accountsStore.currentAccountAddress === account.address;
     const accountLocked = !account.signer;
 
     let selectAccountButton;
@@ -90,7 +93,7 @@ class Accounts extends React.Component {
       );
     }
 
-    const profileImage = profile.imageUrl || DefaultAccountImage;
+    const profileImage = this.props.profilesStore.ResizeImage(profile.imageUrl, 200) || DefaultAccountImage;
 
     return (
       <div key={`account-${account.address}`} className={isCurrentAccount ? "account current-account" : "account"}>
@@ -132,7 +135,7 @@ class Accounts extends React.Component {
       <div className="page-content">
         { this.LoginModal() }
         <div className="accounts">
-          { this.props.accounts.sortedAccounts.map(address => this.Account(address)) }
+          { this.props.accountsStore.sortedAccounts.map(address => this.Account(address)) }
         </div>
         <div className="actions-container flex-centered add-account">
           <Action type="link" to="/accounts/add" label="Add Account">Add Account</Action>
