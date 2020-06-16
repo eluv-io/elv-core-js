@@ -23,13 +23,13 @@ const html = (
         
       </div>
       <div className="">
-        $5/serviceable title/mo
+        $5/active title/mo
       </div>
       <div className="">
-        $10/serviceable title/mo
+        $10/active title/mo
       </div>
       <div className="">
-        $20/serviceable title/mo
+        $20/active title/mo
       </div>
     </div>
     <div className="offering-row offering-row-header">
@@ -37,13 +37,27 @@ const html = (
         
       </div>
       <div className="">
-        $0.25/viewable hour streamed
+        $0.5/inactive title/mo
       </div>
       <div className="">
-        $0.25/viewable hour streamed
+        $1/inactive title/mo
       </div>
       <div className="">
-        $0.25/viewable hour streamed
+        $2/inactive title/mo
+      </div>
+    </div>
+    <div className="offering-row offering-row-header">
+      <div className=" offering-nocheck">
+        
+      </div>
+      <div className="">
+        $0.25/hour streamed
+      </div>
+      <div className="">
+        $0.25/hour streamed
+      </div>
+      <div className="">
+        $0.25/hour streamed
       </div>
     </div>
     <div className="offering-row offering-row-section-header">
@@ -132,7 +146,7 @@ const html = (
     </div>
     <div className="offering-row offering-row-even">
       <div className=" offering-detail">
-        &nbsp;&nbsp; Publishing and Streaming APIs (github)
+        &nbsp;&nbsp; Publishing APIs (github)
       </div>
       <div className=" offering-check">
         <ImageIcon icon={CheckIcon} className="offering-check-icon" />
@@ -230,7 +244,7 @@ const html = (
     </div>
     <div className="offering-row offering-row-odd">
       <div className=" offering-detail">
-        &nbsp;&nbsp; DRM Widevine, HLS, etc.
+        &nbsp;&nbsp; H264 DASH/HLS
       </div>
       <div className=" offering-check">
         <ImageIcon icon={CheckIcon} className="offering-check-icon" />
@@ -243,6 +257,48 @@ const html = (
       </div>
     </div>
     <div className="offering-row offering-row-even">
+      <div className=" offering-detail">
+        &nbsp;&nbsp; H265/HEVC DASH/HLS
+      </div>
+      <div className=" offering-nocheck">
+        
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+    </div>
+    <div className="offering-row offering-row-odd">
+      <div className=" offering-detail">
+        &nbsp;&nbsp; HDR
+      </div>
+      <div className=" offering-nocheck">
+        
+      </div>
+      <div className=" offering-nocheck">
+        
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+    </div>
+    <div className="offering-row offering-row-even">
+      <div className=" offering-detail">
+        &nbsp;&nbsp; DRM Widevine, HLS-AES, etc.
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+    </div>
+    <div className="offering-row offering-row-odd">
       <div className=" offering-detail">
         &nbsp;&nbsp; No 3rd party CDN, cloud transcoding, or storage
       </div>
@@ -256,7 +312,7 @@ const html = (
         <ImageIcon icon={CheckIcon} className="offering-check-icon" />
       </div>
     </div>
-    <div className="offering-row offering-row-odd">
+    <div className="offering-row offering-row-even">
       <div className=" offering-detail">
         &nbsp;&nbsp; Globally replicated, no single points or geo of failure
       </div>
@@ -270,7 +326,7 @@ const html = (
         <ImageIcon icon={CheckIcon} className="offering-check-icon" />
       </div>
     </div>
-    <div className="offering-row offering-row-even">
+    <div className="offering-row offering-row-odd">
       <div className=" offering-detail">
         &nbsp;&nbsp; Trustless security model
       </div>
@@ -284,9 +340,9 @@ const html = (
         <ImageIcon icon={CheckIcon} className="offering-check-icon" />
       </div>
     </div>
-    <div className="offering-row offering-row-odd">
+    <div className="offering-row offering-row-even">
       <div className=" offering-detail">
-        &nbsp;&nbsp; Any standards-compliant player
+        &nbsp;&nbsp; Any standards-compliant player and Streaming APIs
       </div>
       <div className=" offering-check">
         <ImageIcon icon={CheckIcon} className="offering-check-icon" />
@@ -298,7 +354,7 @@ const html = (
         <ImageIcon icon={CheckIcon} className="offering-check-icon" />
       </div>
     </div>
-    <div className="offering-row offering-row-even">
+    <div className="offering-row offering-row-odd">
       <div className="">
         File Download API
       </div>
@@ -312,7 +368,7 @@ const html = (
         <ImageIcon icon={CheckIcon} className="offering-check-icon" />
       </div>
     </div>
-    <div className="offering-row offering-row-odd">
+    <div className="offering-row offering-row-even">
       <div className=" offering-detail">
         &nbsp;&nbsp; File and directory download of assets
       </div>
@@ -326,7 +382,7 @@ const html = (
         <ImageIcon icon={CheckIcon} className="offering-check-icon" />
       </div>
     </div>
-    <div className="offering-row offering-row-even">
+    <div className="offering-row offering-row-odd">
       <div className="">
         Built in Rights/Availability Management
       </div>
@@ -340,9 +396,9 @@ const html = (
         <ImageIcon icon={CheckIcon} className="offering-check-icon" />
       </div>
     </div>
-    <div className="offering-row offering-row-odd">
+    <div className="offering-row offering-row-even">
       <div className=" offering-detail">
-        &nbsp;&nbsp; Time, Viewer Geo, by User, by Group
+        &nbsp;&nbsp; Time, Viewer Geo, by User, by Group, by Offering
       </div>
       <div className=" offering-nocheck">
         
@@ -354,12 +410,9 @@ const html = (
         <ImageIcon icon={CheckIcon} className="offering-check-icon" />
       </div>
     </div>
-    <div className="offering-row offering-row-even">
+    <div className="offering-row offering-row-odd">
       <div className="">
-        Visible Watermarking Per User
-      </div>
-      <div className=" offering-nocheck">
-        
+        Visible Watermarking
       </div>
       <div className=" offering-nocheck">
         
@@ -367,10 +420,27 @@ const html = (
       <div className=" offering-check">
         <ImageIcon icon={CheckIcon} className="offering-check-icon" />
       </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+    </div>
+    <div className="offering-row offering-row-even">
+      <div className=" offering-detail">
+        &nbsp;&nbsp; JIT text or image watermarking in single offering
+      </div>
+      <div className=" offering-nocheck">
+        
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
     </div>
     <div className="offering-row offering-row-odd">
       <div className=" offering-detail">
-        &nbsp;&nbsp; User name dynamically overlayed
+        &nbsp;&nbsp; JIT text or image watermarking in any number offerings
       </div>
       <div className=" offering-nocheck">
         
@@ -383,6 +453,20 @@ const html = (
       </div>
     </div>
     <div className="offering-row offering-row-even">
+      <div className=" offering-detail">
+        &nbsp;&nbsp; Per user visible watermarking with user id
+      </div>
+      <div className=" offering-nocheck">
+        
+      </div>
+      <div className=" offering-nocheck">
+        
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+    </div>
+    <div className="offering-row offering-row-odd">
       <div className="">
         Audience Access Data
       </div>
@@ -396,7 +480,7 @@ const html = (
         <ImageIcon icon={CheckIcon} className="offering-check-icon" />
       </div>
     </div>
-    <div className="offering-row offering-row-odd">
+    <div className="offering-row offering-row-even">
       <div className=" offering-detail">
         &nbsp;&nbsp; Basic audience watch data (summarized)
       </div>
@@ -410,7 +494,7 @@ const html = (
         <ImageIcon icon={CheckIcon} className="offering-check-icon" />
       </div>
     </div>
-    <div className="offering-row offering-row-even">
+    <div className="offering-row offering-row-odd">
       <div className=" offering-detail">
         &nbsp;&nbsp; Detailed and provable (blockchain recorded)
       </div>
@@ -424,7 +508,7 @@ const html = (
         <ImageIcon icon={CheckIcon} className="offering-check-icon" />
       </div>
     </div>
-    <div className="offering-row offering-row-odd">
+    <div className="offering-row offering-row-even">
       <div className=" offering-detail">
         &nbsp;&nbsp; All playback and access events with user detail (platform, format, geo, etc)
       </div>
@@ -438,7 +522,7 @@ const html = (
         <ImageIcon icon={CheckIcon} className="offering-check-icon" />
       </div>
     </div>
-    <div className="offering-row offering-row-even">
+    <div className="offering-row offering-row-odd">
       <div className="">
         Site API & Static Content Delivery
       </div>
@@ -452,7 +536,7 @@ const html = (
         <ImageIcon icon={CheckIcon} className="offering-check-icon" />
       </div>
     </div>
-    <div className="offering-row offering-row-odd">
+    <div className="offering-row offering-row-even">
       <div className=" offering-detail">
         &nbsp;&nbsp; Reusable "site" API for dynamic and static content in front end
       </div>
@@ -466,7 +550,7 @@ const html = (
         <ImageIcon icon={CheckIcon} className="offering-check-icon" />
       </div>
     </div>
-    <div className="offering-row offering-row-even">
+    <div className="offering-row offering-row-odd">
       <div className=" offering-detail">
         &nbsp;&nbsp; Static & dynamic URL-based content delivery for images, metadata
       </div>
@@ -480,7 +564,7 @@ const html = (
         <ImageIcon icon={CheckIcon} className="offering-check-icon" />
       </div>
     </div>
-    <div className="offering-row offering-row-odd">
+    <div className="offering-row offering-row-even">
       <div className=" offering-detail">
         &nbsp;&nbsp; Customizable publishing app (replaces CMS)
       </div>
@@ -494,7 +578,7 @@ const html = (
         <ImageIcon icon={CheckIcon} className="offering-check-icon" />
       </div>
     </div>
-    <div className="offering-row offering-row-even">
+    <div className="offering-row offering-row-odd">
       <div className=" offering-detail">
         &nbsp;&nbsp; Search API 
       </div>
@@ -510,7 +594,7 @@ const html = (
     </div>
     <div className="offering-row offering-row-section-header">
       <div className="">
-        Monetization
+        Monetization & Personalization
       </div>
       <div className=" offering-nocheck">
         
@@ -566,7 +650,7 @@ const html = (
     </div>
     <div className="offering-row offering-row-even">
       <div className=" offering-detail">
-        &nbsp;&nbsp; Textual capture and automatic subtitle processing
+        &nbsp;&nbsp; Textual capture (in video, subtitles, captions)
       </div>
       <div className=" offering-nocheck">
         
@@ -608,7 +692,7 @@ const html = (
     </div>
     <div className="offering-row offering-row-odd">
       <div className="">
-        Tag based Search
+        Content Tag & Video Search
       </div>
       <div className=" offering-nocheck">
         
@@ -622,7 +706,7 @@ const html = (
     </div>
     <div className="offering-row offering-row-even">
       <div className=" offering-detail">
-        &nbsp;&nbsp; Across all assets by tag
+        &nbsp;&nbsp; Across site assets by tag
       </div>
       <div className=" offering-nocheck">
         
@@ -635,8 +719,8 @@ const html = (
       </div>
     </div>
     <div className="offering-row offering-row-odd">
-      <div className="">
-        Ad insertion
+      <div className=" offering-detail">
+        &nbsp;&nbsp; Via video understanding API (ML tagged)
       </div>
       <div className=" offering-nocheck">
         
@@ -649,8 +733,78 @@ const html = (
       </div>
     </div>
     <div className="offering-row offering-row-even">
+      <div className="">
+        Ad Insertion
+      </div>
+      <div className=" offering-nocheck">
+        
+      </div>
+      <div className=" offering-nocheck">
+        
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+    </div>
+    <div className="offering-row offering-row-odd">
       <div className=" offering-detail">
         &nbsp;&nbsp; Within fabric or from 3rd party servers *
+      </div>
+      <div className=" offering-nocheck">
+        
+      </div>
+      <div className=" offering-nocheck">
+        
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+    </div>
+    <div className="offering-row offering-row-even">
+      <div className="">
+        Dynamic Bitcode API
+      </div>
+      <div className=" offering-nocheck">
+        
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+    </div>
+    <div className="offering-row offering-row-odd">
+      <div className=" offering-detail">
+        &nbsp;&nbsp; Build interactive branching experiences/games
+      </div>
+      <div className=" offering-nocheck">
+        
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+    </div>
+    <div className="offering-row offering-row-even">
+      <div className="">
+        User Wallet API
+      </div>
+      <div className=" offering-nocheck">
+        
+      </div>
+      <div className=" offering-nocheck">
+        
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+    </div>
+    <div className="offering-row offering-row-odd">
+      <div className=" offering-detail">
+        &nbsp;&nbsp; Favorites lists and other per user data 
       </div>
       <div className=" offering-nocheck">
         
@@ -720,7 +874,7 @@ const html = (
     </div>
     <div className="offering-row offering-row-even">
       <div className="">
-        OTT Outlet Packaging and Download (BtoB) *
+        Dynamic Packaging and Download (BtoB) 
       </div>
       <div className=" offering-nocheck">
         
@@ -734,7 +888,7 @@ const html = (
     </div>
     <div className="offering-row offering-row-odd">
       <div className=" offering-detail">
-        &nbsp;&nbsp; File download * could include integration with Aspera delivery
+        &nbsp;&nbsp; Dynamic packaging and asset download API 
       </div>
       <div className=" offering-nocheck">
         
@@ -748,7 +902,7 @@ const html = (
     </div>
     <div className="offering-row offering-row-even">
       <div className=" offering-detail">
-        &nbsp;&nbsp; Automatic Generation of OTT metadata from profile 
+        &nbsp;&nbsp; Automatic packaging metadata from profile 
       </div>
       <div className=" offering-nocheck">
         
@@ -762,7 +916,7 @@ const html = (
     </div>
     <div className="offering-row offering-row-odd">
       <div className=" offering-detail">
-        &nbsp;&nbsp; Built in and extensible profiles for major OTTS (Amazon, Netflix...)
+        &nbsp;&nbsp; Per asset, per user permissioning
       </div>
       <div className=" offering-nocheck">
         
@@ -776,7 +930,7 @@ const html = (
     </div>
     <div className="offering-row offering-row-even">
       <div className=" offering-detail">
-        &nbsp;&nbsp; Automatic availability management
+        &nbsp;&nbsp; Built in and extensible profiles for major OTT/resale outlets
       </div>
       <div className=" offering-nocheck">
         
@@ -789,6 +943,20 @@ const html = (
       </div>
     </div>
     <div className="offering-row offering-row-odd">
+      <div className=" offering-detail">
+        &nbsp;&nbsp; Automatic availability management (time, geo, group, offering)
+      </div>
+      <div className=" offering-nocheck">
+        
+      </div>
+      <div className=" offering-nocheck">
+        
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+    </div>
+    <div className="offering-row offering-row-even">
       <div className="">
         Enterprise OAuth Integration
       </div>
@@ -802,7 +970,7 @@ const html = (
         <ImageIcon icon={CheckIcon} className="offering-check-icon" />
       </div>
     </div>
-    <div className="offering-row offering-row-even">
+    <div className="offering-row offering-row-odd">
       <div className=" offering-detail">
         &nbsp;&nbsp; Fabric access control with OAuth/SSO groups
       </div>
@@ -816,9 +984,9 @@ const html = (
         <ImageIcon icon={CheckIcon} className="offering-check-icon" />
       </div>
     </div>
-    <div className="offering-row offering-row-odd">
+    <div className="offering-row offering-row-section-header">
       <div className="">
-        Notes
+        Early Availability/Upcoming
       </div>
       <div className=" offering-nocheck">
         
@@ -830,7 +998,7 @@ const html = (
         
       </div>
     </div>
-    <div className="offering-row offering-row-even">
+    <div className="offering-row offering-row-odd">
       <div className=" offering-detail">
         &nbsp;&nbsp; Live streaming options (in beta)
       </div>
@@ -844,23 +1012,9 @@ const html = (
         
       </div>
     </div>
-    <div className="offering-row offering-row-odd">
+    <div className="offering-row offering-row-even">
       <div className=" offering-detail">
         &nbsp;&nbsp; Linear Channel Playout Options (upcoming 2020)
-      </div>
-      <div className=" offering-nocheck">
-        
-      </div>
-      <div className=" offering-nocheck">
-        
-      </div>
-      <div className=" offering-nocheck">
-        
-      </div>
-    </div>
-    <div className="offering-row offering-row-even">
-      <div className="">
-        * Feature upcoming in 2020
       </div>
       <div className=" offering-nocheck">
         
