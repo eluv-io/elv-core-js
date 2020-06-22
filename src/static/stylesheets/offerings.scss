@@ -1,7 +1,9 @@
 @import "~elv-components-js/src/stylesheets/styles";
 
 .offerings-container {
+  align-items: center;
   display: flex;
+  flex-direction: column;
   flex-grow: 1;
   font-size: $elv-font-m;
   justify-content: center;
@@ -9,11 +11,16 @@
   width: 100%;
 }
 
+.note,
 .offerings {
   flex-grow: 1;
   max-width: 1200px;
   min-width: 900px;
-  width: 70%;
+  width: 100%;
+}
+
+.offerings {
+  margin-bottom: $elv-spacing-s;
 }
 
 .offering-row {
@@ -87,4 +94,11 @@
     stroke: $elv-color-mediumblue;
     width: $elv-font-xxl;
   }
+}
+
+.note {
+  color: $elv-color-text-light;
+  font-size: $elv-font-xs;
+  margin-bottom: $elv-spacing-xs;
+  text-align: left;
 }
