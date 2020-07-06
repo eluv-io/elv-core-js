@@ -155,6 +155,21 @@ class AccountStore {
       signer = wallet.AddAccount({privateKey: privateKey.trim()});
     }
 
+    if(!this.rootStore.simplePasswords) {
+      const passwordTests = [
+        [{test: str => str.length >= 6}, "must be at least 6 characters"],
+        [/[a-z]/, "must contain at least one lowercase character"],
+        [/[A-Z]/, "must contain at least one uppercase character"],
+        [/[0-9]/, "must contain at least one number"],
+        [/[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/, "must contain at least one symbol"]
+      ];
+
+      let failedTest = passwordTests.find(([test]) => !test.test(password));
+      if(failedTest) {
+        throw Error(`Password ${failedTest[1]}`);
+      }
+    }
+
     encryptedPrivateKey = yield wallet.GenerateEncryptedPrivateKey({
       signer,
       password,

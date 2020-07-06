@@ -120,7 +120,10 @@ class AccountForm extends React.Component {
             { this.Credentials() }
 
             <label htmlFor="password">Password</label>
-            <input name="password" type="password" value={this.state.password} required={true} onChange={this.HandleInputChange} />
+            <div className="input-with-hint">
+              <div className="hint password-complexity-hint">Password must be at least 6 characters long and must contain at least one uppercase letter, lowercase letter, number and symbol</div>
+              <input name="password" type="password" value={this.state.password} required={true} onChange={this.HandleInputChange} />
+            </div>
           </div>
         </Form>
       </div>

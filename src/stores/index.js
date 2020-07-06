@@ -13,6 +13,7 @@ class RootStore {
   @observable client;
   @observable signerSet = false;
   @observable showHeader = true;
+  @observable simplePasswords = false;
 
   constructor() {
     this.accountStore = new AccountStore(this);
@@ -38,6 +39,10 @@ class RootStore {
 
     if((new URLSearchParams(window.location.search).has("debug"))) {
       this.client.ToggleLogging(true);
+    }
+
+    if((new URLSearchParams(window.location.search).has("simplePasswords"))) {
+      this.simplePasswords = true;
     }
 
     window.client = this.client;

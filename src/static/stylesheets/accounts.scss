@@ -112,3 +112,18 @@
 .add-account {
   margin: $elv-spacing-m 0 $elv-spacing-xl;
 }
+
+.hint {
+  font-size: $elv-font-s;
+  color: $elv-color-text-light;
+}
+
+.input-with-hint {
+  .hint {
+    padding-bottom: $elv-spacing-xxs;
+  }
+
+  input {
+    width: 100%;
+  }
+}
