@@ -11,7 +11,7 @@ class Offerings extends React.Component {
         <h1>Customer Service and Support</h1>
         <p>
           Eluvio strives to provide the highest quality content streaming and delivery experience and an always-available service.
-          All platform availability/service degraded issues are resolved with continuous highest priority according to the SLAs in the Eluvio Platform Services Agreement
+          All platform availability/service degraded issues are resolved with continuous highest priority according to the SLAs in the Eluvio Platform Services Agreement.
           Streaming quality means high picture quality, streaming at the maximum currently available bandwidth of the end client, and negligible rebuffering.
         </p>
 
@@ -68,15 +68,10 @@ class Offerings extends React.Component {
           </div>
           <div className="offering-row offering-row-even">
             <div className=" offering-detail">
-              &nbsp;&nbsp; Best effort next day resolutioon on medium severity issues
+              &nbsp;&nbsp; Best effort next day resolution on medium severity issues
             </div>
           </div>
           <div className="offering-row offering-row-odd">
-            <div className=" offering-detail">
-              &nbsp;&nbsp; Guaranteed response with resolution plan for low severity issues
-            </div>
-          </div>
-          <div className="offering-row offering-row-even">
             <div className=" offering-detail">
               &nbsp;&nbsp; Priority early access to new capabilities and roadmap review
             </div>
