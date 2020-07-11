@@ -7,12 +7,13 @@
   flex-grow: 1;
   font-size: $elv-font-m;
   justify-content: center;
-  padding: $elv-spacing-xl 0;
+  padding: $elv-spacing-xl $elv-spacing-s;
   width: 100%;
 }
 
 .note,
-.offerings {
+.offerings,
+.service-container {
   flex-grow: 1;
   max-width: 1200px;
   min-width: 900px;
@@ -99,6 +100,32 @@
 .note {
   color: $elv-color-text-light;
   font-size: $elv-font-xs;
-  margin-bottom: $elv-spacing-xs;
+  margin: 0 0 $elv-spacing-xs $elv-spacing-s;
   text-align: left;
+}
+
+.service-container {
+  border-top: 2px solid $elv-color-lightgray;
+  margin-top: $elv-spacing-l;
+  padding-top: $elv-spacing-l;
+
+  p {
+    font-size: $elv-font-l;
+    margin: $elv-spacing-s $elv-spacing-s $elv-spacing-s 0;
+  }
+
+  h1 {
+    font-size: $elv-font-xxl;
+    font-weight: 600;
+  }
+}
+
+.service-offerings {
+  .offering-row {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+
+  .no-border {
+    border: 0;
+  }
 }

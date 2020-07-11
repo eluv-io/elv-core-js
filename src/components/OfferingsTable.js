@@ -986,6 +986,104 @@ const html = (
     </div>
     <div className="offering-row offering-row-section-header">
       <div className="">
+        Technical Support & Customer Service
+      </div>
+      <div className=" offering-nocheck">
+
+      </div>
+      <div className=" offering-nocheck">
+
+      </div>
+      <div className=" offering-nocheck">
+
+      </div>
+    </div>
+    <div className="offering-row offering-row-odd">
+      <div className=" offering-detail">
+        &nbsp;&nbsp; 24x7 Platform Monitoring with Service Credits per Agreement
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+    </div>
+    <div className="offering-row offering-row-even">
+      <div className=" offering-detail">
+        &nbsp;&nbsp; Standard Customer Service (Email)
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+    </div>
+    <div className="offering-row offering-row-odd">
+      <div className=" offering-detail">
+        &nbsp;&nbsp; Standard Customer Service (Email, Telephone)
+      </div>
+      <div className=" offering-nocheck">
+
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+    </div>
+    <div className="offering-row offering-row-even">
+      <div className=" offering-detail">
+        &nbsp;&nbsp; Priority Customer Service (24x7 Email, Telephone, Slack)
+      </div>
+      <div className=" offering-nocheck">
+
+      </div>
+      <div className=" offering-nocheck">
+
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+    </div>
+    <div className="offering-row offering-row-odd">
+      <div className=" offering-detail">
+        &nbsp;&nbsp; Developer API Support (Email)
+      </div>
+      <div className=" offering-nocheck">
+
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+    </div>
+    <div className="offering-row offering-row-even">
+      <div className=" offering-detail">
+        &nbsp;&nbsp; Developer API Support (Slack)
+      </div>
+      <div className=" offering-nocheck">
+
+      </div>
+      <div className=" offering-nocheck">
+
+      </div>
+      <div className=" offering-check">
+        <ImageIcon icon={CheckIcon} className="offering-check-icon" />
+      </div>
+    </div>
+    <div className="offering-row offering-row-section-header">
+      <div className="">
         Early Availability/Upcoming
       </div>
       <div className=" offering-nocheck">
