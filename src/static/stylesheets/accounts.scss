@@ -93,6 +93,8 @@
 
 .account-actions {
   display: flex;
+  height: 1.8rem;
+  max-height: 1.8rem;
 
   button {
     margin-right: $elv-spacing-xs;

@@ -51,7 +51,7 @@ class App extends React.PureComponent {
             <div className="router-container">
               <Header />
               <Navigation />
-              <EnforceLogin key={`app-${this.props.accountsStore.currentAccountAddress}`}>
+              <EnforceLogin>
                 <Switch>
                   {
                     SiteRoutes.map(({path, component}) =>

@@ -1,9 +1,12 @@
 import {action, computed, flow, observable} from "mobx";
+import {Buffer} from "buffer";
 
 class AccountStore {
   @observable accounts = {};
   @observable currentAccountAddress;
   @observable accountsLoaded = false;
+
+  @observable loadingAccount;
 
   @computed get currentAccount() {
     return this.currentAccountAddress ? this.accounts[this.currentAccountAddress] : undefined;
@@ -11,7 +14,7 @@ class AccountStore {
 
   @computed get sortedAccounts() {
     return Object.keys(this.accounts)
-      .map(address => [address, this.rootStore.profilesStore.profiles[address].metadata.public.name])
+      .map(address => [address, (this.accounts[address] || {}).name])
       .sort(([addressA, nameA], [addressB, nameB]) => {
         if(nameA && nameB) {
           return nameA.toLowerCase() < nameB.toLowerCase() ? -1 : 1;
@@ -28,20 +31,32 @@ class AccountStore {
 
   constructor(rootStore) {
     this.rootStore = rootStore;
+
+    this.network = EluvioConfiguration["config-url"].match(/\.(net\d+)\./)[1] || "";
+  }
+
+  ResizeImage(imageUrl, height) {
+    return client.utils.ResizeImage({
+      imageUrl,
+      height
+    });
   }
 
   @action.bound
   LoadAccounts = flow(function * () {
-    let accounts = localStorage.getItem("elv-accounts");
+    const accounts = localStorage.getItem(`elv-accounts-${this.network}`) || localStorage.getItem("elv-accounts");
 
     this.accounts = accounts ? JSON.parse(atob(accounts)) : {};
 
-    this.currentAccountAddress = localStorage.getItem("elv-current-account");
+    this.currentAccountAddress = localStorage.getItem(`elv-current-account-${this.network}`) || localStorage.getItem("elv-current-account");
 
     yield Promise.all(
       Object.keys(this.accounts).map(async address => {
         await this.AccountBalance(address);
-        await this.rootStore.profilesStore.PublicMetadata(address);
+
+        this.accounts[address].metadata = {
+          public: {}
+        };
       })
     );
 
@@ -117,28 +132,40 @@ class AccountStore {
 
   @action.bound
   SetCurrentAccount = flow(function * ({address, signer}) {
-    address = this.rootStore.client.utils.FormatAddress(address || signer.address);
+    try {
+      address = this.rootStore.client.utils.FormatAddress(address || signer.address);
 
-    signer = signer || this.accounts[address].signer;
+      this.loadingAccount = address;
 
-    if(signer) {
-      yield this.rootStore.InitializeClient(signer);
+      signer = signer || this.accounts[address].signer;
+
+      if(signer) {
+        yield this.rootStore.InitializeClient(signer);
+      }
+
+      this.accounts[address].signer = signer;
+
+      yield this.AccountBalance(address);
+
+      this.currentAccountAddress = address;
+
+      localStorage.setItem(
+        `elv-current-account-${this.network}`,
+        address.toString()
+      );
+
+      if(signer && this.accounts[address].balance > 0.1) {
+        this.accounts[address].tenantId = yield this.rootStore.client.userProfileClient.TenantId();
+        yield this.UserMetadata();
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error("Error loading account", address);
+      // eslint-disable-next-line no-console
+      console.error(error);
+    } finally {
+      this.loadingAccount = undefined;
     }
-
-    this.accounts[address].signer = signer;
-
-    yield this.AccountBalance(address);
-
-    if(this.accounts[address].balance > 0.1) {
-      this.accounts[address].tenantId = yield this.rootStore.client.userProfileClient.TenantId();
-    }
-
-    localStorage.setItem(
-      "elv-current-account",
-      address.toString()
-    );
-
-    this.currentAccountAddress = address;
   });
 
   @action.bound
@@ -181,15 +208,85 @@ class AccountStore {
     this.accounts[address] = {
       address,
       signer,
-      encryptedPrivateKey,
-      profile: {}
+      encryptedPrivateKey
     };
 
-    this.SaveAccounts();
-
-    yield this.rootStore.profilesStore.PublicMetadata(address);
-
     yield this.SetCurrentAccount({signer});
+  });
+
+
+  /* Profile */
+
+  @action.bound
+  UserMetadata = flow(function * () {
+    if(!this.currentAccountAddress) { return; }
+
+    const address = this.currentAccountAddress;
+
+    this.accounts[address].metadata =
+      (yield this.rootStore.client.userProfileClient.UserMetadata()) || {};
+
+    if(!this.accounts[address].metadata.public) {
+      this.accounts[address].metadata.public = {};
+    }
+
+    this.accounts[address].name = this.accounts[address].metadata.public.name || "";
+
+    try {
+      if(this.accounts[address].metadata.public.profile_image) {
+        this.accounts[address].imageUrl = (yield this.rootStore.client.userProfileClient.UserProfileImage({address}));
+        this.accounts[address].image =
+          "data:image/png;base64," +
+          Buffer.from(
+            yield client.Request({
+              url: this.ResizeImage(this.accounts[address].imageUrl, 200),
+              format: "arrayBuffer"
+            })
+          ).toString("base64");
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error("Error loading account image:");
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
+
+    yield this.AccountBalance(address);
+
+    this.SaveAccounts();
+  });
+
+  @action.bound
+  ReplaceUserProfileImage = flow(function * (image) {
+    if(!this.currentAccountAddress) { return; }
+
+    yield this.rootStore.client.userProfileClient.SetUserProfileImage({image});
+
+    yield this.UserMetadata();
+
+    const address = this.currentAccountAddress;
+
+    this.accounts[address].imageUrl =
+      (yield this.rootStore.client.userProfileClient.UserProfileImage({address}))
+      + `&cache=${Math.random()}` ;
+  });
+
+  @action.bound
+  ReplaceUserMetadata = flow(function * ({metadataSubtree, metadata}) {
+    if(!this.currentAccountAddress) { return; }
+
+    yield this.rootStore.client.userProfileClient.ReplaceUserMetadata({metadataSubtree, metadata});
+
+    yield this.UserMetadata();
+  });
+
+  @action.bound
+  DeleteUserMetadata = flow(function * ({metadataSubtree}) {
+    if(!this.currentAccountAddress) { return; }
+
+    yield this.rootStore.client.userProfileClient.DeleteUserMetadata({metadataSubtree});
+
+    yield this.UserMetadata();
   });
 
   @action.bound
@@ -213,14 +310,14 @@ class AccountStore {
     Object.values(this.accounts).forEach(account =>
       savedAccounts[account.address] = {
         name: (account.name || "").toString(),
-        profileImage: account.profileImage,
+        imageUrl: account.image,
         address: account.address,
         encryptedPrivateKey: account.encryptedPrivateKey
       }
     );
 
     localStorage.setItem(
-      "elv-accounts",
+      `elv-accounts-${this.network}`,
       btoa(JSON.stringify(savedAccounts))
     );
   }

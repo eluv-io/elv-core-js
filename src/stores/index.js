@@ -1,7 +1,6 @@
 import {configure, observable, action, flow} from "mobx";
 import {ElvClient} from "@eluvio/elv-client-js";
 import AccountStore from "./Accounts";
-import ProfilesStore from "./Profiles";
 
 // Force strict mode so mutations are only allowed within actions.
 configure({
@@ -16,8 +15,7 @@ class RootStore {
   @observable simplePasswords = false;
 
   constructor() {
-    this.accountStore = new AccountStore(this);
-    this.profilesStore = new ProfilesStore(this);
+    this.accountsStore = new AccountStore(this);
 
     this.InitializeClient();
   }
@@ -66,8 +64,8 @@ class RootStore {
         methodName: "version"
       });
 
-      if(!this.accountStore.accountsLoaded) {
-        this.accountStore.LoadAccounts();
+      if(!this.accountsStore.accountsLoaded) {
+        this.accountsStore.LoadAccounts();
       }
     } catch (error) {
       this.configError = true;
@@ -87,5 +85,4 @@ class RootStore {
 const root = new RootStore();
 
 export const rootStore = root;
-export const accountsStore = rootStore.accountStore;
-export const profilesStore = rootStore.profilesStore;
+export const accountsStore = rootStore.accountsStore;
