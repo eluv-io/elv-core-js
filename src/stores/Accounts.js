@@ -44,21 +44,41 @@ class AccountStore {
 
   @action.bound
   LoadAccounts = flow(function * () {
-    const accounts = localStorage.getItem(`elv-accounts-${this.network}`) || localStorage.getItem("elv-accounts");
-
-    this.accounts = accounts ? JSON.parse(atob(accounts)) : {};
+    let accounts = localStorage.getItem(`elv-accounts-${this.network}`) || localStorage.getItem("elv-accounts");
+    accounts = accounts ? JSON.parse(atob(accounts)) : {};
 
     this.currentAccountAddress = localStorage.getItem(`elv-current-account-${this.network}`) || localStorage.getItem("elv-current-account");
 
     yield Promise.all(
-      Object.keys(this.accounts).map(async address => {
-        await this.AccountBalance(address);
+      Object.keys(accounts).map(async address => {
+        try {
+          if(!accounts[address].name && this.rootStore.client.fabricVersion <= 2) {
+            accounts[address].metadata = {
+              public: (await this.rootStore.client.userProfileClient.PublicUserMetadata({address})) || {}
+            };
 
-        this.accounts[address].metadata = {
-          public: {}
-        };
+            accounts[address].name = accounts[address].metadata.public.name;
+          } else {
+            accounts[address].metadata = {
+              public: {}
+            };
+          }
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error("Error loading account " + address);
+          // eslint-disable-next-line no-console
+          console.error(error);
+
+          accounts[address].metadata = {
+            public: {}
+          };
+        }
       })
     );
+
+    this.accounts = accounts;
+
+    Object.keys(accounts).map(this.AccountBalance);
 
     this.accountsLoaded = true;
   });
