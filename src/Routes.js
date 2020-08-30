@@ -6,6 +6,7 @@ import AccountsFormPage from "./components/AccountForm";
 import TransferFormPage from "./components/TransferForm";
 import Offerings from "./components/Offerings";
 import Terms from "./components/Terms";
+import Privacy from "./components/Privacy";
 
 export const AppRoutes = [
   { path: "/apps", component: AppsPage },
@@ -19,4 +20,5 @@ export const AppRoutes = [
 export const SiteRoutes = [
   { path: "/offerings", component: Offerings },
   { path: "/terms", component: Terms },
+  { path: "/privacy", component: Privacy }
 ];
