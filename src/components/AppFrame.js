@@ -92,6 +92,7 @@ class AppFrame extends React.Component {
   // Ensure region is reset if app changed it
   async componentWillUnmount() {
     await this.props.rootStore.client.ResetRegion();
+    await this.props.rootStore.client.SetStaticToken({token: undefined});
   }
 
   async CheckAccess(event) {

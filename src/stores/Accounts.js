@@ -176,7 +176,7 @@ class AccountStore {
 
       if(signer && this.accounts[address].balance > 0.1) {
         this.accounts[address].tenantId = yield this.rootStore.client.userProfileClient.TenantId();
-        yield this.UserMetadata();
+        this.UserMetadata();
       }
     } catch (error) {
       // eslint-disable-next-line no-console

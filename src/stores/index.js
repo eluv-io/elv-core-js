@@ -39,7 +39,10 @@ class RootStore {
       this.client.ToggleLogging(true);
     }
 
-    if((new URLSearchParams(window.location.search).has("simplePasswords"))) {
+    if(
+      window.location.hostname === "localhost" ||
+      (new URLSearchParams(window.location.search).has("simplePasswords"))
+    ) {
       this.simplePasswords = true;
     }
 
