@@ -189,7 +189,11 @@ class AccountStore {
   });
 
   @action.bound
-  AddAccount = flow(function * ({privateKey, encryptedPrivateKey, mnemonic, password}) {
+  AddAccount = flow(function * ({privateKey, encryptedPrivateKey, mnemonic, password, passwordConfirmation}) {
+    if(password !== passwordConfirmation) {
+      throw Error("Password and confirmation do not match");
+    }
+
     const client = this.rootStore.client;
     const wallet = client.GenerateWallet();
 
