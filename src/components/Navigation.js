@@ -23,6 +23,7 @@ class Navigation extends React.Component {
 
           <NavLink activeClassName="active" to="/offerings">Offerings</NavLink>
           <NavLink activeClassName="active" to="/terms">Terms</NavLink>
+          <NavLink activeClassName="active" to="/privacy">Privacy</NavLink>
         </nav>
       </div>
     );

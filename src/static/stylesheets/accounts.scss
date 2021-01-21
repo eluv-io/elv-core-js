@@ -93,6 +93,8 @@
 
 .account-actions {
   display: flex;
+  height: 1.8rem;
+  max-height: 1.8rem;
 
   button {
     margin-right: $elv-spacing-xs;
@@ -111,4 +113,19 @@
 
 .add-account {
   margin: $elv-spacing-m 0 $elv-spacing-xl;
+}
+
+.hint {
+  color: $elv-color-text-light;
+  font-size: $elv-font-s;
+}
+
+.input-with-hint {
+  .hint {
+    padding-bottom: $elv-spacing-xxs;
+  }
+
+  input {
+    width: 100%;
+  }
 }

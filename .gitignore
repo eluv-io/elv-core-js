@@ -8,5 +8,8 @@ node_modules/
 
 deploy.sh
 
+dist/*
+!*/.keep
+
 scratch/
 !.keep

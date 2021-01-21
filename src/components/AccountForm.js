@@ -15,7 +15,8 @@ class AccountForm extends React.Component {
       privateKey: "",
       encryptedPrivateKey: "",
       mnemonic: "",
-      password: ""
+      password: "",
+      passwordConfirmation: ""
     };
 
     this.HandleSubmit = this.HandleSubmit.bind(this);
@@ -41,7 +42,8 @@ class AccountForm extends React.Component {
       privateKey: this.state.privateKey,
       encryptedPrivateKey: this.state.encryptedPrivateKey,
       mnemonic: this.state.mnemonic,
-      password: this.state.password
+      password: this.state.password,
+      passwordConfirmation: this.state.passwordConfirmation
     });
 
     this.props.history.push("/accounts");
@@ -120,7 +122,13 @@ class AccountForm extends React.Component {
             { this.Credentials() }
 
             <label htmlFor="password">Password</label>
-            <input name="password" type="password" value={this.state.password} required={true} onChange={this.HandleInputChange} />
+            <div className="input-with-hint">
+              <div className="hint password-complexity-hint">Password must be at least 6 characters long and must contain at least one uppercase letter, lowercase letter, number and symbol</div>
+              <input name="password" type="password" value={this.state.password} required onChange={this.HandleInputChange} />
+            </div>
+
+            <label htmlFor="passwordConfirmation">Password Confirmation</label>
+            <input name="passwordConfirmation" type="password" value={this.state.passwordConfirmation} required onChange={this.HandleInputChange} />
           </div>
         </Form>
       </div>

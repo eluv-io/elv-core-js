@@ -2,7 +2,7 @@ import "../static/stylesheets/accounts.scss";
 
 import React from "react";
 import {inject, observer} from "mobx-react";
-import {Action, Balance, Confirm, CroppedIcon, IconButton, ImageIcon} from "elv-components-js";
+import {Action, Balance, Confirm, CroppedIcon, IconButton, ImageIcon, LoadingElement} from "elv-components-js";
 import LoginModal from "./LoginModal";
 
 import LockedIcon from "../static/icons/Locked.svg";
@@ -11,7 +11,6 @@ import DefaultAccountImage from "../static/icons/User.svg";
 import RemoveAccountIcon from "../static/icons/X.svg";
 
 @inject("accountsStore")
-@inject("profilesStore")
 @observer
 class Accounts extends React.Component {
   constructor(props) {
@@ -70,7 +69,6 @@ class Accounts extends React.Component {
 
   Account(address) {
     const account = this.props.accountsStore.accounts[address];
-    const profile = this.props.profilesStore.profiles[address];
 
     const isCurrentAccount = this.props.accountsStore.currentAccountAddress === account.address;
     const accountLocked = !account.signer;
@@ -78,7 +76,7 @@ class Accounts extends React.Component {
     let selectAccountButton;
     if(!isCurrentAccount || accountLocked) {
       selectAccountButton = (
-        <Action onClick={() => this.SelectAccount(account.address)}>
+        <Action onClick={async () => await this.SelectAccount(account.address)}>
           {accountLocked ? "Unlock Account" : "Use Account"}
         </Action>
       );
@@ -93,7 +91,7 @@ class Accounts extends React.Component {
       );
     }
 
-    const profileImage = this.props.profilesStore.ResizeImage(profile.imageUrl, 200) || DefaultAccountImage;
+    const profileImage = this.props.accountsStore.ResizeImage(account.imageUrl, 200) || DefaultAccountImage;
 
     return (
       <div key={`account-${account.address}`} className={isCurrentAccount ? "account current-account" : "account"}>
@@ -117,13 +115,15 @@ class Accounts extends React.Component {
         />
         <div className="account-main">
           <div className="account-info">
-            <div className="account-name">{profile.metadata.public.name || "\u00a0"}</div>
+            <div className="account-name">{account.name || "\u00a0"}</div>
             <div className="account-address">{account.address}</div>
             <Balance balance={account.balance} className="account-balance" />
           </div>
           <div className="account-actions">
-            { selectAccountButton }
-            { lockAccountButton }
+            <LoadingElement loadingClassname="account-loading" loading={this.props.accountsStore.loadingAccount === address}>
+              { selectAccountButton }
+              { lockAccountButton }
+            </LoadingElement>
           </div>
         </div>
       </div>

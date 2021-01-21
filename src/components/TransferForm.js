@@ -4,7 +4,6 @@ import {Redirect} from "react-router";
 import {inject, observer} from "mobx-react";
 
 @inject("accountsStore")
-@inject("profilesStore")
 @observer
 class TransferForm extends React.Component {
   constructor(props) {
@@ -50,10 +49,9 @@ class TransferForm extends React.Component {
   RecipientSelector() {
     let options = Object.values(this.props.accountsStore.accounts)
       .map(account => {
-        const profile = this.props.profilesStore.profiles[account.address];
         return (
           <option key={"account-selection-" + account.address} value={account.address}>
-            {`${profile.metadata.public.name || account.address} (${account.balance})`}
+            {`${account.name || account.address} (${account.balance})`}
           </option>
         );
       });

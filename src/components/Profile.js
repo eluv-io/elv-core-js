@@ -19,7 +19,6 @@ import KeyIcon from "../static/icons/Key.svg";
 import {inject, observer} from "mobx-react";
 
 @inject("accountsStore")
-@inject("profilesStore")
 @observer
 class Profile extends React.Component {
   constructor(props) {
@@ -38,10 +37,6 @@ class Profile extends React.Component {
     this.RevokeAccessor = this.RevokeAccessor.bind(this);
   }
 
-  async componentDidMount() {
-    await this.props.profilesStore.UserMetadata();
-  }
-
   Update(fn) {
     if(this.state.updating) { return; }
 
@@ -53,16 +48,16 @@ class Profile extends React.Component {
   }
 
   HandleNameChange() {
-    const profile = this.props.profilesStore.currentProfile;
+    const account = this.props.accountsStore.currentAccount;
 
-    if(this.state.newName === profile.metadata.public.name) {
+    if(this.state.newName === account.name) {
       this.setState({modifyingName: false});
 
       return;
     }
 
     this.Update(async () => {
-      await this.props.profilesStore.ReplaceUserMetadata({
+      await this.props.accountsStore.ReplaceUserMetadata({
         metadataSubtree: UrlJoin("public", "name"),
         metadata: this.state.newName
       });
@@ -75,13 +70,13 @@ class Profile extends React.Component {
 
   async HandleProfileImageChange(event) {
     this.Update(async () =>
-      await this.props.profilesStore.ReplaceUserProfileImage(event.target.files[0])
+      await this.props.accountsStore.ReplaceUserProfileImage(event.target.files[0])
     );
   }
 
   async HandleAccessLevelChange(event) {
     this.Update(async () =>
-      await this.props.profilesStore.ReplaceUserMetadata({
+      await this.props.accountsStore.ReplaceUserMetadata({
         metadataSubtree: "access_level",
         metadata: event.target.value
       })
@@ -91,7 +86,7 @@ class Profile extends React.Component {
   async RevokeAccessor(accessor) {
     await Confirm({
       message: <span>Are you sure you want to revoke profile access from <b>{accessor}</b>?</span>,
-      onConfirm: async () => await this.props.profilesStore.DeleteUserMetadata({metadataSubtree: UrlJoin("allowed_accessors", accessor)})
+      onConfirm: async () => await this.props.accountsStore.DeleteUserMetadata({metadataSubtree: UrlJoin("allowed_accessors", accessor)})
     });
   }
 
@@ -191,7 +186,7 @@ class Profile extends React.Component {
         <div className="profile-image-container">
           {updateIndicator}
           <CroppedIconWithAction
-            icon={this.props.profilesStore.ResizeImage(imageUrl, 500)}
+            icon={this.props.accountsStore.ResizeImage(imageUrl, 500)}
             alternateIcon={DefaultProfileImage}
             useLoadingIndicator={true}
             label="Profile Image"
@@ -248,18 +243,17 @@ class Profile extends React.Component {
 
   render() {
     const account = this.props.accountsStore.currentAccount;
-    const profile = this.props.profilesStore.currentProfile;
-    const collectedTags = this.CollectedTags(profile.metadata.collected_data);
-    const permissions = this.Permissions(profile.metadata);
+    const collectedTags = this.CollectedTags(account.metadata.collected_data);
+    const permissions = this.Permissions(account.metadata);
 
     return (
       <div className="page-content">
         <div className="profile">
           <div className="error-message">{this.ErrorMessage()}</div>
-          { this.ProfileImage(profile.imageUrl) }
+          { this.ProfileImage(account.imageUrl) }
           <div className="profile-info">
             <div className="user-info">
-              { this.Name(profile.metadata.public.name) }
+              { this.Name(account.name) }
               <div className="page-subheader">
                 { account.address }
               </div>
@@ -271,7 +265,7 @@ class Profile extends React.Component {
             <div className="info-section">
               <h4>Profile Information</h4>
               <div className="indented">
-                <TraversableJson json={profile.metadata} />
+                <TraversableJson json={account.metadata} />
               </div>
             </div>
             { permissions }

@@ -4,6 +4,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import {Modal} from "elv-components-js";
 import {Form} from "elv-components-js";
+import AccountDropdown from "./AccountDropdown";
 
 class LoginModal extends React.PureComponent {
   constructor(props) {
@@ -43,6 +44,16 @@ class LoginModal extends React.PureComponent {
           OnComplete={this.props.Close}
         >
           <div className="form-content">
+            {
+              !this.props.prompt ? null :
+                (
+                  <React.Fragment>
+                    <label>Account</label>
+                    <AccountDropdown />
+                  </React.Fragment>
+                )
+            }
+
             {
               this.props.fields.map(({label, name, type, placeholder}) =>
                 <React.Fragment key={`login-modal-field-${name}`}>
