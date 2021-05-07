@@ -26,7 +26,8 @@ class RootStore {
 
     try {
       this.client = yield ElvClient.FromConfigurationUrl({
-        configUrl: EluvioConfiguration["config-url"]
+        configUrl: EluvioConfiguration["config-url"],
+        ethereumContractTimeout: 20
       });
     } catch (error) {
       // eslint-disable-next-line no-console
