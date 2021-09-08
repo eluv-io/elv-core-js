@@ -89,10 +89,10 @@ class AppFrame extends React.Component {
     this.ApiRequestListener = this.ApiRequestListener.bind(this);
   }
 
-  // Ensure region is reset if app changed it
+  // Ensure region and static token are reset if app changed it
   async componentWillUnmount() {
     await this.props.rootStore.client.ResetRegion();
-    await this.props.rootStore.client.SetStaticToken({token: undefined});
+    await this.props.rootStore.client.ClearStaticToken();
   }
 
   async CheckAccess(event) {
