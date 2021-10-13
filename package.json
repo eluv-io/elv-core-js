@@ -1,5 +1,5 @@
 {
-  "version": "3.1.5",
+  "version": "3.1.6",
   "scripts": {
     "bump-version": "npm --git-tag-version --no-commit-hooks version patch",
     "serve": "webpack-dev-server --host 0.0.0.0 --hot --port 8082",
