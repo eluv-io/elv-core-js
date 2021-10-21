@@ -236,6 +236,8 @@ class AccountStore {
     };
 
     yield this.SetCurrentAccount({signer});
+
+    this.SaveAccounts();
   });
 
 
