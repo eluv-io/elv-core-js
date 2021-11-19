@@ -167,12 +167,13 @@ class Profile extends React.Component {
     );
   }
 
-  PrivateKey(signer) {
+  PrivateAndPublicKeys(signer) {
     return (
-      <span className="private-key-container">
-        <IconButton icon={KeyIcon} label={`${this.state.showKey ? "Hide" : "Show"} Private Key`} onClick={() => this.setState({showKey: !this.state.showKey})}/>
-        <span className={`private-key ${this.state.showKey ? "visible" : ""}`}>
-          { this.state.showKey ? signer.privateKey : "" }
+      <span className="key-container">
+        <IconButton icon={KeyIcon} label={`${this.state.showKey ? "Hide" : "Show"} Private and Public Keys`} onClick={() => this.setState({showKey: !this.state.showKey})}/>
+        <span className={`private-public-keys ${this.state.showKey ? "visible" : ""}`}>
+          <span className="key-info">{this.state.showKey ? `Private: ${signer.privateKey}` : "" }</span>
+          <span className="key-info">{ this.state.showKey ? `Public: ${signer.signingKey.keyPair.publicKey}` : "" }</span>
         </span>
       </span>
     );
@@ -260,7 +261,7 @@ class Profile extends React.Component {
               <div className="page-subheader">
                 <Balance balance={account.balance} className="account-balance" />
               </div>
-              { this.PrivateKey(account.signer) }
+              { this.PrivateAndPublicKeys(account.signer) }
             </div>
             <div className="info-section">
               <h4>Profile Information</h4>

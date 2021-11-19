@@ -146,7 +146,7 @@
     }
   }
 
-  .private-key-container {
+  .key-container {
     align-items: center;
     display: flex;
     justify-content: center;
@@ -159,8 +159,9 @@
     }
   }
 
-  .private-key {
+  .private-public-keys {
     display: flex;
+    flex-direction: column;
     font-size: $elv-font-m;
     font-style: italic;
     opacity: 0;
@@ -171,6 +172,16 @@
     &.visible {
       opacity: 1;
       width: auto;
+    }
+
+    .key-info {
+      display: inline-flex;
+      text-align: left;
+      word-break: break-all;
+
+      &:first-child {
+        margin-bottom: $elv-spacing-xs;
+      }
     }
   }
 
