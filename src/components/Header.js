@@ -21,15 +21,18 @@ class Header extends React.Component {
     this.props.rootStore.ToggleHeader(show);
   }
 
-  logo = client.networkName === "test" ?
-    LogoTest : client.networkName === "demo" ?
-      LogoDemo : Logo;
-
   render() {
+    let logo = Logo;
+    if(["demo", "demov3"].includes(this.props.rootStore.networkName)) {
+      logo = LogoDemo;
+    } else if(this.props.rootStore.networkName === "test") {
+      logo = LogoTest;
+    }
+
     return (
       <header className={this.props.rootStore.showHeader ? "header" : "header hidden-header"}>
         <IconButton className="toggle-header-button" icon={ShowHeaderIcon} label="Show Header" onClick={() => this.ToggleHeader(true)} />
-        <IconLink icon={this.logo} to="/apps" className="logo" />
+        <IconLink icon={logo} to="/apps" className="logo" />
         <div
           className="toggle-header-section"
           title="Hide Header"

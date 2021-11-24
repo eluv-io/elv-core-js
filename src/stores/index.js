@@ -8,6 +8,7 @@ configure({
 });
 
 class RootStore {
+  @observable networkName;
   @observable configError = false;
   @observable client;
   @observable signerSet = false;
@@ -35,6 +36,9 @@ class RootStore {
       this.configError = true;
       return;
     }
+
+    const networkInfo = this.client.NetworkInfo();
+    this.networkName = networkInfo.name;
 
     if((new URLSearchParams(window.location.search).has("debug"))) {
       this.client.ToggleLogging(true);
