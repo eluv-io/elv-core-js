@@ -194,6 +194,15 @@
       font-weight: 300;
       padding: $elv-spacing-xs 0;
     }
+
+    .set-current-tenant-button {
+      height: 2rem;
+    }
+
+    .set-current-tenant-input {
+      margin-right: $elv-spacing-xs;
+      width: 15rem;
+    }
   }
 
   .application-permissions {
