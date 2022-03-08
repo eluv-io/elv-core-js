@@ -316,6 +316,11 @@ class AccountStore {
   });
 
   @action.bound
+  SetCurrentTenant = flow(function * ({id}) {
+    yield this.rootStore.client.userProfileClient.SetTenantId({id});
+  });
+
+  @action.bound
   RemoveAccount(address) {
     if(!(Object.keys(this.accounts).includes(address))) {
       return;
