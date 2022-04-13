@@ -176,8 +176,9 @@
 
     .key-info {
       display: inline-flex;
+      font-size: 10px;
       text-align: left;
-      word-break: break-all;
+      word-break: keep-all;
 
       &:first-child {
         margin-bottom: $elv-spacing-xs;
