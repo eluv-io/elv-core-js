@@ -177,7 +177,7 @@
     .key-info {
       display: inline-flex;
       text-align: left;
-      word-break: break-all;
+      word-break: keep-all;
 
       &:first-child {
         margin-bottom: $elv-spacing-xs;
