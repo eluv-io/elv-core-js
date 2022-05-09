@@ -8,6 +8,7 @@ configure({
 });
 
 class RootStore {
+  @observable networkName;
   @observable configError = false;
   @observable client;
   @observable signerSet = false;
@@ -26,7 +27,8 @@ class RootStore {
 
     try {
       this.client = yield ElvClient.FromConfigurationUrl({
-        configUrl: EluvioConfiguration["config-url"]
+        configUrl: EluvioConfiguration["config-url"],
+        ethereumContractTimeout: 20
       });
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -34,6 +36,9 @@ class RootStore {
       this.configError = true;
       return;
     }
+
+    const networkInfo = this.client.NetworkInfo();
+    this.networkName = networkInfo.name;
 
     if((new URLSearchParams(window.location.search).has("debug"))) {
       this.client.ToggleLogging(true);

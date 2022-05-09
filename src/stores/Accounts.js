@@ -236,6 +236,8 @@ class AccountStore {
     };
 
     yield this.SetCurrentAccount({signer});
+
+    this.SaveAccounts();
   });
 
 
@@ -311,6 +313,11 @@ class AccountStore {
     yield this.rootStore.client.userProfileClient.DeleteUserMetadata({metadataSubtree});
 
     yield this.UserMetadata();
+  });
+
+  @action.bound
+  SetCurrentTenant = flow(function * ({id}) {
+    yield this.rootStore.client.userProfileClient.SetTenantId({id});
   });
 
   @action.bound

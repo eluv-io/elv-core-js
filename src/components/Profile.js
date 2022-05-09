@@ -8,7 +8,7 @@ import {
   IconButton,
   BallClipRotate,
   onEnterPressed,
-  TraversableJson
+  TraversableJson, Action
 } from "elv-components-js";
 
 import DefaultProfileImage from "../static/icons/User.svg";
@@ -17,6 +17,7 @@ import UrlJoin from "url-join";
 import XIcon from "../static/icons/X.svg";
 import KeyIcon from "../static/icons/Key.svg";
 import {inject, observer} from "mobx-react";
+import {toJS} from "mobx";
 
 @inject("accountsStore")
 @observer
@@ -28,7 +29,8 @@ class Profile extends React.Component {
       browseRef: React.createRef(),
       newName: "",
       updating: false,
-      showKey: false
+      showKey: false,
+      newTenantId: toJS(props.accountsStore.currentAccount.tenantId) || ""
     };
 
     this.HandleProfileImageChange = this.HandleProfileImageChange.bind(this);
@@ -90,6 +92,31 @@ class Profile extends React.Component {
     });
   }
 
+  SetCurrentTenant = async (override) => {
+    const message = override ?
+      "Are you sure you want to override the current tenant?" :
+      `Are you sure you want to set the tenant ID to ${this.state.newTenantId}?`;
+    const Override = async () => {
+      await this.props.accountsStore.SetCurrentTenant({id: this.state.newTenantId});
+    };
+
+    await Confirm({
+      message,
+      onConfirm: Override
+    });
+  }
+
+  CurrentTenant = (tenantId) => {
+    return (
+      <div className="info-section">
+        <h4>Current Tenant</h4>
+        <h5 className="subheader">Set the tenant ID to be used for billing. Your changes will override any tenant that is currently set. A tenant must be associated with your user account in order to create any libraries.</h5>
+        <input className="set-current-tenant-input" type="text" onChange={event => this.setState({newTenantId: event.target.value})} value={this.state.newTenantId} />
+        <Action className="set-current-tenant-button secondary" onClick={() => this.SetCurrentTenant(!!tenantId)} disabled={!this.state.newTenantId}>{`${tenantId ? "Override" : "Set"} Current Tenant`}</Action>
+      </div>
+    );
+  }
+
   Permissions(metadata) {
     const permissionSelection = (
       <select value={metadata.access_level || "prompt"} name="access_level" aria-label="Access Level" onChange={this.HandleAccessLevelChange}>
@@ -106,12 +133,12 @@ class Profile extends React.Component {
       <div>
         <div className="info-section">
           <h4>Permissions</h4>
-          <h5 className="subheader">Here you can specify whether applications can request access to your personal information</h5>
+          <h5 className="subheader">Here you can specify whether applications can request access to your personal information.</h5>
           { permissionSelection }
         </div>
         <div className="info-section">
           <h4>Applications</h4>
-          <h5 className="subheader">The following applications have access to your private profile</h5>
+          <h5 className="subheader">The following applications have access to your private profile:</h5>
           <div className="indented application-permissions">
             {allowedAccessors.map(accessor =>
               <div className="labelled-field application-permission" key={"accessor-row-" + accessor}>
@@ -167,12 +194,19 @@ class Profile extends React.Component {
     );
   }
 
-  PrivateKey(signer) {
+  MultiformatDisplay(key) {
+    if(!key) { return; }
+
+    return `kupk${client.utils.AddressToHash(key, true)}`;
+  }
+
+  PrivateAndPublicKeys(signer) {
     return (
-      <span className="private-key-container">
-        <IconButton icon={KeyIcon} label={`${this.state.showKey ? "Hide" : "Show"} Private Key`} onClick={() => this.setState({showKey: !this.state.showKey})}/>
-        <span className={`private-key ${this.state.showKey ? "visible" : ""}`}>
-          { this.state.showKey ? signer.privateKey : "" }
+      <span className="key-container">
+        <IconButton icon={KeyIcon} label={`${this.state.showKey ? "Hide" : "Show"} Private and Public Keys`} onClick={() => this.setState({showKey: !this.state.showKey})}/>
+        <span className={`private-public-keys ${this.state.showKey ? "visible" : ""}`}>
+          <span className="key-info">{this.state.showKey ? `Private: ${signer.privateKey}` : "" }</span>
+          <span className="key-info">{ this.state.showKey ? `Public: ${this.MultiformatDisplay(signer.signingKey.keyPair.publicKey)}` : "" }</span>
         </span>
       </span>
     );
@@ -245,6 +279,7 @@ class Profile extends React.Component {
     const account = this.props.accountsStore.currentAccount;
     const collectedTags = this.CollectedTags(account.metadata.collected_data);
     const permissions = this.Permissions(account.metadata);
+    const currentTenant = this.CurrentTenant(account.metadata.tenantId);
 
     return (
       <div className="page-content">
@@ -260,7 +295,7 @@ class Profile extends React.Component {
               <div className="page-subheader">
                 <Balance balance={account.balance} className="account-balance" />
               </div>
-              { this.PrivateKey(account.signer) }
+              { this.PrivateAndPublicKeys(account.signer) }
             </div>
             <div className="info-section">
               <h4>Profile Information</h4>
@@ -268,6 +303,7 @@ class Profile extends React.Component {
                 <TraversableJson json={account.metadata} />
               </div>
             </div>
+            { currentTenant }
             { permissions }
             { collectedTags }
           </div>

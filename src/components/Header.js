@@ -8,6 +8,8 @@ import {
 import {inject, observer} from "mobx-react";
 
 import Logo from "../static/images/Logo.png";
+import LogoDemo from "../static/images/LogoDemo.png";
+import LogoTest from "../static/images/LogoTest.png";
 import ShowHeaderIcon from "../static/icons/ShowHeader.svg";
 import {withRouter} from "react-router";
 import AccountDropdown from "./AccountDropdown";
@@ -20,10 +22,17 @@ class Header extends React.Component {
   }
 
   render() {
+    let logo = Logo;
+    if(["demo", "demov3"].includes(this.props.rootStore.networkName)) {
+      logo = LogoDemo;
+    } else if(this.props.rootStore.networkName === "test") {
+      logo = LogoTest;
+    }
+
     return (
       <header className={this.props.rootStore.showHeader ? "header" : "header hidden-header"}>
         <IconButton className="toggle-header-button" icon={ShowHeaderIcon} label="Show Header" onClick={() => this.ToggleHeader(true)} />
-        <IconLink icon={Logo} to="/apps" className="logo" />
+        <IconLink icon={logo} to="/apps" className="logo" />
         <div
           className="toggle-header-section"
           title="Hide Header"

@@ -89,10 +89,10 @@ class AppFrame extends React.Component {
     this.ApiRequestListener = this.ApiRequestListener.bind(this);
   }
 
-  // Ensure region is reset if app changed it
+  // Ensure region and static token are reset if app changed it
   async componentWillUnmount() {
     await this.props.rootStore.client.ResetRegion();
-    await this.props.rootStore.client.SetStaticToken({token: undefined});
+    await this.props.rootStore.client.ClearStaticToken();
   }
 
   async CheckAccess(event) {
@@ -190,6 +190,34 @@ class AppFrame extends React.Component {
     const source = event.source;
 
     switch (event.data.operation) {
+      case "OpenLink":
+        let { libraryId, objectId, versionHash } = event.data;
+
+        if(!objectId && versionHash) {
+          objectId = this.props.rootStore.client.utils.DecodeVersionHash(versionHash).objectId;
+        }
+
+        if(!libraryId) {
+          libraryId = await this.props.rootStore.client.ContentObjectLibraryId({objectId});
+        }
+
+        const fabricBrowserKey = Object.keys(EluvioConfiguration.apps)
+          .find(key => key.toLowerCase().includes("fabric browser") || key.toLowerCase().includes("fabric-browser"));
+
+        if(!fabricBrowserKey) {
+          throw Error("Unable to determine fabric browser URL");
+        }
+
+        const corePath = `#/apps/${fabricBrowserKey}`;
+        const fabricBrowserPath = `#/content/${libraryId}/${objectId}`;
+
+        const url = new URL(window.location.toString());
+        url.hash = `${corePath}/${fabricBrowserPath}`;
+
+        window.open(url.toString(), "_blank");
+
+        break;
+
       // App requested its app path
       case "GetFramePath":
         // TODO: Replace with match params

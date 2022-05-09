@@ -146,7 +146,7 @@
     }
   }
 
-  .private-key-container {
+  .key-container {
     align-items: center;
     display: flex;
     justify-content: center;
@@ -159,8 +159,9 @@
     }
   }
 
-  .private-key {
+  .private-public-keys {
     display: flex;
+    flex-direction: column;
     font-size: $elv-font-m;
     font-style: italic;
     opacity: 0;
@@ -172,6 +173,17 @@
       opacity: 1;
       width: auto;
     }
+
+    .key-info {
+      display: inline-flex;
+      font-size: 10px;
+      text-align: left;
+      word-break: keep-all;
+
+      &:first-child {
+        margin-bottom: $elv-spacing-xs;
+      }
+    }
   }
 
   .info-section {
@@ -182,6 +194,25 @@
       font-size: $elv-font-xl;
       font-weight: 300;
       padding: $elv-spacing-xs 0;
+    }
+
+    .set-current-tenant-button {
+      height: 2rem;
+
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+
+        &:hover {
+          background-color: unset;
+          color: unset;
+        }
+      }
+    }
+
+    .set-current-tenant-input {
+      margin-right: $elv-spacing-xs;
+      width: 18rem;
     }
   }
 
