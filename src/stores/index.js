@@ -1,10 +1,10 @@
-import {configure, observable, action, flow} from "mobx";
-import {ElvClient} from "@eluvio/elv-client-js";
+import { configure, observable, action, flow } from "mobx";
+import { ElvClient } from "@eluvio/elv-client-js";
 import AccountStore from "./Accounts";
 
 // Force strict mode so mutations are only allowed within actions.
 configure({
-  enforceActions: "always"
+  enforceActions: "always",
 });
 
 class RootStore {
@@ -22,13 +22,14 @@ class RootStore {
   }
 
   @action.bound
-  InitializeClient = flow(function * (signer) {
+  InitializeClient = flow(function* () {
+  // InitializeClient = flow(function* (signer) {
     this.configError = false;
 
     try {
       this.client = yield ElvClient.FromConfigurationUrl({
         configUrl: EluvioConfiguration["config-url"],
-        ethereumContractTimeout: 20
+        ethereumContractTimeout: 20,
       });
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -40,13 +41,13 @@ class RootStore {
     const networkInfo = this.client.NetworkInfo();
     this.networkName = networkInfo.name;
 
-    if((new URLSearchParams(window.location.search).has("debug"))) {
-      this.client.ToggleLogging(true);
-    }
+    // if (new URLSearchParams(window.location.search).has("debug")) {
+    this.client.ToggleLogging(true);
+    // }
 
     if(
       window.location.hostname === "localhost" ||
-      (new URLSearchParams(window.location.search).has("simplePasswords"))
+      new URLSearchParams(window.location.search).has("simplePasswords")
     ) {
       this.simplePasswords = true;
     }
@@ -54,23 +55,25 @@ class RootStore {
     window.client = this.client;
 
     try {
-      if(signer) {
-        this.client.SetSigner({signer});
-        this.signerSet = true;
-      } else {
-        this.signerSet = false;
+      // if(signer) {
+      //   this.client.SetSigner({signer});
+      //   this.signerSet = true;
+      // } else {
+      //   this.signerSet = false;
 
-        // Add dummy account to facilitate basic interaction with contracts
-        const wallet = this.client.GenerateWallet();
-        this.client.SetSigner({
-          signer: wallet.AddAccountFromMnemonic({mnemonic: wallet.GenerateMnemonic()})
-        });
-      }
-
+      //   // Add dummy account to facilitate basic interaction with contracts
+      //   const wallet = this.client.GenerateWallet();
+      //   this.client.SetSigner({
+      //     signer: wallet.AddAccountFromMnemonic({mnemonic: wallet.GenerateMnemonic()})
+      //   });
+      // }
+      
       yield this.client.CallContractMethod({
         contractAddress: this.client.contentSpaceAddress,
-        methodName: "version"
+        methodName: "version",
       });
+      // Todo: throwing error if called before CallContractMethod
+      yield this.client.SetSignerFromWeb3Provider({ provider: web3.currentProvider });
 
       if(!this.accountsStore.accountsLoaded) {
         this.accountsStore.LoadAccounts();
