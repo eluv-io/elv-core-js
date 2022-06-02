@@ -107,22 +107,6 @@ class AccountStore {
   });
 
   @action.bound
-  LoadMetaAccounts = flow(function* () {
-    if(typeof window.ethereum !== "undefined") {
-      if(ethereum.isConnected()) {
-        yield ethereum.request({ method: "eth_accounts" }).then(
-          action("fetchSuccess", (_accounts) => {
-            if(_accounts.length) {
-              this.accounts[_accounts[0]] = { name: "", address: _accounts[0] };
-              this.SetCurrentAccount({ address: _accounts[0] });
-            }
-          })
-        );
-      }
-    }
-  });
-
-  @action.bound
   AccountBalance = flow(function* (address) {
     const client = this.rootStore.client;
 
