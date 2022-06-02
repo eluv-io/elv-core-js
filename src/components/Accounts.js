@@ -27,6 +27,10 @@ class Accounts extends React.Component {
   }
 
   async SelectAccount(address) {
+    if(this.props.accountsStore.accounts[address].isMetaAccount){
+      this.props.accountsStore.SetCurrentAccount({address});
+      return;
+    }
     if(this.props.accountsStore.accounts[address].signer) {
       await this.props.accountsStore.UnlockAccount({ address });
       return;
@@ -75,7 +79,7 @@ class Accounts extends React.Component {
     const account = this.props.accountsStore.accounts[address];
 
     const isCurrentAccount = this.props.accountsStore.currentAccountAddress === account.address;
-    const accountLocked = !account.signer;
+    const accountLocked = !account.signer && !account.isMetaAccount;
 
     let selectAccountButton;
     if(!isCurrentAccount || accountLocked) {
@@ -87,7 +91,7 @@ class Accounts extends React.Component {
     }
 
     let lockAccountButton;
-    if(!accountLocked) {
+    if(!accountLocked && !account.isMetaAccount) {
       lockAccountButton = (
         <Action className="danger" onClick={() => this.LockAccount(account.address)}>
           Lock Account

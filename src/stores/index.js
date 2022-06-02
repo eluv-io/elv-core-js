@@ -59,6 +59,7 @@ class RootStore {
         this.signerSet = true;
       } else if(typeof ethereum!==undefined && ethereum.isConnected()){
         yield this.client.SetSignerFromWeb3Provider({ provider: ethereum });
+        this.signerSet = true;
       } else {
         this.signerSet = false;
 

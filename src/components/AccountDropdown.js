@@ -103,7 +103,7 @@ class AccountDropdown extends React.Component {
                   address: account.address,
                   imageUrl: this.props.accountsStore.ResizeImage(account.imageUrl, 200),
                   balance: account.balance,
-                  locked: !account.signer,
+                  locked: !account.signer && !account.isMetaAccount,
                   onClick: () => {
                     this.props.accountsStore.SetCurrentAccount({address: account.address});
                     this.setState({showSelection: false});
@@ -138,7 +138,7 @@ class AccountDropdown extends React.Component {
         address: account.address,
         imageUrl: this.props.accountsStore.ResizeImage(account.imageUrl, 200),
         balance: account.balance,
-        locked: !account.signer,
+        locked: !account.signer && !account.isMetaAccount,
         onClick: () => this.setState({showSelection: !this.state.showSelection}),
         onLock: event => {
           event.stopPropagation();

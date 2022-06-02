@@ -27,12 +27,12 @@ class EnforceLogin extends React.PureComponent {
     const accountRequired =
       !!(this.props.location.pathname &&
       loginPaths.find(path => this.props.location.pathname.startsWith(path)));
-
+      
     if(!accountRequired) {
       return this.props.children;
     } else if(!currentAccount || currentAccount.balance < 0.1) {
       return <Redirect to="/accounts"/>;
-    } else if(this.state.unlocking || !currentAccount.signer) {
+    } else if(this.state.unlocking || (!currentAccount.signer&& !currentAccount.isMetaAccount)) {
       return (
         <LoginModal
           key="password-prompt"

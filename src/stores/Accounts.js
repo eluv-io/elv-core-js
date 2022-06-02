@@ -47,11 +47,23 @@ class AccountStore {
 
   @action.bound
   LoadAccounts = flow(function* () {
-    const currentAddress = this.rootStore.client.CurrentAccountAddress();
-    // here we will fetch information from meta mask
-    let accounts = { [currentAddress]: { address: currentAddress } };
-    // console.log("currentAddress", currentAddress);
-    this.currentAccountAddress = currentAddress;
+    let accounts = localStorage.getItem(`elv-accounts-${this.network}`) || localStorage.getItem("elv-accounts");
+    accounts = accounts ? JSON.parse(atob(accounts)) : {};
+
+    this.currentAccountAddress = localStorage.getItem(`elv-current-account-${this.network}`) || localStorage.getItem("elv-current-account");
+
+    if(typeof window.ethereum !== "undefined") {
+      if(ethereum.isConnected()) {
+        yield ethereum.request({ method: "eth_accounts" }).then(
+          action("fetchSuccess", (_accounts) => {
+            if(_accounts.length) {
+              accounts[_accounts[0]] = { name: "", address: _accounts[0], isMetaAccount: true };
+              this.currentAccountAddress=_accounts[0];
+            }
+          })
+        );
+      }
+    }
 
     yield Promise.all(
       Object.keys(accounts).map(async (address) => {
@@ -87,13 +99,27 @@ class AccountStore {
     );
 
     // meta mask integration start here
-
-    // console.log("accounts in store", accounts);
     this.accounts = accounts;
 
     Object.keys(accounts).map(this.AccountBalance);
 
     this.accountsLoaded = true;
+  });
+
+  @action.bound
+  LoadMetaAccounts = flow(function* () {
+    if(typeof window.ethereum !== "undefined") {
+      if(ethereum.isConnected()) {
+        yield ethereum.request({ method: "eth_accounts" }).then(
+          action("fetchSuccess", (_accounts) => {
+            if(_accounts.length) {
+              this.accounts[_accounts[0]] = { name: "", address: _accounts[0] };
+              this.SetCurrentAccount({ address: _accounts[0] });
+            }
+          })
+        );
+      }
+    }
   });
 
   @action.bound

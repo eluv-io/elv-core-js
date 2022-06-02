@@ -11,6 +11,8 @@ import { inject, observer, Provider } from "mobx-react";
 
 import { Action, ErrorHandler, LoadingElement } from "elv-components-js";
 
+import EnforceLogin from "./EnforceLogin";
+
 import Header from "./components/Header";
 import Navigation from "./components/Navigation";
 
@@ -48,29 +50,31 @@ class App extends React.PureComponent {
             <div className="router-container">
               <Header />
               <Navigation />
-              <Switch>
-                {SiteRoutes.map(({ path, component }) => (
-                  <Route
-                    key={`route-${path}`}
-                    exact
-                    path={path}
-                    component={component}
-                  />
-                ))}
+              <EnforceLogin>
+                <Switch>
+                  {SiteRoutes.map(({ path, component }) => (
+                    <Route
+                      key={`route-${path}`}
+                      exact
+                      path={path}
+                      component={component}
+                    />
+                  ))}
 
-                {AppRoutes.map(({ path, component }) => (
-                  <Route
-                    key={`route-${path}`}
-                    exact
-                    path={path}
-                    component={component}
-                  />
-                ))}
+                  {AppRoutes.map(({ path, component }) => (
+                    <Route
+                      key={`route-${path}`}
+                      exact
+                      path={path}
+                      component={component}
+                    />
+                  ))}
 
-                <Route>
-                  <Redirect to="/accounts" />
-                </Route>
-              </Switch>
+                  <Route>
+                    <Redirect to="/accounts" />
+                  </Route>
+                </Switch>
+              </EnforceLogin>
             </div>
           )}
         />
