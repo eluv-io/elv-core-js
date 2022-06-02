@@ -1,17 +1,8 @@
 import "../static/stylesheets/accounts.scss";
 
 import React from "react";
-import { action } from "mobx";
 import { inject, observer } from "mobx-react";
-import {
-  Action,
-  Balance,
-  Confirm,
-  CroppedIcon,
-  IconButton,
-  ImageIcon,
-  LoadingElement,
-} from "elv-components-js";
+import {Action, Balance, Confirm, CroppedIcon, IconButton, ImageIcon, LoadingElement} from "elv-components-js";
 import LoginModal from "./LoginModal";
 
 import LockedIcon from "../static/icons/Locked.svg";
@@ -28,7 +19,7 @@ class Accounts extends React.Component {
 
     this.state = {
       showLoginModal: false,
-      selectedAddress: "",
+      selectedAddress: ""
     };
 
     this.UnlockAccount = this.UnlockAccount.bind(this);
@@ -43,14 +34,14 @@ class Accounts extends React.Component {
 
     this.setState({
       showLoginModal: true,
-      selectedAddress: address,
+      selectedAddress: address
     });
   }
 
   async UnlockAccount({ password }) {
     await this.props.accountsStore.UnlockAccount({
       address: this.state.selectedAddress,
-      password,
+      password
     });
   }
 
@@ -61,14 +52,12 @@ class Accounts extends React.Component {
   RemoveAccount(address) {
     Confirm({
       message: "Are you sure you want to remove this account?",
-      onConfirm: () => this.props.accountsStore.RemoveAccount(address),
+      onConfirm: () => this.props.accountsStore.RemoveAccount(address)
     });
   }
 
   LoginModal() {
-    if(!this.state.showLoginModal) {
-      return;
-    }
+    if(!this.state.showLoginModal) { return; }
 
     return (
       <LoginModal
@@ -85,8 +74,7 @@ class Accounts extends React.Component {
   Account(address) {
     const account = this.props.accountsStore.accounts[address];
 
-    const isCurrentAccount =
-      this.props.accountsStore.currentAccountAddress === account.address;
+    const isCurrentAccount = this.props.accountsStore.currentAccountAddress === account.address;
     const accountLocked = !account.signer;
 
     let selectAccountButton;
@@ -101,30 +89,20 @@ class Accounts extends React.Component {
     let lockAccountButton;
     if(!accountLocked) {
       lockAccountButton = (
-        <Action
-          className="danger"
-          onClick={() => this.LockAccount(account.address)}
-        >
+        <Action className="danger" onClick={() => this.LockAccount(account.address)}>
           Lock Account
         </Action>
       );
     }
 
-    const profileImage =
-      this.props.accountsStore.ResizeImage(account.imageUrl, 200) ||
-      DefaultAccountImage;
+    const profileImage = this.props.accountsStore.ResizeImage(account.imageUrl, 200) || DefaultAccountImage;
 
     return (
-      <div
-        key={`account-${account.address}`}
-        className={isCurrentAccount ? "account current-account" : "account"}
-      >
+      <div key={`account-${account.address}`} className={isCurrentAccount ? "account current-account" : "account"}>
         <ImageIcon
           icon={accountLocked ? LockedIcon : UnlockedIcon}
           label={accountLocked ? "Account Locked" : "Account Unlocked"}
-          className={`account-lock-icon ${
-            accountLocked ? "" : "account-unlocked-icon"
-          }`}
+          className={`account-lock-icon ${accountLocked ? "" : "account-unlocked-icon"}`}
         />
         <IconButton
           icon={RemoveAccountIcon}
@@ -146,10 +124,7 @@ class Accounts extends React.Component {
             <Balance balance={account.balance} className="account-balance" />
           </div>
           <div className="account-actions">
-            <LoadingElement
-              loadingClassname="account-loading"
-              loading={this.props.accountsStore.loadingAccount === address}
-            >
+            <LoadingElement loadingClassname="account-loading" loading={this.props.accountsStore.loadingAccount === address}>
               {selectAccountButton}
               {lockAccountButton}
             </LoadingElement>
@@ -159,23 +134,13 @@ class Accounts extends React.Component {
     );
   }
 
-  @action.bound
   connectMetamask = async () => {
     if(!ethereum.isConnected()) {
       await ethereum.request({
         method: "eth_requestAccounts",
       });
-      // console.log("accounts", accounts);
     }
-
-    this.props.accountsStore.LoadMetaAccounts();
-    // if (accounts.length !== 0) {
-    //   const name =
-    //     await this.props.rootStore.client.userProfileClient.PublicUserMetadata({
-    //       address: accounts[0],
-    //     });
-    //   console.log("name", name);
-    // }
+    this.props.rootStore.InitializeClient();
   };
 
   render() {
@@ -183,11 +148,10 @@ class Accounts extends React.Component {
       <div className="page-content">
         {this.LoginModal()}
         <div className="accounts">
-          {this.props.accountsStore.sortedAccounts.map((address) =>
-            this.Account(address)
-          )}
+          { this.props.accountsStore.sortedAccounts.map(address => this.Account(address)) }
         </div>
         <div className="actions-container flex-centered add-account">
+          <Action type="link" to="/accounts/add" label="Add Account">Add Account</Action>
           {typeof window.ethereum !== "undefined" && (
             <Action onClick={this.connectMetamask} label="Enable Metamask">
               {ethereum.isConnected() ? "Get account" : "Enable Metamask"}

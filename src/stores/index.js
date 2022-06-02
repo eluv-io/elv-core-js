@@ -22,8 +22,7 @@ class RootStore {
   }
 
   @action.bound
-  InitializeClient = flow(function* () {
-  // InitializeClient = flow(function* (signer) {
+  InitializeClient = flow(function* (signer) {
     this.configError = false;
 
     try {
@@ -55,25 +54,25 @@ class RootStore {
     window.client = this.client;
 
     try {
-      // if(signer) {
-      //   this.client.SetSigner({signer});
-      //   this.signerSet = true;
-      // } else {
-      //   this.signerSet = false;
+      if(signer) {
+        this.client.SetSigner({signer});
+        this.signerSet = true;
+      } else if(typeof ethereum!==undefined && ethereum.isConnected()){
+        yield this.client.SetSignerFromWeb3Provider({ provider: ethereum });
+      } else {
+        this.signerSet = false;
 
-      //   // Add dummy account to facilitate basic interaction with contracts
-      //   const wallet = this.client.GenerateWallet();
-      //   this.client.SetSigner({
-      //     signer: wallet.AddAccountFromMnemonic({mnemonic: wallet.GenerateMnemonic()})
-      //   });
-      // }
+        // Add dummy account to facilitate basic interaction with contracts
+        const wallet = this.client.GenerateWallet();
+        this.client.SetSigner({
+          signer: wallet.AddAccountFromMnemonic({mnemonic: wallet.GenerateMnemonic()})
+        });
+      }
       
       yield this.client.CallContractMethod({
         contractAddress: this.client.contentSpaceAddress,
         methodName: "version",
       });
-      // Todo: throwing error if called before CallContractMethod
-      yield this.client.SetSignerFromWeb3Provider({ provider: web3.currentProvider });
 
       if(!this.accountsStore.accountsLoaded) {
         this.accountsStore.LoadAccounts();
