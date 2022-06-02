@@ -161,7 +161,7 @@ class AccountStore {
         password,
       });
     }
-    this.rootStore.InitializeClient(this.accounts[address].signer);
+    this.rootStore.InitializeClient({signer: this.accounts[address].signer});
     yield this.SetCurrentAccount({ signer: this.accounts[address].signer });
   });
 
@@ -197,7 +197,7 @@ class AccountStore {
       this.loadingAccount = address;
       signer = signer || this.accounts[address].signer;
       if(signer) {
-        yield this.rootStore.InitializeClient(signer);
+        yield this.rootStore.InitializeClient({signer});
       }
       this.accounts[address].signer = signer;
       yield this.AccountBalance(address);

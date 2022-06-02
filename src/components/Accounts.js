@@ -144,7 +144,7 @@ class Accounts extends React.Component {
         method: "eth_requestAccounts",
       });
     }
-    this.props.rootStore.InitializeClient();
+    this.props.rootStore.InitializeClient({reloadAccounts: true});
   };
 
   render() {

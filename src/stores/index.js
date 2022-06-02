@@ -22,7 +22,7 @@ class RootStore {
   }
 
   @action.bound
-  InitializeClient = flow(function* (signer) {
+  InitializeClient = flow(function* ({signer, reloadAccounts}={}) {
     this.configError = false;
 
     try {
@@ -75,7 +75,7 @@ class RootStore {
         methodName: "version"
       });
 
-      if(!this.accountsStore.accountsLoaded) {
+      if(!this.accountsStore.accountsLoaded||reloadAccounts) {
         this.accountsStore.LoadAccounts();
       }
     } catch (error) {
