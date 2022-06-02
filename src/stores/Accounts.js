@@ -125,10 +125,10 @@ class AccountStore {
     const client = this.rootStore.client;
     address = client.utils.FormatAddress(address);
     const account = this.accounts[address];
-    if (!account) {
+    if(!account) {
       throw Error(`Unknown account: ${address}`);
     }
-    if (!account.signer) {
+    if(!account.signer) {
       const wallet = client.GenerateWallet();
       this.accounts[address].signer = yield wallet.AddAccountFromEncryptedPK({
         encryptedPrivateKey: account.encryptedPrivateKey,
@@ -170,7 +170,7 @@ class AccountStore {
       );
       this.loadingAccount = address;
       signer = signer || this.accounts[address].signer;
-      if (signer) {
+      if(signer) {
         yield this.rootStore.InitializeClient(signer);
       }
       this.accounts[address].signer = signer;
@@ -180,7 +180,7 @@ class AccountStore {
         `elv-current-account-${this.network}`,
         address.toString()
       );
-      if (signer && this.accounts[address].balance > 0.1) {
+      if(signer && this.accounts[address].balance > 0.1) {
         this.accounts[address].tenantId =
           yield this.rootStore.client.userProfileClient.TenantId();
         this.UserMetadata();
@@ -203,15 +203,15 @@ class AccountStore {
     password,
     passwordConfirmation,
   }) {
-    if (password !== passwordConfirmation) {
+    if(password !== passwordConfirmation) {
       throw Error("Password and confirmation do not match");
     }
     const client = this.rootStore.client;
     const wallet = client.GenerateWallet();
     let signer;
-    if (mnemonic) {
+    if(mnemonic) {
       signer = wallet.AddAccountFromMnemonic({ mnemonic });
-    } else if (encryptedPrivateKey) {
+    } else if(encryptedPrivateKey) {
       signer = yield wallet.AddAccountFromEncryptedPK({
         encryptedPrivateKey,
         password,
@@ -219,7 +219,7 @@ class AccountStore {
     } else {
       signer = wallet.AddAccount({ privateKey: privateKey.trim() });
     }
-    if (!this.rootStore.simplePasswords) {
+    if(!this.rootStore.simplePasswords) {
       const passwordTests = [
         [{ test: (str) => str.length >= 6 }, "must be at least 6 characters"],
         [/[a-z]/, "must contain at least one lowercase character"],
@@ -231,7 +231,7 @@ class AccountStore {
         ],
       ];
       let failedTest = passwordTests.find(([test]) => !test.test(password));
-      if (failedTest) {
+      if(failedTest) {
         throw Error(`Password ${failedTest[1]}`);
       }
     }
