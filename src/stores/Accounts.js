@@ -97,26 +97,6 @@ class AccountStore {
   });
 
   @action.bound
-  LoadMetaAccounts = flow(function* () {
-    // let _accounts = [];
-    if(typeof window.ethereum !== "undefined") {
-      // console.log("MetaMask is installed!");
-      if(ethereum.isConnected()) {
-        yield ethereum.request({ method: "eth_accounts" }).then(
-          action("fetchSuccess", (_accounts) => {
-            if(_accounts.length) {
-              this.accounts[_accounts[0]] = { name: "", address: _accounts[0] };
-              this.SetCurrentAccount({ address: _accounts[0] });
-              // this.currentAccountAddress =_accounts[0];
-              // console.log("this.accounts", { ...this.accounts });
-            }
-          })
-        );
-      }
-    }
-  });
-
-  @action.bound
   AccountBalance = flow(function* (address) {
     const client = this.rootStore.client;
 
@@ -140,25 +120,23 @@ class AccountStore {
     this.accounts[address].signer = undefined;
   }
 
-  // this functionality will get removed after meta mask
   @action.bound
-  // UnlockAccount = flow(function* ({ address, password }) {
-  UnlockAccount = flow(function* () {
-    // const client = this.rootStore.client;
-    // address = client.utils.FormatAddress(address);
-    // const account = this.accounts[address];
-    // if (!account) {
-    //   throw Error(`Unknown account: ${address}`);
-    // }
-    // if (!account.signer) {
-    //   const wallet = client.GenerateWallet();
-    //   this.accounts[address].signer = yield wallet.AddAccountFromEncryptedPK({
-    //     encryptedPrivateKey: account.encryptedPrivateKey,
-    //     password,
-    //   });
-    // }
-    // this.rootStore.InitializeClient(this.accounts[address].signer);
-    // yield this.SetCurrentAccount({ signer: this.accounts[address].signer });
+  UnlockAccount = flow(function* ({ address, password }) {
+    const client = this.rootStore.client;
+    address = client.utils.FormatAddress(address);
+    const account = this.accounts[address];
+    if (!account) {
+      throw Error(`Unknown account: ${address}`);
+    }
+    if (!account.signer) {
+      const wallet = client.GenerateWallet();
+      this.accounts[address].signer = yield wallet.AddAccountFromEncryptedPK({
+        encryptedPrivateKey: account.encryptedPrivateKey,
+        password,
+      });
+    }
+    this.rootStore.InitializeClient(this.accounts[address].signer);
+    yield this.SetCurrentAccount({ signer: this.accounts[address].signer });
   });
 
   SendFunds = flow(function* ({ recipient, ether }) {
@@ -185,93 +163,91 @@ class AccountStore {
 
   // current account will come from meta mask
   @action.bound
-  SetCurrentAccount = flow(function* () {
-  // SetCurrentAccount = flow(function* ({ address, signer }) {
-    // try {
-    //   address = this.rootStore.client.utils.FormatAddress(
-    //     address || signer.address
-    //   );
-    //   this.loadingAccount = address;
-    //   signer = signer || this.accounts[address].signer;
-    //   if (signer) {
-    //     yield this.rootStore.InitializeClient(signer);
-    //   }
-    //   this.accounts[address].signer = signer;
-    //   yield this.AccountBalance(address);
-    //   this.currentAccountAddress = address;
-    //   localStorage.setItem(
-    //     `elv-current-account-${this.network}`,
-    //     address.toString()
-    //   );
-    //   if (signer && this.accounts[address].balance > 0.1) {
-    //     this.accounts[address].tenantId =
-    //       yield this.rootStore.client.userProfileClient.TenantId();
-    //     this.UserMetadata();
-    //   }
-    // } catch (error) {
-    //   // eslint-disable-next-line no-console
-    //   console.error("Error loading account", address);
-    //   // eslint-disable-next-line no-console
-    //   console.error(error);
-    // } finally {
-    //   this.loadingAccount = undefined;
-    // }
+  SetCurrentAccount = flow(function* ({ address, signer }) {
+    try {
+      address = this.rootStore.client.utils.FormatAddress(
+        address || signer.address
+      );
+      this.loadingAccount = address;
+      signer = signer || this.accounts[address].signer;
+      if (signer) {
+        yield this.rootStore.InitializeClient(signer);
+      }
+      this.accounts[address].signer = signer;
+      yield this.AccountBalance(address);
+      this.currentAccountAddress = address;
+      localStorage.setItem(
+        `elv-current-account-${this.network}`,
+        address.toString()
+      );
+      if (signer && this.accounts[address].balance > 0.1) {
+        this.accounts[address].tenantId =
+          yield this.rootStore.client.userProfileClient.TenantId();
+        this.UserMetadata();
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error("Error loading account", address);
+      // eslint-disable-next-line no-console
+      console.error(error);
+    } finally {
+      this.loadingAccount = undefined;
+    }
   });
 
   @action.bound
-  AddAccount = flow(function* () {
-  // AddAccount = flow(function* ({
-  //   privateKey,
-  //   encryptedPrivateKey,
-  //   mnemonic,
-  //   password,
-  //   passwordConfirmation,
-  // }) {
-    // if (password !== passwordConfirmation) {
-    //   throw Error("Password and confirmation do not match");
-    // }
-    // const client = this.rootStore.client;
-    // const wallet = client.GenerateWallet();
-    // let signer;
-    // if (mnemonic) {
-    //   signer = wallet.AddAccountFromMnemonic({ mnemonic });
-    // } else if (encryptedPrivateKey) {
-    //   signer = yield wallet.AddAccountFromEncryptedPK({
-    //     encryptedPrivateKey,
-    //     password,
-    //   });
-    // } else {
-    //   signer = wallet.AddAccount({ privateKey: privateKey.trim() });
-    // }
-    // if (!this.rootStore.simplePasswords) {
-    //   const passwordTests = [
-    //     [{ test: (str) => str.length >= 6 }, "must be at least 6 characters"],
-    //     [/[a-z]/, "must contain at least one lowercase character"],
-    //     [/[A-Z]/, "must contain at least one uppercase character"],
-    //     [/[0-9]/, "must contain at least one number"],
-    //     [
-    //       /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/,
-    //       "must contain at least one symbol",
-    //     ],
-    //   ];
-    //   let failedTest = passwordTests.find(([test]) => !test.test(password));
-    //   if (failedTest) {
-    //     throw Error(`Password ${failedTest[1]}`);
-    //   }
-    // }
-    // encryptedPrivateKey = yield wallet.GenerateEncryptedPrivateKey({
-    //   signer,
-    //   password,
-    //   options: { scrypt: { N: 16384 } },
-    // });
-    // const address = client.utils.FormatAddress(signer.address);
-    // this.accounts[address] = {
-    //   address,
-    //   signer,
-    //   encryptedPrivateKey,
-    // };
-    // yield this.SetCurrentAccount({ signer });
-    // this.SaveAccounts();
+  AddAccount = flow(function* ({
+    privateKey,
+    encryptedPrivateKey,
+    mnemonic,
+    password,
+    passwordConfirmation,
+  }) {
+    if (password !== passwordConfirmation) {
+      throw Error("Password and confirmation do not match");
+    }
+    const client = this.rootStore.client;
+    const wallet = client.GenerateWallet();
+    let signer;
+    if (mnemonic) {
+      signer = wallet.AddAccountFromMnemonic({ mnemonic });
+    } else if (encryptedPrivateKey) {
+      signer = yield wallet.AddAccountFromEncryptedPK({
+        encryptedPrivateKey,
+        password,
+      });
+    } else {
+      signer = wallet.AddAccount({ privateKey: privateKey.trim() });
+    }
+    if (!this.rootStore.simplePasswords) {
+      const passwordTests = [
+        [{ test: (str) => str.length >= 6 }, "must be at least 6 characters"],
+        [/[a-z]/, "must contain at least one lowercase character"],
+        [/[A-Z]/, "must contain at least one uppercase character"],
+        [/[0-9]/, "must contain at least one number"],
+        [
+          /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/,
+          "must contain at least one symbol",
+        ],
+      ];
+      let failedTest = passwordTests.find(([test]) => !test.test(password));
+      if (failedTest) {
+        throw Error(`Password ${failedTest[1]}`);
+      }
+    }
+    encryptedPrivateKey = yield wallet.GenerateEncryptedPrivateKey({
+      signer,
+      password,
+      options: { scrypt: { N: 16384 } },
+    });
+    const address = client.utils.FormatAddress(signer.address);
+    this.accounts[address] = {
+      address,
+      signer,
+      encryptedPrivateKey,
+    };
+    yield this.SetCurrentAccount({ signer });
+    this.SaveAccounts();
   });
 
   /* Profile */

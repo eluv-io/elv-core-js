@@ -40,9 +40,9 @@ class RootStore {
     const networkInfo = this.client.NetworkInfo();
     this.networkName = networkInfo.name;
 
-    // if (new URLSearchParams(window.location.search).has("debug")) {
-    this.client.ToggleLogging(true);
-    // }
+    if(new URLSearchParams(window.location.search).has("debug")) {
+      this.client.ToggleLogging(true);
+    }
 
     if(
       window.location.hostname === "localhost" ||
@@ -71,7 +71,7 @@ class RootStore {
       
       yield this.client.CallContractMethod({
         contractAddress: this.client.contentSpaceAddress,
-        methodName: "version",
+        methodName: "version"
       });
 
       if(!this.accountsStore.accountsLoaded) {
