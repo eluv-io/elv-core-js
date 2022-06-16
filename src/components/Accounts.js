@@ -139,11 +139,11 @@ class Accounts extends React.Component {
   }
 
   connectMetamask = async () => {
-    if(!ethereum.isConnected()) {
-      await ethereum.request({
-        method: "eth_requestAccounts",
-      });
-    }
+    // if(!ethereum.isConnected()) {
+    await ethereum.request({
+      method: "eth_requestAccounts",
+    });
+    // }
     this.props.rootStore.InitializeClient({reloadAccounts: true});
   };
 

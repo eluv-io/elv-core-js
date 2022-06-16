@@ -55,10 +55,12 @@ class AccountStore {
     if(typeof window.ethereum !== "undefined") {
       if(ethereum.isConnected()) {
         yield ethereum.request({ method: "eth_accounts" }).then(
-          action("fetchSuccess", (_accounts) => {
+          action("fetchSuccess", async (_accounts) => {
             if(_accounts.length) {
               accounts[_accounts[0]] = { name: "", address: _accounts[0], isMetaAccount: true };
               this.currentAccountAddress=_accounts[0];
+              this.rootStore.signerSet = true;
+              await this.rootStore.client.SetSignerFromWeb3Provider({ provider: ethereum });
             }
           })
         );

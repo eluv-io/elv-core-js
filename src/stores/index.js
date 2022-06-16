@@ -22,7 +22,7 @@ class RootStore {
   }
 
   @action.bound
-  InitializeClient = flow(function* ({signer, reloadAccounts}={}) {
+  InitializeClient = flow(function* ({ signer, reloadAccounts } = {}) {
     this.configError = false;
 
     try {
@@ -40,11 +40,11 @@ class RootStore {
     const networkInfo = this.client.NetworkInfo();
     this.networkName = networkInfo.name;
 
-    if(new URLSearchParams(window.location.search).has("debug")) {
+    if (new URLSearchParams(window.location.search).has("debug")) {
       this.client.ToggleLogging(true);
     }
 
-    if(
+    if (
       window.location.hostname === "localhost" ||
       new URLSearchParams(window.location.search).has("simplePasswords")
     ) {
@@ -54,28 +54,26 @@ class RootStore {
     window.client = this.client;
 
     try {
-      if(signer) {
-        this.client.SetSigner({signer});
-        this.signerSet = true;
-      } else if(typeof ethereum!==undefined && ethereum.isConnected()){
-        yield this.client.SetSignerFromWeb3Provider({ provider: ethereum });
+      if (signer) {
+        this.client.SetSigner({ signer });
         this.signerSet = true;
       } else {
         this.signerSet = false;
-
         // Add dummy account to facilitate basic interaction with contracts
         const wallet = this.client.GenerateWallet();
         this.client.SetSigner({
-          signer: wallet.AddAccountFromMnemonic({mnemonic: wallet.GenerateMnemonic()})
+          signer: wallet.AddAccountFromMnemonic({
+            mnemonic: wallet.GenerateMnemonic(),
+          }),
         });
       }
-      
+
       yield this.client.CallContractMethod({
         contractAddress: this.client.contentSpaceAddress,
-        methodName: "version"
+        methodName: "version",
       });
 
-      if(!this.accountsStore.accountsLoaded||reloadAccounts) {
+      if (!this.accountsStore.accountsLoaded || reloadAccounts) {
         this.accountsStore.LoadAccounts();
       }
     } catch (error) {
