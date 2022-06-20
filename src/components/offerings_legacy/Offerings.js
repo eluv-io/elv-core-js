@@ -1,5 +1,5 @@
 import React from "react";
-import "../static/stylesheets/offerings.scss";
+import "../../static/stylesheets/offerings.scss";
 
 import OfferingsTable from "./OfferingsTable";
 

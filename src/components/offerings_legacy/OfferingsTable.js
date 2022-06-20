@@ -1,9 +1,9 @@
 import React from "react";
 import {ImageIcon} from "elv-components-js";
-import CheckIcon from "../static/icons/Check.svg";
+import CheckIcon from "../../static/icons/Check.svg";
 
 const html = (
-  <div className="offerings">
+  <div className="offerings offerings-legacy">
     <div className="offering-row offering-row-header">
       <div className=" offering-nocheck">
 
