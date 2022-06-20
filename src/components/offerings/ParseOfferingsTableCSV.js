@@ -2,7 +2,7 @@ const fs = require("fs");
 const CSVParse = require("csv-parse/lib/sync");
 
 const Parse = async () => {
-  const csv = fs.readFileSync(__dirname + "/csv.csv").toString("utf8");
+  const csv = fs.readFileSync(__dirname + "/csv2.csv").toString("utf8");
 
   const rows = CSVParse(csv);
   let rowHeader = true;
@@ -15,6 +15,7 @@ const Parse = async () => {
 
       return (
         columns
+          .filter((_, index) => index !== 0)
           .map((column, columnIndex) =>
             `      <div className="offerings-cell column-${columnIndex + 1}">\n        {"${column.replace("\n", "").replace("\r", "").replace("\"", "\\\"")}"}\n      </div>`
           )

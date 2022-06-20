@@ -1,0 +1,78 @@
+,,,,
+,Commited Utility Level,,,
+,,Unit,Unit Price,Description
+,Level 3,base utility purchase per month,"$8,333.33","Tenants have the option to commit to a base purchase of content utility fees in exchange for significantly discounted blockchain transaction fees. In addition, ELVs will be set aside for the tenant as part of a token allocation program for early stakeholders. The tenant may claim these over the program's duration as described in the program agreement."
+,Level 2,base utility purchase per month,$833.33,
+,Level 1,base utility purchase per month,$0.00,
+,Level 3,multiplier,0.1,
+,Level 2,multiplier,0.5,
+,Level 1,multiplier,1.0,
+,,,,
+,Blockchain Transactions,,,
+,,Unit,Base Price,Description
+,NFT Contract Creation,per NFT contract (one per Edition),$10.00,"ERC-721, 1155 or similar contract deployed to the Content Fabric blockchain on behalf of the tenant."
+,NFT Minting,per mint,$1.00,"On-demand or batch minting of NFT tokens in the Content Fabric blockchain on behalf of the tenant; charge is based on Commited Utility Level, which can be purchased as noted above  "
+,NFT Burn,per mint,$1.00,"Burning of NFT tokens in the Content Fabric blockchain on behalf of the tenant; charge is based on Commited Utility Level, which can be purchased as noted above"
+,NFT Transfer,per mint,$1.00,"Transfer of NFT tokens from one owner to another, e.g. in trades or sales charge is based on Commited Utility Level, which can be purchased as noted above"
+,,,,
+,Base Rental and Operations,,,
+,,Unit,Base Price,Description
+,tenants,per month,$1.00,Base object for each tenancy owned.
+,objects,per month,$0.10,Total content objects owned.
+,libraries,per month,$0.10,Total libraries owned.
+,storage,per gigabyte per month,$0.02,Total gigabytes stored by all objects and libraries owned.
+,download**,per gigabyte per month,$0.01,"Bytes downloaded from objects owned including metadata, parts, files (but not bitcode operations)        "
+,"**metadata, parts downloads, files downloads (not reps)",,,
+,,,,
+,Bitcode Operations,,,
+,,Unit,Base Price,
+,playout,,,
+,HD (1080p) Mezzanine,"per video second below 1,000",$0.000069,"Streaming video served at 1080p resolution, Live and VoD DASH or HLS CMAF-formatted HTTP Adaptive Bit Rate        "
+,,"per video second between 1,000 - 2,000",$0.000067,
+,,"per video second between 2,000 - 5,000",$0.000061,
+,,"per video second between 5,000 - 10,000",$0.000054,
+,,"per video second between 10,000 - 20,000",$0.000046,
+,,"per video second between 20,000 - 50,000",$0.000039,
+,,"per video second between 50,000 - 100,000",$0.000031,
+,,"per video second between 100,000 - 200,000",$0.000022,
+,,"per video second over 200,000",$0.000011,
+,4K (3840p) Mezzanine,"per video second below 1,000",$0.000083,"Streaming video served at 4K 3840p resolution, Live and VoD DASH or HLS CMAF-formatted HTTP Adaptive Bit Rate        "
+,,"per video second between 1,000 - 2,000",$0.000080,
+,,"per video second between 2,000 - 5,000",$0.000073,
+,,"per video second between 5,000 - 10,000",$0.000065,
+,,"per video second between 10,000 - 20,000",$0.000056,
+,,"per video second between 20,000 - 50,000",$0.000047,
+,,"per video second between 50,000 - 100,000",$0.000037,
+,,"per video second between 100,000 - 200,000",$0.000027,
+,,"per video second over 200,000",$0.000013,
+,playout add-ons,,,
+,HDR,per video sec,$0.00002,Add on for High Dynamic Range HDR10
+,DRM,per video second,$0.00003,"Add on for streaming video served with Digital Rights Mgmt (Google Widevine, Apple Fairplay, or Sample AES/AES-128)        "
+,Text Watermark,per video second,$0.00003,Add on for dynamic visible watermarking (text)
+,Image Watermark,per video second,$0.00007,Add on for dynamic visible watermarking (image)
+,Clip API,per video second,$0.00001,Add on for dynamic clip generation API Serves streaming clips from start and endpoint offsets with no pre-processing
+,Audio Only,per audio second,$0.00001,"Streaming audio only, multichannel 5.1 surround        "
+,image|thumbnail,,,
+,Transformation,per image,$0.0004,Dynamic image resizing
+,Watermark,per image,$0.0004,Add on for dynamic visible watermarking
+,media ingest,,,
+,"h264 encoded mezzanine @1080p,<=10Mbps",per video second,$0.0011,"On Demand or Live Video ingest to h264 mezzanines @ 1080p. Broad support for source encodings, e.g. h264, hevc, mpeg2, dnxhd, prores.        "
+,h264 encoded mezzanine @3840p >10 Mbps,per video second,$0.0017,"On Demand or Live Video ingest to h264 mezzanines @ 3840p. Broad support for source encodings, e.g. h264, hevc, mpeg2, dnxhd, prores.        "
+,"h265 encoded mezzanine >=1080p, >=10 Mbps",per video second,$0.0056,"On Demand or Live Video ingest to h265 mezzanines. Broad support for source encodings, e.g. h264, hevc, mpeg2, dnxhd, prores.        "
+,jpeg2000 or custom encoded mezzanine (master),per video second,$0.0111,"Master Video ingest using JPEG2000 or custom encoding. Broad support for  source encodings, e.g. h264, hevc, mpeg2, dnxhd, prores.        "
+,Audio Only,per audio second,$0.0006,Audio Only ingest
+,search,,,
+,Search Index,per GB per month,$15.00,Dynamic search API indexed by any content object metadata or ML-labelled tags
+,tagging via machine learning,,,"Dynamic labelling of video, audio, and image content using machine learning native in-fabric models identify and tag contents of content object video, text and audio at frame and segment level."
+,Celebrity Recognition,per video second,$0.002,
+,Landmark Recognition,per video second,$0.002,
+,OCR Text Recognition,per video second,$0.002,
+,Object Recognition,per video second,$0.002,
+,Activity Recognition,per video second,$0.002,
+,Shot Boundary Detection,per video second,$0.002,Automatic detection of shot boundaries
+,"Technical Cues Detection (black, color bars, etc.)",per video second,$0.002,"Automatic detection of cues such as black, color bars, etc.       "
+,Speech to Text,per audio second,$0.002,
+,Celebrity Recognition,per image,$0.001,Dynamic labelling of image content using machine learning
+,Landmark Recognition,per image,$0.001,
+,OCR Text Recognition,per image,$0.001,
+,Object Recognition,per image,$0.001,

@@ -55,10 +55,6 @@
     min-height: $elv-spacing-xxl;
     padding-bottom: $elv-spacing-s;
     text-align: center;
-
-    &:first-child {
-      font-size: $elv-font-l;
-    }
   }
 
   &:not(.offering-row-header) {
@@ -121,9 +117,15 @@
     width: $elv-font-xxl;
   }
 
-  .offering-cell-left {
+  .offerings-cell-left {
     font-size: $elv-font-xl;
     text-align: left;
+  }
+
+  .offerings-cell-bold {
+    font-weight: bold;
+    font-style: italic;
+    font-size: $elv-font-l;
   }
 }
 

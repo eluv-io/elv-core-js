@@ -18,7 +18,7 @@ class Offerings extends React.Component {
 
         <div className="offerings">
           <div className="offering-row offering-row-header">
-            <div className=" offering-nocheck offering-cell-left">
+            <div className=" offering-nocheck offerings-cell-left">
               Technical Support & Service Policies for Tenants
             </div>
             <div className="">
@@ -178,7 +178,7 @@ class Offerings extends React.Component {
       <div className="offerings-container">
         <div className="offerings-container-headers">
           <h1>Content Fabric Utility Rates</h1>
-          <h2>Last Updated 6/2022</h2>
+          <h2>Last Updated May 30, 2022</h2>
         </div>
         <OfferingsTable />
 
