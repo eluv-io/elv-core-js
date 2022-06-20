@@ -21,13 +21,13 @@ class Offerings extends React.Component {
             <div className=" offering-nocheck offerings-cell-left">
               Technical Support & Service Policies for Tenants
             </div>
-            <div className="">
+            <div className="offerings-cell-centered">
               Level 1
             </div>
-            <div className="">
+            <div className="offerings-cell-centered">
               Level 2
             </div>
-            <div className="">
+            <div className="offerings-cell-centered">
               Level 3
             </div>
           </div>
