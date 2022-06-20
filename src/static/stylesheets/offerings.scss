@@ -54,7 +54,7 @@
     font-size: $elv-font-xxl;
     min-height: $elv-spacing-xxl;
     padding-bottom: $elv-spacing-s;
-    text-align: center;
+    //text-align: center;
   }
 
   &:not(.offering-row-header) {
@@ -113,7 +113,7 @@
 
   .offering-check-icon {
     height: $elv-font-xxl;
-    stroke: $elv-color-mediumblue;
+    stroke: $elv-color-darkgray;
     width: $elv-font-xxl;
   }
 
