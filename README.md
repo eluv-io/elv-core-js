@@ -14,8 +14,14 @@ the contained app as another messsage.
 
 See [ElvClient documentation](https://github.com/eluv-io/elv-client-js) for more details
 
-### Running ElvCore
-#### Running with NPM
+### Setting Up and Running ElvCore With NPM
+
+- Set up a ```configuration.js``` file in the root directory using ```configuration-example.js``` as a guide. This can be done with 
+```
+cp configuration-example.js configuration.js
+```
+- Open the newly created ```configuration.js``` file and comment out all the config-url’s except for the one you wish to use (main, demo or test). Note that the config-url in elv-fabric-browser must match the config-url being used in elv-core-js otherwise the fabric-browser will not function.
+- Now everything is configured and we are ready to run using npm.
 
 ```
   npm install
@@ -23,9 +29,6 @@ See [ElvClient documentation](https://github.com/eluv-io/elv-client-js) for more
 ```
 
 Then open http://localhost:8082 in your browser
-
-##### Configuration
-Edit ```./configuration.json``` to point to the appropriate Eluvio configuration URL and any additional apps.
 
 
 #### Running from static build 
