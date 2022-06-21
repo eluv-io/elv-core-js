@@ -1,5 +1,5 @@
 import React from "react";
-import "../static/stylesheets/terms.scss";
+import "../../static/stylesheets/terms.scss";
 
 import TermsDocument from "./TermsDocument.html";
 
