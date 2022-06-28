@@ -32,10 +32,4 @@ Then open http://localhost:8082 in your browser
 
 ### Configuration Details
 - The ```apps``` section in ```configuration.js``` is used to specify the url's of apps that are commonly used with elv-core (e.g: the fabric browser)
-- Simply uncomment the specific apps in this section that you wish to use and ensure that the specified url points to the correct instance 
-
-#### Running from static build 
-
-Simply open dist/index.html in your browser
-
-
+- Simply uncomment the specific apps in this section that you wish to use and ensure that the specified url points to the correct instance (either local or deployed) 
