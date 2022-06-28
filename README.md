@@ -20,7 +20,7 @@ See [ElvClient documentation](https://github.com/eluv-io/elv-client-js) for more
 ```
 cp configuration-example.js configuration.js
 ```
-- Open the newly created ```configuration.js``` file and comment out all the config-url’s except for the one you wish to use (main, demo or test). Note that the config-url in elv-fabric-browser must match the config-url being used in elv-core-js otherwise the fabric-browser will not function.
+- Open the newly created ```configuration.js``` file and comment out all of the instances of  ```config-url``` except for the one you wish to use (main, demo or test). Note that the ```config-url``` in elv-fabric-browser must match the ```config-url``` being used in elv-core-js otherwise the fabric-browser will not function.
 - Now everything is configured and we are ready to run using npm.
 
 ```
@@ -30,7 +30,12 @@ cp configuration-example.js configuration.js
 
 Then open http://localhost:8082 in your browser
 
+### Configuration Details
+- The ```apps``` section in ```configuration.js``` is used to specify the url's of apps that are commonly used with elv-core (e.g: the fabric browser)
+- Simply uncomment the specific apps in this section that you wish to use and ensure that the specified url points to the correct instance 
 
 #### Running from static build 
 
 Simply open dist/index.html in your browser
+
+
