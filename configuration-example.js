@@ -7,6 +7,10 @@ const EluvioConfiguration = {
   //v4
   // "config-url": "https://host-468.contentfabric.io/config",
 
-  // Fabric Browser
-  "coreUrl": "http://localhost:8082"
+ // Apps
+ // "apps": {
+ //   "Eluvio Fabric Browser": "http://localhost:8080,
+ //   "Video Editor": "https://video-editor.v3.contentfabric.io",
+ //   "Site Sample": "https://site-sample.v3.contentfabric.io",
+ //   "Stream Sample": "https://display.v3.contentfabric.io" }
 }
