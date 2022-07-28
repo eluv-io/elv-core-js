@@ -78,7 +78,7 @@ const OfferingsTable = () => (
         {"Level 3"}
       </div>
       <div className="offerings-cell column-2">
-        {"multiplier"}
+        {"blockchain transaction multiplier"}
       </div>
       <div className="offerings-cell column-3">
         {"0.1"}
@@ -92,7 +92,7 @@ const OfferingsTable = () => (
         {"Level 2"}
       </div>
       <div className="offerings-cell column-2">
-        {"multiplier"}
+        {"blockchain transaction multiplier"}
       </div>
       <div className="offerings-cell column-3">
         {"0.5"}
@@ -106,7 +106,7 @@ const OfferingsTable = () => (
         {"Level 1"}
       </div>
       <div className="offerings-cell column-2">
-        {"multiplier"}
+        {"blockchain transaction multiplier"}
       </div>
       <div className="offerings-cell column-3">
         {"1.0"}
