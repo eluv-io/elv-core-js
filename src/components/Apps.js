@@ -5,16 +5,27 @@ import GenericAppLogo from "../static/icons/App.svg";
 import {Action, CroppedIcon} from "elv-components-js";
 import UrlJoin from "url-join";
 
+import FabricBrowserIcon from "../static/images/FabricBrowser.png";
+import VideoEditorIcon from "../static/images/VideoEditor.png";
+import SiteSampleIcon from "../static/images/SiteSample.png";
+import StreamSampleIcon from "../static/images/StreamSample.png";
+
+const icons = {
+  "Fabric Browser": FabricBrowserIcon,
+  "Video Editor": VideoEditorIcon,
+  "Site Sample": SiteSampleIcon,
+  "Stream Sample": StreamSampleIcon
+};
+
 class Apps extends React.PureComponent {
   App(name) {
-    const displayName = name;
-    const logoUrl = UrlJoin(EluvioConfiguration.apps[name], "Logo.png");
+    const logo = icons[Object.keys(icons).find(key => name.includes(key))] || UrlJoin(EluvioConfiguration.apps[name], "Logo.png");
 
     return (
-      <Action key={`app-${name}`} label={`Go to ${displayName}`} type="link" to={`/apps/${name}`} button={false}>
+      <Action key={`app-${name}`} label={`Go to ${name}`} type="link" to={`/apps/${name}`} button={false}>
         <div className="app-selection">
-          <CroppedIcon icon={logoUrl} alternateIcon={GenericAppLogo} className="app-logo" />
-          <h4>{displayName}</h4>
+          <CroppedIcon icon={logo} alternateIcon={GenericAppLogo} className="app-logo" />
+          <h4>{name}</h4>
         </div>
       </Action>
     );

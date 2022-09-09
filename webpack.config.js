@@ -88,12 +88,7 @@ module.exports = {
       },
       {
         test: /\.(gif|png|jpe?g)$/i,
-        use: [
-          "file-loader",
-          {
-            loader: "image-webpack-loader"
-          },
-        ],
+        use: ["file-loader"],
       },
       {
         test: /\.(txt|bin|abi|html)$/i,
