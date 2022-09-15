@@ -9,12 +9,14 @@ import FabricBrowserIcon from "../static/images/FabricBrowser.png";
 import VideoEditorIcon from "../static/images/VideoEditor.png";
 import SiteSampleIcon from "../static/images/SiteSample.png";
 import StreamSampleIcon from "../static/images/StreamSample.png";
+import StudioIcon from "../static/images/Studio.png";
 
 const icons = {
   "Fabric Browser": FabricBrowserIcon,
   "Video Editor": VideoEditorIcon,
   "Site Sample": SiteSampleIcon,
-  "Stream Sample": StreamSampleIcon
+  "Stream Sample": StreamSampleIcon,
+  "Media Ingest": StudioIcon
 };
 
 class Apps extends React.PureComponent {
