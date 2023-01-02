@@ -206,7 +206,7 @@ class Profile extends React.Component {
         <IconButton icon={KeyIcon} label={`${this.state.showKey ? "Hide" : "Show"} Private and Public Keys`} onClick={() => this.setState({showKey: !this.state.showKey})}/>
         <span className={`private-public-keys ${this.state.showKey ? "visible" : ""}`}>
           <span className="key-info">{this.state.showKey ? `Private: ${signer.privateKey}` : "" }</span>
-          <span className="key-info">{ this.state.showKey ? `Public: ${this.MultiformatDisplay(signer.signingKey.keyPair.publicKey)}` : "" }</span>
+          <span className="key-info">{ this.state.showKey ? `Public: ${this.MultiformatDisplay(signer._signingKey().publicKey)}` : "" }</span>
         </span>
       </span>
     );
