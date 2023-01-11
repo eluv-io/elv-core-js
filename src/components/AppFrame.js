@@ -270,7 +270,16 @@ class AppFrame extends React.Component {
         }
 
         const responder = (response) => this.Respond(response.requestId, source, response);
-        await this.props.rootStore.client.CallFromFrameMessage(event.data, responder);
+
+        if(
+          event.data.args &&
+          event.data.args.clientMode &&
+          event.data.args.clientMode === "search"
+        ) {
+          await this.props.rootStore.searchClient.CallFromFrameMessage(event.data, responder);
+        } else {
+          await this.props.rootStore.client.CallFromFrameMessage(event.data, responder);
+        }
     }
   }
 

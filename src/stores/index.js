@@ -11,6 +11,7 @@ class RootStore {
   @observable networkName;
   @observable configError = false;
   @observable client;
+  @observable searchClient;
   @observable signerSet = false;
   @observable showHeader = true;
   @observable simplePasswords = false;
@@ -57,6 +58,7 @@ class RootStore {
       if(signer) {
         this.client.SetSigner({signer});
         this.signerSet = true;
+        yield this.InitializeSearchClient(signer);
       } else {
         this.signerSet = false;
 
@@ -75,6 +77,71 @@ class RootStore {
       if(!this.accountsStore.accountsLoaded) {
         this.accountsStore.LoadAccounts();
       }
+    } catch (error) {
+      this.configError = true;
+      // eslint-disable-next-line no-console
+      console.error("Ethereum Check Failed:");
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
+  });
+
+  @action.bound
+  InitializeSearchClient = flow(function * (signer) {
+    try {
+      const {
+        contentSpaceId,
+        networkId,
+        networkName,
+        fabricURIs,
+        ethereumURIs,
+        authServiceURIs,
+        searchURIs,
+        fabricVersion,
+        configUrl
+      } = yield ElvClient.Configuration({
+        configUrl: EluvioConfiguration["config-url"]
+      });
+
+      const client = new ElvClient({
+        contentSpaceId,
+        networkId,
+        networkName,
+        fabricVersion,
+        fabricURIs,
+        ethereumURIs,
+        authServiceURIs,
+        searchURIs,
+        ethereumContractTimeout: 20,
+        noCache: false,
+        noAuth: false,
+        assumeV3: false,
+        clientMode: "search"
+      });
+
+      client.configUrl = configUrl;
+
+      this.searchClient = client;
+    } catch(error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
+
+    try {
+      if(signer) {
+        this.searchClient.SetSigner({signer});
+      } else {
+        // Add dummy account to facilitate basic interaction with contracts
+        const wallet = this.searchClient.GenerateWallet();
+        this.searchClient.SetSigner({
+          signer: wallet.AddAccountFromMnemonic({mnemonic: wallet.GenerateMnemonic()})
+        });
+      }
+
+      yield this.searchClient.CallContractMethod({
+        contractAddress: this.searchClient.contentSpaceAddress,
+        methodName: "version"
+      });
     } catch (error) {
       this.configError = true;
       // eslint-disable-next-line no-console
