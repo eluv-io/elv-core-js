@@ -281,7 +281,7 @@ class AppFrame extends React.Component {
             await this.props.rootStore.searchClient.CallFromFrameMessage(event.data, responder);
           } else if(service === "default") {
             await this.props.rootStore.client.CallFromFrameMessage(event.data, responder);
-          } else if(!["default", "search"].includes(service)) {
+          } else {
             this.Respond(requestId, source, {error: new Error(`Invalid service: ${service}`)});
           }
         } else {
