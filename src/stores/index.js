@@ -116,7 +116,7 @@ class RootStore {
         noCache: false,
         noAuth: false,
         assumeV3: false,
-        clientMode: "search"
+        service: "search"
       });
 
       client.configUrl = configUrl;
