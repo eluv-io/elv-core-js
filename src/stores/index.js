@@ -122,7 +122,7 @@ class RootStore {
       client.configUrl = configUrl;
 
       this.searchClient = client;
-    } catch(error) {
+    } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error);
     }

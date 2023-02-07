@@ -1,0 +1,758 @@
+committed_utility_level:
+  title: Committed Utility Level
+  shared_description_column: Description
+  shared_description: Tenants have the option to commit to a base purchase of content utility fees for discounted price tiers. In addition, ELVs will be set aside for the tenant as part of a token allocation program for early stakeholders. The tenant may claim these over the program's duration as described in the program agreement.
+  columns:
+    - See Service and Support
+    - Unit
+    - Monthly
+    - Annual
+  rows:
+    -
+      - Level 1
+      - month
+      - $0.00
+      - $0.00
+    -
+      - Level 2
+      - month
+      - $1,000.00
+      - $833.33
+    -
+      - Level 3
+      - month
+      - $10,000.00
+      - $8333.33
+
+blockchain_transactions:
+  title: Blockchain Transactions
+  column_sizing:
+    - 1
+    - 1
+    - 1
+    - 2
+  columns:
+    -
+    - Unit
+    - Base Price
+    - Description
+  rows:
+    -
+      - NFT Contract Creation
+      - per NFT Contract (one per Edition)
+      - $10.00
+      - ERC-721, 1155 or similar contract deployed to the Content Fabric blockchain
+    -
+      - Level 1
+    -
+      - NFT Mint
+      - per mint
+      - $1.00
+      - On-demand or batch minting of ERC-721/1155 tokens in the Content Fabric blockchain
+    -
+      - NFT Burn
+      - per burn
+      - $1.00
+      - Burning of ERC-721/1155 tokens in the Content Fabric blockchain
+    -
+      - NFT Transfer
+      - per transfer
+      - $1.00
+      - Transfer of ERC-721/1155 tokens from one owner to another, e.g. in trades or sales
+    -
+      - Redeemable Offer
+      - per redemption
+      - $1.00
+      - On-chain redeemable offer
+    -
+      - ERC-20 Mint
+      - per mint
+      - $1.00
+      - On-demand or batch minting of ERC-20 tokens in the Content Fabric blockchain
+    -
+      - ERC-20 Burn
+      - per burn
+      - $1.00
+      - Burning of ERC-20 tokens in the Content Fabric blockchain
+    -
+      - ERC-20 Transfer
+      - per transfer
+      - $1.00
+      - Transfer of ERC-20 tokens between addresses
+    -
+      - Level 2
+    -
+      - NFT Mint
+      - per mint
+      - $0.50
+      - On-demand or batch minting of ERC-721/1155 tokens in the Content Fabric blockchain
+    -
+      - NFT Burn
+      - per burn
+      - $0.50
+      - Burning of ERC-721/1155 tokens in the Content Fabric blockchain
+    -
+      - NFT Transfer
+      - per transfer
+      - $0.50
+      - Transfer of ERC-721/1155 tokens from one owner to another, e.g. in trades or sales
+    -
+      - Redeemable Offer
+      - per redemption
+      - $0.50
+      - On-chain redeemable offer
+    -
+      - ERC-20 Mint
+      - per mint
+      - $0.50
+      - On-demand or batch minting of ERC-20 tokens in the Content Fabric blockchain
+    -
+      - ERC-20 Burn
+      - per burn
+      - $0.50
+      - Burning of ERC-20 tokens in the Content Fabric blockchain
+    -
+      - ERC-20 Transfer
+      - per transfer
+      - $0.50
+      - Transfer of ERC-20 tokens between addresses
+    -
+      - Level 3
+    -
+      - NFT Mint
+      - per mint
+      - $0.10
+      - On-demand or batch minting of ERC-721/1155 tokens in the Content Fabric blockchain
+    -
+      - NFT Burn
+      - per burn
+      - $0.10
+      - Burning of ERC-721/1155 tokens in the Content Fabric blockchain
+    -
+      - NFT Transfer
+      - per transfer
+      - $0.10
+      - Transfer of ERC-721/1155 tokens from one owner to another, e.g. in trades or sales
+    -
+      - Redeemable Offer
+      - per redemption
+      - $0.10
+      - On-chain redeemable offer
+    -
+      - ERC-20 Mint
+      - per mint
+      - $0.10
+      - On-demand or batch minting of ERC-20 tokens in the Content Fabric blockchain
+    -
+      - ERC-20 Burn
+      - per burn
+      - $0.10
+      - Burning of ERC-20 tokens in the Content Fabric blockchain
+    -
+      - ERC-20 Transfer
+      - per transfer
+      - $0.10
+      - Transfer of ERC-20 tokens between addresses
+
+rental_and_operations:
+  title: Base Rental and Operations
+  column_sizing:
+    - 1
+    - 1
+    - 1
+    - 2
+  columns:
+    -
+    - Unit
+    - Base Price
+    - Description
+  rows:
+    -
+      - tenants
+      - per month
+      - $1.00
+      - Base object for each tenancy owned
+    -
+      - objects
+      - per month
+      - $0.10
+      - Total content objects owned
+    -
+      - libraries
+      - per month
+      - $0.10
+      - Total libraries owned
+    -
+      - storage
+      - per gigabyte per month
+      - $0.02
+      - Total gigabytes stored by all objects and libraries owned
+    -
+      - download **
+      - per gigabyte per month
+      - $0.01
+      - Bytes downloaded from objects owned including metadata, parts, files (but not bitcode operations)
+
+servicable_objects:
+  title: Servicable Objects
+  shared_description_column: Description
+  shared_description: Any object using advanced features to serve multiple consumable output versions such as subtitles, localized variants, captions, storyboards, localized audio tracks, custom bitcode, dynamic playlists, multi-view channels, and personalization. Can apply to objects of type Title Mezzanine, HTML Embed Apps, Live Streams/Channels, and other custom types. The count applies only to the base object.
+  columns:
+    -
+    - Tiers
+    - Base Price
+  rows:
+    -
+      - Levels 1 and 2
+    -
+      -
+      - 1 - 500
+      - $10.00
+    -
+      -
+      - 501 - 1,000
+      - $9.00
+    -
+      -
+      - 1,001 - 2,000
+      - $4.00
+    -
+      -
+      - 2,001 - 3,000
+      - $3.50
+    -
+      -
+      - 3,001 - 5,000
+      - $2.50
+    -
+      -
+      - 5,001 - 10,000
+      - $2.00
+    -
+      -
+      - 10,001+
+      - $1.00
+    -
+      - Level 3 lock-in
+    -
+      -
+      - 1 - 20,000
+      - $1.00
+    -
+      -
+      - 20,001 - 30,000
+      - $0.50
+    -
+      -
+      - 30,001 - 50,000
+      - $0.25
+    -
+      -
+      - 50,001 - 100,000
+      - $0.15
+    -
+      -
+      - 100,001+
+      - $0.10
+
+bitcode_operations:
+  title: Bitcode Operations
+  shared_name_column: " "
+  shared_description_column: Description
+  columns:
+    - tiers
+    - price
+  sections:
+    -
+      rows:
+        -
+          - Playout
+    -
+      shared_name: HD (1080p) Mezzanine
+      shared_description: Streaming video served at 1080p resolution, Live and VoD DASH or HLS CMAF-formatted HTTP Adaptive Bit Rate
+      rows:
+        -
+          - per video second >0 up to 500 hours (L1 Cap)
+          - $0.000069
+        -
+          - per video second >500 up to 2,000 hours (L2)
+          - $0.000067
+        -
+          - per video second >2,000 up to 5,000 hours (L2 Cap)
+          - $0.000061
+        -
+          - per video second >5,000 up to 10,000 hours
+          - $0.000054
+        -
+          - per video second >10,000 up to 20,000 hours
+          - $0.000046
+        -
+          - per video second >20,000 up to 50,000 hours
+          - $0.000039
+        -
+          - per video second >50,000 up to 100,000 hours
+          - $0.000031
+        -
+          - per video second >100,000 up to 200,000 hours
+          - $0.000022
+        -
+          - per video second >200,000 hours
+          - $0.000011
+    -
+      rows:
+        -
+          - Playout Add-ons
+    -
+      shared_name: HDR
+      shared_description: Add on for High Dynamic Range HDR10
+      rows:
+        -
+          - per video second >0 up to 500 hours (L1 Cap)
+          - $0.000021
+        -
+          - per video second >500 up to 2,000 hours (L2)
+          - $0.000020
+        -
+          - per video second >2,000 up to 5,000 hours (L2 Cap)
+          - $0.000018
+        -
+          - per video second >5,000 up to 10,000 hours
+          - $0.000016
+        -
+          - per video second >10,000 up to 20,000 hours
+          - $0.000014
+        -
+          - per video second >20,000 up to 50,000 hours
+          - $0.000012
+        -
+          - per video second >50,000 up to 100,000 hours
+          - $0.000009
+        -
+          - per video second >100,000 up to 200,000 hours
+          - $0.000007
+        -
+          - per video second >200,000 hours
+          - $0.000003
+    -
+      shared_name: DRM
+      shared_description: Add on for streaming video served with Digital Rights Management (Google Widevine, Apple Fairplay, or Sample AES/AES-128)
+      rows:
+        -
+          - per video second >0 up to 500 hours (L1 Cap)
+          - $0.000035
+        -
+          - per video second >500 up to 2,000 hours (L2)
+          - $0.000034
+        -
+          - per video second >2,000 up to 5,000 hours (L2 Cap)
+          - $0.000031
+        -
+          - per video second >5,000 up to 10,000 hours
+          - $0.000027
+        -
+          - per video second >10,000 up to 20,000 hours
+          - $0.000023
+        -
+          - per video second >20,000 up to 50,000 hours
+          - $0.000020
+        -
+          - per video second >50,000 up to 100,000 hours
+          - $0.000016
+        -
+          - per video second >100,000 up to 200,000 hours
+          - $0.000011
+        -
+          - per video second >200,000 hours
+          - $0.000006
+    -
+      shared_name: Audio DRM
+      shared_description: Add on for streaming audio served with Digital Rights Management
+      rows:
+        -
+          - per video second >0 up to 500 hours (L1 Cap)
+          - $0.000021
+        -
+          - per video second >500 up to 2,000 hours (L2)
+          - $0.000020
+        -
+          - per video second >2,000 up to 5,000 hours (L2 Cap)
+          - $0.000018
+        -
+          - per video second >5,000 up to 10,000 hours
+          - $0.000016
+        -
+          - per video second >10,000 up to 20,000 hours
+          - $0.000014
+        -
+          - per video second >20,000 up to 50,000 hours
+          - $0.000012
+        -
+          - per video second >50,000 up to 100,000 hours
+          - $0.000009
+        -
+          - per video second >100,000 up to 200,000 hours
+          - $0.000007
+        -
+          - per video second >200,000 hours
+          - $0.000003
+    -
+      shared_name: Text Watermark
+      shared_description: Add on for dynamic visible watermarking (text)
+      rows:
+        -
+          - per video second >0 up to 500 hours (L1 Cap)
+          - $0.000035
+        -
+          - per video second >500 up to 2,000 hours (L2)
+          - $0.000034
+        -
+          - per video second >2,000 up to 5,000 hours (L2 Cap)
+          - $0.000031
+        -
+          - per video second >5,000 up to 10,000 hours
+          - $0.000027
+        -
+          - per video second >10,000 up to 20,000 hours
+          - $0.000023
+        -
+          - per video second >20,000 up to 50,000 hours
+          - $0.000020
+        -
+          - per video second >50,000 up to 100,000 hours
+          - $0.000016
+        -
+          - per video second >100,000 up to 200,000 hours
+          - $0.000011
+        -
+          - per video second >200,000 hours
+          - $0.000006
+    -
+      shared_name: Image Watermark
+      shared_description: Add on for dynamic visible watermarking (image)
+      rows:
+        -
+          - per video second >0 up to 500 hours (L1 Cap)
+          - $0.000069
+        -
+          - per video second >500 up to 2,000 hours (L2)
+          - $0.000067
+        -
+          - per video second >2,000 up to 5,000 hours (L2 Cap)
+          - $0.000061
+        -
+          - per video second >5,000 up to 10,000 hours
+          - $0.000054
+        -
+          - per video second >10,000 up to 20,000 hours
+          - $0.000046
+        -
+          - per video second >20,000 up to 50,000 hours
+          - $0.000039
+        -
+          - per video second >50,000 up to 100,000 hours
+          - $0.000031
+        -
+          - per video second >100,000 up to 200,000 hours
+          - $0.000022
+        -
+          - per video second >200,000 hours
+          - $0.000011
+    -
+      shared_name: Clip API
+      shared_description: Add on for dynamic clip generation API Serves streaming clips from start and endpoint offsets with no pre-processing
+      rows:
+        -
+          - per video second >0 up to 500 hours (L1 Cap)
+          - $0.000014
+        -
+          - per video second >500 up to 2,000 hours (L2)
+          - $0.000013
+        -
+          - per video second >2,000 up to 5,000 hours (L2 Cap)
+          - $0.000012
+        -
+          - per video second >5,000 up to 10,000 hours
+          - $0.000011
+        -
+          - per video second >10,000 up to 20,000 hours
+          - $0.000009
+        -
+          - per video second >20,000 up to 50,000 hours
+          - $0.000008
+        -
+          - per video second >50,000 up to 100,000 hours
+          - $0.000006
+        -
+          - per video second >100,000 up to 200,000 hours
+          - $0.000004
+        -
+          - per video second >200,000 hours
+          - $0.000002
+    -
+      rows:
+        -
+          - Image | Thumbnail
+    -
+      column_sizing:
+        - 1
+        - 1
+        - 1
+        - 2
+      rows:
+        -
+          - Transformation
+          - per image
+          - $0.0004
+          - Dynamic image resizing
+        -
+          - Watermark
+          - per image
+          - $0.0004
+          - Add on for dynamic visible watermarking
+    -
+      rows:
+        -
+          - Media Ingest
+    -
+      column_sizing:
+        - 1
+        - 1
+        - 1
+        - 2
+      rows:
+        -
+          - h264 encoded mezzanine @1080p,<=10Mbps
+          - per video second
+          - $0.0011
+          - On Demand or Live Video ingest to h264 mezzanines @ 1080p. Broad support for source encodings, e.g. h264, hevc, mpeg2, dnxhd, prores
+        -
+          - h264 encoded mezzanine @3840p >10 Mbps
+          - per video second
+          - $0.0017
+          - On Demand or Live Video ingest to h264 mezzanines @ 3840p. Broad support for source encodings, e.g. h264, hevc, mpeg2, dnxhd, prores
+        -
+          - h265 encoded mezzanine >=1080p, >=10 Mbps
+          - per video second
+          - $0.0056
+          - On Demand or Live Video ingest to h265 mezzanines. Broad support for source encodings, e.g. h264, hevc, mpeg2, dnxhd, prores
+        -
+          - jpeg2000 or custom encoded mezzanine (master)
+          - per video second
+          - $0.0111
+          - Master Video ingest using JPEG2000 or custom encoding. Broad support for  source encodings, e.g. h264, hevc, mpeg2, dnxhd, prores
+        -
+          - Audio Only
+          - per audio second
+          - $0.0006
+          - Audio only ingest
+    -
+      rows:
+        -
+          - Search
+    -
+      column_sizing:
+        - 1
+        - 1
+        - 1
+        - 2
+      rows:
+        -
+          - Search Index
+          - per GB per month
+          - $15.00
+          - Dynamic search API indexed by any content object metadata or ML-labelled tags
+    -
+      rows:
+        -
+          - Tagging via Machine Learning
+    -
+      column_sizing:
+        - 1
+        - 1
+        - 1
+        - 2
+      rows:
+        -
+          - Celebrity Recognition
+          - per video second
+          - $0.002
+          -
+        -
+          - Landmark Recognition
+          - per video second
+          - $0.002
+          -
+        -
+          - OCR Text Recognition
+          - per video second
+          - $0.002
+          -
+        -
+          - Object Recognition
+          - per video second
+          - $0.002
+          -
+        -
+          - Activity Recognition
+          - per video second
+          - $0.002
+          -
+        -
+          - Shot Boundary Detection
+          - per video second
+          - $0.002
+          - Automatic detection of shot boundaries
+        -
+          - Technical Cues Detection (black, color bars, etc.)
+          - per video second
+          - $0.002
+          - Automatic detection of cues such as black, color bars, etc.
+        -
+          - Speech to Text
+          - per audio second
+          - $0.002
+          -
+        -
+          - Celebrity Recognition
+          - per image
+          - $0.001
+          - Dynamic labelling of image content using machine learning
+        -
+          - Landmark Recognition
+          - per image
+          - $0.001
+          -
+        -
+          - OCR Text Recognition
+          - per image
+          - $0.001
+          -
+        -
+          - Object Recognition
+          - per image
+          - $0.001
+          -
+
+platform_service_fee:
+  title: Platform Service Fee
+  column_sizing:
+    - 1
+    - 1
+    - 1
+    - 2
+  columns:
+    -
+    - Fee
+    - Minimum
+    - Description
+  rows:
+    -
+      - Marketplace Platform Service Fee
+      - Processor Fee + 2.5%
+      - $1 minimum
+      - "Added as a line item on top the sale price of digital goods and charged to the buyer. Includes:  Stripe, EBANX, Coinbase, Wallet Balance, Circle USDC"
+
+service_and_support:
+  title: Service and Support
+  subtitle: Eluvio strives to provide the highest quality content streaming and delivery experience and an always-available service. All platform availability/service degraded issues are resolved with continuous highest priority according to the SLAs in the Eluvio Platform Services Agreement. Streaming quality means high picture quality, streaming at the maximum currently available bandwidth of the end client, and negligible rebuffering.
+  column_sizing:
+    - 3
+    - 1
+    - 1
+    - 1
+  columns:
+    - Committed Utility Level
+    - Level 1
+    - Level 2
+    - Level 3
+  rows:
+    -
+      - 24x7 Platform Monitoring with Service Credits per Agreement
+      - \check
+      - \check
+      - \check
+    -
+      - Standard Customer Service (Email)
+      - \check
+      - \check
+      - \check
+    -
+      - Standard Customer Service (Email, Telephone)*
+      -
+      - \check
+      - \check
+    -
+      - Priority Customer Service (24x7 Email, Telephone, Slack)**
+      -
+      -
+      - \check
+    -
+      - Developer API Support (Email)
+      -
+      - \check
+      - \check
+    -
+      - Developer API Support (Slack)
+      -
+      -
+      - \check
+
+    -
+      - "*Standard Customer Service"
+
+    -
+      - Provided Monday - Friday, 8:00 am - 6:00 pm Pacific Standard Time
+      - \check
+      - \check
+      - \check
+    -
+      - Email support via support@eluv.io
+      - \check
+      - \check
+      - \check
+    -
+      - Telephone support via Google Voice
+      -
+      -
+      - \check
+
+    -
+      - "**Priority Customer Service"
+
+    -
+      - Provided 24x7x365
+      -
+      -
+      - \check
+    -
+      - Dedicated Slack channel
+      -
+      -
+      - \check
+    -
+      - Telephone support via Google Voice with Paging
+      -
+      -
+      - \check
+    -
+      - Guaranteed 2-hour initial response on customer specific trouble tickets
+      -
+      -
+      - \check
+    -
+      - Best effort same day resolution on high severity issues
+      -
+      -
+      - \check
+    -
+      - Best effort next day resolution on medium severity issues
+      -
+      -
+      - \check
+    -
+      - Priority early access to new capabilities and roadmap review
+      -
+      -
+      - \check
+
+

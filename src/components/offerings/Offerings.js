@@ -1,191 +1,81 @@
 import React from "react";
+import {ImageIcon} from "elv-components-js";
+
 import "../../static/stylesheets/offerings.scss";
 
-import OfferingsTable from "./OfferingsTable";
-import {ImageIcon} from "elv-components-js";
+import OfferingsConfig from "./offerings.yaml";
+
 import CheckIcon from "../../static/icons/Check.svg";
 
-class Offerings extends React.Component {
-  ServicePolicies() {
-    return (
-      <div className="service-container">
-        <h1>Customer Service and Support</h1>
-        <p>
-          Eluvio strives to provide the highest quality content streaming and delivery experience and an always-available service.
-          All platform availability/service degraded issues are resolved with continuous highest priority according to the SLAs in the Eluvio Platform Services Agreement.
-          Streaming quality means high picture quality, streaming at the maximum currently available bandwidth of the end client, and negligible rebuffering.
-        </p>
+const RateTableSection = ({columns, section}) => {
+  let { shared_name, shared_description, rows, column_sizing } = section;
+  const columnStyle = column_sizing ? column_sizing.map(size => `${size}fr`).join(" ") : " 1fr ".repeat(columns.length);
+  const columnCount = column_sizing ? column_sizing.reduce((acc, size) => acc + parseInt(size), 0) : columns.length;
 
-        <div className="offerings">
-          <div className="offering-row offering-row-header">
-            <div className=" offering-nocheck offerings-cell-left">
-              Technical Support & Service Policies for Tenants
-            </div>
-            <div className="offerings-cell-centered">
-              Level 1
-            </div>
-            <div className="offerings-cell-centered">
-              Level 2
-            </div>
-            <div className="offerings-cell-centered">
-              Level 3
-            </div>
+  return (
+    <div
+      style={{gridTemplateColumns: `${shared_name ? "1fr" : ""} ${columnCount}fr ${shared_description ? " 2fr" : ""}`}}
+      className="rate-table__body"
+    >
+      { shared_name ? <div className="rate-table__shared-cell rate-table__shared-cell--name">{ shared_name }</div> : null }
+      <div className="rate-table__rows">
+        {rows.map((row, index) =>
+          <div
+            key={`table-row-${index}`}
+            style={{gridTemplateColumns: columnStyle}}
+            className={`rate-table__row rate-table__row--${index % 2 === 0 ? "odd" : "even"} ${row.length === 1 ? "rate-table__row--subheader" : ""}`}
+          >
+            {row.map((value, columnIndex) =>
+              <div key={`table-row-column-${columnIndex}`} className="rate-table__cell">
+                { value === "\\check" ? <ImageIcon icon={CheckIcon} className="rate-table__checkmark" /> : value }
+              </div>
+            )}
           </div>
-          <div className="offering-row offering-row-odd">
-            <div className=" offering-detail">
-              &nbsp;&nbsp; 24x7 Platform Monitoring with Service Credits per Agreement
-            </div>
-            <div className=" offering-check">
-              <ImageIcon icon={CheckIcon} className="offering-check-icon" />
-            </div>
-            <div className=" offering-check">
-              <ImageIcon icon={CheckIcon} className="offering-check-icon" />
-            </div>
-            <div className=" offering-check">
-              <ImageIcon icon={CheckIcon} className="offering-check-icon" />
-            </div>
-          </div>
-          <div className="offering-row offering-row-even">
-            <div className=" offering-detail">
-              &nbsp;&nbsp; Standard Customer Service (Email)
-            </div>
-            <div className=" offering-check">
-              <ImageIcon icon={CheckIcon} className="offering-check-icon" />
-            </div>
-            <div className=" offering-check">
-              <ImageIcon icon={CheckIcon} className="offering-check-icon" />
-            </div>
-            <div className=" offering-check">
-              <ImageIcon icon={CheckIcon} className="offering-check-icon" />
-            </div>
-          </div>
-          <div className="offering-row offering-row-odd">
-            <div className=" offering-detail">
-              &nbsp;&nbsp; Standard Customer Service (Email, Telephone)
-            </div>
-            <div className=" offering-nocheck" />
-            <div className=" offering-check">
-              <ImageIcon icon={CheckIcon} className="offering-check-icon" />
-            </div>
-            <div className=" offering-check">
-              <ImageIcon icon={CheckIcon} className="offering-check-icon" />
-            </div>
-          </div>
-          <div className="offering-row offering-row-even">
-            <div className=" offering-detail">
-              &nbsp;&nbsp; Priority Customer Service (24x7 Email, Telephone, Slack)
-            </div>
-            <div className=" offering-nocheck" />
-            <div className=" offering-nocheck" />
-            <div className=" offering-check">
-              <ImageIcon icon={CheckIcon} className="offering-check-icon" />
-            </div>
-          </div>
-          <div className="offering-row offering-row-odd">
-            <div className=" offering-detail">
-              &nbsp;&nbsp; Developer API Support (Email)
-            </div>
-            <div className=" offering-nocheck" />
-            <div className=" offering-check">
-              <ImageIcon icon={CheckIcon} className="offering-check-icon" />
-            </div>
-            <div className=" offering-check">
-              <ImageIcon icon={CheckIcon} className="offering-check-icon" />
-            </div>
-          </div>
-          <div className="offering-row offering-row-even">
-            <div className=" offering-detail">
-              &nbsp;&nbsp; Developer API Support (Slack)
-            </div>
-            <div className=" offering-nocheck" />
-            <div className=" offering-nocheck" />
-            <div className=" offering-check">
-              <ImageIcon icon={CheckIcon} className="offering-check-icon" />
-            </div>
-          </div>
-        </div>
-
-        <div className="offerings service-offerings">
-          <div className="offering-row offering-row-section-header no-border">
-            <div className="">
-              Standard Customer Service
-            </div>
-          </div>
-          <div className="offering-row offering-row-odd">
-            <div className=" offering-detail">
-              &nbsp;&nbsp; Provided M-F 8AM-6PM Pacific
-            </div>
-          </div>
-          <div className="offering-row offering-row-even">
-            <div className=" offering-detail">
-              &nbsp;&nbsp; Email via support@eluv.io
-            </div>
-          </div>
-          <div className="offering-row offering-row-odd">
-            <div className=" offering-detail">
-              &nbsp;&nbsp; Telephone via Google Voice
-            </div>
-          </div>
-        </div>
-        <div className="offerings service-offerings">
-          <div className="offering-row offering-row-section-header no-border">
-            <div className="">
-              Priority Customer Service
-            </div>
-          </div>
-          <div className="offering-row offering-row-odd">
-            <div className=" offering-detail">
-              &nbsp;&nbsp; Provided 24x7x365
-            </div>
-          </div>
-          <div className="offering-row offering-row-even">
-            <div className=" offering-detail">
-              &nbsp;&nbsp; Dedicated slack channel
-            </div>
-          </div>
-          <div className="offering-row offering-row-odd">
-            <div className=" offering-detail">
-              &nbsp;&nbsp; Telephone via Google Voice with Paging
-            </div>
-          </div>
-          <div className="offering-row offering-row-even">
-            <div className=" offering-detail">
-              &nbsp;&nbsp; Guaranteed 2-hour initial response on customer specific trouble tickets
-            </div>
-          </div>
-          <div className="offering-row offering-row-odd">
-            <div className=" offering-detail">
-              &nbsp;&nbsp; Best effort same day resolution on high severity issues
-            </div>
-          </div>
-          <div className="offering-row offering-row-even">
-            <div className=" offering-detail">
-              &nbsp;&nbsp; Best effort next day resolution on medium severity issues
-            </div>
-          </div>
-          <div className="offering-row offering-row-odd">
-            <div className=" offering-detail">
-              &nbsp;&nbsp; Priority early access to new capabilities and roadmap review
-            </div>
-          </div>
-        </div>
+        )}
       </div>
-    );
-  }
+      { shared_description ? <div className="rate-table__shared-cell rate-table__shared-cell--description">{ shared_description }</div> : null }
+    </div>
+  );
+};
 
-  render() {
-    return (
-      <div className="offerings-container">
-        <div className="offerings-container-headers">
-          <h1>Content Fabric Utility Rates</h1>
-          <h2>Last Updated May 30, 2022</h2>
+const RateTable = ({config}) => {
+  let { title, subtitle, shared_name_column, shared_description_column, columns, column_sizing } = config;
+
+  const columnStyle = column_sizing ? column_sizing.map(size => `${size}fr`).join(" ") : " 1fr ".repeat(columns.length);
+
+  return (
+    <div className="rate-table-container">
+      <h2 className="rates__title">{ title }</h2>
+      { subtitle ? <p className="rates__subtitle">{ subtitle }</p> : null }
+      <div className="rate-table">
+        <div
+          style={{gridTemplateColumns: `${shared_name_column ? " 1fr" : ""} ${columnStyle} ${shared_description_column ? " 2fr" : ""}`}}
+          className="rate-table__row rate-table__row--header"
+        >
+          { shared_name_column ? <div className="rate-table__cell rate-table__cell--header">{ shared_name_column }</div> : null }
+          {columns.map(column =>
+            <div className="rate-table__cell rate-table__cell--header" key={`table-column-${column}`}>
+              { column }
+            </div>
+          )}
+          { shared_description_column ? <div className="rate-table__cell rate-table__cell--header">{ shared_description_column }</div> : null }
         </div>
-        <OfferingsTable />
-
-        { this.ServicePolicies() }
+        { (config.sections || [config]).map((section, sectionIndex) => <RateTableSection key={`section-${sectionIndex}`} columns={config.columns} section={section} />) }
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
+const Offerings = () => {
+  return (
+    <div className="rates">
+      <div className="rates__headers">
+        <h1 className="rates__header">Content Fabric Utility Rates</h1>
+        <div className="rates__updated">Last Updated February 7, 2023</div>
+      </div>
+      { Object.keys(OfferingsConfig).map(key => <RateTable key={`rate-table-${key}`} config={OfferingsConfig[key]} />)}
+    </div>
+  );
+};
 
 export default Offerings;
