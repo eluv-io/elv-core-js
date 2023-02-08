@@ -55,13 +55,12 @@
     min-height: 45px;
 
     &--header {
-      border-bottom: 1px solid $elv-color-lightgray;
+      background: $elv-color-lightestgray;
       font-weight: 500;
     }
 
-    &--header,
-    &--even {
-      background: $elv-color-lightestgray;
+    &:not(:last-child) {
+      border-bottom: 1px solid $elv-color-lightgray;
     }
 
     &--subheader {
@@ -91,6 +90,14 @@
     font-size: 14px;
     font-weight: 500;
     line-height: 1.4em;
+
+    &--description {
+      border-left: 1px solid $elv-color-lightgray;
+    }
+
+    &--name {
+      border-right: 1px solid $elv-color-lightgray;
+    }
   }
 
   &__checkmark {
