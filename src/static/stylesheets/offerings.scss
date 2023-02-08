@@ -1,5 +1,105 @@
 @import "~elv-components-js/src/stylesheets/styles";
 
+// sass-lint:disable class-name-format no-misspelled-properties
+
+.rates {
+  display: flex;
+  flex-direction: column;
+  gap: 75px;
+  margin: 0 auto;
+  max-width: 1400px;
+  padding: $elv-spacing-xl $elv-spacing-s;
+  width: 100%;
+
+  &__headers {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    position: relative;
+  }
+
+  &__header {
+    font-size: 32px;
+    font-weight: 500;
+  }
+
+  &__updated {
+    font-size: 12px;
+    font-weight: 700;
+    position: absolute;
+    right: 0;
+  }
+
+  &__title {
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    margin: 0 0 20px 20px;
+  }
+
+  &__subtitle {
+    font-size: 16px;
+    letter-spacing: 0.03em;
+    margin: 0 0 20px 20px;
+  }
+}
+
+.rate-table {
+  border: 1px solid $elv-color-lightgray;
+  border-radius: 5px;
+  font-size: 12px;
+  overflow: hidden;
+
+  &__row {
+    display: grid;
+    min-height: 45px;
+
+    &--header {
+      border-bottom: 1px solid $elv-color-lightgray;
+      font-weight: 500;
+    }
+
+    &--header,
+    &--even {
+      background: $elv-color-lightestgray;
+    }
+
+    &--subheader {
+      font-size: 16px;
+      font-weight: 600;
+      text-align: center;
+    }
+  }
+
+  &__body {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+
+    & + .rate-table__body {
+      border-top: 1px solid $elv-color-lightgray;
+    }
+  }
+
+  &__cell,
+  &__shared-cell {
+    align-items: center;
+    display: flex;
+    padding: 10px 20px;
+  }
+
+  &__shared-cell {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4em;
+  }
+
+  &__checkmark {
+    height: 20px;
+    margin-left: 10px;
+    width: 20px;
+  }
+}
+
 .offerings-container {
   align-items: center;
   display: flex;

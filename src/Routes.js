@@ -6,7 +6,6 @@ import AccountsFormPage from "./components/AccountForm";
 import TransferFormPage from "./components/TransferForm";
 import Offerings from "./components/offerings/Offerings";
 import Terms from "./components/terms/Terms";
-import LegacyOfferings from "./components/offerings_legacy/Offerings";
 import LegacyTerms from "./components/terms_legacy/Terms";
 import Privacy from "./components/privacy/Privacy";
 
@@ -21,7 +20,6 @@ export const AppRoutes = [
 
 export const SiteRoutes = [
   { path: "/offerings", component: Offerings },
-  { path: "/offerings-legacy", component: LegacyOfferings },
   { path: "/terms", component: Terms },
   { path: "/terms-legacy", component: LegacyTerms },
   { path: "/privacy", component: Privacy }
