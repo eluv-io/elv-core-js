@@ -299,6 +299,68 @@ bitcode_operations:
           - per video second >200,000 hours
           - $0.000011
     -
+      shared_name: 4K (3840p) Mezzanine
+      shared_description: Streaming video served at 4K 3840p resolution, Live and VoD DASH or HLS CMAF-formatted HTTP Adaptive Bit Rate
+      rows:
+        -
+          - per video second >0 up to 500 hours (L1 Cap)
+          - $0.000083
+        -
+          - per video second >500 up to 2,000 hours (L2)
+          - $0.000080
+        -
+          - per video second >2,000 up to 5,000 hours (L2 Cap)
+          - $0.000073
+        -
+          - per video second >5,000 up to 10,000 hours
+          - $0.000065
+        -
+          - per video second >10,000 up to 20,000 hours
+          - $0.000055
+        -
+          - per video second >20,000 up to 50,000 hours
+          - $0.000047
+        -
+          - per video second >50,000 up to 100,000 hours
+          - $0.000037
+        -
+          - per video second >100,000 up to 200,000 hours
+          - $0.000026
+        -
+          - per video second >200,000 hours
+          - $0.000013
+    -
+      shared_name: Audio Only
+      shared_description: Streaming audio only, multichannel 5.1 surround
+      rows:
+        -
+          - per video second >0 up to 500 hours (L1 Cap)
+          - $0.000014
+        -
+          - per video second >500 up to 2,000 hours (L2)
+          - $0.000013
+        -
+          - per video second >2,000 up to 5,000 hours (L2 Cap)
+          - $0.000012
+        -
+          - per video second >5,000 up to 10,000 hours
+          - $0.000011
+        -
+          - per video second >10,000 up to 20,000 hours
+          - $0.000009
+        -
+          - per video second >20,000 up to 50,000 hours
+          - $0.000008
+        -
+          - per video second >50,000 up to 100,000 hours
+          - $0.000006
+        -
+          - per video second >100,000 up to 200,000 hours
+          - $0.000004
+        -
+          - per video second >200,000 hours
+          - $0.000002
+    -
       rows:
         -
           - Playout Add-ons
