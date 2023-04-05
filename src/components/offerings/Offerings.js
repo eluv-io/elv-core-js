@@ -105,7 +105,7 @@ const Offerings = () => {
     <div className="rates">
       <div className="rates__headers">
         <h1 className="rates__header">Content Fabric Utility Rates</h1>
-        <div className="rates__updated">Last Updated March 21, 2023</div>
+        <div className="rates__updated">Last Updated April 1, 2023</div>
       </div>
       { Object.keys(OfferingsConfig).map(key => <RateTable key={`rate-table-${key}`} config={OfferingsConfig[key]} />)}
     </div>
