@@ -1,5 +1,5 @@
 import {configure, observable, action, flow} from "mobx";
-import {ElvClient} from "@eluvio/elv-client-js";
+import {ElvClient, ElvWalletClient} from "@eluvio/elv-client-js";
 import AccountStore from "./Accounts";
 
 // Force strict mode so mutations are only allowed within actions.
@@ -10,6 +10,7 @@ configure({
 class RootStore {
   @observable networkName;
   @observable configError = false;
+  @observable walletClient;
   @observable client;
   @observable searchClient;
   @observable signerSet = false;
@@ -31,6 +32,17 @@ class RootStore {
         configUrl: EluvioConfiguration["config-url"],
         ethereumContractTimeout: 20
       });
+
+      this.walletClient = yield ElvWalletClient.Initialize({
+        client: this.client,
+        appId: "elv-core",
+        network: EluvioConfiguration["config-url"].includes("main.955305") ? "main" : "demo",
+        mode: EluvioConfiguration["config-url"].includes("main.955305") ? "production" : "staging",
+        skipMarketplaceLoad: true,
+        storeAuthToken: false
+      });
+
+      this.client.walletClient = this.walletClient;
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error);
@@ -57,6 +69,18 @@ class RootStore {
     try {
       if(signer) {
         this.client.SetSigner({signer});
+
+        yield this.walletClient.SetAuthorization({
+          fabricToken: yield this.client.CreateFabricToken({
+            duration: 24 * 60 * 60 * 1000,
+            address: signer.address
+          }),
+          address: this.client.utils.FormatAddress(signer.address),
+          duration: 24 * 60 * 60 * 1000,
+          walletType: "Private Key",
+          walletName: "Private Key"
+        });
+
         this.signerSet = true;
         yield this.InitializeSearchClient(signer);
       } else {
@@ -161,3 +185,5 @@ const root = new RootStore();
 
 export const rootStore = root;
 export const accountsStore = rootStore.accountsStore;
+
+window.rootStore = rootStore;

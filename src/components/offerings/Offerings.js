@@ -1,5 +1,6 @@
 import React from "react";
 import {ImageIcon} from "elv-components-js";
+import ReactMarkdown from "react-markdown";
 
 import "../../static/stylesheets/offerings.scss";
 
@@ -14,51 +15,84 @@ const RateTableSection = ({columns, section}) => {
 
   return (
     <div
-      style={{gridTemplateColumns: `${shared_name ? "1fr" : ""} ${columnCount}fr ${shared_description ? " 2fr" : ""}`}}
+      style={{gridTemplateColumns: `${shared_name ? "2fr" : ""} ${columnCount}fr ${shared_description ? " 2fr" : ""}`}}
       className="rate-table__body"
     >
-      { shared_name ? <div className="rate-table__shared-cell rate-table__shared-cell--name">{ shared_name }</div> : null }
+      {
+        shared_name ?
+          <div className="rate-table__shared-cell rate-table__shared-cell--name">
+            <ReactMarkdown>
+              { shared_name }
+            </ReactMarkdown>
+          </div> : null
+      }
       <div className="rate-table__rows">
         {rows.map((row, index) =>
           <div
             key={`table-row-${index}`}
-            style={{gridTemplateColumns: columnStyle}}
+            style={{gridTemplateColumns: row.length === 1 ? "1" : columnStyle}}
             className={`rate-table__row rate-table__row--${index % 2 === 0 ? "odd" : "even"} ${row.length === 1 ? "rate-table__row--subheader" : ""}`}
           >
             {row.map((value, columnIndex) =>
               <div key={`table-row-column-${columnIndex}`} className="rate-table__cell">
-                { value === "\\check" ? <ImageIcon icon={CheckIcon} className="rate-table__checkmark" /> : value }
+                {
+                  value === "\\check" ? <ImageIcon icon={CheckIcon} className="rate-table__checkmark" /> :
+                    <ReactMarkdown>{ typeof value === "number" ? value.toFixed(2) : value }</ReactMarkdown>
+                }
               </div>
             )}
           </div>
         )}
       </div>
-      { shared_description ? <div className="rate-table__shared-cell rate-table__shared-cell--description">{ shared_description }</div> : null }
+      {
+        shared_description ?
+          <div className="rate-table__shared-cell rate-table__shared-cell--description">
+            <ReactMarkdown>
+              { shared_description }
+            </ReactMarkdown>
+          </div> : null
+      }
     </div>
   );
 };
 
 const RateTable = ({config}) => {
-  let { title, subtitle, shared_name_column, shared_description_column, columns, column_sizing } = config;
+  let { id, title, subtitle, shared_name_column, shared_description_column, columns, column_sizing } = config;
 
   const columnStyle = column_sizing ? column_sizing.map(size => `${size}fr`).join(" ") : " 1fr ".repeat(columns.length);
 
   return (
-    <div className="rate-table-container">
+    <div className="rate-table-container" id={id || ""}>
       <h2 className="rates__title">{ title }</h2>
       { subtitle ? <p className="rates__subtitle">{ subtitle }</p> : null }
       <div className="rate-table">
         <div
-          style={{gridTemplateColumns: `${shared_name_column ? " 1fr" : ""} ${columnStyle} ${shared_description_column ? " 2fr" : ""}`}}
+          style={{gridTemplateColumns: `${shared_name_column ? " 2fr" : ""} ${columnStyle} ${shared_description_column ? " 2fr" : ""}`}}
           className="rate-table__row rate-table__row--header"
         >
-          { shared_name_column ? <div className="rate-table__cell rate-table__cell--header">{ shared_name_column }</div> : null }
-          {columns.map(column =>
-            <div className="rate-table__cell rate-table__cell--header" key={`table-column-${column}`}>
-              { column }
+          {
+            shared_name_column ?
+              <div className="rate-table__cell rate-table__cell--header">
+                <ReactMarkdown>
+                  { shared_name_column }
+                </ReactMarkdown>
+              </div> : null
+          }
+          {columns.map((column, index) =>
+            <div className="rate-table__cell rate-table__cell--header" key={`table-column-${column || index}`}>
+              <ReactMarkdown>
+                { column }
+              </ReactMarkdown>
             </div>
           )}
-          { shared_description_column ? <div className="rate-table__cell rate-table__cell--header">{ shared_description_column }</div> : null }
+          {
+            shared_description_column ?
+              <div className="rate-table__cell rate-table__cell--header">
+                <ReactMarkdown>
+                  { shared_description_column }
+                </ReactMarkdown>
+              </div> : null
+          }
         </div>
         { (config.sections || [config]).map((section, sectionIndex) => <RateTableSection key={`section-${sectionIndex}`} columns={config.columns} section={section} />) }
       </div>

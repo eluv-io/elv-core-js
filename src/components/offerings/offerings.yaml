@@ -1,28 +1,284 @@
 committed_utility_level:
   title: Committed Utility Level
-  shared_description_column: Description
-  shared_description: Tenants have the option to commit to a base purchase of content utility fees for discounted price tiers. In addition, ELVs will be set aside for the tenant as part of a token allocation program for early stakeholders. The tenant may claim these over the program's duration as described in the program agreement.
+  column_sizing:
+    - 2
+    - 1
+    - 1
+    - 1
+    - 2
   columns:
     - See Service and Support
     - Unit
     - Monthly
     - Annual
+    - Description
   rows:
     -
-      - Level 1
+      -
+      -
+      -
+      -
+      - Tenants have the option to commit to a base purchase of content utility fees for discounted price tiers. In addition, ELVs will be set aside for the tenant as part of a token allocation program for early stakeholders. The tenant may claim these over the program's duration as described in the program agreement.
+    -
+      - Level 1 - Pay As you Go Self-Service
       - month
       - $0.00
       - $0.00
+      -
     -
-      - Level 2
+      - Level 2 - Professional Creator
       - month
       - $2,000.00
       - $1,666.67
+      - Includes Turnkey Web3 Content Experiences and Storefronts, **1 production digital property (Site, Event, and Marketplace object)**, $0.50 minting (NFT, ERC-20), Basic Technical Support
     -
-      - Level 3
+      - Level 3 - Creative Enterprise
       - month
       - $10,000.00
       - $8,333.33
+      - Includes Turnkey Web3 Content Experiences and Storefronts, **Unlimited digital properties (Sites, Events, and Marketplace objects)**,  $0.10 minting, 24x7 Premium Technical Support, Valet Content Ops & Dedicated API Support
+
+blockchain_content_applications:
+  title: Blockchain Content Applications (provided by Eluvio, Inc.)
+  shared_description_column: Description
+  columns:
+    -
+    - Unit
+    - Monthly
+  column_sizing:
+    - 2
+    - 1
+    - 1
+  sections:
+    -
+      shared_description: Suite of open source content management and reference applications for publishing, viewing, managing, streaming  and editing content in the Content Fabric.
+      column_sizing:
+        - 2
+        - 1
+        - 1
+      rows:
+        -
+          - All Levels
+        -
+          - Fabric Browser
+          - per month
+          - Included
+        -
+          - Asset Manager CMS
+          - per month
+          - Included
+        -
+          - Video Editor
+          - per month
+          - Included
+        -
+          - Media Ingest UI
+          - per month
+          - Included
+        -
+          - Site Sample
+          - per month
+          - Included
+        -
+          - Clipping Console
+          - per month
+          - Included
+    -
+      shared_description: Turnkey ('no code') configurable web applications for creating Web3 native content experiences, live events and drops, and digital storefonts hosted and powered by the Content Fabric.  Includes all features needed to stand up and ongoing hosting for a branded landing site; digital content storefront for video, audio, immersive and ebooks; fully integrated token gated authorization (subscription and single item), minting and digital payments (fiat and crypto); blockchain ticketing; and redeemable offers and claims. Includes the Eluvio Media Wallet for web2-web3 easy sign on, authorization, cryptographic signing, token management, and lean-back viewing with global content streaming and distribution from the Content Fabric.
+      column_sizing:
+        - 2
+        - 1
+        - 1
+      rows:
+        -
+          - Level 1 - Pay as you Go Self-Service
+        -
+          - \"Powered by Eluvio\" Web3 Content Experiences and Stores
+          - per month
+          - $1500.00
+        -
+          - \- One Branded Digital Property
+          -
+          -
+        -
+          - \- 1 Landing/Event Object
+          -
+          -
+        -
+          - \- 1 Site Object
+          -
+          -
+        -
+          - \- 1 Marketplace Object (primary and secondary trading)
+          -
+          -
+        -
+          - \- Token Authorized Content (Suscription and Single Purchase)
+          -
+          -
+        -
+          - \- Integrated Minting On Demand (NFT and ERC-20)
+          -
+          -
+        -
+          - \- Integrated Blockchain Tickets
+          -
+          -
+        -
+          - \- In-wallet "On Chain" Redeemable Offers
+          -
+          -
+        -
+          - \- Integrated Payments
+          -
+          -
+        -
+          - \- Single Click Claim & Mint URLs for Email and Ecommerce
+          -
+          -
+        -
+          - \- Media Wallet with Web 2 Open ID + Web 3 Metamask Easy Sign On
+          -
+          -
+        -
+          - \- Configurable Media Galleries - Live Streams, On Demand Streams (4K Video, Audio), Immersive AR/XR, HTML Apps, E-books
+          -
+          -
+    -
+      shared_description: Turnkey ('no code') configurable web applications for creating Web3 native content experiences, live events and drops, and digital storefonts hosted and powered by the Content Fabric.  Includes all features needed to stand up and ongoing hosting for a branded landing site; digital content storefront for video, audio, immersive and ebooks; fully integrated token gated authorization (subscription and single item), minting and digital payments (fiat and crypto); blockchain ticketing; and redeemable offers and claims. Includes the Eluvio Media Wallet for web2-web3 easy sign on, authorization, cryptographic signing, token management, and lean-back viewing with global content streaming and distribution from the Content Fabric.
+      column_sizing:
+        - 2
+        - 1
+        - 1
+      rows:
+          -
+            - Level 2 - Professional Creator
+          -
+            - \"Powered by Eluvio\" Web3 Content Experiences and Stores
+            -
+            - Included
+          -
+            - \- One Brandable Digital Property
+            -
+            -
+          -
+            - \- 1 Landing/Event Object
+            -
+            -
+          -
+            - \- 1 Site Object
+            -
+            -
+          -
+            - \- 1 Marketplace Object (primary and secondary trading)
+            -
+            -
+          -
+            - \- Token Authorized Content (Suscription and Single Purchase)
+            -
+            -
+          -
+            - \- Integrated Minting On Demand (NFT and ERC-20)
+            -
+            -
+          -
+            - \- Integrated Blockchain Tickets
+            -
+            -
+          -
+            - \- In-wallet "On Chain" Redeemable Offers
+            -
+            -
+          -
+            - \- Integrated Payments
+            -
+            -
+          -
+            - \- Single Click Claim & Mint URLs for Email and Ecommerce
+            -
+            -
+          -
+            - \- Media Wallet with Web 2 Open ID + Web 3 Metamask Easy Sign On
+            -
+            -
+          -
+            - \- Configurable Media Galleries - Live Streams, On Demand Streams (4K Video, Audio),Immersive AR/XR, HTML Apps, E-books
+            -
+            -
+    -
+      shared_description: Turnkey ('no code') configurable web applications for creating Web3 native content experiences, live events and drops, and digital storefonts hosted and powered by the Content Fabric.  Includes all features needed to stand up and ongoing hosting for a branded landing site; digital content storefront for video, audio, immersive and ebooks; fully integrated token gated authorization (subscription and single item), minting and digital payments (fiat and crypto); blockchain ticketing; and redeemable offers and claims. Includes the Eluvio Media Wallet for web2-web3 easy sign on, authorization, cryptographic signing, token management, and lean-back viewing with global content streaming and distribution from the Content Fabric.
+      column_sizing:
+        - 2
+        - 1
+        - 1
+      rows:
+        -
+          - Level 3 - Creative Enterprise
+        -
+          - \"Powered by Eluvio\" Web3 Content Experiences and Stores
+          -
+          - Included
+        -
+          - Unlimited Independently Brandable Digital Properties
+          -
+          -
+        -
+          - \- Unlimited Landing/Event Objects
+          -
+          -
+        -
+          - \- Site Objects
+          -
+          -
+        -
+          - \- Marketplace Objects (primary and secondary trading)
+          -
+          -
+        -
+          - \- Token Authorized Content (Suscription and Single Purchase)
+          -
+          -
+        -
+          - \- Integrated Minting On Demand (NFT and ERC-20)
+          -
+          -
+        -
+          - \- Integrated Blockchain Tickets
+          -
+          -
+        -
+          - \- In-wallet "On Chain" Redeemable Offers
+          -
+          -
+        -
+          - \- Integrated Payments
+          -
+          -
+        -
+          - \- Single Click Claim & Mint URLs for Email and Ecommerce
+          -
+          -
+        -
+          - \- Media Wallet with Web 2 Open ID + Web 3 Metamask Easy Sign On
+          -
+          -
+        -
+          - \- Configurable Media Galleries - Live Streams, On Demand Streams (4K Video, Audio),Immersive AR/XR, HTML Apps, E-books
+          -
+          -
+    -
+      shared_description: Dedicated technical/visual design support to fully utilize the customization APIs,features
+      column_sizing:
+        - 2
+        - 1
+        - 1
+      rows:
+        -
+          - \- Dedicated Site Customization and Visual Design Support
+          -
+          - Included
+
+
 
 blockchain_transactions:
   title: Blockchain Transactions
@@ -175,13 +431,13 @@ rental_and_operations:
     -
       - objects
       - per month
-      - $0.10
+      - $0.01
       - Total content objects owned
     -
-      - libraries
-      - per month
-      - $0.10
-      - Total libraries owned
+      - object create/update
+      - per transaction
+      - $0.01
+      - Per object create or version update transaciton
     -
       - storage
       - per gigabyte per month
@@ -193,507 +449,1469 @@ rental_and_operations:
       - $0.01
       - Bytes downloaded from objects owned including metadata, parts, files (but not bitcode operations)
 
-servicable_objects:
-  title: Servicable Objects
-  shared_description_column: Description
-  shared_description: Any object using advanced features to serve multiple consumable output versions such as subtitles, localized variants, captions, storyboards, localized audio tracks, custom bitcode, dynamic playlists, multi-view channels, and personalization. Can apply to objects of type Title Mezzanine, HTML Embed Apps, Live Streams/Channels, and other custom types. The count applies only to the base object.
-  columns:
-    -
-    - Tiers
-    - Base Price
-  rows:
-    -
-      - Levels 1 and 2
-    -
-      -
-      - 1 - 500
-      - $10.00
-    -
-      -
-      - 501 - 1,000
-      - $9.00
-    -
-      -
-      - 1,001 - 2,000
-      - $4.00
-    -
-      -
-      - 2,001 - 3,000
-      - $3.50
-    -
-      -
-      - 3,001 - 5,000
-      - $2.50
-    -
-      -
-      - 5,001 - 10,000
-      - $2.00
-    -
-      -
-      - 10,001+
-      - $1.00
-    -
-      - Level 3 lock-in
-    -
-      -
-      - 1 - 20,000
-      - $1.00
-    -
-      -
-      - 20,001 - 30,000
-      - $0.50
-    -
-      -
-      - 30,001 - 50,000
-      - $0.25
-    -
-      -
-      - 50,001 - 100,000
-      - $0.15
-    -
-      -
-      - 100,001+
-      - $0.10
 
-bitcode_operations:
-  title: Bitcode Operations
+content_transformation_and_distribution:
+  title: Content Transformation and Distribution
   shared_name_column: " "
-  shared_description_column: Description
+  shared_description_column: "Description"
   columns:
-    - tiers
-    - price
+    - Unit
+    - Per Second
+    - Per Hour
+    - Multiplier
   sections:
     -
+      column_sizing:
+        - 2
+        - 1
+        - 1
+        - 1
+        - 1
+        - 2
       rows:
         -
-          - Playout
+          - Content Ingest
+        -
+          - "**Live Streaming Ingest - Video**"
+          -
+        -
+          - "*AVC/H.264*"
+          -
+        -
+          - SD Low BW (H.264/AVC 720p < 3 Mbps)
+          - per video second
+          - $0.00017
+          - $0.60
+          - 0.20
+          - Live video ingest transcoded and published as AVC/H.264 live streaming mezzanine parts
+        -
+          - SD (H.264/AVC 720p 3 - 10 Mbps)
+          - per video second
+          - $0.00042
+          - $1.50
+          - 0.50
+          -
+        -
+          - SD High BW (H.264/AVC 720p > 10 Mbps)
+          - per video second
+          - $0.00050
+          - $1.80
+          - 0.60
+          -
+        -
+          - HD (H.264/AVC 1080p <= 10Mbps)
+          - per video second
+          - $0.00083
+          - $3.00
+          - 1.00
+          -
+        -
+          - HD High BW  (H.264/AVC 1080p > 10Mbps)
+          - per video second
+          - $0.00104
+          - $3.75
+          - 1.25
+          -
+        -
+          - UHD (H.264/AVC 3840p <= 20 Mbps)
+          - per video second
+          - $0.00167
+          - $6.00
+          - 2.00
+          -
+        -
+          - UHD High BW (H.264/AVC 3840p > 20Mbps)
+          - per video second
+          - $0.00208
+          - $7.50
+          - 2.50
+          -
+        -
+          - "*HEVC/H.265*"
+          -
+        -
+          - HD HEVC (H.265/HEVC 3840p <= 10 Mbps)
+          - per video second
+          - $0.00313
+          - $11.27
+          - 4.00
+          - Live video ingest transcoded and published as HEVC/H.265 live streaming mezzanine parts
+        -
+          - HD HEVC High BW (H.265/HEVC 3840p > 10 Mbps)
+          - per video second
+          - $0.00500
+          - $18.00
+          - 5.00
+          -
+        -
+          - HD HEVC High BW (H.265/HEVC 3840p > 10 Mbps)
+          - per video second
+          - $0.00781
+          - $28.12
+          - 6.00
+          -
+        -
+          - UHD HEVC High BW (H.265/HEVC 3840p > 20 Mbps)
+          - per video second
+          - $0.00833
+          - $29.99
+          - 7.50
+          -
+        -
+          - 60 frame per second input
+          -
+          -
+          -
+          - 1.5x Multiplier
+          -
+        -
+          - "**Live Streaming Ingest - Audio Only**"
+          -
+        -
+          - AUDIO (Stereo 2 channel <= 256 Kbps)
+          - per audio second
+          - $0.000014
+          - $0.05
+          - 1.00
+          - Live audio ingest to AAC/AC3 and published as live streaming mezzanine parts
+        -
+          - AUDIO High BW (Stereo 2 channel >= 256 Kbps)
+          - per audio second
+          - $0.000017
+          - $0.06
+          - 1.20
+          -
+        -
+          - AUDIO 5.1 (6+ multichannel, <= 512 Kbps)
+          - per audio second
+          - $0.000018
+          - $0.07
+          - 1.30
+          -
+        -
+          - AUDIO 5.1 High BW (6+ multichannel, >512 Kbps)
+          - per audio second
+          - $0.000020
+          - $0.07
+          - 1.40
+          -
+        -
+          - AUDIO Dolby Atmos Immersive
+          - per audio second
+          -
+          -
+          -
+          - Coming 2023
+        -
+          - "**Source File Ingest - Video**"
+          -
+        -
+          - "*MP4 AVC/H.264*"
+          -
+        -
+          - SD Low BW (H.264/AVC 720p < 3 Mbps)
+          - per video second
+          - included
+          - $0.00
+          -
+          - MP4 to H.264-encoded mezzanine parts
+        -
+          - SD (H.264/AVC 720p 3 - 10 Mbps)
+          - per video second
+          - included
+          - $0.00
+          -
+          -
+        -
+          - SD High BW (H.264/AVC 720p > 10 Mbps)
+          - per video second
+          - included
+          - $0.00
+          -
+          -
+        -
+          - HD (H.264/AVC 1080p <= 10Mbps)
+          - per video second
+          - included
+          - $0.00
+          -
+          -
+        -
+          - HD High BW  (H.264/AVC 1080p > 10Mbps)
+          - per video second
+          - included
+          - $0.00
+          -
+          -
+        -
+          - UHD (H.264/AVC 3840p <= 20 Mbps)
+          - per video second
+          - included
+          - $0.00
+          -
+          -
+        -
+          - UHD High BW (H.264/AVC 3840p > 20Mbps)
+          - per video second
+          - included
+          - $0.00
+          -
+          -
+        -
+          - "*MP4 HEVC/H.265*"
+          -
+        -
+          - HD HEVC (H.265/HEVC 3840p <= 10 Mbps)
+          - per video second
+          - included
+          - $0.00
+          -
+          - MP4 to H.265-encoded mezzanine parts
+        -
+          - HD HEVC High BW (H.265/HEVC 3840p > 10 Mbps)
+          - per video second
+          - included
+          - $0.00
+          -
+          -
+        -
+          - UHD HEVC (H.265/HEVC 3840p <= 20 Mbps)
+          - per video second
+          - included
+          - $0.00
+          -
+          -
+        -
+          - UHD HEVC High BW (H.265/HEVC 3840p > 20 Mbps)
+          - per video second
+          - included
+          - $0.00
+          -
+          -
+        -
+          - "*Other*"
+          -
+        -
+          - ProRes, DNXHD source
+          - per video second
+          -
+          -
+          -
+          - Master video ingest of ProRes and DNXHD masters
+        -
+          - JPEG2000 or custom source
+          - per video hour
+          -
+          -
+          -
+          - Master Video ingest using JPEG2000 or custom encoding.
+        -
+          - "**Source File Ingest - Audio Only**"
+          -
+        -
+          - AUDIO (Stereo 2 channel <= 256 Kbps)
+          - per audio second
+          - included
+          - $0.00
+          -
+          - Live audio ingest to AAC/AC3 live streaming mezzanine parts
+        -
+          - AUDIO High BW (Stereo 2 channel >= 256 Kbps)
+          - per audio second
+          - included
+          - $0.00
+          -
+          -
+        -
+          - AUDIO 5.1 (6+ multichannel, <= 512 Kbps)
+          - per audio second
+          - included
+          - $0.00
+          -
+          -
+        -
+          - AUDIO 5.1 High BW (6+ multichannel, >512 Kbps)
+          - per audio second
+          - included
+          - $0.00
+          -
+          -
+        -
+          - AUDIO Dolby Atmos Immersive
+          - per audio second
+          - included
+          - $0.00
+          -
+          - Coming 2023
+    -
+      column_sizing:
+        - 2
+        - 1
+        - 1
+        - 1
+        - 1
+        - 2
+      rows:
+        -
+          - Just-in-Time Transcoding, Playout and Global Content Distribution
+        -
+          - "*Combined transcoding, packaging and global \"CDN\" via the Content Fabric JIT protocol*"
+          -
+        -
+          - "*Idle Playout Minimum*"
+          -
+          -
+          -
+          - 5x Multiplier
+          - "5 * Volume Adjusted Playout Rate at the Mezzanine Resolution * Mezzanine Duration (Source Material Length)"
+    -
+      column_sizing:
+        - 2
+        - 1
+        - 1
+        - 1
+        - 1
+        - 2
+      rows:
+        -
+          -
+          - Unit
+          - Per Second
+          - Per Hour
+          - Multiplier
+          - Description
+        -
+          - "**Streaming Video - H.264/AVC**"
+          -
+    -
+      shared_name: SD Low BW (H.264/AVC 720p < 3 Mbps)
+      shared_description: Streaming video encoded with H.264/AVC, Live and VoD DASH or HLS CMAF-packaged, 2-second fragmented MP4 segments, HTTP Adaptive Bit Rate Distribution
+      rows:
+        -
+          - per video second >0 up to 500 hours
+          - $0.000014
+          - $0.05
+          - 0.20
+        -
+          - per video second >500 up to 2,000 hours
+          - $0.000013
+          - $0.04
+          -
+        -
+          - per video second >2,000 up to 5,000 hours
+          - $0.000012
+          - $0.04
+          -
+        -
+          - per video second >5,000 up to 10,000 hours
+          - $0.000011
+          - $0.04
+          -
+        -
+          - per video second >10,000 up to 20,000 hours
+          - $0.000009
+          - $0.03
+          -
+        -
+          - per video second >20,000 up to 50,000 hours
+          - $0.000008
+          - $0.03
+          -
+        -
+          - per video second >50,000 up to 100,000 hours
+          - $0.000006
+          - $0.02
+          -
+        -
+          - per video second >100,000 up to 200,000 hours
+          - $0.000004
+          - $0.02
+          -
+        -
+          - per video second >200,000 up to 500,000 hours
+          - $0.000003
+          - $0.01
+          -
+        -
+          - per video second >500,000 up to 1,000,000 hours
+          - $0.000003
+          - $0.01
+          -
+        -
+          - per video second > 1,000,000 hours
+          - $0.000003
+          - $0.01
+          -
+    -
+      shared_name: SD (H.264/AVC 720p 3 - 10 Mbps)
+      shared_description: Streaming video encoded with H.264/AVC, Live and VoD DASH or HLS CMAF-packaged, 2-second fragmented MP4 segments, HTTP Adaptive Bit Rate Distribution
+      rows:
+        -
+          - per video second >0 up to 500 hours
+          - $0.000035
+          - $0.13
+          - 0.50
+        -
+          - per video second >500 up to 2,000 hours
+          - $0.000034
+          - $0.12
+          -
+        -
+          - per video second >2,000 up to 5,000 hours
+          - $0.000031
+          - $0.11
+          -
+        -
+          - per video second >5,000 up to 10,000 hours
+          - $0.000027
+          - $0.10
+          -
+        -
+          - per video second >10,000 up to 20,000 hours
+          - $0.000023
+          - $0.08
+          -
+        -
+          - per video second >20,000 up to 50,000 hours
+          - $0.000020
+          - $0.07
+          -
+        -
+          - per video second >50,000 up to 100,000 hours
+          - $0.000016
+          - $0.06
+          -
+        -
+          - per video second >100,000 up to 200,000 hours
+          - $0.000011
+          - $0.04
+          -
+        -
+          - per video second >200,000 up to 500,000 hours
+          - $0.000006
+          - $0.02
+          -
+        -
+          - per video second >500,000 up to 1,000,000 hours
+          - $0.000003
+          - $0.01
+          -
+        -
+          - per video second > 1,000,000 hours
+          - $0.000003
+          - $0.01
+          -
+    -
+      shared_name: SD High BW (H.264/AVC 720p > 10 Mbps)
+      shared_description: Streaming video encoded with H.264/AVC, Live and VoD DASH or HLS CMAF-packaged, 2-second fragmented MP4 segments, HTTP Adaptive Bit Rate Distribution
+      rows:
+        -
+          - per video second >0 up to 500 hours
+          - $0.000042
+          - $0.15
+          - 0.60
+        -
+          - per video second >500 up to 2,000 hours
+          - $0.000040
+          - $0.15
+          -
+        -
+          - per video second >2,000 up to 5,000 hours
+          - $0.000037
+          - $0.13
+          -
+        -
+          - per video second >5,000 up to 10,000 hours
+          - $0.000033
+          - $0.12
+          -
+        -
+          - per video second >10,000 up to 20,000 hours
+          - $0.000028
+          - $0.10
+          -
+        -
+          - per video second >20,000 up to 50,000 hours
+          - $0.000024
+          - $0.08
+          -
+        -
+          - per video second >50,000 up to 100,000 hours
+          - $0.000019
+          - $0.07
+          -
+        -
+          - per video second >100,000 up to 200,000 hours
+          - $0.000013
+          - $0.05
+          -
+        -
+          - per video second >200,000 up to 500,000 hours
+          - $0.000007
+          - $0.02
+          -
+        -
+          - per video second >500,000 up to 1,000,000 hours
+          - $0.000003
+          - $0.01
+          -
+        -
+          - per video second > 1,000,000 hours
+          - $0.000003
+          - $0.01
+          -
     -
       shared_name: HD (1080p) Mezzanine
-      shared_description: Streaming video served at 1080p resolution, Live and VoD DASH or HLS CMAF-formatted HTTP Adaptive Bit Rate
+      shared_description: Streaming video encoded with H.264/AVC, Live and VoD DASH or HLS CMAF-packaged, 2-second fragmented MP4 segments, HTTP Adaptive Bit Rate Distribution
       rows:
         -
-          - per video second >0 up to 500 hours (L1 Cap)
-          - $0.000069
+          - per video second >0 up to 500 hours
+          - $0.0000694
+          - $0.25
+          - 1.00
         -
-          - per video second >500 up to 2,000 hours (L2)
-          - $0.000067
+          - per video second >500 up to 2,000 hours
+          - $0.0000674
+          - $0.24
+          -
         -
-          - per video second >2,000 up to 5,000 hours (L2 Cap)
-          - $0.000061
+          - per video second >2,000 up to 5,000 hours
+          - $0.0000614
+          - $0.22
+          -
         -
           - per video second >5,000 up to 10,000 hours
-          - $0.000054
+          - $0.0000543
+          - $0.20
+          -
         -
           - per video second >10,000 up to 20,000 hours
-          - $0.000046
+          - $0.0000463
+          - $0.17
+          -
         -
           - per video second >20,000 up to 50,000 hours
-          - $0.000039
+          - $0.0000393
+          - $0.14
+          -
         -
           - per video second >50,000 up to 100,000 hours
-          - $0.000031
+          - $0.0000312
+          - $0.11
+          -
         -
           - per video second >100,000 up to 200,000 hours
-          - $0.000022
+          - $0.0000221
+          - $0.08
+          -
         -
-          - per video second >200,000 hours
-          - $0.000011
+          - per video second >200,000 up to 500,000 hours
+          - $0.0000111
+          - $0.04
+          -
+        -
+          - per video second >500,000 up to 1,000,000 hours
+          - $0.0000056
+          - $0.02
+          -
+        -
+          - per video second > 1,000,000 hours
+          - $0.0000056
+          - $0.02
+          -
     -
-      shared_name: 4K (3840p) Mezzanine
-      shared_description: Streaming video served at 4K 3840p resolution, Live and VoD DASH or HLS CMAF-formatted HTTP Adaptive Bit Rate
+      shared_name: HD High BW (H.264/AVC 1080p > 10Mbps)
+      shared_description: Streaming video encoded with H.264/AVC, Live and VoD DASH or HLS CMAF-packaged, 2-second fragmented MP4 segments, HTTP Adaptive Bit Rate Distribution
       rows:
         -
-          - per video second >0 up to 500 hours (L1 Cap)
-          - $0.000083
+          - per video second >0 up to 500 hours
+          - $0.000087
+          - $0.31
+          - 1.25
         -
-          - per video second >500 up to 2,000 hours (L2)
-          - $0.000080
+          - per video second >500 up to 2,000 hours
+          - $0.000084
+          - $0.30
+          -
         -
-          - per video second >2,000 up to 5,000 hours (L2 Cap)
-          - $0.000073
+          - per video second >2,000 up to 5,000 hours
+          - $0.000077
+          - $0.28
+          -
         -
           - per video second >5,000 up to 10,000 hours
-          - $0.000065
+          - $0.000068
+          - $0.24
+          -
         -
           - per video second >10,000 up to 20,000 hours
+          - $0.000058
+          - $0.21
+          -
+        -
+          - per video second >20,000 up to 50,000 hours
+          - $0.000049
+          - $0.18
+          -
+        -
+          - per video second >50,000 up to 100,000 hours
+          - $0.000039
+          - $0.14
+          -
+        -
+          - per video second >100,000 up to 200,000 hours
+          - $0.000028
+          - $0.10
+          -
+        -
+          - per video second >200,000 up to 500,000 hours
+          - $0.000014
+          - $0.05
+          -
+        -
+          - per video second >500,000 up to 1,000,000 hours
+          - $0.000007
+          - $0.03
+          -
+        -
+          - per video second > 1,000,000 hours
+          - $0.000007
+          - $0.03
+          -
+    -
+      shared_name: UHD (H.264/AVC 3840p <= 20 Mbps)
+      shared_description: Streaming video encoded with H.264/AVC, Live and VoD DASH or HLS CMAF-packaged, 2-second fragmented MP4 segments, HTTP Adaptive Bit Rate Distribution
+      rows:
+        -
+          - per video second >0 up to 500 hours
+          - $0.000139
+          - $0.50
+          - 2.00
+        -
+          - per video second >500 up to 2,000 hours
+          - $0.000135
+          - $0.49
+          -
+        -
+          - per video second >2,000 up to 5,000 hours
+          - $0.000123
+          - $0.44
+          -
+        -
+          - per video second >5,000 up to 10,000 hours
+          - $0.000109
+          - $0.39
+          -
+        -
+          - per video second >10,000 up to 20,000 hours
+          - $0.000093
+          - $0.33
+          -
+        -
+          - per video second >20,000 up to 50,000 hours
+          - $0.000079
+          - $0.28
+          -
+        -
+          - per video second >50,000 up to 100,000 hours
+          - $0.000062
+          - $0.22
+          -
+        -
+          - per video second >100,000 up to 200,000 hours
+          - $0.000044
+          - $0.16
+          -
+        -
+          - per video second >200,000 up to 500,000 hours
+          - $0.000022
+          - $0.08
+          -
+        -
+          - per video second >500,000 up to 1,000,000 hours
+          - $0.000011
+          - $0.04
+          -
+        -
+          - per video second > 1,000,000 hours
+          - $0.000011
+          - $0.04
+          -
+    -
+      shared_name: UHD High BW (H.264/AVC 3840p > 20Mbps)
+      shared_description: Streaming video encoded with H.264/AVC, Live and VoD DASH or HLS CMAF-packaged, 2-second fragmented MP4 segments, HTTP Adaptive Bit Rate Distribution
+      rows:
+        -
+          - per video second >0 up to 500 hours
+          - $0.000174
+          - $0.63
+          - 2.50
+        -
+          - per video second >500 up to 2,000 hours
+          - $0.000169
+          - $0.61
+          -
+        -
+          - per video second >2,000 up to 5,000 hours
+          - $0.000153
+          - $0.55
+          -
+        -
+          - per video second >5,000 up to 10,000 hours
+          - $0.000136
+          - $0.49
+          -
+        -
+          - per video second >10,000 up to 20,000 hours
+          - $0.000116
+          - $0.42
+          -
+        -
+          - per video second >20,000 up to 50,000 hours
+          - $0.000098
+          - $0.35
+          -
+        -
+          - per video second >50,000 up to 100,000 hours
+          - $0.000078
+          - $0.28
+          -
+        -
+          - per video second >100,000 up to 200,000 hours
           - $0.000055
+          - $0.20
+          -
         -
-          - per video second >20,000 up to 50,000 hours
-          - $0.000047
+          - per video second >200,000 up to 500,000 hours
+          - $0.000028
+          - $0.10
+          -
         -
-          - per video second >50,000 up to 100,000 hours
-          - $0.000037
-        -
-          - per video second >100,000 up to 200,000 hours
-          - $0.000026
-        -
-          - per video second >200,000 hours
-          - $0.000013
-    -
-      shared_name: Audio Only
-      shared_description: Streaming audio only, multichannel 5.1 surround
-      rows:
-        -
-          - per video second >0 up to 500 hours (L1 Cap)
+          - per video second >500,000 up to 1,000,000 hours
           - $0.000014
+          - $0.05
+          -
         -
-          - per video second >500 up to 2,000 hours (L2)
-          - $0.000013
-        -
-          - per video second >2,000 up to 5,000 hours (L2 Cap)
-          - $0.000012
-        -
-          - per video second >5,000 up to 10,000 hours
-          - $0.000011
-        -
-          - per video second >10,000 up to 20,000 hours
-          - $0.000009
-        -
-          - per video second >20,000 up to 50,000 hours
-          - $0.000008
-        -
-          - per video second >50,000 up to 100,000 hours
-          - $0.000006
-        -
-          - per video second >100,000 up to 200,000 hours
-          - $0.000004
-        -
-          - per video second >200,000 hours
-          - $0.000002
-    -
-      rows:
-        -
-          - Playout Add-ons
-    -
-      shared_name: HDR
-      shared_description: Add on for High Dynamic Range HDR10
-      rows:
-        -
-          - per video second >0 up to 500 hours (L1 Cap)
-          - $0.000021
-        -
-          - per video second >500 up to 2,000 hours (L2)
-          - $0.000020
-        -
-          - per video second >2,000 up to 5,000 hours (L2 Cap)
-          - $0.000018
-        -
-          - per video second >5,000 up to 10,000 hours
-          - $0.000016
-        -
-          - per video second >10,000 up to 20,000 hours
+          - per video second > 1,000,000 hours
           - $0.000014
-        -
-          - per video second >20,000 up to 50,000 hours
-          - $0.000012
-        -
-          - per video second >50,000 up to 100,000 hours
-          - $0.000009
-        -
-          - per video second >100,000 up to 200,000 hours
-          - $0.000007
-        -
-          - per video second >200,000 hours
-          - $0.000003
-    -
-      shared_name: DRM
-      shared_description: Add on for streaming video served with Digital Rights Management (Google Widevine, Apple Fairplay, or Sample AES/AES-128)
-      rows:
-        -
-          - per video second >0 up to 500 hours (L1 Cap)
-          - $0.000035
-        -
-          - per video second >500 up to 2,000 hours (L2)
-          - $0.000034
-        -
-          - per video second >2,000 up to 5,000 hours (L2 Cap)
-          - $0.000031
-        -
-          - per video second >5,000 up to 10,000 hours
-          - $0.000027
-        -
-          - per video second >10,000 up to 20,000 hours
-          - $0.000023
-        -
-          - per video second >20,000 up to 50,000 hours
-          - $0.000020
-        -
-          - per video second >50,000 up to 100,000 hours
-          - $0.000016
-        -
-          - per video second >100,000 up to 200,000 hours
-          - $0.000011
-        -
-          - per video second >200,000 hours
-          - $0.000006
-    -
-      shared_name: Audio DRM
-      shared_description: Add on for streaming audio served with Digital Rights Management
-      rows:
-        -
-          - per video second >0 up to 500 hours (L1 Cap)
-          - $0.000021
-        -
-          - per video second >500 up to 2,000 hours (L2)
-          - $0.000020
-        -
-          - per video second >2,000 up to 5,000 hours (L2 Cap)
-          - $0.000018
-        -
-          - per video second >5,000 up to 10,000 hours
-          - $0.000016
-        -
-          - per video second >10,000 up to 20,000 hours
-          - $0.000014
-        -
-          - per video second >20,000 up to 50,000 hours
-          - $0.000012
-        -
-          - per video second >50,000 up to 100,000 hours
-          - $0.000009
-        -
-          - per video second >100,000 up to 200,000 hours
-          - $0.000007
-        -
-          - per video second >200,000 hours
-          - $0.000003
-    -
-      shared_name: Text Watermark
-      shared_description: Add on for dynamic visible watermarking (text)
-      rows:
-        -
-          - per video second >0 up to 500 hours (L1 Cap)
-          - $0.000035
-        -
-          - per video second >500 up to 2,000 hours (L2)
-          - $0.000034
-        -
-          - per video second >2,000 up to 5,000 hours (L2 Cap)
-          - $0.000031
-        -
-          - per video second >5,000 up to 10,000 hours
-          - $0.000027
-        -
-          - per video second >10,000 up to 20,000 hours
-          - $0.000023
-        -
-          - per video second >20,000 up to 50,000 hours
-          - $0.000020
-        -
-          - per video second >50,000 up to 100,000 hours
-          - $0.000016
-        -
-          - per video second >100,000 up to 200,000 hours
-          - $0.000011
-        -
-          - per video second >200,000 hours
-          - $0.000006
-    -
-      shared_name: Image Watermark
-      shared_description: Add on for dynamic visible watermarking (image)
-      rows:
-        -
-          - per video second >0 up to 500 hours (L1 Cap)
-          - $0.000069
-        -
-          - per video second >500 up to 2,000 hours (L2)
-          - $0.000067
-        -
-          - per video second >2,000 up to 5,000 hours (L2 Cap)
-          - $0.000061
-        -
-          - per video second >5,000 up to 10,000 hours
-          - $0.000054
-        -
-          - per video second >10,000 up to 20,000 hours
-          - $0.000046
-        -
-          - per video second >20,000 up to 50,000 hours
-          - $0.000039
-        -
-          - per video second >50,000 up to 100,000 hours
-          - $0.000031
-        -
-          - per video second >100,000 up to 200,000 hours
-          - $0.000022
-        -
-          - per video second >200,000 hours
-          - $0.000011
-    -
-      shared_name: Clip API
-      shared_description: Add on for dynamic clip generation API Serves streaming clips from start and endpoint offsets with no pre-processing
-      rows:
-        -
-          - per video second >0 up to 500 hours (L1 Cap)
-          - $0.000014
-        -
-          - per video second >500 up to 2,000 hours (L2)
-          - $0.000013
-        -
-          - per video second >2,000 up to 5,000 hours (L2 Cap)
-          - $0.000012
-        -
-          - per video second >5,000 up to 10,000 hours
-          - $0.000011
-        -
-          - per video second >10,000 up to 20,000 hours
-          - $0.000009
-        -
-          - per video second >20,000 up to 50,000 hours
-          - $0.000008
-        -
-          - per video second >50,000 up to 100,000 hours
-          - $0.000006
-        -
-          - per video second >100,000 up to 200,000 hours
-          - $0.000004
-        -
-          - per video second >200,000 hours
-          - $0.000002
-    -
-      rows:
-        -
-          - Image | Thumbnail
+          - $0.05
+          -
     -
       column_sizing:
+        - 2
+        - 1
         - 1
         - 1
         - 1
         - 2
       rows:
+        -
+          - "**Streaming Video - H.265/HEVC**"
+          -
+    -
+      shared_name: HD HEVC (H.265/HEVC 3840p <= 10 Mbps)
+      shared_description: Streaming video encoded with H.265/HEVC, Live and VoD DASH or HLS CMAF-packaged, 2-second fragmented MP4 segments, HTTP Adaptive Bit Rate
+      rows:
+        -
+          - per video second >0 up to 500 hours
+          - $0.000278
+          - $1.00
+          - 4.00
+        -
+          - per video second >500 up to 2,000 hours
+          - $0.000270
+          - $0.97
+          -
+        -
+          - per video second >2,000 up to 5,000 hours
+          - $0.000246
+          - $0.88
+          -
+        -
+          - per video second >5,000 up to 10,000 hours
+          - $0.000217
+          - $0.78
+          -
+        -
+          - per video second >10,000 up to 20,000 hours
+          - $0.000185
+          - $0.67
+          -
+        -
+          - per video second >20,000 up to 50,000 hours
+          - $0.000157
+          - $0.57
+          -
+        -
+          - per video second >50,000 up to 100,000 hours
+          - $0.000125
+          - $0.45
+          -
+        -
+          - per video second >100,000 up to 200,000 hours
+          - $0.000089
+          - $0.32
+          -
+        -
+          - per video second >200,000 up to 500,000 hours
+          - $0.000044
+          - $0.16
+          -
+        -
+          - per video second >500,000 up to 1,000,000 hours
+          - $0.000023
+          - $0.08
+          -
+        -
+          - per video second > 1,000,000 hours
+          - $0.000023
+          - $0.08
+          -
+    -
+      shared_name: HD HEVC High BW (H.265/HEVC 3840p > 10 Mbps)
+      shared_description: Streaming video encoded with H.265/HEVC, Live and VoD DASH or HLS CMAF-packaged, 2-second fragmented MP4 segments, HTTP Adaptive Bit Rate
+      rows:
+        -
+          - per video second >0 up to 500 hours
+          - $0.000347
+          - $1.25
+          - 5.0
+        -
+          - per video second >500 up to 2,000 hours
+          - $0.000337
+          - $1.21
+          -
+        -
+          - per video second >2,000 up to 5,000 hours
+          - $0.000307
+          - $1.11
+          -
+        -
+          - per video second >5,000 up to 10,000 hours
+          - $0.000272
+          - $0.98
+          -
+        -
+          - per video second >10,000 up to 20,000 hours
+          - $0.000231
+          - $0.83
+          -
+        -
+          - per video second >20,000 up to 50,000 hours
+          - $0.000196
+          - $0.71
+          -
+        -
+          - per video second >50,000 up to 100,000 hours
+          - $0.000156
+          - $0.56
+          -
+        -
+          - per video second >100,000 up to 200,000 hours
+          - $0.000111
+          - $0.40
+          -
+        -
+          - per video second >200,000 up to 500,000 hours
+          - $0.000055
+          - $0.20
+          -
+        -
+          - per video second >500,000 up to 1,000,000 hours
+          - $0.000028
+          - $0.10
+          -
+        -
+          - per video second > 1,000,000 hours
+          - $0.000028
+          - $0.10
+          -
+    -
+      shared_name: UHD HEVC (H.265/HEVC 3840p <= 20 Mbps)
+      shared_description: Streaming video encoded with H.265/HEVC, Live and VoD DASH or HLS CMAF-packaged, 2-second fragmented MP4 segments, HTTP Adaptive Bit Rate
+      rows:
+        -
+          - per video second >0 up to 500 hours
+          - $0.000417
+          - $1.50
+          - 6.00
+        -
+          - per video second >500 up to 2,000 hours
+          - $0.000405
+          - $1.46
+          -
+        -
+          - per video second >2,000 up to 5,000 hours
+          - $0.000368
+          - $1.33
+          -
+        -
+          - per video second >5,000 up to 10,000 hours
+          - $0.000326
+          - $1.17
+          -
+        -
+          - per video second >10,000 up to 20,000 hours
+          - $0.000278
+          - $1.00
+          -
+        -
+          - per video second >20,000 up to 50,000 hours
+          - $0.000236
+          - $0.85
+          -
+        -
+          - per video second >50,000 up to 100,000 hours
+          - $0.000187
+          - $0.67
+          -
+        -
+          - per video second >100,000 up to 200,000 hours
+          - $0.000133
+          - $0.48
+          -
+        -
+          - per video second >200,000 up to 500,000 hours
+          - $0.000066
+          - $0.24
+          -
+        -
+          - per video second >500,000 up to 1,000,000 hours
+          - $0.000034
+          - $0.12
+          -
+        -
+          - per video second > 1,000,000 hours
+          - $0.000034
+          - $0.12
+          -
+    -
+      shared_name: UHD HEVC High BW (H.265/HEVC 3840p > 20 Mbps)
+      shared_description: Streaming video encoded with H.265/HEVC, Live and VoD DASH or HLS CMAF-packaged, 2-second fragmented MP4 segments, HTTP Adaptive Bit Rate
+      rows:
+        -
+          - per video second >0 up to 500 hours
+          - $0.000486
+          - $1.75
+          - 7.00
+        -
+          - per video second >500 up to 2,000 hours
+          - $0.000472
+          - $1.70
+          -
+        -
+          - per video second >2,000 up to 5,000 hours
+          - $0.000430
+          - $1.55
+          -
+        -
+          - per video second >5,000 up to 10,000 hours
+          - $0.000380
+          - $1.37
+          -
+        -
+          - per video second >10,000 up to 20,000 hours
+          - $0.000324
+          - $0.000324
+          -
+        -
+          - per video second >20,000 up to 50,000 hours
+          - $0.000275
+          - $0.99
+          -
+        -
+          - per video second >50,000 up to 100,000 hours
+          - $0.000218
+          - $0.79
+          -
+        -
+          - per video second >100,000 up to 200,000 hours
+          - $0.000155
+          - $0.56
+          -
+        -
+          - per video second >200,000 up to 500,000 hours
+          - $0.000077
+          - $0.28
+          -
+        -
+          - per video second >500,000 up to 1,000,000 hours
+          - $0.000039
+          - $0.14
+          -
+        -
+          - per video second > 1,000,000 hours
+          - $0.000039
+          - $0.14
+          -
+    -
+      column_sizing:
+        - 2
+        - 1
+        - 1
+        - 1
+        - 1
+        - 2
+      rows:
+        -
+          - "**Streaming Audio - AAC/AC3**"
+          -
+    -
+      shared_name: AUDIO (Stereo 2 channel <= 256 Kbps)
+      shared_description: Streaming audio encoded with AAC/AC3, CMAF-packaged, 2 second segments, HTTP adaptive bit rate distribution
+      rows:
+        -
+          - per video second >0 up to 500 hours
+          - $0.000014
+          - $0.05
+          - 1.00
+        -
+          - per video second >500 up to 2,000 hours
+          - $0.000013
+          - $0.05
+          -
+        -
+          - per video second >2,000 up to 5,000 hours
+          - $0.000012
+          - $0.04
+          -
+        -
+          - per video second >5,000 up to 10,000 hours
+          - $0.000011
+          - $0.04
+          -
+        -
+          - per video second >10,000 up to 20,000 hours
+          - $0.000009
+          - $0.03
+          -
+        -
+          - per video second >20,000 up to 50,000 hours
+          - $0.000008
+          - $0.03
+          -
+        -
+          - per video second >50,000 up to 100,000 hours
+          - $0.000006
+          - $0.02
+          -
+        -
+          - per video second >100,000 up to 200,000 hours
+          - $0.000004
+          - $0.02
+          -
+        -
+          - per video second >200,000 up to 500,000 hours
+          - $0.000003
+          - $0.01
+          -
+        -
+          - per video second >500,000 up to 1,000,000 hours
+          - $0.000003
+          - $0.01
+          -
+        -
+          - per video second > 1,000,000 hours
+          - $0.000003
+          - $0.01
+          -
+    -
+      shared_name: AUDIO High BW (Stereo 2 channel >= 256 Kbps)
+      shared_description: Streaming audio encoded with AAC/AC3, CMAF-packaged, 2 second segments, HTTP adaptive bit rate distribution
+      rows:
+        -
+          - per video second >0 up to 500 hours
+          - $0.000017
+          - $0.06
+          - 1.20
+        -
+          - per video second >500 up to 2,000 hours
+          - $0.000016
+          - $0.06
+          -
+        -
+          - per video second >2,000 up to 5,000 hours
+          - $0.000015
+          - $0.05
+          -
+        -
+          - per video second >5,000 up to 10,000 hours
+          - $0.000013
+          - $0.05
+          -
+        -
+          - per video second >10,000 up to 20,000 hours
+          - $0.000011
+          - $0.04
+          -
+        -
+          - per video second >20,000 up to 50,000 hours
+          - $0.000009
+          - $0.03
+          -
+        -
+          - per video second >50,000 up to 100,000 hours
+          - $0.000007
+          - $0.03
+          -
+        -
+          - per video second >100,000 up to 200,000 hours
+          - $0.000005
+          - $0.02
+          -
+        -
+          - per video second >200,000 up to 500,000 hours
+          - $0.000003
+          - $0.01
+          -
+        -
+          - per video second >500,000 up to 1,000,000 hours
+          - $0.000003
+          - $0.01
+          -
+        -
+          - per video second > 1,000,000 hours
+          - $0.000003
+          - $0.01
+          -
+    -
+      shared_name: AUDIO 5.1 (6+ multichannel, <= 512 Kbps)
+      shared_description: Streaming audio encoded with AAC/AC3, CMAF-packaged, 2 second segments, HTTP adaptive bit rate distribution
+      rows:
+        -
+          - per video second >0 up to 500 hours
+          - $0.000018
+          - $0.07
+          - 1.30
+        -
+          - per video second >500 up to 2,000 hours
+          - $0.000018
+          - $0.06
+          -
+        -
+          - per video second >2,000 up to 5,000 hours
+          - $0.000016
+          - $0.06
+          -
+        -
+          - per video second >5,000 up to 10,000 hours
+          - $0.000014
+          - $0.05
+          -
+        -
+          - per video second >10,000 up to 20,000 hours
+          - $0.000012
+          - $0.04
+          -
+        -
+          - per video second >20,000 up to 50,000 hours
+          - $0.000010
+          - $0.04
+          -
+        -
+          - per video second >50,000 up to 100,000 hours
+          - $0.000008
+          - $0.03
+          -
+        -
+          - per video second >100,000 up to 200,000 hours
+          - $0.000006
+          - $0.02
+          -
+        -
+          - per video second >200,000 up to 500,000 hours
+          - $0.000004
+          - $0.01
+          -
+        -
+          - per video second >500,000 up to 1,000,000 hours
+          - $0.000004
+          - $0.01
+          -
+        -
+          - per video second > 1,000,000 hours
+          - $0.000003
+          - $0.01
+          -
+    -
+      shared_name: AUDIO 5.1 High BW (6+ multichannel, >512 Kbps)
+      shared_description: Streaming audio encoded with AAC/AC3, CMAF-packaged, 2 second segments, HTTP adaptive bit rate distribution
+      rows:
+        -
+          - per video second >0 up to 500 hours
+          - $0.000019
+          - $0.07
+          - 1.40
+        -
+          - per video second >500 up to 2,000 hours
+          - $0.000019
+          - $0.07
+          -
+        -
+          - per video second >2,000 up to 5,000 hours
+          - $0.000017
+          - $0.06
+          -
+        -
+          - per video second >5,000 up to 10,000 hours
+          - $0.000015
+          - $0.05
+          -
+        -
+          - per video second >10,000 up to 20,000 hours
+          - $0.000013
+          - $0.05
+          -
+        -
+          - per video second >20,000 up to 50,000 hours
+          - $0.000011
+          - $0.04
+          -
+        -
+          - per video second >50,000 up to 100,000 hours
+          - $0.000009
+          - $0.03
+          -
+        -
+          - per video second >100,000 up to 200,000 hours
+          - $0.000006
+          - $0.02
+          -
+        -
+          - per video second >200,000 up to 500,000 hours
+          - $0.000004
+          - $0.01
+          -
+        -
+          - per video second >500,000 up to 1,000,000 hours
+          - $0.000004
+          - $0.01
+          -
+        -
+          - per video second > 1,000,000 hours
+          - $0.000004
+          - $0.01
+          -
+    -
+      shared_name: AUDIO Dolby Atmos Immersive
+      shared_description: Coming 2023
+      rows:
+        -
+          -
+          -
+          -
+          -
+    -
+      column_sizing:
+        - 2
+        - 1
+        - 1
+        - 1
+        - 1
+        - 2
+      rows:
+        -
+          - "**Playout Add-Ons**"
+          - Unit
+          -
+          -
+          - Multiplier
+          -
+        -
+          -
+          -
+          -
+          -
+          -
+          - "Total Add On Fee = For all Add-On Features, the sum of ( Volume Adjusted Unit Price Per Resolution * Content Duration Using Add On  * Add On Multiplier )"
+        -
+          - HDR
+          - per video second
+          -
+          -
+          - 0.3
+          - Add on for High Dynamic Range HDR10
+        -
+          - DRM
+          - per video second
+          -
+          -
+          - 0.50
+          - Add on for streaming video served with Digital Rights Management (Google Widevine, Apple Fairplay, or Sample AES/AES-128)
+        -
+          - Audio DRM
+          - per video second
+          -
+          -
+          - 0.50
+          - Add on for streaming audio or audio served with Digital Rights Management
+        -
+          - Text Watermark
+          - per video second
+          -
+          -
+          - 0.50
+          - Add on for dynamic visible watermarking (text)
+        -
+          - Image Watermark
+          - per video second
+          -
+          -
+          - 1.00
+          - Add on for dynamic visible watermarking (image)
+        -
+          - Forensic (Nagra) Watermark
+          - per video second
+          -
+          -
+          - 3.00
+          - Add on for forensic watermark in streaming, unique per wallet/client session, Nagra A/B mark
+        -
+          - Dynamic Clipping API
+          - per video second
+          -
+          -
+          - 0.20
+          - Add on for dynamic clip generation API Serves streaming clips from start and endpoint offsets with no pre-processing
+        -
+          - Dynamic Multiview Channel
+          - length of objects
+          -
+          -
+          - 0.20
+          - Add on for dynamic multi-view (up to 8 views) simultaneously synthesizable on-demand client request
+        -
+          - Dynamic Personalized Bitcode
+          - length of objects
+          -
+          -
+          - 0.20
+          - Add on for dynamic channel content synthesized on-demand, e.g. personalized content / ads
+        -
+          - "**Image Operations**"
+          -
         -
           - Transformation
-          - per image
-          - $0.0004
-          - Dynamic image resizing
+          - per image per operation per MB (min 1 MB)
+          - $0.0002
+          -
+          -
+          - Dynamic Image Resizing
         -
           - Watermark
-          - per image
-          - $0.0004
-          - Add on for dynamic visible watermarking
+          - per operation per MB (min 1 MB)
+          - $0.0002
+          -
+          -
+          - Per frame visible watermark
+        -
+          - Storyboard / Thumbnail
+          - per operation per MB (min 1 MB)
+          - $0.0002
+          -
+          -
+          - Per thumbnail generated
+
+
+advanced_content_services:
+  title: Advanced Content Services
+  column_sizing:
+    - 3
+    - 2
+    - 1
+    - 3
+  columns:
     -
-      rows:
-        -
-          - Media Ingest
+    - Unit
+    - Price
+    - Description
+  rows:
     -
-      column_sizing:
-        - 1
-        - 1
-        - 1
-        - 2
-      rows:
-        -
-          - h264 encoded mezzanine @1080p,<=10Mbps
-          - per video second
-          - $0.0011
-          - On Demand or Live Video ingest to h264 mezzanines @ 1080p. Broad support for source encodings, e.g. h264, hevc, mpeg2, dnxhd, prores
-        -
-          - h264 encoded mezzanine @3840p >10 Mbps
-          - per video second
-          - $0.0017
-          - On Demand or Live Video ingest to h264 mezzanines @ 3840p. Broad support for source encodings, e.g. h264, hevc, mpeg2, dnxhd, prores
-        -
-          - h265 encoded mezzanine >=1080p, >=10 Mbps
-          - per video second
-          - $0.0056
-          - On Demand or Live Video ingest to h265 mezzanines. Broad support for source encodings, e.g. h264, hevc, mpeg2, dnxhd, prores
-        -
-          - jpeg2000 or custom encoded mezzanine (master)
-          - per video second
-          - $0.0111
-          - Master Video ingest using JPEG2000 or custom encoding. Broad support for  source encodings, e.g. h264, hevc, mpeg2, dnxhd, prores
-        -
-          - Audio Only
-          - per audio second
-          - $0.0006
-          - Audio only ingest
+      - "**Search**"
+      -
     -
-      rows:
-        -
-          - Search
+      - Search Index Update
+      - per index update per MB of index (min 1 MB)
+      - $0.001
+      - "Update of search index for content object metadata or ML-labelled tags: object, timecode, frame level index"
     -
-      column_sizing:
-        - 1
-        - 1
-        - 1
-        - 2
-      rows:
-        -
-          - Search Index
-          - per GB per month
-          - $15.00
-          - Dynamic search API indexed by any content object metadata or ML-labelled tags
+      - Search Query
+      - per 1000 queries per MB of index (min 1MB)
+      - $0.001
+      - Queries to the search API
     -
-      rows:
-        -
-          - Tagging via Machine Learning
+      - "**AI/ML Content Tagging & Understanding**"
+      -
+      -
+      - "*Dynamic labelling of video, audio, and image content using machine learning native in-fabric models identify and tag contents of content object video, text and audio at frame and segment level*"
     -
-      column_sizing:
-        - 1
-        - 1
-        - 1
-        - 2
-      rows:
-        -
-          - Celebrity Recognition
-          - per video second
-          - $0.002
-          -
-        -
-          - Landmark Recognition
-          - per video second
-          - $0.002
-          -
-        -
-          - OCR Text Recognition
-          - per video second
-          - $0.002
-          -
-        -
-          - Object Recognition
-          - per video second
-          - $0.002
-          -
-        -
-          - Activity Recognition
-          - per video second
-          - $0.002
-          -
-        -
-          - Shot Boundary Detection
-          - per video second
-          - $0.002
-          - Automatic detection of shot boundaries
-        -
-          - Technical Cues Detection (black, color bars, etc.)
-          - per video second
-          - $0.002
-          - Automatic detection of cues such as black, color bars, etc.
-        -
-          - Speech to Text
-          - per audio second
-          - $0.002
-          -
-        -
-          - Celebrity Recognition
-          - per image
-          - $0.001
-          - Dynamic labelling of image content using machine learning
-        -
-          - Landmark Recognition
-          - per image
-          - $0.001
-          -
-        -
-          - OCR Text Recognition
-          - per image
-          - $0.001
-          -
-        -
-          - Object Recognition
-          - per image
-          - $0.001
-          -
+      - Celebrity Recognition
+      - per video second
+      - $0.002
+      -
+    -
+      - Landmark Recognition
+      - per video second
+      - $0.002
+      -
+    -
+      - OCR Text Recognition
+      - per video second
+      - $0.002
+      -
+    -
+      - Object Recognition
+      - per video second
+      - $0.002
+      -
+    -
+      - Activity Recognition
+      - per video second
+      - $0.002
+      -
+    -
+      - Shot Boundary Detection
+      - per video second
+      - $0.002
+      - Automatic detection of shot boundaries
+    -
+      - Technical Cues Detection (black, color bars, etc.)
+      - per video second
+      - $0.002
+      - Automatic detection of cues such as black, color bars, etc.
+    -
+      - Speech to Text
+      - per video second
+      - $0.002
+      -
+    -
+      - Celebrity Recognition
+      - per image
+      - $0.001
+      - Dynamic labelling of image content using machine learning
+    -
+      - Landmark Recognition
+      - per image
+      - $0.001
+      -
+    -
+      - OCR Text Recognition
+      - per image
+      - $0.001
+      -
+    -
+      - Object Recognition
+      - per image
+      - $0.001
+      -
+    -
+      - "**Workflow Automation**"
+      -
+    -
+      - Elv-o Workflow Automation
+      - per execution
+      - $1.00
+      - Automatic workflow execution for scalable batch transcoding, etc.
 
 platform_service_fee:
   title: Platform Service Fee
@@ -709,10 +1927,10 @@ platform_service_fee:
     - Description
   rows:
     -
-      - Marketplace Platform Service Fee
+      - Marketplace Platform Service Fee (to Buyer)
       - Processor Fee + 2.5%
       - $1 minimum
-      - "Added as a line item on top the sale price of digital goods and charged to the buyer. Includes:  Stripe, EBANX, Coinbase, Wallet Balance, Circle USDC"
+      - "Added as a line item on top the sale price of digital goods and charged to the buyer. Includes: Stripe, EBANX, Coinbase, Wallet Balance, Circle USDC"
 
 service_and_support:
   title: Service and Support
