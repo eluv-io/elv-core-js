@@ -113,7 +113,7 @@ blockchain_content_applications:
           -
           -
         -
-          - \- Token Authorized Content (Suscription and Single Purchase)
+          - \- Token Authorized Content (subscription and single purchase)
           -
           -
         -
@@ -174,7 +174,7 @@ blockchain_content_applications:
             -
             -
           -
-            - \- Token Authorized Content (Suscription and Single Purchase)
+            - \- Token Authorized Content (subscription and single purchase)
             -
             -
           -
@@ -235,7 +235,7 @@ blockchain_content_applications:
           -
           -
         -
-          - \- Token Authorized Content (Suscription and Single Purchase)
+          - \- Token Authorized Content (subscription and single purchase)
           -
           -
         -
@@ -694,15 +694,15 @@ content_transformation_and_distribution:
         -
           - ProRes, DNXHD source
           - per video second
-          -
-          -
+          - $0.0017
+          - $6.12
           -
           - Master video ingest of ProRes and DNXHD masters
         -
           - JPEG2000 or custom source
           - per video hour
-          -
-          -
+          - $0.0111
+          - $40.00
           -
           - Master Video ingest using JPEG2000 or custom encoding.
         -
@@ -1957,7 +1957,7 @@ service_and_support:
       - \check
       - \check
     -
-      - Standard Customer Service (Email, Telephone)*
+      - Standard Customer Service (Priority Email, Telephone)*
       -
       - \check
       - \check
