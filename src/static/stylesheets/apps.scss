@@ -3,49 +3,56 @@
 .apps {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  gap: 30px;
+  justify-content: center;
+  padding-top: 50px;
+  width: 100%;
+}
+
+.apps-box {
+  border: 1px solid $elv-color-mediumgray;
+  border-radius: 25px;
+  padding: 30px 20px;
+
+  h2 {
+    color: $elv-color-darkgray;
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  &__apps {
+    display: flex;
+    gap: 20px;
+  }
 }
 
 .app-selection {
   display: flex;
   flex-direction: column;
-  height: 250px;
+  height: max-content;
   justify-content: center;
   margin: $elv-spacing-xs;
-  width: 250px;
-
-  &:hover {
-    background: $elv-color-lightergray;
-    border: 1px solid $elv-color-lightgray;
-  }
+  opacity: 0.8;
+  transition: opacity 0.25s ease;
+  width: 175px;
 
   .app-logo {
-    $image-size: 125px;
-    @include elv-cropped-image($image-size, $image-size, 0, $image-size, $image-size);
-
-    .-elv-cropped-icon {
-      &::after {
-        box-shadow: none;
-      }
-
-      svg {
-        &.-elv-icon {
-          border-radius: 50%;
-          box-shadow: 0 0 12px -5px $elv-color-darkgray inset;
-          padding: $elv-spacing-xs;
-          stroke: $elv-color-lightblue;
-          stroke-opacity: 0.7;
-          stroke-width: 0.5px;
-        }
-      }
-    }
+    height: auto;
+    margin: 0 auto;
+    width: 70%;
   }
 
   h4 {
     font-size: $elv-font-xl;
-    font-weight: 300;
+    font-weight: 400;
     margin: $elv-spacing-m 0;
     text-align: center;
+  }
+
+  &:hover {
+    opacity: 1;
   }
 }
 

@@ -57,7 +57,7 @@ class Navigation extends React.Component {
       return (
         <div className="nav-container">
           <nav>
-            <NavLink exact={true} activeClassName="active" to="/apps">Apps</NavLink>
+            <NavLink exact={true} activeClassName="active" to="/apps">Apps & Tools</NavLink>
             <NavLink activeClassName="active" to="/profile">Profile</NavLink>
             <NavLink activeClassName="active" to="/accounts">Accounts</NavLink>
             <NavLink exact={true} activeClassName="active" to="/transfer">Transfer</NavLink>
