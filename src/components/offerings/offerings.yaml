@@ -18,7 +18,7 @@ committed_utility_level:
       -
       -
       -
-      - Tenants have the option to commit to a base purchase of content utility fees for discounted price tiers. In addition, ELVs will be set aside for the tenant as part of a token allocation program for early stakeholders. The tenant may claim these over the program's duration as described in the program agreement.
+      - Tenants have the option to commit to a base purchase of content utility fees for discounted price tiers. In addition, tenants can register for a utility token set aside program for early stakeholders
     -
       - Level 1 - Pay As you Go Self-Service
       - month
@@ -72,7 +72,7 @@ blockchain_content_applications:
           - per month
           - Included
         -
-          - Media Ingest UI
+          - Media Ingest App
           - per month
           - Included
         -
@@ -558,7 +558,7 @@ content_transformation_and_distribution:
           - 7.50
           -
         -
-          - 60 frame per second input
+          - 50+ frame per second input
           -
           -
           -
@@ -961,7 +961,7 @@ content_transformation_and_distribution:
           - $0.01
           -
     -
-      shared_name: HD (1080p) Mezzanine
+      shared_name: HD (H.264/AVC 720p <= 10 Mbps)
       shared_description: Streaming video encoded with H.264/AVC, Live and VoD DASH or HLS CMAF-packaged, 2-second fragmented MP4 segments, HTTP Adaptive Bit Rate Distribution
       rows:
         -
