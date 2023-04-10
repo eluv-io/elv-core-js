@@ -4,6 +4,7 @@ import LoginModal from "./components/LoginModal";
 import {inject, observer} from "mobx-react";
 import {LoadingElement} from "elv-components-js";
 import {AppRoutes} from "./Routes";
+import {matchPath} from "react-router";
 
 @inject("accountsStore")
 @inject("rootStore")
@@ -20,13 +21,18 @@ class EnforceLogin extends React.PureComponent {
   render() {
     const currentAccount = this.props.accountsStore.currentAccount;
 
+    const matchApp = matchPath(this.props.location.pathname, {
+      path: "/apps/:app",
+    });
     const loginPaths = AppRoutes
       .map(({path}) => "/" + path.split("/")[1])
-      .filter(p => p !== "/accounts");
+      .filter(p => p !== "/accounts" && p !== "/apps");
 
-    const accountRequired =
-      !!(this.props.location.pathname &&
-      loginPaths.find(path => this.props.location.pathname.startsWith(path)));
+    const accountRequired = !!(
+      this.props.location.pathname &&
+      loginPaths.find(path => this.props.location.pathname.startsWith(path)) ||
+      (this.props.location.pathname.startsWith("/apps") && matchApp && matchApp.params)
+    );
 
     if(!accountRequired) {
       return this.props.children;
