@@ -10,7 +10,6 @@ import LegacyTerms from "./components/terms_legacy/Terms";
 import Privacy from "./components/privacy/Privacy";
 
 export const AppRoutes = [
-  { path: "/apps", component: AppsPage },
   { path: "/apps/:app", component: AppFramePage },
   { path: "/profile", component: ProfilePage },
   { path: "/accounts", component: AccountsPage },
@@ -19,6 +18,7 @@ export const AppRoutes = [
 ];
 
 export const SiteRoutes = [
+  { path: "/apps", component: AppsPage },
   { path: "/offerings", component: Offerings },
   { path: "/terms", component: Terms },
   { path: "/terms-legacy", component: LegacyTerms },
