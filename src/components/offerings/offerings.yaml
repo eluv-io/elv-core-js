@@ -527,34 +527,34 @@ content_transformation_and_distribution:
           - 2.50
           -
         -
-          - "*HEVC/H.265*"
+          - "*H.265/HEVC*"
           -
         -
           - HD HEVC (H.265/HEVC 3840p <= 10 Mbps)
           - per video second
           - $0.00313
-          - $11.27
+          - $12.00
           - 4.00
-          - Live video ingest transcoded and published as HEVC/H.265 live streaming mezzanine parts
+          - Live video ingest transcoded and published as H.265/HEVC live streaming mezzanine parts
         -
           - HD HEVC High BW (H.265/HEVC 3840p > 10 Mbps)
           - per video second
           - $0.00500
-          - $18.00
+          - $15.00
           - 5.00
           -
         -
-          - HD HEVC High BW (H.265/HEVC 3840p > 10 Mbps)
+          - UHD (H.264/AVC 3840p <= 20 Mbps)
           - per video second
           - $0.00781
-          - $28.12
+          - $18.00
           - 6.00
           -
         -
           - UHD HEVC High BW (H.265/HEVC 3840p > 20 Mbps)
           - per video second
           - $0.00833
-          - $29.99
+          - $22.50
           - 7.50
           -
         -
@@ -658,7 +658,7 @@ content_transformation_and_distribution:
           -
           -
         -
-          - "*MP4 HEVC/H.265*"
+          - "*MP4 H.265/HEVC*"
           -
         -
           - HD HEVC (H.265/HEVC 3840p <= 10 Mbps)
@@ -700,7 +700,7 @@ content_transformation_and_distribution:
           - Master video ingest of ProRes and DNXHD masters
         -
           - JPEG2000 or custom source
-          - per video hour
+          - per video second
           - $0.0111
           - $40.00
           -
@@ -714,7 +714,7 @@ content_transformation_and_distribution:
           - included
           - $0.00
           -
-          - Live audio ingest to AAC/AC3 live streaming mezzanine parts
+          - Master audio ingest to AAC/AC3 live streaming mezzanine parts
         -
           - AUDIO High BW (Stereo 2 channel >= 256 Kbps)
           - per audio second
