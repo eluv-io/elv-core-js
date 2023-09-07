@@ -5,12 +5,13 @@ import GenericAppLogo from "../static/icons/App.svg";
 import {Action, ImageIcon} from "elv-components-js";
 import UrlJoin from "url-join";
 
-import FabricBrowserIcon from "../static/images/FabricBrowser.png";
-import VideoEditorIcon from "../static/images/VideoEditor.png";
-import SiteSampleIcon from "../static/images/site-sample.svg";
-import StreamSampleIcon from "../static/images/stream-sample.svg";
-import StudioIcon from "../static/images/Studio.png";
-import ClipSearchIcon from "../static/images/clip-search.svg";
+import FabricBrowserIcon from "../static/images/app_icons/FabricBrowser.png";
+import VideoEditorIcon from "../static/images/app_icons/Video Editor.png";
+import SiteSampleIcon from "../static/images/app_icons/site-sample.svg";
+import StreamSampleIcon from "../static/images/app_icons/stream-sample.svg";
+import StudioIcon from "../static/images/app_icons/Media Ingest.png";
+import ClipSearchIcon from "../static/images/app_icons/clip-search.svg";
+import LiveStreamManagerIcon from "../static/images/app_icons/Livestream Manager.png";
 
 const icons = {
   "Fabric Browser": FabricBrowserIcon,
@@ -18,10 +19,11 @@ const icons = {
   "Site Sample": SiteSampleIcon,
   "Stream Sample": StreamSampleIcon,
   "Media Ingest": StudioIcon,
-  "Clip Search": ClipSearchIcon
+  "Clip Search": ClipSearchIcon,
+  "Livestream Manager": LiveStreamManagerIcon
 };
 
-const appNames = ["Fabric Browser", "Media Ingest", "Video Editor"];
+const appNames = ["Fabric Browser", "Media Ingest", "Video Editor", "Livestream Manager"];
 
 class Apps extends React.PureComponent {
   App(name) {
