@@ -44,7 +44,7 @@ module.exports = {
       inject: "body",
       cache: false,
       filename: "index.html",
-      favicon: "node_modules/elv-components-js/src/icons/favicon.png"
+      favicon: Path.join(__dirname, "src", "static", "icons", "favicon.png")
     }),
   ],
   module: {
