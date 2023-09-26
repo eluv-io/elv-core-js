@@ -30,7 +30,7 @@ class Profile extends React.Component {
       newName: "",
       updating: false,
       showKey: false,
-      newTenantId: toJS(props.accountsStore.currentAccount.tenantId) || ""
+      newTenantContractIdId: toJS(props.accountsStore.currentAccount.tenantContractId) || ""
     };
 
     this.HandleProfileImageChange = this.HandleProfileImageChange.bind(this);
@@ -95,9 +95,9 @@ class Profile extends React.Component {
   SetCurrentTenant = async (override) => {
     const message = override ?
       "Are you sure you want to override the current tenant?" :
-      `Are you sure you want to set the tenant ID to ${this.state.newTenantId}?`;
+      `Are you sure you want to set the tenant ID to ${this.state.newTenantContractIdId}?`;
     const Override = async () => {
-      await this.props.accountsStore.SetCurrentTenant({id: this.state.newTenantId});
+      await this.props.accountsStore.SetTenantContractId({id: this.state.newTenantContractIdId});
     };
 
     await Confirm({
@@ -106,13 +106,13 @@ class Profile extends React.Component {
     });
   }
 
-  CurrentTenant = (tenantId) => {
+  CurrentTenant = (tenantContractId) => {
     return (
       <div className="info-section">
-        <h4>Current Tenant</h4>
+        <h4>Tenant Information</h4>
         <h5 className="subheader">Set the tenant ID to be used for billing. Your changes will override any tenant that is currently set. A tenant must be associated with your user account in order to create any libraries.</h5>
-        <input className="set-current-tenant-input" type="text" onChange={event => this.setState({newTenantId: event.target.value})} value={this.state.newTenantId} />
-        <Action className="set-current-tenant-button secondary" onClick={() => this.SetCurrentTenant(!!tenantId)} disabled={!this.state.newTenantId}>{`${tenantId ? "Override" : "Set"} Current Tenant`}</Action>
+        <input className="set-current-tenant-input" type="text" onChange={event => this.setState({newTenantContractIdId: event.target.value})} value={this.state.newTenantContractIdId} />
+        <Action className="set-current-tenant-button secondary" onClick={() => this.SetCurrentTenant(!!tenantContractId)} disabled={!this.state.newTenantContractIdId}>{`${tenantContractId ? "Override" : "Set"} Current Tenant`}</Action>
       </div>
     );
   }
@@ -279,7 +279,7 @@ class Profile extends React.Component {
     const account = this.props.accountsStore.currentAccount;
     const collectedTags = this.CollectedTags(account.metadata.collected_data);
     const permissions = this.Permissions(account.metadata);
-    const currentTenant = this.CurrentTenant(account.metadata.tenantId);
+    const currentTenant = this.CurrentTenant(account.metadata.tenantContractId);
 
     return (
       <div className="page-content">
@@ -297,13 +297,13 @@ class Profile extends React.Component {
               </div>
               { this.PrivateAndPublicKeys(account.signer) }
             </div>
+            { currentTenant }
             <div className="info-section">
               <h4>Profile Information</h4>
               <div className="indented">
                 <TraversableJson json={account.metadata} />
               </div>
             </div>
-            { currentTenant }
             { permissions }
             { collectedTags }
           </div>

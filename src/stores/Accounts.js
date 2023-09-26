@@ -143,11 +143,12 @@ class AccountStore {
   }
 
   @action.bound
-  SetTenantId = flow(function * ({id}) {
+  SetTenantContractId = flow(function * ({id}) {
     id = id.trim();
 
-    yield this.rootStore.client.userProfileClient.SetTenantId({id});
-    this.accounts[this.currentAccountAddress].tenantId = yield this.rootStore.client.userProfileClient.TenantId();
+    yield this.rootStore.client.userProfileClient.SetTenantContractId({tenantContractId: id});
+    this.accounts[this.currentAccountAddress].tenantContractId = yield this.rootStore.client.userProfileClient.TenantContractId();
+    yield this.UserMetadata();
   });
 
   @action.bound
@@ -175,7 +176,7 @@ class AccountStore {
       );
 
       if(signer && this.accounts[address].balance > 0.1) {
-        this.accounts[address].tenantId = yield this.rootStore.client.userProfileClient.TenantId();
+        this.accounts[address].tenantContractId = yield this.rootStore.client.userProfileClient.TenantContractId();
         this.UserMetadata();
       }
     } catch (error) {
@@ -313,11 +314,6 @@ class AccountStore {
     yield this.rootStore.client.userProfileClient.DeleteUserMetadata({metadataSubtree});
 
     yield this.UserMetadata();
-  });
-
-  @action.bound
-  SetCurrentTenant = flow(function * ({id}) {
-    yield this.rootStore.client.userProfileClient.SetTenantId({id});
   });
 
   @action.bound

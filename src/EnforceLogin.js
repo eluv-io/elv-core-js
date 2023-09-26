@@ -63,14 +63,14 @@ class EnforceLogin extends React.PureComponent {
       );
     // Temporarily disabled
     // eslint-disable-next-line no-constant-condition
-    } else if(false && !currentAccount.tenantId) {
+    } else if(false && !currentAccount.tenantContractId) {
       return (
         <LoginModal
           key="tenant-id-prompt"
           legend={"This account is not associated with a tenant. Please enter your tenant ID to proceed."}
           prompt={true}
-          fields={[{name: "tenantId", label: "Tenant ID", placeholder: "iten..."}]}
-          Submit={async ({tenantId}) => await this.props.accountsStore.SetTenantId({id: tenantId})}
+          fields={[{name: "tenantContractId", label: "Tenant Contract ID", placeholder: "iten..."}]}
+          Submit={async ({tenantContractId}) => await this.props.accountsStore.SetTenantContractId({id: tenantContractId})}
         />
       );
     } else {
