@@ -110,7 +110,7 @@ class Profile extends React.Component {
     return (
       <div className="info-section">
         <h4>Tenant Information</h4>
-        <h5 className="subheader">Set the tenant ID to be used for billing. Your changes will override any tenant that is currently set. A tenant must be associated with your user account in order to create any libraries.</h5>
+        <h5 className="subheader">Please set the tenant ID to be used for your Content Fabric usage. A tenant ID must be associated with your user address in order to access Fabric services. If you don't know your tenant ID please consult your tenant admin.</h5>
         <input className="set-current-tenant-input" type="text" onChange={event => this.setState({newTenantContractIdId: event.target.value})} value={this.state.newTenantContractIdId} />
         <Action className="set-current-tenant-button secondary" onClick={() => this.SetCurrentTenant(!!tenantContractId)} disabled={!this.state.newTenantContractIdId}>{`${tenantContractId ? "Override" : "Set"} Current Tenant`}</Action>
       </div>
