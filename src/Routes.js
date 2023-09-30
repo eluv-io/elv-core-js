@@ -8,6 +8,7 @@ import Offerings from "./components/offerings/Offerings";
 import Terms from "./components/terms/Terms";
 import LegacyTerms from "./components/terms_legacy/Terms";
 import Privacy from "./components/privacy/Privacy";
+import Onboard from "./components/onboarding/Onboard";
 
 export const AppRoutes = [
   { path: "/apps/:app", component: AppFramePage },
@@ -22,5 +23,6 @@ export const SiteRoutes = [
   { path: "/offerings", component: Offerings },
   { path: "/terms", component: Terms },
   { path: "/terms-legacy", component: LegacyTerms },
-  { path: "/privacy", component: Privacy }
+  { path: "/privacy", component: Privacy },
+  { path: "/onboard", component: Onboard }
 ];
