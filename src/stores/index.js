@@ -1,5 +1,5 @@
 import {configure, observable, action, flow} from "mobx";
-import {ElvClient, ElvWalletClient} from "@eluvio/elv-client-js";
+import {ElvClient, ElvWalletClient, Utils} from "@eluvio/elv-client-js";
 import AccountStore from "./Accounts";
 
 // Force strict mode so mutations are only allowed within actions.
@@ -16,6 +16,7 @@ class RootStore {
   @observable signerSet = false;
   @observable showHeader = true;
   @observable simplePasswords = false;
+  @observable utils = Utils;
 
   constructor() {
     this.accountsStore = new AccountStore(this);

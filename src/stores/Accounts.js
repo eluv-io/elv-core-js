@@ -1,5 +1,7 @@
 import {action, computed, flow, observable} from "mobx";
 import {Buffer} from "buffer";
+import UrlJoin from "url-join";
+import {ElvClient} from "@eluvio/elv-client-js";
 
 class AccountStore {
   @observable accounts = {};
@@ -191,7 +193,16 @@ class AccountStore {
   });
 
   @action.bound
-  AddAccount = flow(function * ({privateKey, encryptedPrivateKey, mnemonic, password, passwordConfirmation}) {
+  AddAccount = flow(function * ({
+    privateKey,
+    encryptedPrivateKey,
+    mnemonic,
+    password,
+    passwordConfirmation,
+    name,
+    faucetToken,
+    tenantId
+  }) {
     if(password !== passwordConfirmation) {
       throw Error("Password and confirmation do not match");
     }
@@ -237,7 +248,32 @@ class AccountStore {
       encryptedPrivateKey
     };
 
+    if(faucetToken) {
+      // TODO: Implement faucet
+      const fundedClient = yield ElvClient.FromConfigurationUrl({configUrl: EluvioConfiguration["config-url"]});
+      const fundedSigner = wallet.AddAccount({privateKey: "0x89eb99fe9ce236af2b6e1db964320534ef6634127ecdeb816f6e4c72bc72bcec"});
+
+      fundedClient.SetSigner({signer: fundedSigner});
+      yield fundedClient.SendFunds({
+        recipient: address,
+        ether: 1
+      });
+    }
+
     yield this.SetCurrentAccount({signer});
+
+    if(name) {
+      yield this.ReplaceUserMetadata({
+        metadataSubtree: UrlJoin("public", "name"),
+        metadata: name
+      });
+    }
+
+    if(tenantId) {
+      yield this.SetTenantContractId({
+        id: tenantId
+      });
+    }
 
     this.SaveAccounts();
   });

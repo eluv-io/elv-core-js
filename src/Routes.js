@@ -6,6 +6,8 @@ import AccountsFormPage from "./components/AccountForm";
 import TransferFormPage from "./components/TransferForm";
 import Offerings from "./components/offerings/Offerings";
 
+import Onboard from "./components/onboarding/Onboard";
+
 export const AppRoutes = [
   { path: "/apps/:app", component: AppFramePage },
   { path: "/profile", component: ProfilePage },
@@ -16,5 +18,6 @@ export const AppRoutes = [
 
 export const SiteRoutes = [
   { path: "/apps", component: AppsPage },
-  { path: "/offerings", component: Offerings }
+  { path: "/offerings", component: Offerings },
+  { path: "/onboard", component: Onboard }
 ];
