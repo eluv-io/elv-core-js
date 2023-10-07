@@ -1,6 +1,6 @@
 import React from "react";
 import {Form} from "elv-components-js";
-import {Redirect} from "react-router";
+import {Navigate, Redirect} from "react-router";
 import {inject, observer} from "mobx-react";
 
 @inject("accountsStore")
@@ -71,7 +71,7 @@ class TransferForm extends React.Component {
 
   render() {
     if(this.state.completed) {
-      return <Redirect to="/accounts" />;
+      return <Navigate to="/accounts" />;
     }
 
     return (

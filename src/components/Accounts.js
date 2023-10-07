@@ -1,99 +1,60 @@
 import "../static/stylesheets/accounts.scss";
 
-import React from "react";
-import {inject, observer} from "mobx-react";
-import {Action, Balance, Confirm, CroppedIcon, IconButton, ImageIcon, LoadingElement} from "elv-components-js";
+import React, {useState} from "react";
+import {observer} from "mobx-react";
+import {Balance, Confirm, CroppedIcon, IconButton, ImageIcon, LoadingElement} from "elv-components-js";
 import LoginModal from "./LoginModal";
+import {accountsStore} from "../stores";
+import {Utils} from "@eluvio/elv-client-js";
+import {Button, Group} from "@mantine/core";
 
 import LockedIcon from "../static/icons/Locked.svg";
 import UnlockedIcon from "../static/icons/Unlocked.svg";
 import DefaultAccountImage from "../static/icons/User.svg";
 import RemoveAccountIcon from "../static/icons/X.svg";
+import {Link} from "react-router-dom";
 
-@inject("accountsStore")
-@observer
-class Accounts extends React.Component {
-  constructor(props) {
-    super(props);
+const Account = observer(({address}) => {
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
-    this.state = {
-      showLoginModal: false,
-      selectedAddress: ""
-    };
+  const account = accountsStore.accounts[address];
 
-    this.UnlockAccount = this.UnlockAccount.bind(this);
-    this.LockAccount = this.LockAccount.bind(this);
-  }
+  const isCurrentAccount = Utils.EqualAddress(accountsStore.currentAccountAddress, account.address);
+  const accountLocked = !account.signer;
 
-  async SelectAccount(address) {
-    if(this.props.accountsStore.accounts[address].signer) {
-      await this.props.accountsStore.UnlockAccount({address});
-      return;
-    }
-
-    this.setState({
-      showLoginModal: true,
-      selectedAddress: address
-    });
-  }
-
-  async UnlockAccount({password}) {
-    await this.props.accountsStore.UnlockAccount({address: this.state.selectedAddress, password});
-  }
-
-  LockAccount(address) {
-    this.props.accountsStore.LockAccount({address});
-  }
-
-  RemoveAccount(address) {
-    Confirm({
-      message: "Are you sure you want to remove this account?",
-      onConfirm: () => this.props.accountsStore.RemoveAccount(address)
-    });
-  }
-
-  LoginModal() {
-    if(!this.state.showLoginModal) { return; }
-
-    return (
-      <LoginModal
-        key="password-prompt"
-        legend={"Enter your password to unlock this account"}
-        address={this.state.selectedAddress}
-        fields={[{name: "password", label: "Password", type: "password"}]}
-        Submit={this.UnlockAccount}
-        Close={() => this.setState({showLoginModal: false})}
-      />
+  let selectAccountButton;
+  if(!isCurrentAccount || accountLocked) {
+    selectAccountButton = (
+      <Button
+        miw={125}
+        fz="xs"
+        onClick={async () => {
+          if(accountsStore.accounts[address].signer) {
+            await accountsStore.UnlockAccount({address});
+          } else {
+            setShowLoginModal(true);
+          }
+        }}
+      >
+        {accountLocked ? "Unlock Account" : "Use Account"}
+      </Button>
     );
   }
 
-  Account(address) {
-    const account = this.props.accountsStore.accounts[address];
+  let lockAccountButton;
+  if(!accountLocked) {
+    lockAccountButton = (
+      <Button miw={125} variant="default" fz="xs" onClick={() => accountsStore.LockAccount({address})}>
+        Lock Account
+      </Button>
+    );
+  }
 
-    const isCurrentAccount = this.props.accountsStore.currentAccountAddress === account.address;
-    const accountLocked = !account.signer;
+  const profileImage = accountsStore.ResizeImage(account.imageUrl, 200) || DefaultAccountImage;
 
-    let selectAccountButton;
-    if(!isCurrentAccount || accountLocked) {
-      selectAccountButton = (
-        <Action onClick={async () => await this.SelectAccount(account.address)}>
-          {accountLocked ? "Unlock Account" : "Use Account"}
-        </Action>
-      );
-    }
-
-    let lockAccountButton;
-    if(!accountLocked) {
-      lockAccountButton = (
-        <Action className="danger" onClick={() => this.LockAccount(account.address)}>
-          Lock Account
-        </Action>
-      );
-    }
-
-    const profileImage = this.props.accountsStore.ResizeImage(account.imageUrl, 200) || DefaultAccountImage;
-
-    return (
+  return (
+    <>
+      { !showLoginModal ? null : <LoginModal address={address} Close={() => setShowLoginModal(false)}/> }
       <div key={`account-${account.address}`} className={isCurrentAccount ? "account current-account" : "account"}>
         <ImageIcon
           icon={accountLocked ? LockedIcon : UnlockedIcon}
@@ -103,7 +64,12 @@ class Accounts extends React.Component {
         <IconButton
           icon={RemoveAccountIcon}
           label={"Remove Account"}
-          onClick={() => this.RemoveAccount(account.address)}
+          onClick={() => {
+            Confirm({
+              message: "Are you sure you want to remove this account?",
+              onConfirm: () => accountsStore.RemoveAccount(address)
+            });
+          }}
           className={"account-remove-icon"}
         />
         <CroppedIcon
@@ -120,29 +86,32 @@ class Accounts extends React.Component {
             <Balance balance={account.balance} className="account-balance" />
           </div>
           <div className="account-actions">
-            <LoadingElement loadingClassname="account-loading" loading={this.props.accountsStore.loadingAccount === address}>
-              { selectAccountButton }
-              { lockAccountButton }
+            <LoadingElement loadingClassname="account-loading" loading={accountsStore.loadingAccount === address}>
+              <Group spacing="sm" noWrap>
+                { selectAccountButton }
+                { lockAccountButton }
+              </Group>
             </LoadingElement>
           </div>
         </div>
       </div>
-    );
-  }
+    </>
+  );
+});
 
-  render() {
-    return (
-      <div className="page-content">
-        { this.LoginModal() }
-        <div className="accounts">
-          { this.props.accountsStore.sortedAccounts.map(address => this.Account(address)) }
-        </div>
-        <div className="actions-container flex-centered add-account">
-          <Action type="link" to="/accounts/add" label="Add Account">Add Account</Action>
-        </div>
+const Accounts = observer(() => {
+  return (
+    <div className="page-content">
+      <div className="accounts">
+        { accountsStore.sortedAccounts.map(address => <Account address={address} key={`account-${address}`} />) }
       </div>
-    );
-  }
-}
+      <div className="actions-container flex-centered add-account">
+        <Button component={Link} to="/accounts/add">
+          Add Account
+        </Button>
+      </div>
+    </div>
+  );
+});
 
 export default Accounts;

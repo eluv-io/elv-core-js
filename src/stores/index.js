@@ -1,6 +1,7 @@
 import {configure, observable, action, flow} from "mobx";
 import {ElvClient, ElvWalletClient, Utils} from "@eluvio/elv-client-js";
 import AccountStore from "./Accounts";
+import TenantStore from "./Tenant";
 
 // Force strict mode so mutations are only allowed within actions.
 configure({
@@ -20,6 +21,7 @@ class RootStore {
 
   constructor() {
     this.accountsStore = new AccountStore(this);
+    this.tenantStore = new TenantStore(this);
 
     this.InitializeClient();
   }
@@ -186,5 +188,6 @@ const root = new RootStore();
 
 export const rootStore = root;
 export const accountsStore = rootStore.accountsStore;
+export const tenantStore = rootStore.tenantStore;
 
 window.rootStore = rootStore;

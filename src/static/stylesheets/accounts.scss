@@ -94,17 +94,8 @@
 .account-actions {
   display: flex;
   height: 1.8rem;
+  margin-bottom: 5px;
   max-height: 1.8rem;
-
-  button {
-    margin-right: $elv-spacing-xs;
-
-    &.-elv-button {
-      &.-elv-button {
-        font-size: $elv-font-s;
-      }
-    }
-  }
 }
 
 .account-balance {
