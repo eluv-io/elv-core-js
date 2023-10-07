@@ -8,17 +8,6 @@ import {ImageIcon} from "elv-components-js";
 
 import DownloadIcon from "../../static/icons/download.svg";
 
-const searchParams = new URLSearchParams(window.location.search);
-let params;
-try {
-  params = JSON.parse(rootStore.utils.FromB58ToStr(searchParams.get("obp")));
-} catch (error) {
-  // eslint-disable-next-line no-console
-  console.error("Unable to retrieve onboarding params:");
-  // eslint-disable-next-line no-console
-  console.error(error);
-}
-
 const DownloadMnemonic = mnemonic => {
   const element = document.createElement("a");
   element.href = "data:attachment/text," + encodeURI(mnemonic);
@@ -29,6 +18,7 @@ const DownloadMnemonic = mnemonic => {
 
 // TODO: Get tenant name / branding
 const Onboard = observer(() => {
+  const [params, setParams] = useState(undefined);
   const [passwordVisible, {toggle}] = useDisclosure(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -43,6 +33,16 @@ const Onboard = observer(() => {
   const [error, setError] = useState(undefined);
 
   useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    try {
+      setParams(JSON.parse(rootStore.utils.FromB58ToStr(searchParams.get("obp"))));
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error("Unable to retrieve onboarding params:");
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
+
     setFormData({
       ...formData,
       mnemonic: accountsStore.GenerateMnemonic()
@@ -82,8 +82,6 @@ const Onboard = observer(() => {
     );
   }
 
-  const passwordError = error?.toLowerCase()?.includes("password") ? error : undefined;
-
   return (
     <div className="page-content">
       <Paper withBorder p="xl" pr={50} w={800} mt={50} shadow="sm">
@@ -107,7 +105,7 @@ const Onboard = observer(() => {
             value={formData.password}
             required
             onChange={event => setFormData({...formData, password: event.currentTarget.value})}
-            error={passwordError}
+            error={formData.password && formData.passwordConfirmation && formData.password !== formData.passwordConfirmation}
           />
           <PasswordInput
             visible={passwordVisible}
@@ -145,7 +143,7 @@ const Onboard = observer(() => {
             className="mnemonic-saved"
           />
           <Group mt={50} />
-          { !error || passwordError ? null : <Text mb="md" color="red" ta="center">Something went wrong, please try again</Text> }
+          { !error ? null : <Text mb="md" color="red" ta="center">Something went wrong, please try again</Text> }
           <Group position="right">
             <Button
               disabled={!valid}

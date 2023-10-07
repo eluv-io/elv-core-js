@@ -3,20 +3,18 @@ import "./static/stylesheets/defaults.scss";
 
 import React from "react";
 import { render } from "react-dom";
-import { Route, Switch, HashRouter } from "react-router-dom";
-import { Redirect } from "react-router";
+import { HashRouter } from "react-router-dom";
 
 import * as Stores from "./stores";
 import {inject, observer, Provider} from "mobx-react";
 
-import {Action, ErrorHandler, LoadingElement} from "elv-components-js";
-
-import EnforceLogin from "./EnforceLogin";
+import {Action, ErrorHandler} from "elv-components-js";
 
 import Header from "./components/Header";
 import Navigation from "./components/Navigation";
 
-import {AppRoutes, SiteRoutes} from "./Routes";
+import AppRoutes from "./Routes";
+import {Group, Loader, MantineProvider} from "@mantine/core";
 
 @inject("rootStore")
 @inject("accountsStore")
@@ -42,37 +40,21 @@ class App extends React.PureComponent {
       );
     }
 
+    if(!this.props.rootStore.client || !this.props.accountsStore.accountsLoaded) {
+      return (
+        <Group h="100vh" align="center" position="center">
+          <Loader />
+        </Group>
+      );
+    }
+
     return (
       <HashRouter>
-        <LoadingElement
-          loading={!this.props.rootStore.client || !this.props.accountsStore.accountsLoaded}
-          fullPage={true}
-          render={() => (
-            <div className="router-container">
-              <Header />
-              <Navigation />
-              <EnforceLogin>
-                <Switch>
-                  {
-                    SiteRoutes.map(({path, component}) =>
-                      <Route key={`route-${path}`} exact path={path} component={component}/>
-                    )
-                  }
-
-                  {
-                    AppRoutes.map(({path, component}) =>
-                      <Route key={`route-${path}`} exact path={path} component={component}/>
-                    )
-                  }
-
-                  <Route>
-                    <Redirect to="/accounts"/>
-                  </Route>
-                </Switch>
-              </EnforceLogin>
-            </div>
-          )}
-        />
+        <div className="router-container">
+          <Header />
+          <Navigation />
+          <AppRoutes />
+        </div>
       </HashRouter>
     );
   }
@@ -84,7 +66,9 @@ render(
   (
     <React.Fragment>
       <Provider {...Stores}>
-        <AppComponent />
+        <MantineProvider withGlobalStyles>
+          <AppComponent />
+        </MantineProvider>
       </Provider>
       <div className="app-version">{EluvioConfiguration.version}</div>
     </React.Fragment>

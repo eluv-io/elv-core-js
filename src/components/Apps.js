@@ -2,8 +2,9 @@ import "../static/stylesheets/apps.scss";
 
 import React from "react";
 import GenericAppLogo from "../static/icons/App.svg";
-import {Action, ImageIcon} from "elv-components-js";
+import {ImageIcon} from "elv-components-js";
 import UrlJoin from "url-join";
+import {Link} from "react-router-dom";
 
 import FabricBrowserIcon from "../static/images/app_icons/FabricBrowser.png";
 import VideoEditorIcon from "../static/images/app_icons/Video Editor.png";
@@ -40,12 +41,12 @@ class Apps extends React.PureComponent {
     const logo = icons[Object.keys(icons).find(key => name.includes(key))] || UrlJoin(EluvioConfiguration.apps[name], "Logo.png");
 
     return (
-      <Action key={`app-${name}`} label={`Go to ${name}`} type="link" to={`/apps/${name}`} button={false}>
+      <Link key={`app-${name}`} label={`Go to ${name}`} type="link" to={`/apps/${name}`} button={false}>
         <div className="app-selection">
           <ImageIcon icon={logo || GenericAppLogo} alternateIcon={GenericAppLogo} className="app-logo" />
           <h4>{name}</h4>
         </div>
-      </Action>
+      </Link>
     );
   }
 

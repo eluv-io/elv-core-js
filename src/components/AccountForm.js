@@ -1,139 +1,159 @@
-import React from "react";
-import {Form} from "elv-components-js";
-import {Action} from "elv-components-js";
-import {RadioSelect} from "elv-components-js";
-import {inject, observer} from "mobx-react";
+import React, {useEffect, useState} from "react";
+import {observer} from "mobx-react";
+import {Input as MantineInput, Text, Group, Button, Title, Select, Paper, PasswordInput, TextInput, Textarea} from "@mantine/core";
+import {Link} from "react-router-dom";
+import {accountsStore} from "../stores";
+import {Navigate} from "react-router";
 
-@inject("accountsStore")
-@observer
-class AccountForm extends React.Component {
-  constructor(props) {
-    super(props);
+const AccountForm = observer(() => {
+  const [formData, setFormData] = useState({
+    credentialType: "mnemonic",
+    privateKey: "",
+    encryptedPrivateKey: "",
+    mnemonic: "",
+    password: "",
+    passwordConfirmation: ""
+  });
+  const [error, setError] = useState(undefined);
+  const [submitting, setSubmitting] = useState(false);
+  const [complete, setComplete] = useState(false);
 
-    this.state = {
-      credentialType: "privateKey",
-      privateKey: "",
-      encryptedPrivateKey: "",
-      mnemonic: "",
-      password: "",
-      passwordConfirmation: ""
-    };
+  useEffect(() => {
+    setFormData({...formData, mnemonic: accountsStore.GenerateMnemonic()});
+  }, []);
 
-    this.HandleSubmit = this.HandleSubmit.bind(this);
-    this.HandleInputChange = this.HandleInputChange.bind(this);
-  }
-
-  HandleInputChange(event) {
-    this.setState({
-      [event.target.name]: event.target.value
-    });
-
-    if(event.target.name === "credentialType") {
-      this.setState({
-        privateKey: "",
-        encryptedPrivateKey: "",
-        mnemonic: ""
-      });
-    }
-  }
-
-  async HandleSubmit() {
-    await this.props.accountsStore.AddAccount({
-      privateKey: this.state.privateKey,
-      encryptedPrivateKey: this.state.encryptedPrivateKey,
-      mnemonic: this.state.mnemonic,
-      password: this.state.password,
-      passwordConfirmation: this.state.passwordConfirmation
-    });
-
-    this.props.history.push("/accounts");
-  }
-
-  Credentials() {
-    switch (this.state.credentialType) {
-      case "privateKey":
-        return [
-          <label key="credential-label" htmlFor="privateKey">Private Key</label>,
-          <input
-            key="credential-input"
-            name="privateKey"
-            value={this.state.privateKey}
-            onChange={this.HandleInputChange}
-          />
-        ];
-      case "encryptedPrivateKey":
-        return [
-          <label key="credential-label" className="align-top" htmlFor="encryptedPrivateKey">Encrypted Private Key</label>,
-          <textarea
-            key="credential-input"
-            name="encryptedPrivateKey"
-            value={this.state.encryptedPrivateKey}
-            onChange={this.HandleInputChange}
-          />
-        ];
-      case "mnemonic":
-        return [
-          <label key="generate-mnemonic-label" htmlFor="generateMnemonic">Generate Mnemonic</label>,
-          <div key="generate-mnemonic-button" className="actions-container">
-            <Action onClick={() => this.setState({mnemonic: this.props.accountsStore.GenerateMnemonic()})}>
-              Generate Mnemonic
-            </Action>
-          </div>,
-          <label key="credential-label" className="align-top" htmlFor="encryptedPrivateKey">Mnemonic</label>,
-          <textarea
-            key="credential-input"
-            className="mnemonic-input"
-            name="mnemonic"
-            value={this.state.mnemonic}
-            onChange={this.HandleInputChange}
-          />
-        ];
-    }
-
-    return null;
-  }
-
-  render() {
-    return (
-      <div className="page-content">
-        <Form
-          legend="Add Account"
-          OnSubmit={this.HandleSubmit}
-          redirectPath="/accounts"
-          cancelPath="/accounts"
-        >
-          <div className="form-content">
-            <label htmlFor="credentialType">Credential Type</label>
-            <RadioSelect
-              name="credentialType"
-              label="Credential Type"
-              inline={true}
-              options={
-                [
-                  ["Private Key", "privateKey"],
-                  ["Encrypted Private Key", "encryptedPrivateKey"],
-                  ["Mnemonic", "mnemonic"]
-                ]
-              }
-              selected={this.state.credentialType}
-              onChange={this.HandleInputChange}
-            />
-
-            { this.Credentials() }
-
-            <label htmlFor="password">Password</label>
-            <div className="input-with-hint">
-              <div className="hint password-complexity-hint">Password must be at least 6 characters long and must contain at least one uppercase letter, lowercase letter, number and symbol</div>
-              <input name="password" type="password" value={this.state.password} required onChange={this.HandleInputChange} />
-            </div>
-
-            <label htmlFor="passwordConfirmation">Password Confirmation</label>
-            <input name="passwordConfirmation" type="password" value={this.state.passwordConfirmation} required onChange={this.HandleInputChange} />
-          </div>
-        </Form>
-      </div>
+  const valid =
+    formData.password &&
+    formData.passwordConfirmation &&
+    formData.password === formData.passwordConfirmation &&
+    (
+      (formData.credentialType === "privateKey" && formData.privateKey) ||
+      (formData.credentialType === "encryptedPrivateKey" && formData.encryptedPrivateKey) ||
+      (formData.credentialType === "mnemonic" && formData.mnemonic)
     );
+
+  if(complete) {
+    return <Navigate to="/accounts" />;
   }
-}
+
+  return (
+    <div className="page-content">
+      <Paper withBorder p="xl" pr={50} w={800} mt="xl" shadow="sm">
+        <form className="account-form" onSubmit={() => {}}>
+          <Title order={4} mb="xl">Create Account</Title>
+          <Select
+            mb="md"
+            label="Credential Type"
+            data={[
+              {label: "Mnemonic Phrase", value: "mnemonic"},
+              {label: "Private Key", value: "privateKey"},
+              {label: "Encrypted Private Key", value: "encryptedPrivateKey"},
+            ]}
+            value={formData.credentialType}
+            onChange={value => {
+              let mnemonic = "";
+              if(value === "mnemonic") {
+                mnemonic = accountsStore.GenerateMnemonic();
+              }
+
+              setFormData({
+                ...formData,
+                credentialType: value,
+                privateKey: "",
+                encryptedPrivateKey: "",
+                mnemonic
+              });
+            }}
+          />
+          {
+            formData.credentialType !== "privateKey" ? null :
+              <TextInput
+                mb="md"
+                label="Private Key"
+                value={formData.privateKey}
+                onChange={event => setFormData({...formData, privateKey: event.currentTarget.value})}
+              />
+          }
+          {
+            formData.credentialType !== "encryptedPrivateKey" ? null :
+              <Textarea
+                mb="md"
+                label="Encrypted Private Key"
+                value={formData.encryptedPrivateKey}
+                onChange={event => setFormData({...formData, encryptedPrivateKey: event.currentTarget.value})}
+              />
+          }
+          {
+            formData.credentialType !== "mnemonic" ? null :
+              <MantineInput.Wrapper
+                label="Mnemonic Phrase"
+                description="This mnemonic can be used to recover your account. Please download the mnemonic and ensure it is backed up and kept safe."
+              >
+                <Paper withBorder p="md" mt="sm" mb="md">
+                  <Text italic fz="sm">{formData.mnemonic}</Text>
+                </Paper>
+              </MantineInput.Wrapper>
+          }
+          <PasswordInput
+            mb="md"
+            label="Password"
+            description="Password must be at least 6 characters long and must contain at least one uppercase letter, lowercase letter, number and symbol"
+            value={formData.password}
+            onChange={event => setFormData({...formData, password: event.currentTarget.value})}
+          />
+          <PasswordInput
+            mb="md"
+            label="Password Confirmation"
+            value={formData.passwordConfirmation}
+            onChange={event => setFormData({...formData, passwordConfirmation: event.currentTarget.value})}
+            error={formData.password && formData.passwordConfirmation && formData.password !== formData.passwordConfirmation}
+          />
+          <Group mt={50} />
+          { !error ? null : <Text mb="md" color="red" ta="center">Something went wrong, please try again</Text> }
+          <Group position="right">
+            <Button
+              variant="default"
+              type="button"
+              component={Link}
+              to="/accounts"
+              w={150}
+            >
+              Cancel
+            </Button>
+            <Button
+              disabled={!valid}
+              loading={submitting}
+              type="button"
+              w={150}
+              onClick={async () => {
+                setSubmitting(true);
+                setError(undefined);
+
+                try {
+                  await accountsStore.AddAccount({
+                    mnemonic: formData.mnemonic,
+                    privateKey: formData.privateKey,
+                    encryptedPrivateKey: formData.encryptedPrivateKey,
+                    password: formData.password,
+                    passwordConfirmation: formData.passwordConfirmation
+                  });
+
+                  setComplete(true);
+                } catch (error) {
+                  // eslint-disable-next-line no-console
+                  console.error(error);
+                  setSubmitting(false);
+                  setError(error.toString());
+                }
+              }}
+            >
+              Submit
+            </Button>
+          </Group>
+        </form>
+      </Paper>
+    </div>
+  );
+});
 
 export default AccountForm;

@@ -8,6 +8,7 @@ header {
   grid-template-rows: 40px;
   height: 40px;
   max-height: 40px;
+  padding: 0 10px;
   position: relative;
   width: 100%;
 
@@ -51,14 +52,9 @@ header {
   display: flex;
   height: 100%;
 
-  .-elv-icon-wrapper {
-    display: flex;
-    height: 100%;
-    padding: 10px $elv-spacing-s;
-  }
-
   img {
     height: 100%;
+    padding: 10px;
     width: auto;
   }
 }
@@ -134,7 +130,6 @@ header {
   @include elv-cropped-image($image-size, $image-size, 50%, $image-size, $image-size);
   background: $elv-color-bg-white;
   border-radius: 100%;
-  margin-right: $elv-spacing-xs;
 }
 
 .header-account-info {
@@ -161,13 +156,8 @@ header {
 }
 
 .header-account-balance {
-  display: flex;
-  flex-basis: 100%;
-
-  span {
-    font-size: $elv-font-s;
-    font-weight: 300;
-  }
+  font-size: $elv-font-xs;
+  font-weight: 300;
 }
 
 .header-account-selection {

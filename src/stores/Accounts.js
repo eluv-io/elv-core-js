@@ -7,8 +7,13 @@ class AccountStore {
   @observable accounts = {};
   @observable currentAccountAddress;
   @observable accountsLoaded = false;
+  @observable tenantAdmins = [];
 
   @observable loadingAccount;
+
+  @computed get isTenantAdmin() {
+    return this.tenantAdmins.includes(this.currentAccountAddress);
+  }
 
   @computed get currentAccount() {
     return this.currentAccountAddress ? this.accounts[this.currentAccountAddress] : undefined;
@@ -47,6 +52,18 @@ class AccountStore {
 
   @action.bound
   LoadAccounts = flow(function * () {
+    const tenantAdmins = localStorage.getItem(`elv-admins-${this.network}`);
+    if(tenantAdmins) {
+      try {
+        this.tenantAdmins = JSON.parse(tenantAdmins);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error("Unable to parse tenant admin list:");
+        // eslint-disable-next-line no-console
+        console.error(error);
+      }
+    }
+
     let accounts = localStorage.getItem(`elv-accounts-${this.network}`) || localStorage.getItem("elv-accounts");
     accounts = accounts ? JSON.parse(atob(accounts)) : {};
 
@@ -152,6 +169,8 @@ class AccountStore {
     yield this.rootStore.client.userProfileClient.SetTenantContractId({tenantContractId: id});
     this.accounts[this.currentAccountAddress].tenantContractId = yield this.rootStore.client.userProfileClient.TenantContractId();
     yield this.UserMetadata();
+
+    this.SaveAccounts();
   });
 
   @action.bound
@@ -179,8 +198,8 @@ class AccountStore {
       );
 
       if(signer && this.accounts[address].balance > 0.1) {
-        this.accounts[address].tenantContractId = yield this.rootStore.client.userProfileClient.TenantContractId();
         this.UserMetadata();
+        this.CheckTenantDetails();
       }
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -278,6 +297,32 @@ class AccountStore {
     this.SaveAccounts();
   });
 
+  @action.bound
+  CheckTenantDetails = flow(function * () {
+    const tenantContractId = yield this.rootStore.client.userProfileClient.TenantContractId();
+    if(tenantContractId) {
+      this.accounts[this.currentAccountAddress].tenantContractId = tenantContractId;
+      const tenantAdminGroupAddress = yield this.rootStore.client.CallContractMethod({
+        contractAddress: this.rootStore.client.utils.HashToAddress(tenantContractId),
+        methodName: "groupsMapping",
+        methodArgs: ["tenant_admin", 0],
+        formatArguments: true,
+      });
+      const accountGroups = yield this.rootStore.client.Collection({collectionType: "accessGroups"});
+
+      const isTenantAdmin = !!accountGroups.find(address => this.rootStore.client.utils.EqualAddress(tenantAdminGroupAddress, address));
+
+      if(isTenantAdmin) {
+        if(!this.tenantAdmins.includes(this.currentAccountAddress)) {
+          this.tenantAdmins = [...this.tenantAdmins, this.currentAccountAddress];
+        }
+      } else {
+        this.tenantAdmins = this.tenantAdmins.filter(address => !this.rootStore.client.utils.EqualAddress(this.currentAccountAddress, address));
+      }
+
+      localStorage.setItem(`elv-admins-${this.network}`, JSON.stringify(this.tenantAdmins));
+    }
+  });
 
   /* Profile */
 
@@ -376,7 +421,8 @@ class AccountStore {
         name: (account.name || "").toString(),
         imageUrl: account.image,
         address: account.address,
-        encryptedPrivateKey: account.encryptedPrivateKey
+        encryptedPrivateKey: account.encryptedPrivateKey,
+        tenantContractId: account.tenantContractId
       }
     );
 

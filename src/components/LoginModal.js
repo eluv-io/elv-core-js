@@ -1,87 +1,95 @@
 import "../static/stylesheets/login.scss";
 
-import React from "react";
-import PropTypes from "prop-types";
-import {Modal} from "elv-components-js";
-import {Form} from "elv-components-js";
+import React, {useState} from "react";
+import {Button, Group, Modal, PasswordInput} from "@mantine/core";
+import {observer} from "mobx-react";
+import {Link, useNavigate} from "react-router-dom";
+import {accountsStore} from "../stores";
 import AccountDropdown from "./AccountDropdown";
 
-class LoginModal extends React.PureComponent {
-  constructor(props) {
-    super(props);
+const LoginModal = observer(({title, address, allowAccountSwitch, setUnlocking, Close}) => {
+  const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(undefined);
+  const navigate = useNavigate();
 
-    this.state = {};
+  address = address || accountsStore.currentAccountAddress;
+  const locked = !accountsStore.accounts[address]?.signer;
 
-    props.fields.map(({name}) => this.state[name] = "");
+  return (
+    <Modal
+      padding="xl"
+      centered
+      opened
+      onClose={() => {
+        Close ? Close() : navigate("/accounts");
+      }}
+      title={title || "Enter your password to unlock your account"}
+    >
+      <form onSubmit={() => {}}>
+        {
+          !allowAccountSwitch ? null :
+            <AccountDropdown />
+        }
+        <PasswordInput
+          mt={allowAccountSwitch ? "md" : 0}
+          label="Password"
+          value={password}
+          error={error}
+          onChange={event => setPassword(event.currentTarget.value)}
+        />
+        <Group position="right" mt="xl">
+          <Button
+            fz="xs"
+            variant="default"
+            type="button"
+            component={Link}
+            to="/accounts"
+            onClick={Close}
+            w={150}
+          >
+            Switch Account
+          </Button>
+          <Button
+            fz="sm"
+            disabled={!password}
+            loading={submitting}
+            type="button"
+            w={150}
+            onClick={async () => {
+              setUnlocking && setUnlocking(true);
+              setSubmitting(true);
+              setError(undefined);
 
-    this.HandleInputChange = this.HandleInputChange.bind(this);
-    this.HandleSubmit = this.HandleSubmit.bind(this);
-  }
+              try {
+                if(locked) {
+                  await accountsStore.UnlockAccount({
+                    address,
+                    password
+                  });
+                } else {
+                  await accountsStore.SetCurrentAccount({
+                    address
+                  });
+                }
 
-  HandleInputChange(event) {
-    this.setState({
-      [event.target.name]: event.target.value
-    });
-  }
-
-  async HandleSubmit() {
-    await this.props.Submit(this.state);
-  }
-
-  render() {
-    return (
-      <Modal
-        closable={!this.props.prompt}
-        OnClickOutside={this.props.Close}
-        className="login-modal"
-      >
-        <Form
-          legend={this.props.legend}
-          cancelPath="/accounts"
-          cancelText={this.props.prompt ? "Switch Account" : "Cancel"}
-          OnCancel={this.props.Close}
-          OnSubmit={this.HandleSubmit}
-          OnComplete={this.props.Close}
-        >
-          <div className="form-content">
-            {
-              !this.props.prompt ? null :
-                (
-                  <React.Fragment>
-                    <label>Account</label>
-                    <AccountDropdown />
-                  </React.Fragment>
-                )
-            }
-
-            {
-              this.props.fields.map(({label, name, type, placeholder}) =>
-                <React.Fragment key={`login-modal-field-${name}`}>
-                  <label htmlFor={name}>{label}</label>
-                  <input
-                    name={name}
-                    type={type}
-                    value={this.state[name]}
-                    placeholder={placeholder}
-                    autoFocus
-                    onChange={this.HandleInputChange}
-                  />
-                </React.Fragment>
-              )
-            }
-          </div>
-        </Form>
-      </Modal>
-    );
-  }
-}
-
-LoginModal.propTypes = {
-  legend: PropTypes.string.isRequired,
-  prompt: PropTypes.bool,
-  fields: PropTypes.array.isRequired,
-  Submit: PropTypes.func.isRequired,
-  Close: PropTypes.func
-};
+                Close && Close();
+              } catch (error) {
+                // eslint-disable-next-line no-console
+                console.error(error);
+                setSubmitting(false);
+                setError(error.toString());
+              } finally {
+                setUnlocking && setUnlocking(false);
+              }
+            }}
+          >
+            Submit
+          </Button>
+        </Group>
+      </form>
+    </Modal>
+  );
+});
 
 export default LoginModal;

@@ -7,7 +7,7 @@ from the core app, which owns user account information and keys
 
 import React from "react";
 import UrlJoin from "url-join";
-import {Redirect, withRouter} from "react-router";
+import {Navigate, useParams} from "react-router";
 
 import {FrameClient} from "@eluvio/elv-client-js/src/FrameClient";
 import {Confirm} from "elv-components-js";
@@ -66,7 +66,7 @@ class AppFrame extends React.Component {
   constructor(props) {
     super(props);
 
-    const appName = this.props.match.params.app;
+    const appName = this.props.app;
     const basePath = UrlJoin("/apps", appName);
     const appPath = window.location.hash.replace(basePath, "").replace(encodeURI(basePath), "").substr(1) || "";
     const appUrl = UrlJoin(EluvioConfiguration.apps[appName], appPath);
@@ -292,7 +292,7 @@ class AppFrame extends React.Component {
 
   render() {
     if(this.state.redirectLocation) {
-      return <Redirect push to={this.state.redirectLocation} />;
+      return <Navigate replace to={this.state.redirectLocation} />;
     }
 
     if(!this.props.rootStore.client) {
@@ -311,4 +311,10 @@ class AppFrame extends React.Component {
   }
 }
 
-export default withRouter(AppFrame);
+const AppFrameWrapper = () => {
+  const {app} = useParams();
+
+  return <AppFrame app={app} />;
+};
+
+export default AppFrameWrapper;

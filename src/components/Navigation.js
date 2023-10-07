@@ -3,8 +3,7 @@ import "../static/stylesheets/navigation.scss";
 import React from "react";
 import {NavLink} from "react-router-dom";
 import {inject, observer} from "mobx-react";
-import {withRouter} from "react-router";
-import {AppRoutes} from "../Routes";
+import {useLocation} from "react-router";
 
 @inject("accountsStore")
 @observer
@@ -14,10 +13,7 @@ class Navigation extends React.Component {
     return (
       <div className="site-nav-container">
         <nav>
-          <NavLink
-            isActive={() => !!AppRoutes.find(({path}) => path === this.props.location.pathname)}
-            activeClassName="active" to="/accounts"
-          >
+          <NavLink activeClassName="active" to="/accounts">
             Account
           </NavLink>
 
@@ -30,10 +26,6 @@ class Navigation extends React.Component {
   }
 
   AppNav() {
-    if(!AppRoutes.find(({path}) => path === this.props.location.pathname)) {
-      return null;
-    }
-
     const account = this.props.accountsStore.currentAccount;
 
     if(!account) {
@@ -58,6 +50,7 @@ class Navigation extends React.Component {
         <div className="nav-container">
           <nav>
             <NavLink exact={true} activeClassName="active" to="/apps">Apps & Tools</NavLink>
+            { this.props.accountsStore.currentAccount.tenantContractId ? <NavLink exact={true} activeClassName="active" to="/tenancy">Tenancy</NavLink> : null }
             <NavLink activeClassName="active" to="/profile">Profile</NavLink>
             <NavLink activeClassName="active" to="/accounts">Accounts</NavLink>
             <NavLink exact={true} activeClassName="active" to="/transfer">Transfer</NavLink>
@@ -82,4 +75,10 @@ class Navigation extends React.Component {
   }
 }
 
-export default withRouter(Navigation);
+const NavigationWrapper = () => {
+  const location = useLocation();
+
+  return <Navigation location={location} />;
+};
+
+export default NavigationWrapper;
