@@ -14,6 +14,7 @@
     width: 25vw;
 
     a {
+      border-radius: 0 0 1em 1em;
       color: $elv-color-text-lighter;
       flex: 1 1 auto;
 
@@ -33,7 +34,7 @@
   flex-grow: 0;
   flex-shrink: 0;
   justify-content: center;
-  margin: $elv-spacing-s 0;
+  margin: $elv-spacing-s 0 $elv-spacing-l;
   width: 100%;
 
   &.locked {

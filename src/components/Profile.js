@@ -8,7 +8,7 @@ import {
   IconButton,
   BallClipRotate,
   onEnterPressed,
-  TraversableJson, Action
+  TraversableJson,
 } from "elv-components-js";
 
 import DefaultProfileImage from "../static/icons/User.svg";
@@ -18,9 +18,8 @@ import XIcon from "../static/icons/X.svg";
 import KeyIcon from "../static/icons/Key.svg";
 import {inject, observer} from "mobx-react";
 import {toJS} from "mobx";
+import {Group, TextInput, Button} from "@mantine/core";
 
-@inject("accountsStore")
-@observer
 class Profile extends React.Component {
   constructor(props) {
     super(props);
@@ -111,8 +110,12 @@ class Profile extends React.Component {
       <div className="info-section">
         <h4>Tenant Information</h4>
         <h5 className="subheader">Please set the tenant ID to be used for your Content Fabric usage. A tenant ID must be associated with your user address in order to access Fabric services. If you don't know your tenant ID please consult your tenant admin.</h5>
-        <input className="set-current-tenant-input" type="text" onChange={event => this.setState({newTenantContractIdId: event.target.value})} value={this.state.newTenantContractIdId} />
-        <Action className="set-current-tenant-button secondary" onClick={() => this.SetCurrentTenant(!!tenantContractId)} disabled={!this.state.newTenantContractIdId}>{`${tenantContractId ? "Override" : "Set"} Current Tenant`}</Action>
+        <Group noWrap spacing="xs" align="end">
+          <TextInput label="Tenant ID" miw={300} placeholder="iten..." onChange={event => this.setState({newTenantContractIdId: event.target.value})} value={this.state.newTenantContractIdId} />
+          <Button variant="default" onClick={() => this.SetCurrentTenant(!!tenantContractId)} disabled={!this.state.newTenantContractIdId}>
+            Set Tenant
+          </Button>
+        </Group>
       </div>
     );
   }
@@ -277,8 +280,8 @@ class Profile extends React.Component {
 
   render() {
     const account = this.props.accountsStore.currentAccount;
-    const collectedTags = this.CollectedTags(account.metadata.collected_data);
-    const permissions = this.Permissions(account.metadata);
+    //const collectedTags = this.CollectedTags(account.metadata.collected_data);
+    //const permissions = this.Permissions(account.metadata);
     const currentTenant = this.CurrentTenant(account.metadata.tenantContractId);
 
     return (
@@ -304,8 +307,8 @@ class Profile extends React.Component {
                 <TraversableJson json={account.metadata} />
               </div>
             </div>
-            { permissions }
-            { collectedTags }
+            { /* permissions */ }
+            { /* collectedTags */ }
           </div>
         </div>
       </div>
@@ -313,5 +316,5 @@ class Profile extends React.Component {
   }
 }
 
-export default Profile;
+export default inject("accountsStore")(observer(Profile));
 

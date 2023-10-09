@@ -1,84 +1,89 @@
 import "../static/stylesheets/navigation.scss";
 
 import React from "react";
-import {NavLink} from "react-router-dom";
-import {inject, observer} from "mobx-react";
+import {NavLink, useNavigate} from "react-router-dom";
+import {observer} from "mobx-react";
 import {useLocation} from "react-router";
+import {accountsStore} from "../stores";
+import {Tabs} from "@mantine/core";
 
-@inject("accountsStore")
-@observer
-class Navigation extends React.Component {
-  SiteNav() {
-    // <a href="https://github.com/eluv-io" target="_blank">Docs</a>
+const SiteNav = () => {
+  const location = useLocation();
+
+  return (
+    <div className="site-nav-container">
+      <nav>
+        <NavLink
+          className={
+            !["/offerings", "/terms", "/privacy"].includes(location.pathname) ? "active" : ""
+          }
+          to="/accounts"
+        >
+          Account
+        </NavLink>
+        <NavLink activeClassName="active" to="/offerings">Offerings</NavLink>
+        <NavLink activeClassName="active" to="/terms">Terms</NavLink>
+        <NavLink activeClassName="active" to="/privacy">Privacy</NavLink>
+      </nav>
+    </div>
+  );
+};
+
+const AppNav = observer(() => {
+  const account = accountsStore.currentAccount;
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  if(!account) {
     return (
-      <div className="site-nav-container">
+      <div className="nav-container locked">
         <nav>
-          <NavLink activeClassName="active" to="/accounts">
-            Account
-          </NavLink>
-
+          <NavLink activeClassName="active" to="/accounts">Accounts</NavLink>
           <NavLink activeClassName="active" to="/offerings">Offerings</NavLink>
           <a target="_blank" href={"https://live.eluv.io/terms"}>Terms</a>
           <a target="_blank" href={"https://live.eluv.io/privacy"}>Privacy</a>
         </nav>
       </div>
     );
-  }
-
-  AppNav() {
-    const account = this.props.accountsStore.currentAccount;
-
-    if(!account) {
-      return (
-        <div className="nav-container locked">
-          <nav>
-            <NavLink activeClassName="active" to="/accounts">Accounts</NavLink>
-          </nav>
-        </div>
-      );
-    } else if(account.balance < 0.1) {
-      return (
-        <div className="nav-container locked">
-          <div className="warning">This account has an insufficient balance. Please fund the account.</div>
-          <nav>
-            <NavLink activeClassName="active" to="/accounts">Accounts</NavLink>
-          </nav>
-        </div>
-      );
-    } else {
-      return (
-        <div className="nav-container">
-          <nav>
-            <NavLink exact={true} activeClassName="active" to="/apps">Apps & Tools</NavLink>
-            { this.props.accountsStore.currentAccount.tenantContractId ? <NavLink exact={true} activeClassName="active" to="/tenancy">Tenancy</NavLink> : null }
-            <NavLink activeClassName="active" to="/profile">Profile</NavLink>
-            <NavLink activeClassName="active" to="/accounts">Accounts</NavLink>
-            <NavLink exact={true} activeClassName="active" to="/transfer">Transfer</NavLink>
-          </nav>
-        </div>
-      );
-    }
-  }
-
-  render() {
-    if(this.props.location && this.props.location.pathname.match(/^\/apps\/.+$/)) {
-      // App frame is visible - hide navigation
-      return null;
-    }
-
+  } else if(account.balance < 0.1) {
     return (
-      <React.Fragment>
-        { this.SiteNav() }
-        { this.AppNav() }
-      </React.Fragment>
+      <div className="nav-container locked">
+        <div className="warning">This account has an insufficient balance. Please fund the account.</div>
+        <nav>
+          <NavLink activeClassName="active" to="/accounts">Accounts</NavLink>
+        </nav>
+      </div>
+    );
+  } else {
+    return (
+      <div className="nav-container">
+        <Tabs w="100%" maw={1000} value={location.pathname} onTabChange={pathname => navigate(pathname)}>
+          <Tabs.List grow>
+            <Tabs.Tab value="/apps">Apps & Tools</Tabs.Tab>
+            { accountsStore.currentAccount.tenantContractId ? <Tabs.Tab value="/tenancy">Tenancy</Tabs.Tab> : null }
+            <Tabs.Tab value="/profile">Profile</Tabs.Tab>
+            <Tabs.Tab value="/accounts">Accounts</Tabs.Tab>
+            <Tabs.Tab value="/transfer">Transfer</Tabs.Tab>
+          </Tabs.List>
+        </Tabs>
+      </div>
     );
   }
-}
+});
 
-const NavigationWrapper = () => {
+const Navigation = observer(() => {
   const location = useLocation();
+  if(location.pathname.match(/^\/apps\/.+$/)) {
+    // App frame is visible - hide navigation
+    return null;
+  }
 
-  return <Navigation location={location} />;
-};
+  return (
+    <>
+      <SiteNav />
+      <AppNav />
+    </>
+  );
+});
 
-export default NavigationWrapper;
+export default Navigation;

@@ -1,101 +1,124 @@
-import React from "react";
-import {Form} from "elv-components-js";
-import {Navigate, Redirect} from "react-router";
-import {inject, observer} from "mobx-react";
+import React, {useState} from "react";
+import {Navigate} from "react-router";
+import {observer} from "mobx-react";
+import {Title, Paper, Select, TextInput, NumberInput, Button, Group, Text} from "@mantine/core";
+import {accountsStore} from "../stores";
+import {Utils} from "@eluvio/elv-client-js";
+import {Link} from "react-router-dom";
 
-@inject("accountsStore")
-@observer
-class TransferForm extends React.Component {
-  constructor(props) {
-    super(props);
+const TransferForm = observer(() => {
+  const accounts = Object.values(accountsStore.accounts)
+    .map(account => ({label: account.name || account.address, value: account.address}));
 
-    this.state = {
-      ether: 0,
-      recipient: Object.keys(this.props.accountsStore.accounts)[0],
-      manualEntry: Object.keys(this.props.accountsStore.accounts).length === 0
-    };
+  const [recipientAddress, setRecipientAddress] = useState(accounts[0]?.value || "");
+  const [customRecipientAddress, setCustomRecipientAddress] = useState("");
+  const [amount, setAmount] = useState(1);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(undefined);
+  const [complete, setComplete] = useState(false);
 
-    this.HandleInputChange = this.HandleInputChange.bind(this);
-    this.HandleSubmit = this.HandleSubmit.bind(this);
+  accounts.unshift({label: "[Other]", value: ""});
+
+  const insufficientFunds = accountsStore.currentAccount.balance < amount + 0.05;
+  const valid =
+    (recipientAddress || customRecipientAddress) &&
+    Utils.ValidAddress(recipientAddress || customRecipientAddress) &&
+    amount > 0 &&
+    !insufficientFunds;
+
+  if(complete) {
+    return <Navigate to="/accounts" />;
   }
 
-  HandleInputChange(event) {
-    if(event.target.name === "selectedRecipient") {
-      if(event.target.value === "other") {
-        this.setState({
-          recipient: "",
-          manualEntry: true
-        });
-      } else {
-        this.setState({
-          recipient: event.target.value,
-          manualEntry: false
-        });
-      }
-    }
+  const Submit = async () => {
+    if(!valid) { return; }
 
-    this.setState({
-      [event.target.name]: event.target.value
-    });
-  }
+    setSubmitting(true);
+    setError(undefined);
 
-  async HandleSubmit() {
-    await this.props.accountsStore.SendFunds({
-      recipient: this.state.recipient,
-      ether: this.state.ether
-    });
-  }
-
-  RecipientSelector() {
-    let options = Object.values(this.props.accountsStore.accounts)
-      .map(account => {
-        return (
-          <option key={"account-selection-" + account.address} value={account.address}>
-            {`${account.name || account.address} (${account.balance})`}
-          </option>
-        );
+    try {
+      await accountsStore.SendFunds({
+        recipient: !recipientAddress ? customRecipientAddress : recipientAddress,
+        ether: amount
       });
 
-    options.push(
-      <option key={"account-selection-other"} value="other">
-        { "[Other]" }
-      </option>
-    );
-
-    return (
-      <select className="recipient-select" name="selectedRecipient" value={this.state.selectedRecipient} onChange={this.HandleInputChange} required={true}>
-        { options }
-      </select>
-    );
-  }
-
-  render() {
-    if(this.state.completed) {
-      return <Navigate to="/accounts" />;
+      setComplete(true);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+      setSubmitting(false);
+      setError(error.toString());
     }
+  };
 
-    return (
-      <div className="page-content">
-        <Form
-          legend="Transfer Funds"
-          redirectPath="/accounts"
-          OnSubmit={this.HandleSubmit}
-          OnError={this.HandleError}
-        >
-          <div className="form-content">
-            <label htmlFor="recipient">Recipient</label>
-            { this.RecipientSelector() }
+  return (
+    <div className="page-content">
+      <Paper withBorder p="xl" pr={50} w={800} mt="xl" shadow="sm">
+        <form onSubmit={() => {}}>
+          <Title order={4} mb="xl">Transfer Funds</Title>
+          <Select
+            mb="md"
+            searchable
+            data={accounts}
+            label="Recipient"
+            value={recipientAddress}
+            onChange={address => setRecipientAddress(address)}
+          />
+          {
+            recipientAddress ? null :
+              <TextInput
+                error={customRecipientAddress && !Utils.ValidAddress(customRecipientAddress) ? "Invalid Address" : ""}
+                placeholder={Utils.nullAddress}
+                mb="md"
+                label="Recipient Address"
+                value={customRecipientAddress}
+                onChange={event => setCustomRecipientAddress(event.currentTarget.value)}
+              />
+          }
+          <NumberInput
+            error={!amount ? true : (insufficientFunds ? "Insufficient Funds" : undefined)}
+            mb="md"
+            label="Amount"
+            value={amount}
+            min={0}
+            step={0.05}
+            precision={2}
+            stepHoldDelay={500}
+            stepHoldInterval={50}
+            onChange={value => setAmount(value)}
+            onKeyDown={event => {
+              if(event.key !== "Enter") { return; }
 
-            <label htmlFor="recipient">Recipient Address</label>
-            <input name="recipient" value={this.state.recipient} disabled={!this.state.manualEntry} onChange={this.HandleInputChange} />
+              Submit();
+            }}
+          />
+          <Group mt={50} />
+          { !error ? null : <Text mb="md" color="red" ta="center">Something went wrong, please try again</Text> }
+          <Group position="right">
+            <Button
+              variant="default"
+              type="button"
+              component={Link}
+              to="/accounts"
+              w={150}
+            >
+              Cancel
+            </Button>
+            <Button
+              disabled={!valid}
+              loading={submitting}
+              type="button"
+              w={150}
+              onClick={Submit}
+            >
+              Submit
+            </Button>
+          </Group>
+        </form>
+      </Paper>
+    </div>
+  );
+});
 
-            <label htmlFor="ether">Ether</label>
-            <input name="ether" type="number" step="0.0000001" value={this.state.ether} required={true} onChange={this.HandleInputChange} />
-          </div>
-        </Form>
-      </div>
-    );
-  }
-}
 
 export default TransferForm;
