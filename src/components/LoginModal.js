@@ -1,6 +1,6 @@
 import "../static/stylesheets/login.scss";
 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Button, Group, Modal, PasswordInput} from "@mantine/core";
 import {observer} from "mobx-react";
 import {Link, useNavigate} from "react-router-dom";
@@ -15,6 +15,42 @@ const LoginModal = observer(({title, address, allowAccountSwitch, setUnlocking, 
 
   address = address || accountsStore.currentAccountAddress;
   const locked = !accountsStore.accounts[address]?.signer;
+
+  const Submit = async () => {
+    setUnlocking && setUnlocking(true);
+    setSubmitting(true);
+    setError(undefined);
+
+    try {
+      if(locked) {
+        await accountsStore.UnlockAccount({
+          address,
+          password
+        });
+      } else {
+        await accountsStore.SetCurrentAccount({
+          address
+        });
+      }
+
+      Close && Close();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+      setSubmitting(false);
+      setError(error.toString());
+    } finally {
+      setUnlocking && setUnlocking(false);
+    }
+  };
+
+  useEffect(() => {
+    setPassword("test");
+
+    if(password) {
+      Submit();
+    }
+  }, [password]);
 
   return (
     <Modal
@@ -37,6 +73,11 @@ const LoginModal = observer(({title, address, allowAccountSwitch, setUnlocking, 
           value={password}
           error={error}
           onChange={event => setPassword(event.currentTarget.value)}
+          onKeyDown={event => {
+            if(event.key !== "Enter") { return; }
+
+            Submit();
+          }}
         />
         <Group position="right" mt="xl">
           <Button
@@ -56,33 +97,7 @@ const LoginModal = observer(({title, address, allowAccountSwitch, setUnlocking, 
             loading={submitting}
             type="button"
             w={150}
-            onClick={async () => {
-              setUnlocking && setUnlocking(true);
-              setSubmitting(true);
-              setError(undefined);
-
-              try {
-                if(locked) {
-                  await accountsStore.UnlockAccount({
-                    address,
-                    password
-                  });
-                } else {
-                  await accountsStore.SetCurrentAccount({
-                    address
-                  });
-                }
-
-                Close && Close();
-              } catch (error) {
-                // eslint-disable-next-line no-console
-                console.error(error);
-                setSubmitting(false);
-                setError(error.toString());
-              } finally {
-                setUnlocking && setUnlocking(false);
-              }
-            }}
+            onClick={Submit}
           >
             Submit
           </Button>
