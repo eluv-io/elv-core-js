@@ -57,7 +57,7 @@ const AppNav = observer(() => {
   } else {
     return (
       <div className="nav-container">
-        <Tabs w="100%" maw={1000} value={location.pathname} onTabChange={pathname => navigate(pathname)}>
+        <Tabs w="100%" maw={800} value={location.pathname} onTabChange={pathname => navigate(pathname)}>
           <Tabs.List grow>
             <Tabs.Tab value="/apps">Apps & Tools</Tabs.Tab>
             { accountsStore.currentAccount.tenantContractId ? <Tabs.Tab value="/tenancy">Tenancy</Tabs.Tab> : null }
