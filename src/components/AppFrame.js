@@ -59,9 +59,6 @@ const IFrame = React.forwardRef(
   (props, appRef) => <IFrameBase appRef={appRef} {...props} />
 );
 
-@inject("rootStore")
-@inject("accountsStore")
-@observer
 class AppFrame extends React.Component {
   constructor(props) {
     super(props);
@@ -311,10 +308,17 @@ class AppFrame extends React.Component {
   }
 }
 
+
 const AppFrameWrapper = () => {
   const {app} = useParams();
+  const AppFrameComponent =
+    inject("rootStore")(
+      inject("accountsStore")(
+        observer(AppFrame)
+      )
+    );
 
-  return <AppFrame app={app} />;
+  return <AppFrameComponent app={app} />;
 };
 
 export default AppFrameWrapper;

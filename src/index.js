@@ -6,7 +6,8 @@ import { render } from "react-dom";
 import { HashRouter } from "react-router-dom";
 
 import * as Stores from "./stores";
-import {inject, observer, Provider} from "mobx-react";
+import {observer, Provider} from "mobx-react";
+import {accountsStore, rootStore} from "./stores";
 
 import {Action, ErrorHandler} from "elv-components-js";
 
@@ -16,49 +17,44 @@ import Navigation from "./components/Navigation";
 import AppRoutes from "./Routes";
 import {Group, Loader, MantineProvider} from "@mantine/core";
 
-@inject("rootStore")
-@inject("accountsStore")
-@observer
-class App extends React.PureComponent {
-  render() {
-    if(this.props.rootStore.configError) {
-      return (
-        <div className="page-error">
-          <div className="page-error-container">
-            <h1>
-              Unable to load client configuration
-            </h1>
-            <h1>
-              {EluvioConfiguration["config-url"]}
-            </h1>
-
-            <Action onClick={() => this.props.rootStore.InitializeClient()}>
-              Retry
-            </Action>
-          </div>
-        </div>
-      );
-    }
-
-    if(!this.props.rootStore.client || !this.props.accountsStore.accountsLoaded) {
-      return (
-        <Group h="100vh" align="center" position="center">
-          <Loader />
-        </Group>
-      );
-    }
-
+const App = observer(() => {
+  if(rootStore.configError) {
     return (
-      <HashRouter>
-        <div className="router-container">
-          <Header />
-          <Navigation />
-          <AppRoutes />
+      <div className="page-error">
+        <div className="page-error-container">
+          <h1>
+            Unable to load client configuration
+          </h1>
+          <h1>
+            {EluvioConfiguration["config-url"]}
+          </h1>
+
+          <Action onClick={() => rootStore.InitializeClient()}>
+            Retry
+          </Action>
         </div>
-      </HashRouter>
+      </div>
     );
   }
-}
+
+  if(!rootStore.client || !accountsStore.accountsLoaded) {
+    return (
+      <Group h="100vh" align="center" position="center">
+        <Loader />
+      </Group>
+    );
+  }
+
+  return (
+    <HashRouter>
+      <div className="router-container">
+        <Header />
+        <Navigation />
+        <AppRoutes />
+      </div>
+    </HashRouter>
+  );
+});
 
 const AppComponent = ErrorHandler(App);
 
