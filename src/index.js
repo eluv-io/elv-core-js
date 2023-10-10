@@ -5,8 +5,7 @@ import React from "react";
 import { render } from "react-dom";
 import { HashRouter } from "react-router-dom";
 
-import * as Stores from "./stores";
-import {observer, Provider} from "mobx-react";
+import {observer} from "mobx-react";
 import {accountsStore, rootStore} from "./stores";
 
 import {Action, ErrorHandler} from "elv-components-js";
@@ -61,11 +60,9 @@ const AppComponent = ErrorHandler(App);
 render(
   (
     <React.Fragment>
-      <Provider {...Stores}>
-        <MantineProvider withGlobalStyles>
-          <AppComponent />
-        </MantineProvider>
-      </Provider>
+      <MantineProvider withGlobalStyles>
+        <AppComponent />
+      </MantineProvider>
       <div className="app-version">{EluvioConfiguration.version}</div>
     </React.Fragment>
   ),

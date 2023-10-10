@@ -14,7 +14,7 @@
     width: 25vw;
 
     a {
-      border-radius: 0 0 1em 1em;
+      border-radius: 0 0 5px 5px;
       color: $elv-color-text-lighter;
       flex: 1 1 auto;
 
@@ -37,21 +37,9 @@
   margin: $elv-spacing-l 0;
   width: 100%;
 
-  &.locked {
-    nav {
-      width: 300px;
-    }
-  }
-
   .warning {
     font-weight: bold;
-    margin-bottom: $elv-spacing-s;
-  }
-
-  a {
-    &.active {
-      border-top: 2px solid $elv-color-lightgray;
-    }
+    margin-top: $elv-spacing-s;
   }
 }
 

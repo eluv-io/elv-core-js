@@ -41,7 +41,7 @@ class Apps extends React.PureComponent {
     const logo = icons[Object.keys(icons).find(key => name.includes(key))] || UrlJoin(EluvioConfiguration.apps[name], "Logo.png");
 
     return (
-      <Link key={`app-${name}`} label={`Go to ${name}`} type="link" to={`/apps/${name}`} button={false}>
+      <Link key={`app-${name}`} label={`Go to ${name}`} type="link" to={`/apps/${name}`}>
         <div className="app-selection">
           <ImageIcon icon={logo || GenericAppLogo} alternateIcon={GenericAppLogo} className="app-logo" />
           <h4>{name}</h4>

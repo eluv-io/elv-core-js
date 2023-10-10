@@ -21,9 +21,9 @@ const SiteNav = () => {
         >
           Account
         </NavLink>
-        <NavLink activeClassName="active" to="/offerings">Offerings</NavLink>
-        <NavLink activeClassName="active" to="/terms">Terms</NavLink>
-        <NavLink activeClassName="active" to="/privacy">Privacy</NavLink>
+        <NavLink className={({isActive}) => isActive ? "active" : ""} to="/offerings">Offerings</NavLink>
+        <NavLink className={({isActive}) => isActive ? "active" : ""} to="/terms">Terms</NavLink>
+        <NavLink className={({isActive}) => isActive ? "active" : ""} to="/privacy">Privacy</NavLink>
       </nav>
     </div>
   );
@@ -34,41 +34,20 @@ const AppNav = observer(() => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  if(!account) {
-    return (
-      <div className="nav-container locked">
-        <nav>
-          <NavLink activeClassName="active" to="/accounts">Accounts</NavLink>
-          <NavLink activeClassName="active" to="/offerings">Offerings</NavLink>
-          <a target="_blank" href={"https://live.eluv.io/terms"}>Terms</a>
-          <a target="_blank" href={"https://live.eluv.io/privacy"}>Privacy</a>
-        </nav>
-      </div>
-    );
-  } else if(account.balance < 0.1) {
-    return (
-      <div className="nav-container locked">
-        <div className="warning">This account has an insufficient balance. Please fund the account.</div>
-        <nav>
-          <NavLink activeClassName="active" to="/accounts">Accounts</NavLink>
-        </nav>
-      </div>
-    );
-  } else {
-    return (
-      <div className="nav-container">
-        <Tabs w="100%" maw={800} value={location.pathname} onTabChange={pathname => navigate(pathname)}>
-          <Tabs.List grow>
-            <Tabs.Tab value="/apps">Apps & Tools</Tabs.Tab>
-            { accountsStore.currentAccount.tenantContractId ? <Tabs.Tab value="/tenancy">Tenancy</Tabs.Tab> : null }
-            <Tabs.Tab value="/profile">Profile</Tabs.Tab>
-            <Tabs.Tab value="/accounts">Accounts</Tabs.Tab>
-            <Tabs.Tab value="/transfer">Transfer</Tabs.Tab>
-          </Tabs.List>
-        </Tabs>
-      </div>
-    );
-  }
+  return (
+    <div className="nav-container">
+      <Tabs w="100%" maw={800} value={location.pathname} onTabChange={pathname => navigate(pathname)}>
+        <Tabs.List grow>
+          <Tabs.Tab value="/apps" disabled={locked}>Apps & Tools</Tabs.Tab>
+          { accountsStore.currentAccount?.tenantContractId ? <Tabs.Tab value="/tenancy" disabled={locked}>Tenancy</Tabs.Tab> : null }
+          <Tabs.Tab value="/profile" disabled={locked}>Profile</Tabs.Tab>
+          <Tabs.Tab value="/accounts">Accounts</Tabs.Tab>
+          <Tabs.Tab value="/transfer" disabled={locked}>Transfer</Tabs.Tab>
+        </Tabs.List>
+      </Tabs>
+      { account?.balance < 0.1 ? <div className="warning">This account has an insufficient balance. Please fund the account.</div> : null }
+    </div>
+  );
 });
 
 const Navigation = observer(() => {

@@ -16,9 +16,10 @@ import UrlJoin from "url-join";
 
 import XIcon from "../static/icons/X.svg";
 import KeyIcon from "../static/icons/Key.svg";
-import {inject, observer} from "mobx-react";
+import {observer} from "mobx-react";
 import {toJS} from "mobx";
 import {Group, TextInput, Button} from "@mantine/core";
+import {accountsStore} from "../stores";
 
 class Profile extends React.Component {
   constructor(props) {
@@ -29,7 +30,7 @@ class Profile extends React.Component {
       newName: "",
       updating: false,
       showKey: false,
-      newTenantContractIdId: toJS(props.accountsStore.currentAccount.tenantContractId) || ""
+      newTenantContractIdId: toJS(accountsStore.currentAccount.tenantContractId) || ""
     };
 
     this.HandleProfileImageChange = this.HandleProfileImageChange.bind(this);
@@ -49,7 +50,7 @@ class Profile extends React.Component {
   }
 
   HandleNameChange() {
-    const account = this.props.accountsStore.currentAccount;
+    const account = accountsStore.currentAccount;
 
     if(this.state.newName === account.name) {
       this.setState({modifyingName: false});
@@ -58,7 +59,7 @@ class Profile extends React.Component {
     }
 
     this.Update(async () => {
-      await this.props.accountsStore.ReplaceUserMetadata({
+      await accountsStore.ReplaceUserMetadata({
         metadataSubtree: UrlJoin("public", "name"),
         metadata: this.state.newName
       });
@@ -71,13 +72,13 @@ class Profile extends React.Component {
 
   async HandleProfileImageChange(event) {
     this.Update(async () =>
-      await this.props.accountsStore.ReplaceUserProfileImage(event.target.files[0])
+      await accountsStore.ReplaceUserProfileImage(event.target.files[0])
     );
   }
 
   async HandleAccessLevelChange(event) {
     this.Update(async () =>
-      await this.props.accountsStore.ReplaceUserMetadata({
+      await accountsStore.ReplaceUserMetadata({
         metadataSubtree: "access_level",
         metadata: event.target.value
       })
@@ -87,7 +88,7 @@ class Profile extends React.Component {
   async RevokeAccessor(accessor) {
     await Confirm({
       message: <span>Are you sure you want to revoke profile access from <b>{accessor}</b>?</span>,
-      onConfirm: async () => await this.props.accountsStore.DeleteUserMetadata({metadataSubtree: UrlJoin("allowed_accessors", accessor)})
+      onConfirm: async () => await accountsStore.DeleteUserMetadata({metadataSubtree: UrlJoin("allowed_accessors", accessor)})
     });
   }
 
@@ -96,7 +97,7 @@ class Profile extends React.Component {
       "Are you sure you want to override the current tenant?" :
       `Are you sure you want to set the tenant ID to ${this.state.newTenantContractIdId}?`;
     const Override = async () => {
-      await this.props.accountsStore.SetTenantContractId({id: this.state.newTenantContractIdId});
+      await accountsStore.SetTenantContractId({id: this.state.newTenantContractIdId});
     };
 
     await Confirm({
@@ -223,7 +224,7 @@ class Profile extends React.Component {
         <div className="profile-image-container">
           {updateIndicator}
           <CroppedIconWithAction
-            icon={this.props.accountsStore.ResizeImage(imageUrl, 500)}
+            icon={accountsStore.ResizeImage(imageUrl, 500)}
             alternateIcon={DefaultProfileImage}
             useLoadingIndicator={true}
             label="Profile Image"
@@ -279,7 +280,7 @@ class Profile extends React.Component {
   }
 
   render() {
-    const account = this.props.accountsStore.currentAccount;
+    const account = accountsStore.currentAccount;
     //const collectedTags = this.CollectedTags(account.metadata.collected_data);
     //const permissions = this.Permissions(account.metadata);
     const currentTenant = this.CurrentTenant(account.metadata.tenantContractId);
@@ -316,5 +317,5 @@ class Profile extends React.Component {
   }
 }
 
-export default inject("accountsStore")(observer(Profile));
+export default observer(Profile);
 

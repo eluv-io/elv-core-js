@@ -1,25 +1,25 @@
-import {action, computed, flow, observable} from "mobx";
+import {flow, makeAutoObservable} from "mobx";
 import {Buffer} from "buffer";
 import UrlJoin from "url-join";
 import {ElvClient} from "@eluvio/elv-client-js";
 
 class AccountStore {
-  @observable accounts = {};
-  @observable currentAccountAddress;
-  @observable accountsLoaded = false;
-  @observable tenantAdmins = [];
+  accounts = {};
+  currentAccountAddress;
+  accountsLoaded = false;
+  tenantAdmins = [];
 
-  @observable loadingAccount;
+  loadingAccount;
 
-  @computed get isTenantAdmin() {
+  get isTenantAdmin() {
     return this.tenantAdmins.includes(this.currentAccountAddress);
   }
 
-  @computed get currentAccount() {
+  get currentAccount() {
     return this.currentAccountAddress ? this.accounts[this.currentAccountAddress] : undefined;
   }
 
-  @computed get sortedAccounts() {
+  get sortedAccounts() {
     return Object.keys(this.accounts)
       .map(address => [address, (this.accounts[address] || {}).name])
       .sort(([addressA, nameA], [addressB, nameB]) => {
@@ -37,6 +37,7 @@ class AccountStore {
   }
 
   constructor(rootStore) {
+    makeAutoObservable(this);
     this.rootStore = rootStore;
 
     this.network = (EluvioConfiguration["config-url"].match(/\.(net\d+)\./) || [])[1] || "";
@@ -50,7 +51,6 @@ class AccountStore {
     });
   }
 
-  @action.bound
   LoadAccounts = flow(function * () {
     const tenantAdmins = localStorage.getItem(`elv-admins-${this.network}`);
     if(tenantAdmins) {
@@ -98,12 +98,11 @@ class AccountStore {
 
     this.accounts = accounts;
 
-    Object.keys(accounts).map(this.AccountBalance);
+    Object.keys(accounts).map(account => this.AccountBalance(account));
 
     this.accountsLoaded = true;
   });
 
-  @action.bound
   AccountBalance = flow(function * (address) {
     const client = this.rootStore.client;
 
@@ -118,7 +117,6 @@ class AccountStore {
     ).toFixed(3);
   });
 
-  @action.bound
   LockAccount({address}) {
     if(!(Object.keys(this.accounts).includes(address))) {
       return;
@@ -127,7 +125,6 @@ class AccountStore {
     this.accounts[address].signer = undefined;
   }
 
-  @action.bound
   UnlockAccount = flow(function * ({address, password}) {
     const client = this.rootStore.client;
     address = client.utils.FormatAddress(address);
@@ -162,7 +159,6 @@ class AccountStore {
     return wallet.GenerateMnemonic();
   }
 
-  @action.bound
   SetTenantContractId = flow(function * ({id}) {
     id = id.trim();
 
@@ -173,7 +169,6 @@ class AccountStore {
     this.SaveAccounts();
   });
 
-  @action.bound
   SetCurrentAccount = flow(function * ({address, signer}) {
     try {
       address = this.rootStore.client.utils.FormatAddress(address || signer.address);
@@ -211,7 +206,6 @@ class AccountStore {
     }
   });
 
-  @action.bound
   AddAccount = flow(function * ({
     privateKey,
     encryptedPrivateKey,
@@ -297,7 +291,6 @@ class AccountStore {
     this.SaveAccounts();
   });
 
-  @action.bound
   CheckTenantDetails = flow(function * () {
     const tenantContractId = yield this.rootStore.client.userProfileClient.TenantContractId();
     if(tenantContractId) {
@@ -326,7 +319,6 @@ class AccountStore {
 
   /* Profile */
 
-  @action.bound
   UserMetadata = flow(function * () {
     if(!this.currentAccountAddress) { return; }
 
@@ -365,7 +357,6 @@ class AccountStore {
     this.SaveAccounts();
   });
 
-  @action.bound
   ReplaceUserProfileImage = flow(function * (image) {
     if(!this.currentAccountAddress) { return; }
 
@@ -380,7 +371,6 @@ class AccountStore {
       + `&cache=${Math.random()}` ;
   });
 
-  @action.bound
   ReplaceUserMetadata = flow(function * ({metadataSubtree, metadata}) {
     if(!this.currentAccountAddress) { return; }
 
@@ -389,7 +379,6 @@ class AccountStore {
     yield this.UserMetadata();
   });
 
-  @action.bound
   DeleteUserMetadata = flow(function * ({metadataSubtree}) {
     if(!this.currentAccountAddress) { return; }
 
@@ -398,7 +387,6 @@ class AccountStore {
     yield this.UserMetadata();
   });
 
-  @action.bound
   RemoveAccount(address) {
     if(!(Object.keys(this.accounts).includes(address))) {
       return;
