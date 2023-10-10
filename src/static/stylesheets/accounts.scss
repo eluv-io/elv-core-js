@@ -120,3 +120,29 @@
     width: 100%;
   }
 }
+
+.account-form {
+  .mnemonic-container {
+    align-items: center;
+    display: flex;
+    padding-right: 50px;
+    position: relative;
+  }
+
+  .mnemonic-download {
+    position: absolute;
+    right: 20px;
+
+    * {
+      stroke: $elv-color-mediumblue;
+    }
+  }
+
+  .mnemonic-saved {
+    * {
+      * {
+        cursor: pointer;
+      }
+    }
+  }
+}

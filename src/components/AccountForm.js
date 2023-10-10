@@ -1,9 +1,31 @@
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react";
-import {Input as MantineInput, Text, Group, Button, Title, Select, Paper, PasswordInput, TextInput, Textarea} from "@mantine/core";
+import {
+  Input as MantineInput,
+  Text,
+  Group,
+  Button,
+  Title,
+  Select,
+  Paper,
+  PasswordInput,
+  TextInput,
+  Textarea,
+  ActionIcon
+} from "@mantine/core";
 import {Link} from "react-router-dom";
 import {accountsStore} from "../stores";
 import {Navigate} from "react-router";
+import {ImageIcon} from "elv-components-js";
+import DownloadIcon from "../static/icons/download.svg";
+
+const DownloadMnemonic = mnemonic => {
+  const element = document.createElement("a");
+  element.href = "data:attachment/text," + encodeURI(mnemonic);
+  element.target = "_blank";
+  element.download = "mnemonic.txt";
+  element.click();
+};
 
 const AccountForm = observer(() => {
   const [formData, setFormData] = useState({
@@ -38,7 +60,7 @@ const AccountForm = observer(() => {
 
   return (
     <div className="page-content">
-      <Paper withBorder p="xl" pr={50} w={800} mt="xl" shadow="sm">
+      <Paper withBorder p="xl" pr={50} w={800} shadow="sm">
         <form className="account-form" onSubmit={() => {}}>
           <Title order={4} mb="xl">Create Account</Title>
           <Select
@@ -89,8 +111,17 @@ const AccountForm = observer(() => {
                 label="Mnemonic Phrase"
                 description="This mnemonic can be used to recover your account. Please download the mnemonic and ensure it is backed up and kept safe."
               >
-                <Paper withBorder p="md" mt="sm" mb="md">
+                <Paper withBorder p="md" mt="sm" mb="md" className="mnemonic-container">
                   <Text italic fz="sm">{formData.mnemonic}</Text>
+                  <ActionIcon
+                    variant="transparent"
+                    title="Download Mnemonic Phrase"
+                    aria-label="Download Mnemonic Phrase"
+                    className="mnemonic-download"
+                    onClick={() => DownloadMnemonic(formData.mnemonic)}
+                  >
+                    <ImageIcon icon={DownloadIcon} />
+                  </ActionIcon>
                 </Paper>
               </MantineInput.Wrapper>
           }
