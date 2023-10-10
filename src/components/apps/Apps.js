@@ -1,20 +1,21 @@
-import "../static/stylesheets/apps.scss";
+import "../../static/stylesheets/apps.scss";
 
 import React from "react";
-import GenericAppLogo from "../static/icons/App.svg";
+import GenericAppLogo from "../../static/icons/App.svg";
 import {ImageIcon} from "elv-components-js";
 import UrlJoin from "url-join";
 import {Link} from "react-router-dom";
 
-import FabricBrowserIcon from "../static/images/app_icons/FabricBrowser.png";
-import VideoEditorIcon from "../static/images/app_icons/Video Editor.png";
-import SiteSampleIcon from "../static/images/app_icons/site-sample.svg";
-import StreamSampleIcon from "../static/images/app_icons/stream-sample.svg";
-import StudioIcon from "../static/images/app_icons/Media Ingest.png";
-import ClipSearchIcon from "../static/images/app_icons/clip-search.svg";
-import LiveStreamManagerIcon from "../static/images/app_icons/Livestream Manager.png";
-import CreatorStudioIcon from "../static/images/app_icons/Creator Studio.png";
-import AnalyticsAndReportingIcon from "../static/images/app_icons/Analytics and Reporting.png";
+
+import CreatorStudioIcon from "../../static/images/app_icons/Creator Studio.png";
+import AnalyticsAndReportingIcon from "../../static/images/app_icons/Analytics and Reporting.png";
+import FabricBrowserIcon from "../../static/images/app_icons/FabricBrowser.png";
+import VideoEditorIcon from "../../static/images/app_icons/Video Editor.png";
+import SiteSampleIcon from "../../static/images/app_icons/site-sample.svg";
+import StreamSampleIcon from "../../static/images/app_icons/stream-sample.svg";
+import StudioIcon from "../../static/images/app_icons/Media Ingest.png";
+import ClipSearchIcon from "../../static/images/app_icons/clip-search.svg";
+import LiveStreamManagerIcon from "../../static/images/app_icons/Livestream Manager.png";
 
 const icons = {
   "Fabric Browser": FabricBrowserIcon,

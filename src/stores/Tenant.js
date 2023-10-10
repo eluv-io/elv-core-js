@@ -11,6 +11,10 @@ class TenantStore {
     this.rootStore = rootStore;
   }
 
+  get isTenantAdmin() {
+    return this.rootStore.accountsStore.isTenantAdmin;
+  }
+
   get tenantContractId() {
     return this.rootStore.accountsStore.currentAccount?.tenantContractId;
   }
@@ -18,6 +22,25 @@ class TenantStore {
   get publicTenantMetadata() {
     return this.tenantMetadata[this.tenantContractId]?.public;
   }
+
+  GenerateInviteUrl = flow(function * ({name, funds}) {
+    yield new Promise(resolve => setTimeout(resolve, 2000));
+
+    const params = Utils.B58(
+      JSON.stringify({
+        name,
+        adminAddress: this.rootStore.accountsStore.currentAccountAddress,
+        tenantContractId: this.tenantContractId,
+        faucetToken: "asd"
+      })
+    );
+
+    let url = new URL(window.location.origin);
+    url.pathname = "/onboard";
+    url.searchParams.set("obp", params);
+
+    return url.toString();
+  })
 
   UpdateTenantInfo = flow(function * ({name, description, image}) {
     if(!this.tenantContractId) { return; }

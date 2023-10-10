@@ -1,11 +1,11 @@
-import "../static/stylesheets/login.scss";
+import "../../static/stylesheets/login.scss";
 
 import React, {useEffect, useState} from "react";
 import {Button, Group, Modal, PasswordInput} from "@mantine/core";
 import {observer} from "mobx-react";
 import {Link, useNavigate} from "react-router-dom";
-import {accountsStore} from "../stores";
-import AccountDropdown from "./AccountDropdown";
+import {accountsStore} from "../../stores";
+import AccountDropdown from "../account/AccountDropdown";
 
 const LoginModal = observer(({title, address, allowAccountSwitch, setUnlocking, Close}) => {
   const [password, setPassword] = useState("");
@@ -79,7 +79,7 @@ const LoginModal = observer(({title, address, allowAccountSwitch, setUnlocking, 
             Submit();
           }}
         />
-        <Group position="right" mt="xl">
+        <Group position="right" mt={50}>
           <Button
             fz="xs"
             variant="default"

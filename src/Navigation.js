@@ -1,13 +1,40 @@
-import "../static/stylesheets/navigation.scss";
+import "./static/stylesheets/navigation.scss";
+import "./static/stylesheets/tenancy.scss";
 
 import React from "react";
 import {NavLink, useNavigate} from "react-router-dom";
 import {observer} from "mobx-react";
 import {useLocation} from "react-router";
-import {accountsStore} from "../stores";
+import {accountsStore, tenantStore} from "./stores";
 import {Tabs} from "@mantine/core";
 
-const SiteNav = () => {
+const TenantNav = observer(() => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  if(!location.pathname.startsWith("/tenancy")) {
+    return;
+  }
+
+  // Non-admins can't view anything but the overview
+  if(!tenantStore.isTenantAdmin) {
+    return null;
+  }
+
+  return (
+    <div className="tenant-navigation">
+      <Tabs w="100%" mx="auto" maw={400} mb="lg" variant="pills" value={location.pathname} onTabChange={pathname => navigate(pathname)}>
+        <Tabs.List grow>
+          <Tabs.Tab value="/tenancy">Overview</Tabs.Tab>
+          <Tabs.Tab value="/tenancy/manage">Manage</Tabs.Tab>
+          <Tabs.Tab value="/tenancy/invites">Invites</Tabs.Tab>
+        </Tabs.List>
+      </Tabs>
+    </div>
+  );
+});
+
+const ResourcesNav = () => {
   const location = useLocation();
 
   return (
@@ -29,14 +56,14 @@ const SiteNav = () => {
   );
 };
 
-const AppNav = observer(() => {
+const CoreNav = observer(() => {
   const account = accountsStore.currentAccount;
   const location = useLocation();
   const navigate = useNavigate();
 
   return (
     <div className="nav-container">
-      <Tabs w="100%" maw={800} value={location.pathname} onTabChange={pathname => navigate(pathname)}>
+      <Tabs w="100%" maw={800} value={`/${location.pathname.split("/")[1]}`} onTabChange={pathname => navigate(pathname)}>
         <Tabs.List grow>
           <Tabs.Tab value="/apps" disabled={locked}>Apps & Tools</Tabs.Tab>
           { accountsStore.currentAccount?.tenantContractId ? <Tabs.Tab value="/tenancy" disabled={locked}>Tenancy</Tabs.Tab> : null }
@@ -52,15 +79,17 @@ const AppNav = observer(() => {
 
 const Navigation = observer(() => {
   const location = useLocation();
-  if(location.pathname.match(/^\/apps\/.+$/)) {
+  if(location.pathname.match(/^\/apps\/.+$/) || location.pathname.startsWith("/onboard")) {
     // App frame is visible - hide navigation
+    // or onboard form
     return null;
   }
 
   return (
     <>
-      <SiteNav />
-      <AppNav />
+      <ResourcesNav />
+      <CoreNav />
+      <TenantNav />
     </>
   );
 });

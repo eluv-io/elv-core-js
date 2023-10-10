@@ -14,10 +14,10 @@ import {
   ActionIcon
 } from "@mantine/core";
 import {Link} from "react-router-dom";
-import {accountsStore} from "../stores";
+import {accountsStore} from "../../stores";
 import {Navigate} from "react-router";
 import {ImageIcon} from "elv-components-js";
-import DownloadIcon from "../static/icons/download.svg";
+import DownloadIcon from "../../static/icons/download.svg";
 
 const DownloadMnemonic = mnemonic => {
   const element = document.createElement("a");

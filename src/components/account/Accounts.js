@@ -1,17 +1,17 @@
-import "../static/stylesheets/accounts.scss";
+import "../../static/stylesheets/accounts.scss";
 
 import React, {useState} from "react";
 import {observer} from "mobx-react";
 import {Balance, Confirm, CroppedIcon, IconButton, ImageIcon, LoadingElement} from "elv-components-js";
-import LoginModal from "./LoginModal";
-import {accountsStore} from "../stores";
+import LoginModal from "../login/LoginModal";
+import {accountsStore} from "../../stores";
 import {Utils} from "@eluvio/elv-client-js";
 import {Button, Group} from "@mantine/core";
 
-import LockedIcon from "../static/icons/Locked.svg";
-import UnlockedIcon from "../static/icons/Unlocked.svg";
-import DefaultAccountImage from "../static/icons/User.svg";
-import RemoveAccountIcon from "../static/icons/X.svg";
+import LockedIcon from "../../static/icons/Locked.svg";
+import UnlockedIcon from "../../static/icons/Unlocked.svg";
+import DefaultAccountImage from "../../static/icons/User.svg";
+import RemoveAccountIcon from "../../static/icons/X.svg";
 import {Link} from "react-router-dom";
 
 const Account = observer(({address}) => {

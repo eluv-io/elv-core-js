@@ -31,8 +31,8 @@ const TenantForm = observer(({Back}) => {
 
   return (
     <div className="page-content">
-      <Paper withBorder p="xl" w={800} mt={50} shadow="sm">
-        <Title mb={50} order={3} fw={500} ta="center">Tenancy Overview</Title>
+      <Paper withBorder p="xl" w={800} shadow="sm">
+        <Title mb={50} order={3} fw={500} ta="center">Edit Tenancy Info</Title>
         <form onSubmit={() => {}}>
           <input
             type="file"
@@ -128,10 +128,9 @@ const TenantOverview = observer(() => {
       loading={!tenantStore.publicTenantMetadata}
       render={() =>
         <div className="page-content">
-          <Title mb={50} order={3} fw={500} ta="center">Tenancy Overview</Title>
-          <Paper withBorder p="xl" pr={60} w={800} mt={50} style={{position: "absolute"}}>
+          <Paper withBorder p="xl" pr={60} w={800} style={{position: "absolute"}}>
             {
-              !accountsStore.isTenantAdmin ? null :
+              !tenantStore.isTenantAdmin ? null :
                 <ActionIcon
                   onClick={() => setEditing(true)}
                   title="Edit Tenancy Info"

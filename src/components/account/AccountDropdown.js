@@ -1,4 +1,4 @@
-import "../static/stylesheets/header.scss";
+import "../../static/stylesheets/header.scss";
 
 import React, {forwardRef, useState} from "react";
 import {
@@ -7,8 +7,8 @@ import {
 } from "elv-components-js";
 import {observer} from "mobx-react";
 
-import DefaultAccountImage from "../static/icons/User.svg";
-import {accountsStore} from "../stores";
+import DefaultAccountImage from "../../static/icons/User.svg";
+import {accountsStore} from "../../stores";
 import {Group, Modal, Select, Text, UnstyledButton} from "@mantine/core";
 
 const Account = forwardRef(({

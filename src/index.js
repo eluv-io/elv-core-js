@@ -3,15 +3,15 @@ import "./static/stylesheets/defaults.scss";
 
 import React from "react";
 import { render } from "react-dom";
-import { HashRouter } from "react-router-dom";
+import {BrowserRouter} from "react-router-dom";
 
 import {observer} from "mobx-react";
 import {accountsStore, rootStore} from "./stores";
 
 import {Action, ErrorHandler} from "elv-components-js";
 
-import Header from "./components/Header";
-import Navigation from "./components/Navigation";
+import Header from "./Header";
+import Navigation from "./Navigation";
 
 import AppRoutes from "./Routes";
 import {Group, Loader, MantineProvider} from "@mantine/core";
@@ -45,13 +45,13 @@ const App = observer(() => {
   }
 
   return (
-    <HashRouter>
+    <BrowserRouter>
       <div className="router-container">
         <Header />
         <Navigation />
         <AppRoutes />
       </div>
-    </HashRouter>
+    </BrowserRouter>
   );
 });
 
