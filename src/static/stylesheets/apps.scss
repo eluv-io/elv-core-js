@@ -1,17 +1,19 @@
 @import "~elv-components-js/src/stylesheets/styles";
 
 .apps {
+  align-items: center;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 30px;
   justify-content: center;
   width: 100%;
 }
 
 .apps-box {
-  border: 1px solid $elv-color-mediumgray;
+  border: 1px solid $elv-color-lightgray;
   border-radius: 25px;
   padding: 30px 20px;
+  width: max-content;
 
   h2 {
     color: $elv-color-darkgray;

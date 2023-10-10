@@ -1,56 +1,75 @@
-const webpack = require("webpack");
 const Path = require("path");
-const autoprefixer = require("autoprefixer");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
+
+let plugins = [
+  new HtmlWebpackPlugin({
+    title: "Eluvio Core",
+    template: Path.join(__dirname, "src", "index.html"),
+    filename: "index.html",
+    favicon: "./src/static/icons/favicon-light.png",
+    inject: "body"
+  })
+];
+
+if(process.env.ANALYZE_BUNDLE) {
+  plugins.push(new BundleAnalyzerPlugin());
+}
 
 module.exports = {
-  entry: "./src/index.js",
+  entry: Path.resolve(__dirname, "src/index.js"),
   target: "web",
   output: {
     path: Path.resolve(__dirname, "dist"),
-    filename: "index.js",
-    chunkFilename: "[name].bundle.js"
+    clean: true,
+    //filename: "main.js",
+    filename: '[name].bundle.js',
+    publicPath: process.env.ASSET_PATH,
+    chunkFilename: "bundle.[id].[chunkhash].js"
   },
   devServer: {
-    disableHostCheck: true,
-    inline: true,
-    port: 8080,
+    hot: true,
+    historyApiFallback: true,
+    allowedHosts: "all",
+    port: 8082,
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Headers": "Content-Type, Accept",
       "Access-Control-Allow-Methods": "POST"
+    },
+    // This is to allow configuration.js to be accessed
+    static: {
+      directory: Path.resolve(__dirname, "./config"),
+      publicPath: "/"
     }
-  },
-  node: {
-    fs: "empty"
   },
   mode: "development",
   devtool: "eval-source-map",
+  plugins,
+  externals: {
+    crypto: "crypto"
+  },
   optimization: {
     splitChunks: {
-      chunks: "all"
-    }
+      chunks: "all",
+    },
   },
-  plugins: [
-    new CopyWebpackPlugin([{
-      from: Path.join(__dirname, "configuration.js"),
-      to: Path.join(__dirname, "dist", "configuration.js")
-    }]),
-    new HtmlWebpackPlugin({
-      title: "Eluvio",
-      template: Path.join(__dirname, "src", "index.html"),
-      inject: "body",
-      cache: false,
-      filename: "index.html",
-      favicon: Path.join(__dirname, "src", "static", "icons", "favicon-light.png")
-    }),
-  ],
+  resolve: {
+    alias: {
+      // Force webpack to use *one* copy of bn.js instead of 8
+      "bn.js": Path.resolve(Path.join(__dirname, "node_modules", "bn.js"))
+    },
+    fallback: {
+      stream: require.resolve("stream-browserify"),
+      url: require.resolve("url")
+    },
+    extensions: [".js", ".jsx", ".mjs", ".scss", ".png", ".svg"],
+  },
   module: {
     rules: [
       {
-        test: /\.scss$/,
+        test: /\.(css|scss)$/,
+        exclude: /\.(theme|font)\.(css|scss)$/i,
         use: [
           "style-loader",
           {
@@ -59,21 +78,18 @@ module.exports = {
               importLoaders: 2
             }
           },
-          {
-            loader: "postcss-loader",
-            options: {
-              plugins: () => [autoprefixer({})]
-            }
-          },
+          "postcss-loader",
           "sass-loader"
         ]
       },
       {
-        test: /\.(js|mjs)$/,
-        exclude: /node_modules\/(?!elv-components-js)/,
+        test: /\.(js|mjs|jsx)$/,
         loader: "babel-loader",
         options: {
-          presets: ["@babel/preset-env", "@babel/preset-react"],
+          presets: [
+            "@babel/preset-env",
+            "@babel/preset-react",
+          ]
         }
       },
       {
@@ -81,16 +97,24 @@ module.exports = {
         loader: "svg-inline-loader"
       },
       {
-        test: /\.(gif|png|jpe?g)$/i,
-        use: ["file-loader"],
+        test: /\.(gif|png|jpe?g|otf|woff2?|ttf)$/i,
+        include: [ Path.resolve(__dirname, "src/static/public")],
+        type: "asset/inline",
+        generator: {
+          filename: "public/[name][ext]"
+        }
+      },
+      {
+        test: /\.(gif|png|jpe?g|otf|woff2?|ttf)$/i,
+        type: "asset/resource",
       },
       {
         test: /\.(txt|bin|abi|html)$/i,
-        loader: "raw-loader"
+        exclude: [ Path.resolve(__dirname, "src/index.html") ],
+        type: "asset/source"
       },
       {
         test: /\.ya?ml$/,
-        type: "json", // Required by Webpack v4
         use: "yaml-loader"
       }
     ]

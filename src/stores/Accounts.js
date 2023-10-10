@@ -1,5 +1,4 @@
 import {flow, makeAutoObservable} from "mobx";
-import {Buffer} from "buffer";
 import UrlJoin from "url-join";
 import {ElvClient} from "@eluvio/elv-client-js";
 
@@ -336,14 +335,6 @@ class AccountStore {
     try {
       if(this.accounts[address].metadata.public.profile_image) {
         this.accounts[address].imageUrl = (yield this.rootStore.client.userProfileClient.UserProfileImage({address}));
-        this.accounts[address].image =
-          "data:image/png;base64," +
-          Buffer.from(
-            yield client.Request({
-              url: this.ResizeImage(this.accounts[address].imageUrl, 200),
-              format: "arrayBuffer"
-            })
-          ).toString("base64");
       }
     } catch (error) {
       // eslint-disable-next-line no-console

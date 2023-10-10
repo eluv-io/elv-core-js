@@ -1,7 +1,7 @@
 import "../../static/stylesheets/onboard.scss";
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react";
-import {ActionIcon, Button, Paper, PasswordInput, TextInput, Title, Text, Checkbox, Group} from "@mantine/core";
+import {Input as MantineInput, ActionIcon, Button, Paper, PasswordInput, TextInput, Title, Text, Checkbox, Group} from "@mantine/core";
 import {accountsStore, rootStore} from "../../stores";
 import {useDisclosure} from "@mantine/hooks";
 import {ImageIcon} from "elv-components-js";
@@ -59,7 +59,7 @@ const Onboard = observer(() => {
   if(!params?.tenantId || !params?.faucetToken) {
     return (
       <div className="page-content">
-        <Paper withBorder p="xl" w={800} mt={50} shadow="sm">
+        <Paper withBorder p="xl" w={800} shadow="sm">
           <Title order={4} ta="center" mt="xl" mb="md">Invalid Onboarding URL</Title>
           <Text ta="center" mb="xl">
             Please contact your tenant administrator
@@ -72,7 +72,7 @@ const Onboard = observer(() => {
   if(complete) {
     return (
       <div className="page-content">
-        <Paper withBorder p="xl" w={800} mt={50} shadow="sm">
+        <Paper withBorder p="xl" w={800} shadow="sm">
           <Title order={4} ta="center" mt="xl" mb="md">Account Created</Title>
           <Text ta="center" mb="xl">
             Your tenant administrator will be notified to grant appropriate permissions
@@ -84,7 +84,7 @@ const Onboard = observer(() => {
 
   return (
     <div className="page-content">
-      <Paper withBorder p="xl" pr={50} w={800} mt={50} shadow="sm">
+      <Paper withBorder p="xl" pr={50} w={800} shadow="sm">
         <form className="onboard-form">
           <Title order={4} mb="xl">Create Account</Title>
           <TextInput
@@ -116,25 +116,23 @@ const Onboard = observer(() => {
             required
             onChange={event => setFormData({...formData, passwordConfirmation: event.currentTarget.value})}
           />
-
-          <Title order={5} mt="xl">Mnemonic Phrase</Title>
-          <Text fz="xs" color="dimmed" mb="sm">
-            This mnemonic can be used to recover your account. Please download the mnemonic and ensure it is backed up and kept safe.
-          </Text>
-          <Paper withBorder p="md" className="mnemonic-container">
-            <Text fz="sm" color="dimmed">
-              { formData.mnemonic }
-            </Text>
-            <ActionIcon
-              variant="transparent"
-              title="Download Mnemonic Phrase"
-              aria-label="Download Mnemonic Phrase"
-              className="mnemonic-download"
-              onClick={() => DownloadMnemonic(formData.mnemonic)}
-            >
-              <ImageIcon icon={DownloadIcon} />
-            </ActionIcon>
-          </Paper>
+          <MantineInput.Wrapper
+            label="Mnemonic Phrase"
+            description="This mnemonic can be used to recover your account. Please download the mnemonic and ensure it is backed up and kept safe."
+          >
+            <Paper withBorder p="md" mt="sm" mb="md" className="mnemonic-container">
+              <Text italic fz="sm">{formData.mnemonic}</Text>
+              <ActionIcon
+                variant="transparent"
+                title="Download Mnemonic Phrase"
+                aria-label="Download Mnemonic Phrase"
+                className="mnemonic-download"
+                onClick={() => DownloadMnemonic(formData.mnemonic)}
+              >
+                <ImageIcon icon={DownloadIcon} />
+              </ActionIcon>
+            </Paper>
+          </MantineInput.Wrapper>
           <Checkbox
             mt="md"
             label="I have saved my mnemonic in a safe, secure place"

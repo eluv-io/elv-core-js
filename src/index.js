@@ -57,6 +57,12 @@ const App = observer(() => {
 
 const AppComponent = ErrorHandler(App);
 
+const element = document.createElement("div");
+element.id = "app";
+document.body.appendChild(
+  element
+);
+
 render(
   (
     <React.Fragment>
