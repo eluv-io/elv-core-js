@@ -1,8 +1,8 @@
 import {observer} from "mobx-react";
 import React, {useState} from "react";
-import {accountsStore} from "./stores";
+import {accountsStore} from "../../stores";
 import {Navigate} from "react-router";
-import LoginModal from "./components/LoginModal";
+import LoginModal from "./LoginModal";
 
 const LoginGate = observer(({children}) => {
   const [unlocking, setUnlocking] = useState(false);

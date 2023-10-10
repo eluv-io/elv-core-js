@@ -23,8 +23,9 @@ module.exports = {
     path: Path.resolve(__dirname, "dist"),
     clean: true,
     //filename: "main.js",
-    filename: '[name].bundle.js',
-    publicPath: process.env.ASSET_PATH,
+    filename: "[name].bundle.js",
+    //publicPath: process.env.ASSET_PATH,
+    publicPath: "/",
     chunkFilename: "bundle.[id].[chunkhash].js"
   },
   devServer: {

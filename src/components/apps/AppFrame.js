@@ -14,7 +14,7 @@ import {Confirm} from "elv-components-js";
 import {observer} from "mobx-react";
 import {Debounce} from "elv-components-js";
 
-import {rootStore, accountsStore} from "../stores";
+import {rootStore, accountsStore} from "../../stores";
 
 class IFrameBase extends React.Component {
   SandboxPermissions() {

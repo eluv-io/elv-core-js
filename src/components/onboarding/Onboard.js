@@ -18,7 +18,12 @@ const DownloadMnemonic = mnemonic => {
 
 // TODO: Get tenant name / branding
 const Onboard = observer(() => {
-  const [params, setParams] = useState(undefined);
+  const [params, setParams] = useState({
+    name: "",
+    adminAddress: "",
+    tenantContractId: "",
+    faucetToken: ""
+  });
   const [passwordVisible, {toggle}] = useDisclosure(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -35,18 +40,20 @@ const Onboard = observer(() => {
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     try {
-      setParams(JSON.parse(rootStore.utils.FromB58ToStr(searchParams.get("obp"))));
+      const params = JSON.parse(rootStore.utils.FromB58ToStr(searchParams.get("obp")));
+
+      setParams(params);
+      setFormData({
+        ...formData,
+        mnemonic: accountsStore.GenerateMnemonic(),
+        name: params?.name || ""
+      });
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error("Unable to retrieve onboarding params:");
       // eslint-disable-next-line no-console
       console.error(error);
     }
-
-    setFormData({
-      ...formData,
-      mnemonic: accountsStore.GenerateMnemonic()
-    });
   }, []);
 
   const valid =
@@ -56,9 +63,9 @@ const Onboard = observer(() => {
     formData.password === formData.passwordConfirmation &&
     formData.mnemonicSaved;
 
-  if(!params?.tenantId || !params?.faucetToken) {
+  if(!params?.tenantContractId || !params?.faucetToken || !params.adminAddress) {
     return (
-      <div className="page-content">
+      <div className="page-content onboard">
         <Paper withBorder p="xl" w={800} shadow="sm">
           <Title order={4} ta="center" mt="xl" mb="md">Invalid Onboarding URL</Title>
           <Text ta="center" mb="xl">
@@ -71,7 +78,7 @@ const Onboard = observer(() => {
 
   if(complete) {
     return (
-      <div className="page-content">
+      <div className="page-content onboard">
         <Paper withBorder p="xl" w={800} shadow="sm">
           <Title order={4} ta="center" mt="xl" mb="md">Account Created</Title>
           <Text ta="center" mb="xl">
@@ -83,7 +90,7 @@ const Onboard = observer(() => {
   }
 
   return (
-    <div className="page-content">
+    <div className="page-content onboard">
       <Paper withBorder p="xl" pr={50} w={800} shadow="sm">
         <form className="onboard-form">
           <Title order={4} mb="xl">Create Account</Title>
@@ -159,7 +166,7 @@ const Onboard = observer(() => {
                     passwordConfirmation: formData.passwordConfirmation,
                     name: formData.name,
                     faucetToken: params.faucetToken,
-                    tenantId: params.tenantId
+                    tenantContractId: params.tenantContractId
                   });
 
                   setComplete(true);

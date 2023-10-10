@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {Navigate} from "react-router";
 import {observer} from "mobx-react";
 import {Title, Paper, Select, TextInput, NumberInput, Button, Group, Text} from "@mantine/core";
-import {accountsStore} from "../stores";
+import {accountsStore} from "../../stores";
 import {Utils} from "@eluvio/elv-client-js";
 import {Link} from "react-router-dom";
 

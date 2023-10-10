@@ -1,4 +1,4 @@
-import "../static/stylesheets/profile.scss";
+import "../../static/stylesheets/profile.scss";
 
 import React from "react";
 import {
@@ -11,15 +11,15 @@ import {
   TraversableJson,
 } from "elv-components-js";
 
-import DefaultProfileImage from "../static/icons/User.svg";
+import DefaultProfileImage from "../../static/icons/User.svg";
 import UrlJoin from "url-join";
 
-import XIcon from "../static/icons/X.svg";
-import KeyIcon from "../static/icons/Key.svg";
+import XIcon from "../../static/icons/X.svg";
+import KeyIcon from "../../static/icons/Key.svg";
 import {observer} from "mobx-react";
 import {toJS} from "mobx";
 import {Group, TextInput, Button} from "@mantine/core";
-import {accountsStore} from "../stores";
+import {accountsStore} from "../../stores";
 
 class Profile extends React.Component {
   constructor(props) {

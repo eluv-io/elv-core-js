@@ -212,7 +212,7 @@ class AccountStore {
     passwordConfirmation,
     name,
     faucetToken,
-    tenantId
+    tenantContractId
   }) {
     if(password !== passwordConfirmation) {
       throw Error("Password and confirmation do not match");
@@ -280,9 +280,9 @@ class AccountStore {
       });
     }
 
-    if(tenantId) {
+    if(tenantContractId) {
       yield this.SetTenantContractId({
-        id: tenantId
+        id: tenantContractId
       });
     }
 
@@ -301,7 +301,7 @@ class AccountStore {
       });
       const accountGroups = yield this.rootStore.client.Collection({collectionType: "accessGroups"});
 
-      const isTenantAdmin = !!accountGroups.find(address => this.rootStore.client.utils.EqualAddress(tenantAdminGroupAddress, address));
+      const isTenantAdmin = !!accountGroups?.find(address => this.rootStore.client.utils.EqualAddress(tenantAdminGroupAddress, address));
 
       if(isTenantAdmin) {
         if(!this.tenantAdmins.includes(this.currentAccountAddress)) {
