@@ -1,4 +1,4 @@
-import {configure, observable, action, flow} from "mobx";
+import {configure, flow, makeAutoObservable} from "mobx";
 import {ElvClient, ElvWalletClient, Utils} from "@eluvio/elv-client-js";
 import AccountStore from "./Accounts";
 import TenantStore from "./Tenant";
@@ -9,24 +9,25 @@ configure({
 });
 
 class RootStore {
-  @observable networkName;
-  @observable configError = false;
-  @observable walletClient;
-  @observable client;
-  @observable searchClient;
-  @observable signerSet = false;
-  @observable showHeader = true;
-  @observable simplePasswords = false;
-  @observable utils = Utils;
+  networkName;
+  configError = false;
+  walletClient;
+  client;
+  searchClient;
+  signerSet = false;
+  showHeader = true;
+  simplePasswords = false;
+  utils = Utils;
 
   constructor() {
+    makeAutoObservable(this);
+
     this.accountsStore = new AccountStore(this);
     this.tenantStore = new TenantStore(this);
 
     this.InitializeClient();
   }
 
-  @action.bound
   InitializeClient = flow(function * (signer) {
     this.configError = false;
 
@@ -113,7 +114,6 @@ class RootStore {
     }
   });
 
-  @action.bound
   InitializeSearchClient = flow(function * (signer) {
     try {
       const {
@@ -178,7 +178,6 @@ class RootStore {
     }
   });
 
-  @action.bound
   ToggleHeader(show) {
     this.showHeader = show;
   }

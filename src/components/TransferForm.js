@@ -53,7 +53,7 @@ const TransferForm = observer(() => {
 
   return (
     <div className="page-content">
-      <Paper withBorder p="xl" pr={50} w={800} mt="xl" shadow="sm">
+      <Paper withBorder p="xl" pr={50} w={800} shadow="sm">
         <form onSubmit={() => {}}>
           <Title order={4} mb="xl">Transfer Funds</Title>
           <Select

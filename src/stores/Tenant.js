@@ -1,23 +1,24 @@
-import {action, computed, flow, observable} from "mobx";
+import {flow, makeAutoObservable} from "mobx";
 import {Utils} from "@eluvio/elv-client-js";
 
 class TenantStore {
-  @observable tenantAdminGroupMembers = [];
-  @observable tenantMetadata = {};
+  tenantAdminGroupMembers = [];
+  tenantMetadata = {};
 
   constructor(rootStore) {
+    makeAutoObservable(this);
+
     this.rootStore = rootStore;
   }
 
-  @computed get tenantContractId() {
+  get tenantContractId() {
     return this.rootStore.accountsStore.currentAccount?.tenantContractId;
   }
 
-  @computed get publicTenantMetadata() {
+  get publicTenantMetadata() {
     return this.tenantMetadata[this.tenantContractId]?.public;
   }
 
-  @action.bound
   UpdateTenantInfo = flow(function * ({name, description, image}) {
     if(!this.tenantContractId) { return; }
 
@@ -70,7 +71,6 @@ class TenantStore {
     yield this.LoadPublicTenantMetadata();
   });
 
-  @action.bound
   LoadPublicTenantMetadata = flow(function * () {
     if(!this.tenantContractId) { return; }
 
@@ -87,7 +87,6 @@ class TenantStore {
     };
   });
 
-  @action.bound
   LoadGroupMembers = flow(function * () {
     const tenantContractId = yield this.rootStore.client.userProfileClient.TenantContractId();
     const tenantAdminGroupAddress = yield this.rootStore.client.CallContractMethod({
