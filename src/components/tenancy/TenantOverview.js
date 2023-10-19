@@ -128,7 +128,7 @@ const TenantOverview = observer(() => {
       loading={!tenantStore.publicTenantMetadata}
       render={() =>
         <div className="page-content">
-          <Paper withBorder p="xl" pr={60} w={800} style={{position: "absolute"}}>
+          <Paper withBorder p="xl" pr={60} w={800} style={{position: "relative"}}>
             {
               !tenantStore.isTenantAdmin ? null :
                 <ActionIcon
@@ -142,7 +142,7 @@ const TenantOverview = observer(() => {
                     top: "1.5rem"
                   }}
                 >
-                  <ImageIcon icon={EditIcon}/>
+                  <ImageIcon icon={EditIcon} />
                 </ActionIcon>
             }
             <Group noWrap spacing="xl" align="top">

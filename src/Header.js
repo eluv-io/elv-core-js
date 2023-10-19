@@ -25,19 +25,11 @@ const Header = observer(() => {
   }
 
   return (
-    <header className={rootStore.showHeader ? "header" : "header hidden-header"}>
+    <header className="header">
       <Link to="/apps" className="logo">
         <img src={logo} alt="Eluvio" />
       </Link>
-      <IconButton className="toggle-header-button" icon={ShowHeaderIcon} label="Show Header" onClick={() => rootStore.ToggleHeader(true)} />
-      <div
-        className="toggle-header-section"
-        title="Hide Header"
-        aria-label="Hide Header"
-        tabIndex={0}
-        onClick={() => rootStore.ToggleHeader(false)}
-        onKeyPress={() => rootStore.ToggleHeader(false)}
-      />
+      <div className="toggle-header-section"/>
       <HeaderAccount />
     </header>
   );

@@ -2,6 +2,7 @@
 
 header {
   align-items: center;
+  background-color: $elv-color-white;
   box-shadow: 2px 1px 2px 0 $elv-color-lightgray;
   display: grid;
   grid-template-columns: auto 1fr auto;
@@ -11,41 +12,7 @@ header {
   padding: 0 10px;
   position: relative;
   width: 100%;
-
-  &.hidden-header {
-    height: 0;
-    visibility: hidden;
-
-    .toggle-header-button {
-      visibility: visible;
-    }
-  }
-
-  .toggle-header-button {
-    border-radius: 5px;
-    display: flex;
-    height: 25px;
-    justify-content: center;
-    left: calc(50% - 25px);
-    position: absolute;
-    top: -2px;
-    visibility: hidden;
-    width: 50px;
-
-    &:hover {
-      background: $elv-color-lightergray;
-    }
-
-    svg {
-      color: transparent;
-      fill: $elv-color-darkergray;
-    }
-  }
-}
-
-.toggle-header-section {
-  cursor: pointer;
-  height: 100%;
+  z-index: 1;
 }
 
 .logo {
@@ -78,7 +45,6 @@ header {
   padding: 0 $elv-spacing-m 0 $elv-spacing-s;
   position: relative;
   width: 16rem;
-  z-index: 1000;
 
   &:hover {
     background: $elv-color-lightestgray;

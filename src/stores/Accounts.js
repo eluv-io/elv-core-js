@@ -107,13 +107,15 @@ class AccountStore {
 
     address = client.utils.FormatAddress(address);
 
-    if(!(Object.keys(this.accounts).includes(address))) {
-      return;
-    }
-
-    this.accounts[address].balance = client.utils.ToBigNumber(
+    const balance = client.utils.ToBigNumber(
       yield client.GetBalance({address})
     ).toFixed(3);
+
+    if(Object.keys(this.accounts).includes(address)) {
+      this.accounts[address].balance = balance;
+    }
+
+    return balance;
   });
 
   LockAccount({address}) {
@@ -212,6 +214,8 @@ class AccountStore {
     password,
     passwordConfirmation,
     name,
+    inviteId,
+    adminAddress,
     faucetToken,
     tenantContractId
   }) {
@@ -260,15 +264,14 @@ class AccountStore {
       encryptedPrivateKey
     };
 
-    if(faucetToken) {
-      // TODO: Implement faucet
-      const fundedClient = yield ElvClient.FromConfigurationUrl({configUrl: EluvioConfiguration["config-url"]});
-      const fundedSigner = wallet.AddAccount({privateKey: "0x89eb99fe9ce236af2b6e1db964320534ef6634127ecdeb816f6e4c72bc72bcec"});
-
-      fundedClient.SetSigner({signer: fundedSigner});
-      yield fundedClient.SendFunds({
-        recipient: address,
-        ether: 1
+    if(inviteId) {
+      yield this.rootStore.tenantStore.ConsumeInvite({
+        tenantContractId,
+        name,
+        address,
+        inviteId,
+        adminAddress,
+        faucetToken
       });
     }
 
@@ -318,6 +321,10 @@ class AccountStore {
 
   /* Profile */
 
+  async ProfileImage({address}) {
+    return await this.rootStore.client.userProfileClient.UserProfileImage({address});
+  }
+
   UserMetadata = flow(function * () {
     if(!this.currentAccountAddress) { return; }
 
@@ -334,7 +341,7 @@ class AccountStore {
 
     try {
       if(this.accounts[address].metadata.public.profile_image) {
-        this.accounts[address].imageUrl = (yield this.rootStore.client.userProfileClient.UserProfileImage({address}));
+        this.accounts[address].imageUrl = (yield this.ProfileImage({address}));
       }
     } catch (error) {
       // eslint-disable-next-line no-console

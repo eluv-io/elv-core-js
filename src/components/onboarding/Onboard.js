@@ -19,6 +19,7 @@ const DownloadMnemonic = mnemonic => {
 // TODO: Get tenant name / branding
 const Onboard = observer(() => {
   const [params, setParams] = useState({
+    id: "",
     name: "",
     adminAddress: "",
     tenantContractId: "",
@@ -63,7 +64,7 @@ const Onboard = observer(() => {
     formData.password === formData.passwordConfirmation &&
     formData.mnemonicSaved;
 
-  if(!params?.tenantContractId || !params?.faucetToken || !params.adminAddress) {
+  if(!params?.tenantContractId || !params?.faucetToken || !params.adminAddress || !params.id) {
     return (
       <div className="page-content onboard">
         <Paper withBorder p="xl" w={800} shadow="sm">
@@ -166,7 +167,9 @@ const Onboard = observer(() => {
                     passwordConfirmation: formData.passwordConfirmation,
                     name: formData.name,
                     faucetToken: params.faucetToken,
-                    tenantContractId: params.tenantContractId
+                    tenantContractId: params.tenantContractId,
+                    inviteId: params.id,
+                    adminAddress: params.adminAddress
                   });
 
                   setComplete(true);

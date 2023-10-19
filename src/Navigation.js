@@ -4,35 +4,11 @@ import "./static/stylesheets/tenancy.scss";
 import React from "react";
 import {NavLink, useNavigate} from "react-router-dom";
 import {observer} from "mobx-react";
-import {useLocation} from "react-router";
+import {Outlet, useLocation} from "react-router";
 import {accountsStore, tenantStore} from "./stores";
 import {Tabs} from "@mantine/core";
 
-const TenantNav = observer(() => {
-  const location = useLocation();
-  const navigate = useNavigate();
 
-  if(!location.pathname.startsWith("/tenancy")) {
-    return;
-  }
-
-  // Non-admins can't view anything but the overview
-  if(!tenantStore.isTenantAdmin) {
-    return null;
-  }
-
-  return (
-    <div className="tenant-navigation">
-      <Tabs w="100%" mx="auto" maw={400} mb="lg" variant="pills" value={location.pathname} onTabChange={pathname => navigate(pathname)}>
-        <Tabs.List grow>
-          <Tabs.Tab value="/tenancy">Overview</Tabs.Tab>
-          <Tabs.Tab value="/tenancy/manage">Manage</Tabs.Tab>
-          <Tabs.Tab value="/tenancy/invites">Invites</Tabs.Tab>
-        </Tabs.List>
-      </Tabs>
-    </div>
-  );
-});
 
 const ResourcesNav = () => {
   const location = useLocation();
@@ -89,7 +65,6 @@ const Navigation = observer(() => {
     <>
       <ResourcesNav />
       <CoreNav />
-      <TenantNav />
     </>
   );
 });

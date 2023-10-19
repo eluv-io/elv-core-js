@@ -15,7 +15,6 @@ class RootStore {
   client;
   searchClient;
   signerSet = false;
-  showHeader = true;
   simplePasswords = false;
   utils = Utils;
 
@@ -177,10 +176,6 @@ class RootStore {
       console.error(error);
     }
   });
-
-  ToggleHeader(show) {
-    this.showHeader = show;
-  }
 }
 
 const root = new RootStore();

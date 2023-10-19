@@ -3,11 +3,11 @@ import React, {useState} from "react";
 import {accountsStore, tenantStore} from "../../stores";
 import {Button, CopyButton, Group, Modal, NumberInput, Paper, Text, TextInput, Tooltip} from "@mantine/core";
 
-const TenantInviteModal = observer(({Close}) => {
+const TenantInviteModal = observer(({existingInviteUrl="", Close}) => {
   const [name, setName] = useState("");
   const [funds, setFunds] = useState(1);
   const [submitting, setSubmitting] = useState(false);
-  const [inviteUrl, setInviteUrl] = useState("");
+  const [inviteUrl, setInviteUrl] = useState(existingInviteUrl);
   const [error, setError] = useState(undefined);
 
   const insufficientFunds = accountsStore.currentAccount.balance < funds + 0.05;
@@ -18,7 +18,7 @@ const TenantInviteModal = observer(({Close}) => {
 
     try {
       setSubmitting(true);
-      setInviteUrl(await tenantStore.GenerateInviteUrl({name, funds}));
+      setInviteUrl(await tenantStore.GenerateInvite({name, funds}));
     } catch (error) {
       setError(error);
     } finally {
@@ -31,7 +31,7 @@ const TenantInviteModal = observer(({Close}) => {
     content = (
       <div>
         <Text fz="sm">
-          Send this URL to the new user to have them set up their account. After the account is set up, you will be notified, at which point you can grant appropriate permissions.
+          Share this URL with the new user to have them set up their account. After the account is created, you will be notified to grant permissions.
         </Text>
         <CopyButton value={inviteUrl} timeout={5000}>
           {({ copied, copy }) => (
