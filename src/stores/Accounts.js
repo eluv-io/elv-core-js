@@ -1,6 +1,5 @@
 import {flow, makeAutoObservable} from "mobx";
 import UrlJoin from "url-join";
-import {ElvClient} from "@eluvio/elv-client-js";
 
 class AccountStore {
   accounts = {};
@@ -172,6 +171,8 @@ class AccountStore {
 
   SetCurrentAccount = flow(function * ({address, signer}) {
     try {
+      this.rootStore.tenantStore.Reset();
+
       address = this.rootStore.client.utils.FormatAddress(address || signer.address);
 
       this.loadingAccount = address;

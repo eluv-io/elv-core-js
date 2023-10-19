@@ -70,4 +70,11 @@
     position: absolute;
     right: 10px;
   }
+
+  &__indicator {
+    color: $elv-color-mediumgray;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
 }

@@ -4,11 +4,9 @@ import "./static/stylesheets/tenancy.scss";
 import React from "react";
 import {NavLink, useNavigate} from "react-router-dom";
 import {observer} from "mobx-react";
-import {Outlet, useLocation} from "react-router";
-import {accountsStore, tenantStore} from "./stores";
+import {useLocation} from "react-router";
+import {accountsStore} from "./stores";
 import {Tabs} from "@mantine/core";
-
-
 
 const ResourcesNav = () => {
   const location = useLocation();

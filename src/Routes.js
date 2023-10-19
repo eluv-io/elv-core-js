@@ -42,7 +42,7 @@ const ContentNav = observer(() => {
   return (
     <div className="side-nav">
       <Tabs orientation="vertical" className="side-nav__tabs" h="max-content" value={location.pathname} onTabChange={pathname => navigate(pathname)}>
-        <Tabs.List>
+        <Tabs.List grow h={150} w={125}>
           <Tabs.Tab value="/tenancy">Overview</Tabs.Tab>
           <Tabs.Tab value="/tenancy/manage">Manage</Tabs.Tab>
           <Tabs.Tab value="/tenancy/invites">Invites</Tabs.Tab>

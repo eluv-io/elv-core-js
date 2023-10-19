@@ -1,10 +1,22 @@
 import "../../static/stylesheets/onboard.scss";
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react";
-import {Input as MantineInput, ActionIcon, Button, Paper, PasswordInput, TextInput, Title, Text, Checkbox, Group} from "@mantine/core";
-import {accountsStore, rootStore} from "../../stores";
+import {
+  Input as MantineInput,
+  ActionIcon,
+  Button,
+  Paper,
+  PasswordInput,
+  TextInput,
+  Title,
+  Text,
+  Checkbox,
+  Group,
+  Image
+} from "@mantine/core";
+import {accountsStore, rootStore, tenantStore} from "../../stores";
 import {useDisclosure} from "@mantine/hooks";
-import {ImageIcon} from "elv-components-js";
+import {ImageIcon, LoadingElement} from "elv-components-js";
 
 import DownloadIcon from "../../static/icons/download.svg";
 
@@ -15,6 +27,39 @@ const DownloadMnemonic = mnemonic => {
   element.download = "mnemonic.txt";
   element.click();
 };
+
+const TenantInfo = observer(({tenantContractId}) => {
+  useEffect(() => {
+    tenantStore.LoadPublicTenantMetadata({tenantContractId});
+  }, [tenantContractId]);
+
+  const tenantMetadata = tenantStore.tenantMetadata[tenantContractId]?.public;
+
+  return (
+    <LoadingElement
+      fullPage
+      loading={!tenantMetadata}
+      render={() =>
+        <Paper withBorder p="xl" pr={60} w={800} style={{position: "relative"}}>
+          <Group noWrap spacing="xl" align="top">
+            <Image
+              radius="sm"
+              withPlaceholder
+              width={200}
+              miw={200}
+              height={200}
+              src={tenantMetadata.image?.url}
+            />
+            <div>
+              <Title mb="sm" fw={500} order={3}>{tenantMetadata.name}</Title>
+              <Text fz="sm" color="dimmed" className="pre-wrap">{tenantMetadata.description}</Text>
+            </div>
+          </Group>
+        </Paper>
+      }
+    />
+  );
+});
 
 // TODO: Get tenant name / branding
 const Onboard = observer(() => {
@@ -92,7 +137,7 @@ const Onboard = observer(() => {
 
   return (
     <div className="page-content onboard">
-      <Paper withBorder p="xl" pr={50} w={800} shadow="sm">
+      <Paper withBorder p="xl" pr={50} mb={50} w={800} shadow="sm">
         <form className="onboard-form">
           <Title order={4} mb="xl">Create Account</Title>
           <TextInput
@@ -186,6 +231,7 @@ const Onboard = observer(() => {
           </Group>
         </form>
       </Paper>
+      <TenantInfo tenantContractId={params.tenantContractId} />
     </div>
   );
 });

@@ -1,18 +1,14 @@
 import "./static/stylesheets/header.scss";
 
 import React from "react";
-import {
-  IconButton,
-} from "elv-components-js";
 import {observer} from "mobx-react";
-import {rootStore} from "./stores";
-import {HeaderAccount} from "./components/account/AccountDropdown";
 import {Link} from "react-router-dom";
 
 import Logo from "./static/images/Logo.png";
 import LogoDemo from "./static/images/LogoDemo.png";
 import LogoTest from "./static/images/LogoTest.png";
-import ShowHeaderIcon from "./static/icons/ShowHeader.svg";
+import LogoPreview from "./static/images/LogoPreview.png";
+import {HeaderAccount} from "./components/account/AccountDropdown";
 
 const Header = observer(() => {
   let logo = Logo;

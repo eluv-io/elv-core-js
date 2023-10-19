@@ -34,7 +34,7 @@
   flex-grow: 0;
   flex-shrink: 0;
   justify-content: center;
-  padding: $elv-spacing-l 0 $elv-spacing-l;
+  padding: $elv-spacing-l 0;
   width: 100%;
 
   .warning {
@@ -54,23 +54,6 @@
     position: absolute;
   }
 }
-
-/*
-.side-nav {
-  position: relative;
-  //margin: 0 auto;
-  width: 100%;
-  height: 100%;
-  display: grid;
-  grid-template-columns: 200px 1fr;
-
-  &__tabs {
-    position: absolute;
-    left: 0;
-  }
-}
-
- */
 
 nav {
   display: flex;
