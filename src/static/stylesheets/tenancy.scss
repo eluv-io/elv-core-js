@@ -1,7 +1,16 @@
+@import "~elv-components-js/src/stylesheets/styles";
+
+.tenant-page {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  width: 100%;
+}
+
 .tenant-invite-modal {
   &__url-container {
     cursor: pointer;
-    padding-right: 40px;
     position: relative;
   }
 
@@ -19,5 +28,46 @@
   &__url {
     white-space: pre-wrap;
     word-break: break-all;
+  }
+}
+
+.tenant-invite {
+  &__tabs {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    width: 800px;
+  }
+
+  &__invite-button {
+    position: absolute;
+    right: 10px;
+  }
+
+  &__invites {
+    display: grid;
+    grid-gap: 10px;
+    margin-top: 20px;
+  }
+}
+
+.invite {
+  position: relative;
+  width: 600px;
+
+  &__image {
+    $image-size: 110px;
+    @include elv-cropped-image($image-size, $image-size, 50%, $image-size, $image-size);
+    align-items: center;
+    display: flex;
+    padding: $elv-spacing-xs;
+  }
+
+  &__time {
+    bottom: 10px;
+    font-size: 9px;
+    position: absolute;
+    right: 10px;
   }
 }

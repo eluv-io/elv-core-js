@@ -1,9 +1,18 @@
 import {flow, makeAutoObservable} from "mobx";
-import {Utils} from "@eluvio/elv-client-js";
+import {ElvClient, Utils} from "@eluvio/elv-client-js";
+import {v4 as UUID, parse as UUIDParse} from "uuid";
 
 class TenantStore {
   tenantAdminGroupMembers = [];
   tenantMetadata = {};
+
+  invites;
+
+  INVITE_EVENTS = {
+    SENT: "CORE_INVITE_SENT",
+    ACCEPTED: "CORE_INVITE_ACCEPTED",
+    MANAGED: "CORE_INVITE_MANAGED"
+  };
 
   constructor(rootStore) {
     makeAutoObservable(this);
@@ -22,25 +31,6 @@ class TenantStore {
   get publicTenantMetadata() {
     return this.tenantMetadata[this.tenantContractId]?.public;
   }
-
-  GenerateInviteUrl = flow(function * ({name, funds}) {
-    yield new Promise(resolve => setTimeout(resolve, 2000));
-
-    const params = Utils.B58(
-      JSON.stringify({
-        name,
-        adminAddress: this.rootStore.accountsStore.currentAccountAddress,
-        tenantContractId: this.tenantContractId,
-        faucetToken: "asd"
-      })
-    );
-
-    let url = new URL(window.location.origin);
-    url.pathname = "/onboard";
-    url.searchParams.set("obp", params);
-
-    return url.toString();
-  })
 
   UpdateTenantInfo = flow(function * ({name, description, image}) {
     if(!this.tenantContractId) { return; }
@@ -141,6 +131,105 @@ class TenantStore {
         };
       })
     );
+  });
+
+  // Invites
+
+  GenerateInvite = flow(function * ({name, funds}) {
+    yield new Promise(resolve => setTimeout(resolve, 2000));
+
+    const id = Utils.B58(UUIDParse(UUID()));
+
+    const params = Utils.B58(
+      JSON.stringify({
+        id,
+        name,
+        adminAddress: this.rootStore.accountsStore.currentAccountAddress,
+        tenantContractId: this.tenantContractId,
+        faucetToken: "asd"
+      })
+    );
+
+    let url = new URL(window.location.origin);
+    url.pathname = "/onboard";
+    url.searchParams.set("obp", params);
+
+    yield this.rootStore.walletClient.PushNotification({
+      tenantId: this.tenantContractId,
+      eventType: this.INVITE_EVENTS.SENT,
+      data: {
+        id,
+        name,
+        url: url.toString()
+      }
+    });
+
+    return url.toString();
+  });
+
+  ConsumeInvite = flow(function * ({tenantContractId, name, address, inviteId, adminAddress, faucetToken}) {
+    // TODO: Implement faucet
+    const wallet = this.rootStore.client.GenerateWallet();
+    const fundedClient = yield ElvClient.FromConfigurationUrl({configUrl: EluvioConfiguration["config-url"]});
+    const fundedSigner = wallet.AddAccount({privateKey: "0x89eb99fe9ce236af2b6e1db964320534ef6634127ecdeb816f6e4c72bc72bcec"});
+
+    fundedClient.SetSigner({signer: fundedSigner});
+    yield fundedClient.SendFunds({
+      recipient: address,
+      ether: 1
+    });
+
+    yield this.rootStore.walletClient.PushNotification({
+      tenantId: tenantContractId,
+      eventType: this.INVITE_EVENTS.ACCEPTED,
+      userAddress: adminAddress,
+      data: {
+        id: inviteId,
+        address,
+        name
+      }
+    });
+  })
+
+  LoadInviteNotifications = flow(function * () {
+    const inviteNotifications = yield this.rootStore.walletClient.Notifications({
+      tenantId: this.tenantContractId,
+      types: [Object.values(this.INVITE_EVENTS)],
+      limit: 10000
+    });
+
+    // Combine invites by ID, from oldest to newest
+    let invites = {};
+    inviteNotifications
+      .sort((a,b) => a.created < b.created ? -1 : 1)
+      .forEach(invite =>
+        invites[invite.data.id] = invite
+      );
+
+    let categorizedInvites = {
+      sent: [],
+      accepted: [],
+      managed: []
+    };
+
+    // Sort into categories, from newest to oldest
+    Object.values(invites)
+      .sort((a, b) => a.created > b.created ? -1 : 1)
+      .forEach(invite => {
+        switch (invite.type) {
+          case this.INVITE_EVENTS.SENT:
+            categorizedInvites.sent.push(invite);
+            break;
+          case this.INVITE_EVENTS.ACCEPTED:
+            categorizedInvites.accepted.push(invite);
+            break;
+          case this.INVITE_EVENTS.MANAGED:
+            categorizedInvites.managed.push(invite);
+            break;
+        }
+      });
+
+    this.invites = categorizedInvites;
   });
 }
 
