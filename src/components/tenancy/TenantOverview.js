@@ -32,7 +32,7 @@ const TenantForm = observer(({Back}) => {
   return (
     <div className="page-content">
       <Paper withBorder p="xl" w={800} shadow="sm">
-        <Title mb={50} order={3} fw={500} ta="center">Edit Tenancy Info</Title>
+        <Title mb="xl" order={3} fw={500} ta="center">Edit Tenancy Info</Title>
         <form onSubmit={() => {}}>
           <input
             type="file"
@@ -58,8 +58,8 @@ const TenantForm = observer(({Back}) => {
               <Image
                 radius="sm"
                 withPlaceholder
-                width={300}
-                height={300}
+                width={250}
+                height={250}
                 src={tenantInfo.newImageUrl || tenantStore.publicTenantMetadata.image?.url}
               />
             </UnstyledButton>
@@ -119,7 +119,7 @@ const TenantOverview = observer(() => {
   }, [accountsStore.currentAccount.tenantContractId]);
 
   if(editing) {
-    return <TenantForm Back={() => setEditing(false)} />;
+    return <TenantForm key={`tenant-form-${accountsStore.currentAccount.tenantContractId}`} Back={() => setEditing(false)} />;
   }
 
   return (
@@ -146,18 +146,17 @@ const TenantOverview = observer(() => {
                 </ActionIcon>
             }
             <Group noWrap spacing="xl" align="top">
-              <Group position="center">
-                <Image
-                  radius="sm"
-                  withPlaceholder
-                  width={200}
-                  height={200}
-                  src={tenantStore.publicTenantMetadata.image?.url}
-                />
-              </Group>
+              <Image
+                radius="sm"
+                withPlaceholder
+                width={200}
+                height={200}
+                miw={200}
+                src={tenantStore.publicTenantMetadata.image?.url}
+              />
               <div>
-                <Title mb="sm" fw={500} order={4}>{tenantStore.publicTenantMetadata.name}</Title>
-                <Text fz="sm" color="dimmed">{tenantStore.publicTenantMetadata.description}</Text>
+                <Title mb="sm" fw={500} order={3}>{tenantStore.publicTenantMetadata.name}</Title>
+                <Text fz="sm" color="dimmed" className="pre-wrap">{tenantStore.publicTenantMetadata.description}</Text>
               </div>
             </Group>
           </Paper>

@@ -59,6 +59,6 @@
 
 .app-frame {
   border: 0;
-  height: 100%;
+  height: calc(100vh - 40px);
   width: 100%;
 }

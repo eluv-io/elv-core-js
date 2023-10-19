@@ -4,17 +4,18 @@ import {Tabs, ActionIcon, Group, Paper, Text, Button} from "@mantine/core";
 import TenantInviteModal from "./TenantInviteModal";
 
 import {IconUserPlus} from "@tabler/icons-react";
-import {Balance, Confirm, CroppedIcon, IconButton, ImageIcon, LoadingElement} from "elv-components-js";
-import LockedIcon from "../../static/icons/Locked.svg";
-import UnlockedIcon from "../../static/icons/Unlocked.svg";
-import RemoveAccountIcon from "../../static/icons/X.svg";
+import {Balance,  CroppedIcon, LoadingElement} from "elv-components-js";
 import {accountsStore, tenantStore} from "../../stores";
 import DefaultAccountImage from "../../static/icons/User.svg";
+import TenantUserPermissionsModal from "./TenantUserPermissionsModal";
+
+import {IconAlertCircle} from "@tabler/icons-react";
 
 const Invite = observer(({invite}) => {
   const [profileImageUrl, setProfileImageUrl] = useState(undefined);
   const [balance, setBalance] = useState(undefined);
   const [showInviteUrl, setShowInviteUrl] = useState(false);
+  const [showPermissionsModal, setShowPermissionsModal] = useState(false);
 
   const address = invite.data.address;
   const name = invite.data.name || address;
@@ -30,7 +31,7 @@ const Invite = observer(({invite}) => {
       .then(balance => setBalance(balance));
   }, [invite.data.address]);
 
-  let actions;
+  let actions, alert;
   switch (invite.type) {
     case tenantStore.INVITE_EVENTS.SENT:
       actions = (
@@ -40,8 +41,14 @@ const Invite = observer(({invite}) => {
       );
       break;
     case tenantStore.INVITE_EVENTS.ACCEPTED:
+      if(invite.new) {
+        alert = true;
+      }
+
+    // eslint-disable-next-line no-fallthrough
+    case tenantStore.INVITE_EVENTS.MANAGED:
       actions = (
-        <Button onClick={() => setShowInviteUrl(true)}>
+        <Button onClick={() => setShowPermissionsModal(true)}>
           Set Permissions
         </Button>
       );
@@ -50,7 +57,9 @@ const Invite = observer(({invite}) => {
   return (
     <>
       { showInviteUrl ? <TenantInviteModal existingInviteUrl={invite.data.url} Close={() => setShowInviteUrl(false)} /> : null }
-      <Paper withBorder p="md" className="invite">
+      { showPermissionsModal ? <TenantUserPermissionsModal address={invite.data.address} inviteId={invite.data.id} Close={() => setShowPermissionsModal(false)} /> : null }
+      <Paper withBorder p="xs" className="invite">
+        { alert ? <IconAlertCircle className="invite__indicator" /> : null }
         <Group>
           <CroppedIcon
             icon={profileImageUrl || DefaultAccountImage}
@@ -65,7 +74,7 @@ const Invite = observer(({invite}) => {
               { address ? <Text fz="xs">{address}</Text> : null }
               <Balance balance={balance} className="invite__balance" />
             </div>
-            <Group className="invite__actions">
+            <Group mt="md" className="invite__actions">
               { actions }
             </Group>
             <div className="invite__time">
@@ -80,15 +89,13 @@ const Invite = observer(({invite}) => {
 
 const TenantInvites = observer(() => {
   const [showInviteModal, setShowInviteModal] = useState(false);
-  const [tab, setTab] = useState("accepted");
+  const [tab, setTab] = useState(tenantStore.INVITE_EVENTS.ACCEPTED);
 
   useEffect(() => {
     tenantStore.LoadInviteNotifications();
   }, []);
 
-  const invites = tenantStore.invites?.[tab];
-
-  console.log(invites);
+  const invites = tenantStore.Invites(tab);
 
   return (
     <LoadingElement
@@ -99,10 +106,10 @@ const TenantInvites = observer(() => {
       <div className="page-content tenant-page">
         <div className="tenant-invite__tabs">
           <Tabs h="max-content" variant="pills" color="gray.6" value={tab} onTabChange={newTab => setTab(newTab)}>
-            <Tabs.List>
-              <Tabs.Tab value="accepted">Accepted</Tabs.Tab>
-              <Tabs.Tab value="sent">Sent</Tabs.Tab>
-              <Tabs.Tab value="managed">Complete</Tabs.Tab>
+            <Tabs.List grow w={400}>
+              <Tabs.Tab value={tenantStore.INVITE_EVENTS.ACCEPTED}>Accepted</Tabs.Tab>
+              <Tabs.Tab value={tenantStore.INVITE_EVENTS.SENT}>Sent</Tabs.Tab>
+              <Tabs.Tab value={tenantStore.INVITE_EVENTS.MANAGED}>Complete</Tabs.Tab>
             </Tabs.List>
           </Tabs>
           <ActionIcon className="tenant-invite__invite-button" onClick={() => setShowInviteModal(true)}>
