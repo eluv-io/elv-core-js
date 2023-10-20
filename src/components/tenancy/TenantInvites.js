@@ -60,7 +60,7 @@ const Invite = observer(({invite}) => {
       { showPermissionsModal ? <TenantUserPermissionsModal address={invite.data.address} inviteId={invite.data.id} Close={() => setShowPermissionsModal(false)} /> : null }
       <Paper withBorder p="xs" className="invite">
         { alert ? <IconAlertCircle className="invite__indicator" /> : null }
-        <Group>
+        <Group noWrap>
           <CroppedIcon
             icon={profileImageUrl || DefaultAccountImage}
             alternateIcon={DefaultAccountImage}
@@ -69,9 +69,9 @@ const Invite = observer(({invite}) => {
             useLoadingIndicator={true}
           />
           <div className="invite__main">
-            <div className="account-info">
+            <div>
               <Text fw={500}>{name}</Text>
-              { address ? <Text fz="xs">{address}</Text> : null }
+              { address ? <Text fz="xs" className="invite__address">{address}</Text> : null }
               <Balance balance={balance} className="invite__balance" />
             </div>
             <Group mt="md" className="invite__actions">
@@ -104,9 +104,9 @@ const TenantInvites = observer(() => {
     >
       { showInviteModal ? <TenantInviteModal Close={() => setShowInviteModal(false)} /> : null }
       <div className="page-content tenant-page">
-        <div className="tenant-invite__tabs">
-          <Tabs h="max-content" variant="pills" color="gray.6" value={tab} onTabChange={newTab => setTab(newTab)}>
-            <Tabs.List grow w={400}>
+        <Group align="center" position="center" className="tenant-invite__nav" noWrap>
+          <Tabs h="max-content" variant="pills" color="gray.6" value={tab} onTabChange={newTab => setTab(newTab)} className="tenant-invite__tabs">
+            <Tabs.List grow>
               <Tabs.Tab value={tenantStore.INVITE_EVENTS.ACCEPTED}>Accepted</Tabs.Tab>
               <Tabs.Tab value={tenantStore.INVITE_EVENTS.SENT}>Sent</Tabs.Tab>
               <Tabs.Tab value={tenantStore.INVITE_EVENTS.MANAGED}>Complete</Tabs.Tab>
@@ -115,7 +115,7 @@ const TenantInvites = observer(() => {
           <ActionIcon className="tenant-invite__invite-button" onClick={() => setShowInviteModal(true)}>
             <IconUserPlus />
           </ActionIcon>
-        </div>
+        </Group>
         <div className="tenant-invite__invites">
           { (invites || []).map(invite => <Invite invite={invite} key={`invite-${invite.data.id}`} />) }
         </div>

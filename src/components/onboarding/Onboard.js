@@ -40,8 +40,8 @@ const TenantInfo = observer(({tenantContractId}) => {
       fullPage
       loading={!tenantMetadata}
       render={() =>
-        <Paper withBorder p="xl" pr={60} w={800} style={{position: "relative"}}>
-          <Group noWrap spacing="xl" align="top">
+        <Paper withBorder p="xl" pr={60} style={{position: "relative"}} className="content-container tenant-info">
+          <Group noWrap spacing="xl" align="top" className="tenant-info__group">
             <Image
               radius="sm"
               withPlaceholder
@@ -49,9 +49,10 @@ const TenantInfo = observer(({tenantContractId}) => {
               miw={200}
               height={200}
               src={tenantMetadata.image?.url}
+              className="tenant-info__image"
             />
             <div>
-              <Title mb="sm" fw={500} order={3}>{tenantMetadata.name}</Title>
+              <Title mb="sm" fw={500} order={3} className="tenant-info__title">{tenantMetadata.name}</Title>
               <Text fz="sm" color="dimmed" className="pre-wrap">{tenantMetadata.description}</Text>
             </div>
           </Group>
@@ -125,7 +126,7 @@ const Onboard = observer(() => {
   if(complete) {
     return (
       <div className="page-content onboard">
-        <Paper withBorder p="xl" w={800} shadow="sm">
+        <Paper withBorder p="xl" shadow="sm" className="form-container">
           <Title order={4} ta="center" mt="xl" mb="md">Account Created</Title>
           <Text ta="center" mb="xl">
             Your tenant administrator will be notified to grant appropriate permissions
@@ -137,7 +138,7 @@ const Onboard = observer(() => {
 
   return (
     <div className="page-content onboard">
-      <Paper withBorder p="xl" pr={50} mb={50} w={800} shadow="sm">
+      <Paper withBorder p="xl" pr={50} mb={50} shadow="sm" className="content-container">
         <form className="onboard-form">
           <Title order={4} mb="xl">Create Account</Title>
           <TextInput

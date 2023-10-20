@@ -31,7 +31,7 @@ const TenantForm = observer(({Back}) => {
 
   return (
     <div className="page-content">
-      <Paper withBorder p="xl" w={800} shadow="sm">
+      <Paper withBorder p="xl" shadow="sm" mb="xl" className="form-container">
         <Title mb="xl" order={3} fw={500} ta="center">Edit Tenancy Info</Title>
         <form onSubmit={() => {}}>
           <input
@@ -76,6 +76,8 @@ const TenantForm = observer(({Back}) => {
           <Textarea
             mb="md"
             label="Description"
+            minRows={5}
+            autosize
             value={tenantInfo.description}
             onChange={event => {
               setTenantInfo({...tenantInfo, description: event.currentTarget.value});
@@ -128,7 +130,7 @@ const TenantOverview = observer(() => {
       loading={!tenantStore.publicTenantMetadata}
       render={() =>
         <div className="page-content">
-          <Paper withBorder p="xl" pr={60} w={800} style={{position: "relative"}}>
+          <Paper withBorder p="xl" pr={60} style={{position: "relative"}} className="content-container tenant-info">
             {
               !tenantStore.isTenantAdmin ? null :
                 <ActionIcon
@@ -136,16 +138,12 @@ const TenantOverview = observer(() => {
                   title="Edit Tenancy Info"
                   color="blue.5"
                   variant="transparent"
-                  style={{
-                    position: "absolute",
-                    right: "1.5rem",
-                    top: "1.5rem"
-                  }}
+                  className="tenant-info__edit"
                 >
                   <ImageIcon icon={EditIcon} />
                 </ActionIcon>
             }
-            <Group noWrap spacing="xl" align="top">
+            <Group noWrap spacing="xl" align="top" className="tenant-info__group">
               <Image
                 radius="sm"
                 withPlaceholder
@@ -153,9 +151,10 @@ const TenantOverview = observer(() => {
                 height={200}
                 miw={200}
                 src={tenantStore.publicTenantMetadata.image?.url}
+                className="tenant-info__image"
               />
               <div>
-                <Title mb="sm" fw={500} order={3}>{tenantStore.publicTenantMetadata.name}</Title>
+                <Title mb="sm" fw={500} order={3} className="tenant-info__title">{tenantStore.publicTenantMetadata.name}</Title>
                 <Text fz="sm" color="dimmed" className="pre-wrap">{tenantStore.publicTenantMetadata.description}</Text>
               </div>
             </Group>

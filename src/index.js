@@ -15,6 +15,7 @@ import Navigation from "./Navigation";
 
 import AppRoutes from "./Routes";
 import {Group, Loader, MantineProvider} from "@mantine/core";
+import ScrollToTop from "./ScrollToTop";
 
 const App = observer(() => {
   if(rootStore.configError) {
@@ -46,6 +47,7 @@ const App = observer(() => {
 
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <div className="router-container">
         <Header />
         <Navigation />

@@ -15,6 +15,7 @@ import TenantInvites from "./components/tenancy/TenantInvites";
 import {Navigate, Outlet, useLocation} from "react-router";
 import {tenantStore} from "./stores";
 import {Tabs} from "@mantine/core";
+import {useMediaQuery} from "@mantine/hooks";
 
 const GatedRoute = ({Component}) => {
   return (
@@ -27,6 +28,7 @@ const GatedRoute = ({Component}) => {
 const ContentNav = observer(() => {
   const location = useLocation();
   const navigate = useNavigate();
+  const narrow = useMediaQuery("(max-width: 1200px)");
 
   if(
     !location.pathname.startsWith("/tenancy") ||
@@ -41,8 +43,8 @@ const ContentNav = observer(() => {
 
   return (
     <div className="side-nav">
-      <Tabs orientation="vertical" className="side-nav__tabs" h="max-content" value={location.pathname} onTabChange={pathname => navigate(pathname)}>
-        <Tabs.List grow h={150} w={125}>
+      <Tabs variant={narrow ? "outline" : "default"} orientation={narrow ? "horizontal" : "vertical"} className="side-nav__tabs" h="max-content" value={location.pathname} onTabChange={pathname => navigate(pathname)}>
+        <Tabs.List grow>
           <Tabs.Tab value="/tenancy">Overview</Tabs.Tab>
           <Tabs.Tab value="/tenancy/manage">Manage</Tabs.Tab>
           <Tabs.Tab value="/tenancy/invites">Invites</Tabs.Tab>
