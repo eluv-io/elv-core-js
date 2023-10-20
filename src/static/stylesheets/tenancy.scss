@@ -8,6 +8,30 @@
   width: 100%;
 }
 
+.tenant-info {
+  &__edit {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+
+  @media screen and (max-width: 850px) {
+    padding-right: 1.5rem;
+
+    &__group {
+      flex-direction: column;
+    }
+
+    &__image {
+      margin: 0 auto;
+    }
+
+    &__title {
+      text-align: center;
+    }
+  }
+}
+
 .tenant-invite-modal {
   &__url-container {
     cursor: pointer;
@@ -32,12 +56,15 @@
 }
 
 .tenant-invite {
-  &__tabs {
+  &__nav {
     align-items: center;
     display: flex;
     justify-content: center;
     position: relative;
-    width: 800px;
+  }
+
+  &__tabs {
+    width: MIN(75vw, 400px);
   }
 
   &__invite-button {
@@ -50,9 +77,16 @@
     grid-gap: 10px;
     margin-top: 20px;
   }
+
+  @media screen and (max-width: 500px) {
+    &__invite-button {
+      position: unset;
+    }
+  }
 }
 
 .invite {
+  max-width: 100%;
   position: relative;
   width: 600px;
 
@@ -76,5 +110,27 @@
     position: absolute;
     right: 10px;
     top: 10px;
+  }
+
+  &__address {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+  }
+
+  @media screen and (max-width: 850px) {
+    width: MIN(350px, 90vw);
+
+    &__image {
+      $image-size: 75px;
+      @include elv-cropped-image($image-size, $image-size, 50%, $image-size, $image-size);
+    }
+
+    &__time {
+      margin-top: 10px;
+      position: unset;
+    }
   }
 }

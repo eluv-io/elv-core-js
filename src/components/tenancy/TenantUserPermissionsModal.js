@@ -80,7 +80,7 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
               </tbody>
             </Table>
             { !error ? null : <Text mb="md" color="red" ta="center">Something went wrong, please try again</Text> }
-            <Group position="right" mt={50}>
+            <Group position="right" mt={50} noWrap>
               <Button
                 variant="default"
                 type="button"

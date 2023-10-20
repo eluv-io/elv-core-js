@@ -12,6 +12,7 @@
 .apps-box {
   border: 1px solid $elv-color-lightgray;
   border-radius: 25px;
+  max-width: 90vw;
   padding: 30px 20px;
   width: max-content;
 
@@ -25,7 +26,9 @@
 
   &__apps {
     display: flex;
+    flex-wrap: wrap;
     gap: 20px;
+    justify-content: center;
   }
 }
 

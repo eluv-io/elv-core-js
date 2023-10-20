@@ -53,7 +53,7 @@ const TransferForm = observer(() => {
 
   return (
     <div className="page-content">
-      <Paper withBorder p="xl" pr={50} w={800} shadow="sm">
+      <Paper withBorder p="xl" pr={50} shadow="sm" className="form-container">
         <form onSubmit={() => {}}>
           <Title order={4} mb="xl">Transfer Funds</Title>
           <Select
@@ -94,7 +94,7 @@ const TransferForm = observer(() => {
           />
           <Group mt={50} />
           { !error ? null : <Text mb="md" color="red" ta="center">Something went wrong, please try again</Text> }
-          <Group position="right">
+          <Group position="right" noWrap>
             <Button
               variant="default"
               type="button"

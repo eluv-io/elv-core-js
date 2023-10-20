@@ -7,6 +7,7 @@
   flex-grow: 1;
   justify-content: center;
   padding: $elv-spacing-l 0 0;
+  height: 70vh;
 
   h1 {
     color: $elv-color-text-dark;
@@ -21,4 +22,5 @@
   flex-grow: 1;
   outline: 0;
   width: 900px;
+  max-width: 90vw;
 }

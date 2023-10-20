@@ -1,6 +1,6 @@
 import "../../static/stylesheets/login.scss";
 
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {Button, Group, Modal, PasswordInput} from "@mantine/core";
 import {observer} from "mobx-react";
 import {Link, useNavigate} from "react-router-dom";
@@ -44,14 +44,6 @@ const LoginModal = observer(({title, address, allowAccountSwitch, setUnlocking, 
     }
   };
 
-  useEffect(() => {
-    setPassword("test");
-
-    if(password) {
-      Submit();
-    }
-  }, [password]);
-
   return (
     <Modal
       padding="xl"
@@ -79,7 +71,7 @@ const LoginModal = observer(({title, address, allowAccountSwitch, setUnlocking, 
             Submit();
           }}
         />
-        <Group position="right" mt={50}>
+        <Group position="right" mt={50} noWrap>
           <Button
             fz="xs"
             variant="default"

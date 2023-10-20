@@ -9,8 +9,8 @@ body,
 .side-nav,
 .content,
 .page-content {
-  height: max-content;
-  min-height: 100%;
+  //height: max-content;
+  //min-height: 100%;
   width: 100%;
 }
 
@@ -18,12 +18,10 @@ body {
   height: 100vh;
 }
 
-.content {
-  display: flex;
-  justify-content: center;
-}
-
 .page-content {
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 50px;
   width: max-content;
 }
 
@@ -43,9 +41,12 @@ body {
   position: relative;
 }
 
-.form-container {
-  form {
-    width: 700px;
+.form-container,
+.content-container {
+  width: 800px;
+
+  @media screen and (max-width: 850px) {
+    width: 90vw;
   }
 }
 
