@@ -10,7 +10,7 @@ let plugins = [
     title: "Eluvio Core",
     template: Path.join(__dirname, "src", "index.html"),
     filename: "index.html",
-    favicon: "./src/static/icons/favicon-light.png",
+    favicon: Path.join(__dirname, "src", "static", "icons", "favicon-light.png"),
     inject: "body"
   })
 ];
