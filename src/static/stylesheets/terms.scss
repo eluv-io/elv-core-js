@@ -5,9 +5,9 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  height: 70vh;
   justify-content: center;
   padding: $elv-spacing-l 0 0;
-  height: 70vh;
 
   h1 {
     color: $elv-color-text-dark;
@@ -20,7 +20,7 @@
 .terms-document {
   border: 0;
   flex-grow: 1;
+  max-width: 90vw;
   outline: 0;
   width: 900px;
-  max-width: 90vw;
 }

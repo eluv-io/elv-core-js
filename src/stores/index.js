@@ -27,6 +27,10 @@ class RootStore {
     this.InitializeClient();
   }
 
+  ResetTenancy() {
+    this.tenantStore.Reset();
+  }
+
   InitializeClient = flow(function * (signer) {
     this.configError = false;
 

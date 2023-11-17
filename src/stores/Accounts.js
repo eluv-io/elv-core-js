@@ -171,7 +171,7 @@ class AccountStore {
 
   SetCurrentAccount = flow(function * ({address, signer}) {
     try {
-      this.rootStore.tenantStore.Reset();
+      this.rootStore.ResetTenancy();
 
       address = this.rootStore.client.utils.FormatAddress(address || signer.address);
 

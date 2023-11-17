@@ -3,11 +3,22 @@ import {ElvClient, Utils} from "@eluvio/elv-client-js";
 import {v4 as UUID, parse as UUIDParse} from "uuid";
 
 class TenantStore {
-  managedGroups;
   tenantMetadata = {};
+
+  managedGroups;
+  specialGroups = {
+    tenantAdmins: undefined,
+    tenantUsers: undefined,
+    contentAdmins: undefined
+  };
 
   invites;
   inviteListener;
+
+  tenantUsers;
+  tenantAdmins;
+
+  users = {};
 
   INVITE_EVENTS = {
     SENT: "CORE_INVITE_SENT",
@@ -38,8 +49,13 @@ class TenantStore {
   }
 
   Reset() {
+    this.specialGroups = { tenantAdmins: undefined, tenantUsers: undefined, contentAdmins: undefined };
     this.managedGroups = undefined;
     this.invites = undefined;
+    this.tenantUsers = undefined;
+    this.tenantAdmins = undefined;
+    this.users = {};
+    this.tenantMetadata = {};
 
     if(this.inviteListener) {
       try {
@@ -109,7 +125,7 @@ class TenantStore {
 
   LoadPublicTenantMetadata = flow(function * ({tenantContractId, force}={}) {
     tenantContractId = tenantContractId || this.tenantContractId;
-    if(!this.tenantContractId || (this.tenantMetadata[tenantContractId] && !force)) {
+    if(!tenantContractId || (this.tenantMetadata[tenantContractId] && !force)) {
       return;
     }
 
@@ -159,6 +175,12 @@ class TenantStore {
         methodArgs: ["tenant_admin", 0],
         formatArguments: true,
       });
+      const tenantUsersGroupAddress = yield this.client.CallContractMethod({
+        contractAddress: this.client.utils.HashToAddress(tenantContractId),
+        methodName: "groupsMapping",
+        methodArgs: ["tenant_users", 0],
+        formatArguments: true,
+      });
       const contentAdminGroupAddress = yield this.client.CallContractMethod({
         contractAddress: this.client.utils.HashToAddress(tenantContractId),
         methodName: "groupsMapping",
@@ -166,12 +188,14 @@ class TenantStore {
         formatArguments: true,
       });
 
-      // Sort tenant admin group and content admin group to the top of the list, if present
+      // Sort special groups to the top of the list, if present
       const contentAdminGroupIndex = managedGroups.findIndex(group => Utils.EqualAddress(group?.address, contentAdminGroupAddress));
       if(contentAdminGroupAddress >= 0) {
         const contentAdminGroup = managedGroups[contentAdminGroupIndex];
         delete managedGroups[contentAdminGroupIndex];
         managedGroups.unshift(contentAdminGroup);
+
+        this.specialGroups.contentAdmins = contentAdminGroup;
       }
 
       const tenantAdminGroupIndex = managedGroups.findIndex(group => Utils.EqualAddress(group?.address, tenantAdminGroupAddress));
@@ -179,12 +203,88 @@ class TenantStore {
         const tenantAdminGroup = managedGroups[tenantAdminGroupIndex];
         delete managedGroups[tenantAdminGroupIndex];
         managedGroups.unshift(tenantAdminGroup);
+
+        this.specialGroups.tenantAdmins = tenantAdminGroup;
+      }
+
+      const tenantUsersGroupIndex = managedGroups.findIndex(group => Utils.EqualAddress(group?.address, tenantUsersGroupAddress));
+      if(tenantUsersGroupIndex >= 0) {
+        const tenantUsersGroup = managedGroups[tenantUsersGroupIndex];
+        delete managedGroups[tenantUsersGroupIndex];
+        managedGroups.unshift(tenantUsersGroup);
+
+        this.specialGroups.tenantUsers = tenantUsersGroup;
       }
 
       this.managedGroups = managedGroups.filter(group => group);
     }
 
     return this.managedGroups;
+  });
+
+  LoadUser = flow(function * ({address}) {
+    if(this.users[address]) { return; }
+
+    const [name, profileImage, balance] = yield Promise.allSettled([
+      this.client.userProfileClient.PublicUserMetadata({address, metadataSubtree: "name"}),
+      this.client.userProfileClient.UserProfileImage({address}),
+      this.rootStore.accountsStore.AccountBalance(address)
+    ]);
+
+    this.users[address] = {
+      name: name.status === "fulfilled" && name.value || undefined,
+      profileImage: profileImage.status === "fulfilled" && profileImage.value || undefined,
+      balance: balance.status === "fulfilled" && balance.value || undefined
+    };
+  });
+
+  LoadTenantUsers = flow(function * () {
+    if(!this.tenantContractId) { return; }
+
+    if(!this.specialGroups.tenantUsers || !this.specialGroups.tenantAdmins) {
+      yield this.LoadManagedGroups();
+    }
+
+    const tenantUsersGroupAddress = this.specialGroups.tenantUsers.address;
+    const [tenantUsersOwner, tenantUsersManagers, tenantUsersMembers] = yield Promise.allSettled([
+      this.client.AccessGroupOwner({contractAddress: tenantUsersGroupAddress}),
+      this.client.AccessGroupManagers({contractAddress: tenantUsersGroupAddress}),
+      this.client.AccessGroupMembers({contractAddress: tenantUsersGroupAddress})
+    ]);
+
+    const tenantUsers = [
+      tenantUsersOwner.status === "fulfilled" && tenantUsersOwner.value,
+      ...(tenantUsersManagers.status === "fulfilled" && tenantUsersManagers.value || []),
+      ...(tenantUsersMembers.status === "fulfilled" && tenantUsersMembers.value || [])
+    ]
+      .filter(user => user)
+      .filter((value, index, array) => array.indexOf(value) === index);
+
+    const tenantAdminsGroupAddress = this.specialGroups.tenantAdmins.address;
+    const [tenantAdminsOwner, tenantAdminsManagers, tenantAdminsMembers] = yield Promise.allSettled([
+      this.client.AccessGroupOwner({contractAddress: tenantAdminsGroupAddress}),
+      this.client.AccessGroupManagers({contractAddress: tenantAdminsGroupAddress}),
+      this.client.AccessGroupMembers({contractAddress: tenantAdminsGroupAddress})
+    ]);
+
+    const tenantAdmins = [
+      tenantAdminsOwner.status === "fulfilled" && tenantAdminsOwner.value,
+      ...(tenantAdminsManagers.status === "fulfilled" && tenantAdminsManagers.value || []),
+      ...(tenantAdminsMembers.status === "fulfilled" && tenantAdminsMembers.value || [])
+    ]
+      .filter(user => user)
+      .filter((value, index, array) => array.indexOf(value) === index);
+
+    // Load info on users
+    yield this.client.utils.LimitedMap(
+      10,
+      [...tenantUsers, ...tenantAdmins]
+        .filter((value, index, array) => array.indexOf(value) === index),
+      async address => await this.LoadUser({address})
+    );
+
+    this.tenantUsers = tenantUsers;
+    this.tenantAdmins = tenantAdmins;
   });
 
   UserManagedGroupMembership = flow(function * ({userAddress}) {

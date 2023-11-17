@@ -16,6 +16,7 @@ import {Navigate, Outlet, useLocation} from "react-router";
 import {tenantStore} from "./stores";
 import {Tabs} from "@mantine/core";
 import {useMediaQuery} from "@mantine/hooks";
+import TenantUsers from "./components/tenancy/TenantUsers";
 
 const GatedRoute = ({Component}) => {
   return (
@@ -72,6 +73,7 @@ const AppRoutes = observer(() => {
         <Route path="/profile" element={<GatedRoute Component={ProfilePage} />} />
         <Route path="/tenancy" element={<GatedRoute Component={TenantOverview} />} />
         <Route path="/tenancy/invites" element={<GatedRoute Component={TenantInvites} />} />
+        <Route path="/tenancy/manage" element={<GatedRoute Component={TenantUsers} />} />
       </Route>
     </Routes>
   );

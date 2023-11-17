@@ -61,7 +61,7 @@ const AccountForm = observer(() => {
   return (
     <div className="page-content">
       <Paper withBorder p="xl" pr={50} shadow="sm" className="form-container">
-        <form className="account-form" onSubmit={() => {}}>
+        <form className="account-form" onSubmit={event => event.preventDefault()}>
           <Title order={4} mb="xl">Create Account</Title>
           <Select
             mb="md"

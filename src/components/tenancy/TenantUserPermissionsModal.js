@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react";
 import {Button, Checkbox, Group, Modal, Table, Text} from "@mantine/core";
-import {tenantStore} from "../../stores";
+import {rootStore, tenantStore} from "../../stores";
 import {LoadingElement} from "elv-components-js";
 
 const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
@@ -16,8 +16,20 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
       .then(async () => {
         const userPermissions = await tenantStore.UserManagedGroupMembership({userAddress: address});
 
-        setPermissions(userPermissions);
         setOriginalPermissions(userPermissions);
+        setPermissions(userPermissions);
+
+        // Ensure the user will be added to the tenant users group
+        const tenantUserGroupAddress = tenantStore.specialGroups.tenantUsers?.address;
+        if(tenantUserGroupAddress) {
+          setPermissions({
+            ...userPermissions,
+            [tenantUserGroupAddress]: {
+              manager: userPermissions[tenantUserGroupAddress]?.manager || false,
+              member: true
+            }
+          });
+        }
       });
   }, []);
 
@@ -46,6 +58,7 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
                   groups.map(group => {
                     const name = group.meta?.public?.name || group?.meta?.name;
                     const settings = permissions[group.address];
+                    const isTenantUsersGroup = rootStore.client.utils.EqualAddress(group.address, tenantStore.specialGroups.tenantUsers?.address);
                     return (
                       <tr key={`group-${group.address}`}>
                         <td>
@@ -66,7 +79,7 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
                         <td>
                           <Group position="center">
                             <Checkbox
-                              disabled={settings.owner || settings.manager}
+                              disabled={isTenantUsersGroup || settings.owner}
                               aria-label={`Manager of ${name || group.address}`}
                               checked={settings.owner || settings.manager || settings.member}
                               onChange={event => setPermissions({...permissions, [group.address]: { ...settings, member: event.currentTarget.checked }})}
