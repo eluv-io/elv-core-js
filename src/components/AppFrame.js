@@ -201,18 +201,28 @@ class AppFrame extends React.Component {
           libraryId = await this.props.rootStore.client.ContentObjectLibraryId({objectId});
         }
 
-        const fabricBrowserKey = Object.keys(EluvioConfiguration.apps)
-          .find(key => key.toLowerCase().includes("fabric browser") || key.toLowerCase().includes("fabric-browser"));
+        const appName = event.data.app || "fabric browser";
+        const appKey = Object.keys(EluvioConfiguration.apps)
+          .find(key => key.toLowerCase().includes(appName));
 
-        if(!fabricBrowserKey) {
-          throw Error("Unable to determine fabric browser URL");
+        if(!appKey) {
+          throw Error(`Unable to determine ${appName} URL`);
         }
 
-        const corePath = `#/apps/${fabricBrowserKey}`;
-        const fabricBrowserPath = `#/content/${libraryId}/${objectId}`;
+        const path = [
+          `#/apps/${appKey}`
+        ];
+
+        if(appName === "fabric browser") {
+          path.push(`#/content/${libraryId}/${objectId}`);
+        }  else if(appName === "video editor") {
+          path.push(`#/${libraryId}/${objectId}`);
+        } else if(appName === "site sample") {
+          path.push(`#/${objectId}`);
+        }
 
         const url = new URL(window.location.toString());
-        url.hash = `${corePath}/${fabricBrowserPath}`;
+        url.hash = path.join("/");
 
         window.open(url.toString(), "_blank");
 
@@ -235,6 +245,8 @@ class AppFrame extends React.Component {
         } else {
           appPath = UrlJoin(this.state.basePath, appPath);
         }
+        console.log("base path", this.state.basePath)
+        console.log("appPath", appPath)
 
         history.replaceState(null, null, `#${appPath}`);
 
