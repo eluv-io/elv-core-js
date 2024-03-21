@@ -53,6 +53,7 @@ const AccountDropdown = observer(({onChange}) => {
 
   return (
     <Select
+      autoFocus
       searchable
       label="Account"
       data={accounts}
