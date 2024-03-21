@@ -154,7 +154,8 @@ const TenantOverview = observer(() => {
                 className="tenant-info__image"
               />
               <div>
-                <Title mb="sm" fw={500} order={3} className="tenant-info__title">{tenantStore.publicTenantMetadata.name}</Title>
+                <Title fw={500} order={3} className="tenant-info__title">{tenantStore.publicTenantMetadata.name}</Title>
+                <Text fz="xs" color="dimmed" mb="sm">{tenantStore.tenantContractId}</Text>
                 <Text fz="sm" color="dimmed" className="pre-wrap">{tenantStore.publicTenantMetadata.description}</Text>
               </div>
             </Group>

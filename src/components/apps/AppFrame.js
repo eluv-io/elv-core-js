@@ -247,18 +247,9 @@ class AppFrame extends React.Component {
         break;
 
       case "ShowAppsPage":
-        rootStore.ToggleHeader(true);
         this.setState({
           redirectLocation: "/apps"
         });
-        break;
-
-      case "ShowHeader":
-        rootStore.ToggleHeader(true);
-        break;
-
-      case "HideHeader":
-        rootStore.ToggleHeader(false);
         break;
 
       // App requested an ElvClient method
@@ -315,10 +306,10 @@ class AppFrame extends React.Component {
 AppFrame = observer(AppFrame);
 
 
-const AppFrameWrapper = () => {
+const AppFrameWrapper = observer(() => {
   const {app} = useParams();
 
-  return <AppFrame app={app} />;
-};
+  return <AppFrame app={app} key={rootStore.accountsStore.currentAccountAddress} />;
+});
 
 export default AppFrameWrapper;

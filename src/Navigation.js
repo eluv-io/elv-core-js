@@ -46,7 +46,7 @@ const CoreNav = observer(() => {
           <Tabs.Tab value="/transfer" disabled={locked}>Transfer</Tabs.Tab>
         </Tabs.List>
       </Tabs>
-      { account?.balance < 0.1 ? <div className="warning">This account has an insufficient balance. Please fund the account.</div> : null }
+      { account?.balance < 0.05 ? <div className="warning">This account has an insufficient balance. Please fund the account.</div> : null }
     </div>
   );
 });
