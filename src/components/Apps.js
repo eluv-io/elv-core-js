@@ -12,6 +12,8 @@ import StreamSampleIcon from "../static/images/app_icons/stream-sample.svg";
 import StudioIcon from "../static/images/app_icons/Media Ingest.png";
 import ClipSearchIcon from "../static/images/app_icons/clip-search.svg";
 import LiveStreamManagerIcon from "../static/images/app_icons/Livestream Manager.png";
+import CreatorStudioIcon from "../static/images/app_icons/Creator Studio.png";
+import AnalyticsAndReportingIcon from "../static/images/app_icons/Analytics and Reporting.png";
 
 const icons = {
   "Fabric Browser": FabricBrowserIcon,
@@ -20,10 +22,14 @@ const icons = {
   "Stream Sample": StreamSampleIcon,
   "Media Ingest": StudioIcon,
   "Clip Search": ClipSearchIcon,
-  "Livestream Manager": LiveStreamManagerIcon
+  "Livestream Manager": LiveStreamManagerIcon,
+  "Creator Studio": CreatorStudioIcon,
+  "Analytics and Reporting": AnalyticsAndReportingIcon
 };
 
-const appNames = ["Fabric Browser", "Media Ingest", "Video Editor", "Livestream Manager"];
+const appNames = [
+  "Fabric Browser", "Media Ingest", "Video Editor", "Livestream Manager", "Creator Studio", "Analytics and Reporting"
+];
 
 class Apps extends React.PureComponent {
   App(name) {
