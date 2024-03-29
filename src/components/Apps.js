@@ -24,11 +24,15 @@ const icons = {
   "Clip Search": ClipSearchIcon,
   "Livestream Manager": LiveStreamManagerIcon,
   "Creator Studio": CreatorStudioIcon,
-  "Analytics and Reporting": AnalyticsAndReportingIcon
+  "Eluvio Studio": CreatorStudioIcon,
+  "Analytics and Reporting": AnalyticsAndReportingIcon,
+  "Analytics & Reporting": AnalyticsAndReportingIcon
 };
 
 const appNames = [
-  "Fabric Browser", "Media Ingest", "Video Editor", "Livestream Manager", "Creator Studio", "Analytics and Reporting"
+  "Fabric Browser", "Media Ingest", "Video Editor", "Livestream Manager",
+  "Creator Studio", "Eluvio Studio",
+  "Analytics and Reporting", "Analytics & Reporting"
 ];
 
 class Apps extends React.PureComponent {
