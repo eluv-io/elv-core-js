@@ -22,8 +22,8 @@ class Navigation extends React.Component {
           </NavLink>
 
           <NavLink activeClassName="active" to="/offerings">Offerings</NavLink>
-          <NavLink activeClassName="active" to="/terms">Terms</NavLink>
-          <NavLink activeClassName="active" to="/privacy">Privacy</NavLink>
+          <a target="_blank" href={"https://live.eluv.io/terms"}>Terms</a>
+          <a target="_blank" href={"https://live.eluv.io/privacy"}>Privacy</a>
         </nav>
       </div>
     );
