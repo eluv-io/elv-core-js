@@ -33,6 +33,7 @@ class AccountStore {
     this.rootStore = rootStore;
 
     this.network = (EluvioConfiguration["config-url"].match(/\.(net\d+)\./) || [])[1] || "";
+    this.rootStore.coreUrl = EluvioConfiguration["coreUrl"] || "";
   }
 
   ResizeImage(imageUrl, height) {
