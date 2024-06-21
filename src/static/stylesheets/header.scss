@@ -96,12 +96,9 @@ header {
 
   .account-lock-icon {
     border-radius: 25%;
-    display: block;
+    display: flex;
     height: $elv-spacing-m;
     padding: $elv-spacing-xxs;
-    position: absolute;
-    right: $elv-spacing-s;
-    top: $elv-spacing-xs;
 
     svg {
       stroke: $elv-color-gray;
@@ -141,7 +138,10 @@ header {
 }
 
 .header-account-info {
-  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .header-account-name {
@@ -161,6 +161,9 @@ header {
 }
 
 .header-account-balance {
+  display: flex;
+  flex-basis: 100%;
+
   span {
     font-size: $elv-font-s;
     font-weight: 300;
