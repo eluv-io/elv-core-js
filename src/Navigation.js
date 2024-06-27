@@ -23,8 +23,8 @@ const ResourcesNav = () => {
           Account
         </NavLink>
         <NavLink className={({isActive}) => isActive ? "active" : ""} to="/offerings">Offerings</NavLink>
-        <NavLink className={({isActive}) => isActive ? "active" : ""} to="/terms">Terms</NavLink>
-        <NavLink className={({isActive}) => isActive ? "active" : ""} to="/privacy">Privacy</NavLink>
+        <a href="https://eluv.io/terms" target="_blank" rel="noreferrer">Terms</a>
+        <a href="https://eluv.io/privacy" target="_blank" rel="noreferrer">Privacy</a>
       </nav>
     </div>
   );
@@ -34,6 +34,8 @@ const CoreNav = observer(() => {
   const account = accountsStore.currentAccount;
   const location = useLocation();
   const navigate = useNavigate();
+
+  const locked = !account || account?.balance < 0.1;
 
   return (
     <div className="nav-container">

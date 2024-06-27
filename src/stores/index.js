@@ -17,6 +17,15 @@ class RootStore {
   signerSet = false;
   simplePasswords = false;
   utils = Utils;
+  activeApp;
+
+  get darkMode() {
+    if(!this.activeApp) { return false; }
+
+    const darkModeApps = ["Video Editor"];
+
+    return !!darkModeApps.find(app => this.activeApp.includes(app));
+  }
 
   constructor() {
     makeAutoObservable(this);
@@ -29,6 +38,10 @@ class RootStore {
 
   ResetTenancy() {
     this.tenantStore.Reset();
+  }
+
+  SetActiveApp(app) {
+    this.activeApp = app;
   }
 
   InitializeClient = flow(function * (signer) {

@@ -14,13 +14,16 @@
     width: 400px;
 
     a {
-      border-radius: 0 0 5px 5px;
       color: $elv-color-text-lighter;
       flex: 1 1 auto;
 
       &.active {
         background-color: $elv-color-lightestgray;
         color: $elv-color-text-light;
+      }
+
+      &:first-child {
+        border-radius: 0 0 0 5px;
       }
     }
   }

@@ -5,7 +5,7 @@ to allow the contained app to request fabric / blockchain API requests
 from the core app, which owns user account information and keys
 */
 
-import React from "react";
+import React, {useEffect} from "react";
 import UrlJoin from "url-join";
 import {Navigate, useParams} from "react-router";
 
@@ -308,6 +308,12 @@ AppFrame = observer(AppFrame);
 
 const AppFrameWrapper = observer(() => {
   const {app} = useParams();
+
+  useEffect(() => {
+    rootStore.SetActiveApp(app);
+
+    return () => rootStore.SetActiveApp(undefined);
+  }, []);
 
   return <AppFrame app={app} key={rootStore.accountsStore.currentAccountAddress} />;
 });
