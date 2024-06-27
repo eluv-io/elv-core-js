@@ -56,7 +56,6 @@
     "html-webpack-inline-source-plugin": "0.0.10",
     "html-webpack-plugin": "^5.5.3",
     "postcss-loader": "^7.3.3",
-    "pre-commit": "^1.2.2",
     "raw-loader": "^0.5.1",
     "react-refresh": "^0.14.0",
     "regenerator-runtime": "^0.12.1",
