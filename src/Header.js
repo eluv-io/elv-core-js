@@ -13,7 +13,7 @@ import LogoPreview from "./static/images/LogoPreview.png";
 
 const Header = observer(() => {
   let logo = Logo;
-  if(rootStore.coreUrl?.includes("preview")) {
+  if(rootStore.coreUrl?.includes("v3-dev")) {
     logo = LogoPreview;
   } else if(rootStore.networkName === "test") {
     logo = LogoTest;
