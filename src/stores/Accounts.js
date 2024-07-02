@@ -181,10 +181,10 @@ class AccountStore {
 
       if(signer) {
         yield this.rootStore.InitializeClient(signer);
+        this.accounts[address].tenantContractId = yield this.rootStore.client.userProfileClient.TenantContractId();
       }
 
       this.accounts[address].signer = signer;
-      this.accounts[address].tenantContractId = yield this.rootStore.client.userProfileClient.TenantContractId();
 
       yield this.AccountBalance(address);
 

@@ -29,7 +29,7 @@ const DownloadMnemonic = mnemonic => {
 
 const AccountForm = observer(() => {
   const [formData, setFormData] = useState({
-    credentialType: "mnemonic",
+    credentialType: "privateKey",
     privateKey: "",
     encryptedPrivateKey: "",
     mnemonic: "",
