@@ -87,10 +87,19 @@ const LoginModal = observer(({title, address, allowAccountSwitch, setUnlocking, 
           <Button
             fz="sm"
             disabled={!password}
-            loading={submitting}
+            opacity={submitting ? 0.5 : 1}
+            styles={{
+              root: {
+                transition: "opacity 0.25s ease"
+              }
+            }}
             type="button"
             w={150}
-            onClick={Submit}
+            onClick={() => {
+              if(submitting) { return; }
+
+              Submit();
+            }}
           >
             Submit
           </Button>
