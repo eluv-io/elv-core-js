@@ -42,7 +42,11 @@ const CoreNav = observer(() => {
       <Tabs value={`/${location.pathname.split("/")[1]}`} onTabChange={pathname => navigate(pathname)} className="nav-container__tabs">
         <Tabs.List grow>
           <Tabs.Tab value="/apps" disabled={locked}>Apps & Tools</Tabs.Tab>
-          { accountsStore.currentAccount?.tenantContractId ? <Tabs.Tab value="/tenancy" disabled={locked}>Tenancy</Tabs.Tab> : null }
+          {
+            // TODO: Remove
+            true || !accountsStore.currentAccount?.tenantContractId ? null :
+              <Tabs.Tab value="/tenancy" disabled={locked}>Tenancy</Tabs.Tab>
+          }
           <Tabs.Tab value="/profile" disabled={locked}>Profile</Tabs.Tab>
           <Tabs.Tab value="/accounts">Accounts</Tabs.Tab>
           <Tabs.Tab value="/transfer" disabled={locked}>Transfer</Tabs.Tab>
