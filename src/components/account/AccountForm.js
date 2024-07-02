@@ -40,10 +40,6 @@ const AccountForm = observer(() => {
   const [submitting, setSubmitting] = useState(false);
   const [complete, setComplete] = useState(false);
 
-  useEffect(() => {
-    setFormData({...formData, mnemonic: accountsStore.GenerateMnemonic()});
-  }, []);
-
   const valid =
     formData.password &&
     formData.passwordConfirmation &&

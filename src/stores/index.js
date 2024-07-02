@@ -78,8 +78,9 @@ class RootStore {
     }
 
     if(
-      window.location.hostname === "localhost" ||
-      (new URLSearchParams(window.location.search).has("simplePasswords"))
+      ["localhost", "127.0.0.1"].includes(window.location.hostname) ||
+      (new URLSearchParams(window.location.search).has("simplePasswords")) ||
+      (new URLSearchParams(window.location.search).has("sp"))
     ) {
       this.simplePasswords = true;
     }
