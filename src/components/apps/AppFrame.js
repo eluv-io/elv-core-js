@@ -205,11 +205,12 @@ class AppFrame extends React.Component {
           throw Error("Unable to determine fabric browser URL");
         }
 
-        const corePath = `#/apps/${fabricBrowserKey}`;
+        const corePath = `/apps/${fabricBrowserKey}`;
         const fabricBrowserPath = `#/content/${libraryId}/${objectId}`;
 
         const url = new URL(window.location.toString());
-        url.hash = `${corePath}/${fabricBrowserPath}`;
+        url.pathname = corePath;
+        url.hash = fabricBrowserPath;
 
         window.open(url.toString(), "_blank");
 
