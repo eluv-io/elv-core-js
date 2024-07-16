@@ -5,14 +5,16 @@ to allow the contained app to request fabric / blockchain API requests
 from the core app, which owns user account information and keys
 */
 
-import React from "react";
+import React, {useEffect} from "react";
 import UrlJoin from "url-join";
-import {Redirect, withRouter} from "react-router";
+import {Navigate, useParams} from "react-router";
 
 import {FrameClient} from "@eluvio/elv-client-js/src/FrameClient";
 import {Confirm} from "elv-components-js";
-import {inject, observer} from "mobx-react";
+import {observer} from "mobx-react";
 import {Debounce} from "elv-components-js";
+
+import {rootStore, accountsStore} from "../../stores";
 
 class IFrameBase extends React.Component {
   SandboxPermissions() {
@@ -59,30 +61,25 @@ const IFrame = React.forwardRef(
   (props, appRef) => <IFrameBase appRef={appRef} {...props} />
 );
 
-@inject("rootStore")
-@inject("accountsStore")
-@observer
 class AppFrame extends React.Component {
   constructor(props) {
     super(props);
 
-    const appName = this.props.match.params.app;
-    const basePath = UrlJoin("/apps", appName);
-    const appPath = window.location.hash.replace(basePath, "").replace(encodeURI(basePath), "").substr(1) || "";
+    const appName = this.props.app;
+    const appPath = window.location.hash
     const appUrl = UrlJoin(EluvioConfiguration.apps[appName], appPath);
 
     this.state = {
       appRef: React.createRef(),
       appName,
       appUrl,
-      basePath,
       profileAccessAllowed: false,
       confirmPromise: undefined
     };
 
     // Update account balance when making requests
     this.UpdateBalance = Debounce(
-      () => this.props.accountsStore.AccountBalance(this.props.accountsStore.currentAccountAddress),
+      () => accountsStore.AccountBalance(accountsStore.currentAccountAddress),
       5000
     );
 
@@ -91,13 +88,13 @@ class AppFrame extends React.Component {
 
   // Ensure region and static token are reset if app changed it
   async componentWillUnmount() {
-    await this.props.rootStore.client.ResetRegion();
-    await this.props.rootStore.client.ClearStaticToken();
+    await rootStore.client.ResetRegion();
+    await rootStore.client.ClearStaticToken();
   }
 
   async CheckAccess(event) {
     if(FrameClient.PromptedMethods().includes(event.data.calledMethod)) {
-      const accessLevel = await this.props.rootStore.client.userProfileClient.AccessLevel();
+      const accessLevel = await rootStore.client.userProfileClient.AccessLevel();
 
       // No access to private profiles
       if(accessLevel === "private") { return false; }
@@ -107,7 +104,7 @@ class AppFrame extends React.Component {
         const requestor = this.state.appName;
         const accessAllowed =
           this.state.profileAccessAllowed ||
-          await this.props.rootStore.client.userProfileClient.UserMetadata({
+          await rootStore.client.userProfileClient.UserMetadata({
             metadataSubtree: UrlJoin("allowed_accessors", requestor)
           });
 
@@ -118,7 +115,7 @@ class AppFrame extends React.Component {
                 message: `Do you want to allow the application "${requestor}" to access your profile?`,
                 onConfirm: async () => {
                   // Record permission
-                  await this.props.rootStore.client.userProfileClient.ReplaceUserMetadata({
+                  await rootStore.client.userProfileClient.ReplaceUserMetadata({
                     metadataSubtree: UrlJoin("allowed_accessors", requestor),
                     metadata: Date.now()
                   });
@@ -158,7 +155,7 @@ class AppFrame extends React.Component {
   }
 
   Respond(requestId, source, responseMessage) {
-    responseMessage = this.props.rootStore.client.utils.MakeClonable({
+    responseMessage = rootStore.client.utils.MakeClonable({
       ...responseMessage,
       requestId: requestId,
       type: "ElvFrameResponse"
@@ -194,11 +191,11 @@ class AppFrame extends React.Component {
         let { libraryId, objectId, versionHash } = event.data;
 
         if(!objectId && versionHash) {
-          objectId = this.props.rootStore.client.utils.DecodeVersionHash(versionHash).objectId;
+          objectId = rootStore.client.utils.DecodeVersionHash(versionHash).objectId;
         }
 
         if(!libraryId) {
-          libraryId = await this.props.rootStore.client.ContentObjectLibraryId({objectId});
+          libraryId = await rootStore.client.ContentObjectLibraryId({objectId});
         }
 
         const fabricBrowserKey = Object.keys(EluvioConfiguration.apps)
@@ -208,11 +205,12 @@ class AppFrame extends React.Component {
           throw Error("Unable to determine fabric browser URL");
         }
 
-        const corePath = `#/apps/${fabricBrowserKey}`;
+        const corePath = `/apps/${fabricBrowserKey}`;
         const fabricBrowserPath = `#/content/${libraryId}/${objectId}`;
 
         const url = new URL(window.location.toString());
-        url.hash = `${corePath}/${fabricBrowserPath}`;
+        url.pathname = corePath;
+        url.hash = fabricBrowserPath;
 
         window.open(url.toString(), "_blank");
 
@@ -220,10 +218,7 @@ class AppFrame extends React.Component {
 
       // App requested its app path
       case "GetFramePath":
-        // TODO: Replace with match params
-        const appLocation = window.location.hash.replace(`#${this.state.basePath}`, "") || "/";
-
-        this.Respond(requestId, source, {response: appLocation});
+        this.Respond(requestId, source, {response: window.location.hash});
         break;
 
       // App requested to push its new app path
@@ -231,9 +226,9 @@ class AppFrame extends React.Component {
         let appPath = event.data.path.replace(/^\/+/, "");
         if(appPath.startsWith("#")) {
           // UrlJoin eats leading slash if followed by #
-          appPath = UrlJoin(this.state.basePath, "/", appPath);
+          appPath = UrlJoin("/", appPath.replace("#", ""));
         } else {
-          appPath = UrlJoin(this.state.basePath, appPath);
+          appPath = UrlJoin(appPath);
         }
 
         history.replaceState(null, null, `#${appPath}`);
@@ -248,18 +243,9 @@ class AppFrame extends React.Component {
         break;
 
       case "ShowAppsPage":
-        this.props.rootStore.ToggleHeader(true);
         this.setState({
           redirectLocation: "/apps"
         });
-        break;
-
-      case "ShowHeader":
-        this.props.rootStore.ToggleHeader(true);
-        break;
-
-      case "HideHeader":
-        this.props.rootStore.ToggleHeader(false);
         break;
 
       // App requested an ElvClient method
@@ -278,24 +264,24 @@ class AppFrame extends React.Component {
 
         if(service) {
           if(service === "search") {
-            await this.props.rootStore.searchClient.CallFromFrameMessage(event.data, responder);
+            await rootStore.searchClient.CallFromFrameMessage(event.data, responder);
           } else if(service === "default") {
-            await this.props.rootStore.client.CallFromFrameMessage(event.data, responder);
+            await rootStore.client.CallFromFrameMessage(event.data, responder);
           } else {
             this.Respond(requestId, source, {error: new Error(`Invalid service: ${service}`)});
           }
         } else {
-          await this.props.rootStore.client.CallFromFrameMessage(event.data, responder);
+          await rootStore.client.CallFromFrameMessage(event.data, responder);
         }
     }
   }
 
   render() {
     if(this.state.redirectLocation) {
-      return <Redirect push to={this.state.redirectLocation} />;
+      return <Navigate replace to={this.state.redirectLocation} />;
     }
 
-    if(!this.props.rootStore.client) {
+    if(!rootStore.client) {
       return null;
     }
 
@@ -311,4 +297,21 @@ class AppFrame extends React.Component {
   }
 }
 
-export default withRouter(AppFrame);
+
+// eslint-disable-next-line no-class-assign
+AppFrame = observer(AppFrame);
+
+
+const AppFrameWrapper = observer(() => {
+  const {app} = useParams();
+
+  useEffect(() => {
+    rootStore.SetActiveApp(app);
+
+    return () => rootStore.SetActiveApp(undefined);
+  }, []);
+
+  return <AppFrame app={app} key={rootStore.accountsStore.currentAccountAddress} />;
+});
+
+export default AppFrameWrapper;

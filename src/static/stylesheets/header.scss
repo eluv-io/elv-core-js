@@ -2,63 +2,46 @@
 
 header {
   align-items: center;
+  background-color: $elv-color-white;
   box-shadow: 2px 1px 2px 0 $elv-color-lightgray;
   display: grid;
   grid-template-columns: auto 1fr auto;
   grid-template-rows: 40px;
   height: 40px;
   max-height: 40px;
+  padding: 0 10px;
   position: relative;
   width: 100%;
-
-  &.hidden-header {
-    height: 0;
-    visibility: hidden;
-
-    .toggle-header-button {
-      visibility: visible;
-    }
-  }
-
-  .toggle-header-button {
-    border-radius: 5px;
-    display: flex;
-    height: 25px;
-    justify-content: center;
-    left: calc(50% - 25px);
-    position: absolute;
-    top: -2px;
-    visibility: hidden;
-    width: 50px;
-
-    &:hover {
-      background: $elv-color-lightergray;
-    }
-
-    svg {
-      color: transparent;
-      fill: $elv-color-darkergray;
-    }
-  }
+  z-index: 2;
 }
 
-.toggle-header-section {
-  cursor: pointer;
-  height: 100%;
+.header--dark {
+  background-color: #131315;
+  border-bottom: 1px solid #000000;
+  box-shadow: none;
+
+  * {
+    color: #ffffff;
+  }
+
+  .-elv-token-icon {
+    filter: invert(100%);
+  }
+
+  .logo {
+    img {
+      filter: invert(100%);
+    }
+  }
 }
 
 .logo {
   display: flex;
   height: 100%;
 
-  .-elv-icon-wrapper {
-    display: flex;
-    height: 100%;
-    padding: 10px $elv-spacing-s;
-  }
-
   img {
     height: 100%;
+    padding: 10px;
     width: auto;
   }
 }
@@ -82,7 +65,6 @@ header {
   padding: 0 $elv-spacing-m 0 $elv-spacing-s;
   position: relative;
   width: 16rem;
-  z-index: 1000;
 
   &:hover {
     background: $elv-color-lightestgray;
@@ -134,12 +116,11 @@ header {
   @include elv-cropped-image($image-size, $image-size, 50%, $image-size, $image-size);
   background: $elv-color-bg-white;
   border-radius: 100%;
-  margin-right: $elv-spacing-xs;
 }
 
 .header-account-info {
-  flex: 1;
   display: flex;
+  flex: 1;
   flex-direction: column;
   overflow: hidden;
 }
@@ -161,13 +142,11 @@ header {
 }
 
 .header-account-balance {
+  align-items: center;
   display: flex;
-  flex-basis: 100%;
-
-  span {
-    font-size: $elv-font-s;
-    font-weight: 300;
-  }
+  font-size: $elv-font-xs;
+  font-weight: 300;
+  gap: 5px;
 }
 
 .header-account-selection {

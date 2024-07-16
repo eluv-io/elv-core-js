@@ -1,19 +1,21 @@
-import "../static/stylesheets/apps.scss";
+import "../../static/stylesheets/apps.scss";
 
 import React from "react";
-import GenericAppLogo from "../static/icons/App.svg";
-import {Action, ImageIcon} from "elv-components-js";
+import GenericAppLogo from "../../static/icons/App.svg";
+import {ImageIcon} from "elv-components-js";
 import UrlJoin from "url-join";
+import {Link} from "react-router-dom";
 
-import FabricBrowserIcon from "../static/images/app_icons/FabricBrowser.png";
-import VideoEditorIcon from "../static/images/app_icons/Video Editor.png";
-import SiteSampleIcon from "../static/images/app_icons/site-sample.svg";
-import StreamSampleIcon from "../static/images/app_icons/stream-sample.svg";
-import StudioIcon from "../static/images/app_icons/Media Ingest.png";
-import ClipSearchIcon from "../static/images/app_icons/clip-search.svg";
-import LiveStreamManagerIcon from "../static/images/app_icons/Livestream Manager.png";
-import CreatorStudioIcon from "../static/images/app_icons/Creator Studio.png";
-import AnalyticsAndReportingIcon from "../static/images/app_icons/Analytics and Reporting.png";
+
+import CreatorStudioIcon from "../../static/images/app_icons/Creator Studio.png";
+import AnalyticsAndReportingIcon from "../../static/images/app_icons/Analytics and Reporting.png";
+import FabricBrowserIcon from "../../static/images/app_icons/FabricBrowser.png";
+import VideoEditorIcon from "../../static/images/app_icons/Video Editor.png";
+import SiteSampleIcon from "../../static/images/app_icons/site-sample.svg";
+import StreamSampleIcon from "../../static/images/app_icons/stream-sample.svg";
+import StudioIcon from "../../static/images/app_icons/Media Ingest.png";
+import ClipSearchIcon from "../../static/images/app_icons/clip-search.svg";
+import LiveStreamManagerIcon from "../../static/images/app_icons/Livestream Manager.png";
 
 const icons = {
   "Fabric Browser": FabricBrowserIcon,
@@ -40,12 +42,12 @@ class Apps extends React.PureComponent {
     const logo = icons[Object.keys(icons).find(key => name.includes(key))] || UrlJoin(EluvioConfiguration.apps[name], "Logo.png");
 
     return (
-      <Action key={`app-${name}`} label={`Go to ${name}`} type="link" to={`/apps/${name}`} button={false}>
+      <Link key={`app-${name}`} label={`Go to ${name}`} type="link" to={`/apps/${name}`}>
         <div className="app-selection">
           <ImageIcon icon={logo || GenericAppLogo} alternateIcon={GenericAppLogo} className="app-logo" />
           <h4>{name}</h4>
         </div>
-      </Action>
+      </Link>
     );
   }
 

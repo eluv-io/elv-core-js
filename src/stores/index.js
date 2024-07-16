@@ -1,6 +1,7 @@
-import {configure, observable, action, flow} from "mobx";
-import {ElvClient, ElvWalletClient} from "@eluvio/elv-client-js";
+import {configure, flow, makeAutoObservable} from "mobx";
+import {ElvClient, ElvWalletClient, Utils} from "@eluvio/elv-client-js";
 import AccountStore from "./Accounts";
+import TenantStore from "./Tenant";
 
 // Force strict mode so mutations are only allowed within actions.
 configure({
@@ -8,22 +9,41 @@ configure({
 });
 
 class RootStore {
-  @observable networkName;
-  @observable configError = false;
-  @observable walletClient;
-  @observable client;
-  @observable searchClient;
-  @observable signerSet = false;
-  @observable showHeader = true;
-  @observable simplePasswords = false;
+  networkName;
+  configError = false;
+  walletClient;
+  client;
+  searchClient;
+  signerSet = false;
+  simplePasswords = false;
+  utils = Utils;
+  activeApp;
+
+  get darkMode() {
+    if(!this.activeApp) { return false; }
+
+    const darkModeApps = ["Video Editor"];
+
+    return !!darkModeApps.find(app => this.activeApp.includes(app));
+  }
 
   constructor() {
+    makeAutoObservable(this);
+
     this.accountsStore = new AccountStore(this);
+    this.tenantStore = new TenantStore(this);
 
     this.InitializeClient();
   }
 
-  @action.bound
+  ResetTenancy() {
+    this.tenantStore.Reset();
+  }
+
+  SetActiveApp(app) {
+    this.activeApp = app;
+  }
+
   InitializeClient = flow(function * (signer) {
     this.configError = false;
 
@@ -58,8 +78,9 @@ class RootStore {
     }
 
     if(
-      window.location.hostname === "localhost" ||
-      (new URLSearchParams(window.location.search).has("simplePasswords"))
+      ["localhost", "127.0.0.1"].includes(window.location.hostname) ||
+      (new URLSearchParams(window.location.search).has("simplePasswords")) ||
+      (new URLSearchParams(window.location.search).has("sp"))
     ) {
       this.simplePasswords = true;
     }
@@ -110,7 +131,6 @@ class RootStore {
     }
   });
 
-  @action.bound
   InitializeSearchClient = flow(function * (signer) {
     try {
       const {
@@ -174,16 +194,12 @@ class RootStore {
       console.error(error);
     }
   });
-
-  @action.bound
-  ToggleHeader(show) {
-    this.showHeader = show;
-  }
 }
 
 const root = new RootStore();
 
 export const rootStore = root;
 export const accountsStore = rootStore.accountsStore;
+export const tenantStore = rootStore.tenantStore;
 
 window.rootStore = rootStore;
