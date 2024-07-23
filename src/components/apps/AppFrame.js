@@ -66,7 +66,7 @@ class AppFrame extends React.Component {
     super(props);
 
     const appName = this.props.app;
-    const appPath = window.location.hash
+    const appPath = window.location.hash;
     const appUrl = UrlJoin(EluvioConfiguration.apps[appName], appPath);
 
     this.state = {

@@ -145,6 +145,7 @@
     position: relative;
   }
 
+  .mnemonic-edit,
   .mnemonic-download {
     position: absolute;
     right: 20px;
@@ -152,6 +153,10 @@
     * {
       stroke: $elv-color-mediumblue;
     }
+  }
+
+  .mnemonic-edit {
+    right: 60px;
   }
 
   .mnemonic-saved {

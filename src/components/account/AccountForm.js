@@ -17,6 +17,7 @@ import {Link} from "react-router-dom";
 import {accountsStore} from "../../stores";
 import {Navigate} from "react-router";
 import {ImageIcon} from "elv-components-js";
+import EditIcon from "../../static/icons/edit.svg";
 import DownloadIcon from "../../static/icons/download.svg";
 
 const DownloadMnemonic = mnemonic => {
@@ -37,6 +38,7 @@ const AccountForm = observer(() => {
     passwordConfirmation: ""
   });
   const [error, setError] = useState(undefined);
+  const [editingMnemonic, setEditingMnemonic] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [complete, setComplete] = useState(false);
 
@@ -107,18 +109,37 @@ const AccountForm = observer(() => {
                 label="Mnemonic Phrase"
                 description="This mnemonic can be used to recover your account. Please download the mnemonic and ensure it is backed up and kept safe."
               >
-                <Paper withBorder p="md" mt="sm" mb="md" className="mnemonic-container">
-                  <Text italic fz="sm">{formData.mnemonic}</Text>
-                  <ActionIcon
-                    variant="transparent"
-                    title="Download Mnemonic Phrase"
-                    aria-label="Download Mnemonic Phrase"
-                    className="mnemonic-download"
-                    onClick={() => DownloadMnemonic(formData.mnemonic)}
-                  >
-                    <ImageIcon icon={DownloadIcon} />
-                  </ActionIcon>
-                </Paper>
+                {
+                  editingMnemonic ?
+                    <TextInput
+                      value={formData.mnemonic}
+                      onChange={event => setFormData({...formData, mnemonic: event.currentTarget.value})}
+                      placeholder="Mnemonic phrase"
+                      mt="sm"
+                      mb="md"
+                    /> :
+                    <Paper withBorder p="md" mt="sm" mb="md" className="mnemonic-container">
+                      <Text italic fz="sm">{formData.mnemonic}</Text>
+                      <ActionIcon
+                        variant="transparent"
+                        title="Modify Mnemonic Phrase"
+                        aria-label="Modify Mnemonic Phrase"
+                        className="mnemonic-edit"
+                        onClick={() => setEditingMnemonic(true)}
+                      >
+                        <ImageIcon icon={EditIcon}/>
+                      </ActionIcon>
+                      <ActionIcon
+                        variant="transparent"
+                        title="Download Mnemonic Phrase"
+                        aria-label="Download Mnemonic Phrase"
+                        className="mnemonic-download"
+                        onClick={() => DownloadMnemonic(formData.mnemonic)}
+                      >
+                        <ImageIcon icon={DownloadIcon}/>
+                      </ActionIcon>
+                    </Paper>
+                }
               </MantineInput.Wrapper>
           }
           <PasswordInput
@@ -148,11 +169,18 @@ const AccountForm = observer(() => {
               Cancel
             </Button>
             <Button
-              disabled={!valid}
-              loading={submitting}
               type="button"
+              disabled={!valid}
+              opacity={submitting ? 0.5 : 1}
+              styles={{
+                root: {
+                  transition: "opacity 0.25s ease"
+                }
+              }}
               w={150}
               onClick={async () => {
+                if(submitting) { return; }
+
                 setSubmitting(true);
                 setError(undefined);
 
