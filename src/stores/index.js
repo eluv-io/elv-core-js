@@ -56,8 +56,8 @@ class RootStore {
       this.walletClient = yield ElvWalletClient.Initialize({
         client: this.client,
         appId: "elv-core",
-        network: EluvioConfiguration["config-url"].includes("main.955305") ? "main" : "demo",
-        mode: EluvioConfiguration["config-url"].includes("main.955305") ? "production" : "staging",
+        network: this.client.networkName.includes("demo") ? "demo" : "main",
+        mode: this.client.networkName.includes("demo") ? "staging" : "production",
         skipMarketplaceLoad: true,
         storeAuthToken: false
       });

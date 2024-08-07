@@ -54,11 +54,11 @@ const LoginModal = observer(({title, address, allowAccountSwitch, setUnlocking, 
       }}
       title={title || "Enter your password to unlock your account"}
     >
+      {
+        !allowAccountSwitch ? null :
+          <AccountDropdown />
+      }
       <form onSubmit={event => event.preventDefault()}>
-        {
-          !allowAccountSwitch ? null :
-            <AccountDropdown />
-        }
         <PasswordInput
           data-autofocus
           mt={allowAccountSwitch ? "md" : 0}
