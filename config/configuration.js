@@ -9,8 +9,9 @@ const EluvioConfiguration = {
     "Stream Sample": "http://localhost:8084",
     "Site Sample": "http://localhost:8086",
     "Livestream Manager": "http://localhost:8155",
-    "Clip Search": "http://localhost:3001",
+    "Clip Search": "http://localhost:3000",
     "Creator Studio": "http://localhost:9000",
+    "AI Search": "http://localhost:8120"
   },
   "version": "local"
 };
