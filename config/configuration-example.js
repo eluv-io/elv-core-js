@@ -7,7 +7,7 @@ const EluvioConfiguration = {
     "Video Editor": "https://video-editor.v3.contentfabric.io",
     "Stream Sample": "https://display.v3.contentfabric.io",
     "Site Sample": "https://site-sample.v3.contentfabric.io",
-    "Clip Search": "https://eluvio-clip-search.web.app",
+    "AI Clip Search": "https://eluvio-clip-search.web.app",
     "Livestream Manager": "https://eluvio-live-stream-v3.web.app"
   },
   "version": "local"
