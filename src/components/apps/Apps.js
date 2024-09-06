@@ -60,14 +60,14 @@ class Apps extends React.PureComponent {
       <div className="page-content">
         <div className="apps">
           <div className="apps-box">
-            <h2>Apps</h2>
+            <h2>Content Fabric Application Suite</h2>
             <div className="apps-box__apps">
               { apps.map(name => this.App(name)) }
             </div>
           </div>
 
           <div className="apps-box">
-            <h2>Tools</h2>
+            <h2>Content Fabric Tools</h2>
             <div className="apps-box__apps">
               { tools.map(name => this.App(name)) }
             </div>
