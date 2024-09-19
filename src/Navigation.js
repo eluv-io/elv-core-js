@@ -44,7 +44,7 @@ const CoreNav = observer(() => {
           <Tabs.Tab value="/apps" disabled={locked}>Apps & Tools</Tabs.Tab>
           {
             // TODO: Remove
-            true || !accountsStore.currentAccount?.tenantContractId ? null :
+            !accountsStore.currentAccount?.tenantContractId ? null :
               <Tabs.Tab value="/tenancy" disabled={locked}>Tenancy</Tabs.Tab>
           }
           <Tabs.Tab value="/profile" disabled={locked}>Profile</Tabs.Tab>
