@@ -18,7 +18,7 @@
   ],
   "dependencies": {
     "@babel/polyfill": "^7.4.3",
-    "@eluvio/elv-client-js": "^4.0.96",
+    "@eluvio/elv-client-js": "git+https://github.com/eluv-io/elv-client-js#live-stream-dvr",
     "@mantine/core": "^6.0.21",
     "@mantine/hooks": "^6.0.21",
     "@tabler/icons-react": "^2.39.0",
