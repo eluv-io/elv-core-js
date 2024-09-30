@@ -14,7 +14,7 @@ import VideoEditorIcon from "../../static/images/app_icons/Video Editor.png";
 import SiteSampleIcon from "../../static/images/app_icons/site-sample.svg";
 import StreamSampleIcon from "../../static/images/app_icons/stream-sample.svg";
 import StudioIcon from "../../static/images/app_icons/Media Ingest.png";
-import ClipSearchIcon from "../../static/images/app_icons/clip-search.png";
+import ClipSearchIcon from "../../static/images/app_icons/AI Clip Search - beta.png";
 import LiveStreamManagerIcon from "../../static/images/app_icons/Livestream Manager.png";
 
 const icons = {
