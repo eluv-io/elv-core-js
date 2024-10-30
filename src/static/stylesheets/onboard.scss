@@ -1,0 +1,32 @@
+@import "~elv-components-js/src/stylesheets/styles";
+
+.onboard {
+  margin: $elv-spacing-l auto $elv-spacing-xxl;
+}
+
+.onboard-form {
+  .mnemonic-container {
+    align-items: center;
+    display: flex;
+    padding-right: 50px;
+    position: relative;
+  }
+
+  .mnemonic-edit,
+  .mnemonic-download {
+    position: absolute;
+    right: 20px;
+
+    * {
+      stroke: $elv-color-mediumblue;
+    }
+  }
+
+  .mnemonic-saved {
+    * {
+      * {
+        cursor: pointer;
+      }
+    }
+  }
+}
