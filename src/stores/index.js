@@ -1,7 +1,6 @@
-import {configure, flow, makeAutoObservable} from "mobx";
-import {ElvClient, ElvWalletClient, Utils} from "@eluvio/elv-client-js";
+import {configure, observable, action, flow} from "mobx";
+import {ElvClient, ElvWalletClient} from "@eluvio/elv-client-js";
 import AccountStore from "./Accounts";
-import TenantStore from "./Tenant";
 
 // Force strict mode so mutations are only allowed within actions.
 configure({
@@ -9,41 +8,22 @@ configure({
 });
 
 class RootStore {
-  networkName;
-  configError = false;
-  walletClient;
-  client;
-  searchClient;
-  signerSet = false;
-  simplePasswords = false;
-  utils = Utils;
-  activeApp;
-
-  get darkMode() {
-    if(!this.activeApp) { return false; }
-
-    const darkModeApps = ["Video Editor"];
-
-    return !!darkModeApps.find(app => this.activeApp.includes(app));
-  }
+  @observable networkName;
+  @observable configError = false;
+  @observable walletClient;
+  @observable client;
+  @observable searchClient;
+  @observable signerSet = false;
+  @observable showHeader = true;
+  @observable simplePasswords = false;
 
   constructor() {
-    makeAutoObservable(this);
-
     this.accountsStore = new AccountStore(this);
-    this.tenantStore = new TenantStore(this);
 
     this.InitializeClient();
   }
 
-  ResetTenancy() {
-    this.tenantStore.Reset();
-  }
-
-  SetActiveApp(app) {
-    this.activeApp = app;
-  }
-
+  @action.bound
   InitializeClient = flow(function * (signer) {
     this.configError = false;
 
@@ -56,8 +36,8 @@ class RootStore {
       this.walletClient = yield ElvWalletClient.Initialize({
         client: this.client,
         appId: "elv-core",
-        network: this.client.networkName.includes("demo") ? "demo" : "main",
-        mode: this.client.networkName.includes("demo") ? "staging" : "production",
+        network: EluvioConfiguration["config-url"].includes("main.955305") ? "main" : "demo",
+        mode: EluvioConfiguration["config-url"].includes("main.955305") ? "production" : "staging",
         skipMarketplaceLoad: true,
         storeAuthToken: false
       });
@@ -78,9 +58,8 @@ class RootStore {
     }
 
     if(
-      ["localhost", "127.0.0.1"].includes(window.location.hostname) ||
-      (new URLSearchParams(window.location.search).has("simplePasswords")) ||
-      (new URLSearchParams(window.location.search).has("sp"))
+      window.location.hostname === "localhost" ||
+      (new URLSearchParams(window.location.search).has("simplePasswords"))
     ) {
       this.simplePasswords = true;
     }
@@ -131,6 +110,7 @@ class RootStore {
     }
   });
 
+  @action.bound
   InitializeSearchClient = flow(function * (signer) {
     try {
       const {
@@ -194,12 +174,16 @@ class RootStore {
       console.error(error);
     }
   });
+
+  @action.bound
+  ToggleHeader(show) {
+    this.showHeader = show;
+  }
 }
 
 const root = new RootStore();
 
 export const rootStore = root;
 export const accountsStore = rootStore.accountsStore;
-export const tenantStore = rootStore.tenantStore;
 
 window.rootStore = rootStore;

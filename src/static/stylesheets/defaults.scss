@@ -1,51 +1,30 @@
-//@import "~elv-components-js/src/stylesheets/defaults";
-@import "./reset";
+@import "~elv-components-js/src/stylesheets/defaults";
 @import "~elv-components-js/src/stylesheets/styles";
-
-html,
-body,
-.app,
-.router-container,
-.side-nav,
-.content,
-.page-content {
-  display: block;
-  width: 100%;
-}
-
-body {
-  height: 100vh;
-}
-
-.page-content {
-  margin-left: auto;
-  margin-right: auto;
-  padding-bottom: 50px;
-  width: max-content;
-}
 
 .app-version {
   display: none;
 }
 
-.header {
-  position: fixed;
-  top: 0;
+html,
+body,
+.app,
+.router-container,
+.page-error {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  min-height: 100vh;
+  width: 100%;
 }
 
 .router-container {
-  height: 100vh;
-  min-height: max-content;
-  padding-top: 40px;
-  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
-.form-container,
-.content-container {
-  width: 800px;
-
-  @media screen and (max-width: 850px) {
-    width: 90vw;
+.form-container {
+  form {
+    width: 700px;
   }
 }
 
@@ -75,6 +54,13 @@ body {
   button {
     margin-top: $elv-spacing-l;
   }
+}
+
+.page-content {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .actions-container {
@@ -164,8 +150,4 @@ img {
 
 .-elv-loading-element-fullpage {
   flex: 1 1 auto;
-}
-
-.pre-wrap {
-  white-space: pre-wrap;
 }

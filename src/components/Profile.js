@@ -1,4 +1,4 @@
-import "../../static/stylesheets/profile.scss";
+import "../static/stylesheets/profile.scss";
 
 import React from "react";
 import {
@@ -8,19 +8,19 @@ import {
   IconButton,
   BallClipRotate,
   onEnterPressed,
-  TraversableJson,
+  TraversableJson, Action
 } from "elv-components-js";
 
-import DefaultProfileImage from "../../static/icons/User.svg";
+import DefaultProfileImage from "../static/icons/User.svg";
 import UrlJoin from "url-join";
 
-import XIcon from "../../static/icons/X.svg";
-import KeyIcon from "../../static/icons/Key.svg";
-import {observer} from "mobx-react";
+import XIcon from "../static/icons/X.svg";
+import KeyIcon from "../static/icons/Key.svg";
+import {inject, observer} from "mobx-react";
 import {toJS} from "mobx";
-import {Group, TextInput, Button} from "@mantine/core";
-import {accountsStore} from "../../stores";
 
+@inject("accountsStore")
+@observer
 class Profile extends React.Component {
   constructor(props) {
     super(props);
@@ -30,7 +30,7 @@ class Profile extends React.Component {
       newName: "",
       updating: false,
       showKey: false,
-      newTenantContractIdId: toJS(accountsStore.currentAccount.tenantContractId) || ""
+      newTenantContractIdId: toJS(props.accountsStore.currentAccount.tenantContractId) || ""
     };
 
     this.HandleProfileImageChange = this.HandleProfileImageChange.bind(this);
@@ -50,7 +50,7 @@ class Profile extends React.Component {
   }
 
   HandleNameChange() {
-    const account = accountsStore.currentAccount;
+    const account = this.props.accountsStore.currentAccount;
 
     if(this.state.newName === account.name) {
       this.setState({modifyingName: false});
@@ -59,7 +59,7 @@ class Profile extends React.Component {
     }
 
     this.Update(async () => {
-      await accountsStore.ReplaceUserMetadata({
+      await this.props.accountsStore.ReplaceUserMetadata({
         metadataSubtree: UrlJoin("public", "name"),
         metadata: this.state.newName
       });
@@ -72,13 +72,13 @@ class Profile extends React.Component {
 
   async HandleProfileImageChange(event) {
     this.Update(async () =>
-      await accountsStore.ReplaceUserProfileImage(event.target.files[0])
+      await this.props.accountsStore.ReplaceUserProfileImage(event.target.files[0])
     );
   }
 
   async HandleAccessLevelChange(event) {
     this.Update(async () =>
-      await accountsStore.ReplaceUserMetadata({
+      await this.props.accountsStore.ReplaceUserMetadata({
         metadataSubtree: "access_level",
         metadata: event.target.value
       })
@@ -88,7 +88,7 @@ class Profile extends React.Component {
   async RevokeAccessor(accessor) {
     await Confirm({
       message: <span>Are you sure you want to revoke profile access from <b>{accessor}</b>?</span>,
-      onConfirm: async () => await accountsStore.DeleteUserMetadata({metadataSubtree: UrlJoin("allowed_accessors", accessor)})
+      onConfirm: async () => await this.props.accountsStore.DeleteUserMetadata({metadataSubtree: UrlJoin("allowed_accessors", accessor)})
     });
   }
 
@@ -97,7 +97,7 @@ class Profile extends React.Component {
       "Are you sure you want to override the current tenant?" :
       `Are you sure you want to set the tenant ID to ${this.state.newTenantContractIdId}?`;
     const Override = async () => {
-      await accountsStore.SetTenantContractId({id: this.state.newTenantContractIdId});
+      await this.props.accountsStore.SetTenantContractId({id: this.state.newTenantContractIdId});
     };
 
     await Confirm({
@@ -111,12 +111,8 @@ class Profile extends React.Component {
       <div className="info-section">
         <h4>Tenant Information</h4>
         <h5 className="subheader">Please set the tenant ID to be used for your Content Fabric usage. A tenant ID must be associated with your user address in order to access Fabric services. If you don't know your tenant ID please consult your tenant admin.</h5>
-        <Group spacing="xs" align="end" position="center">
-          <TextInput label="Tenant ID" miw={300} placeholder="iten..." onChange={event => this.setState({newTenantContractIdId: event.target.value})} value={this.state.newTenantContractIdId} />
-          <Button variant="default" onClick={() => this.SetCurrentTenant(!!tenantContractId)} disabled={!this.state.newTenantContractIdId}>
-            Set Tenant
-          </Button>
-        </Group>
+        <input className="set-current-tenant-input" type="text" onChange={event => this.setState({newTenantContractIdId: event.target.value})} value={this.state.newTenantContractIdId} />
+        <Action className="set-current-tenant-button secondary" onClick={() => this.SetCurrentTenant(!!tenantContractId)} disabled={!this.state.newTenantContractIdId}>{`${tenantContractId ? "Override" : "Set"} Current Tenant`}</Action>
       </div>
     );
   }
@@ -224,7 +220,7 @@ class Profile extends React.Component {
         <div className="profile-image-container">
           {updateIndicator}
           <CroppedIconWithAction
-            icon={accountsStore.ResizeImage(imageUrl, 500)}
+            icon={this.props.accountsStore.ResizeImage(imageUrl, 500)}
             alternateIcon={DefaultProfileImage}
             useLoadingIndicator={true}
             label="Profile Image"
@@ -280,9 +276,9 @@ class Profile extends React.Component {
   }
 
   render() {
-    const account = accountsStore.currentAccount;
-    //const collectedTags = this.CollectedTags(account.metadata.collected_data);
-    //const permissions = this.Permissions(account.metadata);
+    const account = this.props.accountsStore.currentAccount;
+    const collectedTags = this.CollectedTags(account.metadata.collected_data);
+    const permissions = this.Permissions(account.metadata);
     const currentTenant = this.CurrentTenant(account.metadata.tenantContractId);
 
     return (
@@ -308,8 +304,8 @@ class Profile extends React.Component {
                 <TraversableJson json={account.metadata} />
               </div>
             </div>
-            { /* permissions */ }
-            { /* collectedTags */ }
+            { permissions }
+            { collectedTags }
           </div>
         </div>
       </div>
@@ -317,5 +313,5 @@ class Profile extends React.Component {
   }
 }
 
-export default observer(Profile);
+export default Profile;
 
