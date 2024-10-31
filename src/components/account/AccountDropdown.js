@@ -53,7 +53,6 @@ const AccountDropdown = observer(({onChange}) => {
 
   return (
     <Select
-      autoComplete={false}
       autoFocus
       searchable
       label="Account"

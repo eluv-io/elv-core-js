@@ -140,6 +140,7 @@ class RootStore {
         fabricURIs,
         ethereumURIs,
         authServiceURIs,
+        fileServiceURIs,
         searchURIs,
         fabricVersion,
         configUrl
@@ -155,6 +156,7 @@ class RootStore {
         fabricURIs,
         ethereumURIs,
         authServiceURIs,
+        fileServiceURIs,
         searchURIs,
         ethereumContractTimeout: 20,
         noCache: false,
