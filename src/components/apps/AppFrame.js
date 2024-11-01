@@ -257,19 +257,8 @@ class AppFrame extends React.Component {
 
         const responder = (response) => this.Respond(response.requestId, source, response);
 
-        const service = (
-          event.data.args &&
-          event.data.args.service
-        );
-
-        if(service) {
-          if(service === "search") {
-            await rootStore.searchClient.CallFromFrameMessage(event.data, responder);
-          } else if(service === "default") {
-            await rootStore.client.CallFromFrameMessage(event.data, responder);
-          } else {
-            this.Respond(requestId, source, {error: new Error(`Invalid service: ${service}`)});
-          }
+        if(event?.data?.args?.service === "search") {
+          await rootStore.searchClient.CallFromFrameMessage(event.data, responder);
         } else {
           await rootStore.client.CallFromFrameMessage(event.data, responder);
         }
