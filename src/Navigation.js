@@ -8,27 +8,6 @@ import {useLocation} from "react-router";
 import {accountsStore} from "./stores";
 import {Tabs} from "@mantine/core";
 
-const ResourcesNav = () => {
-  const location = useLocation();
-
-  return (
-    <div className="site-nav-container">
-      <nav>
-        <NavLink
-          className={
-            !["/offerings", "/terms", "/privacy"].includes(location.pathname) ? "active" : ""
-          }
-          to="/accounts"
-        >
-          Account
-        </NavLink>
-        <NavLink className={({isActive}) => isActive ? "active" : ""} to="/offerings">Offerings</NavLink>
-        <a href="https://eluv.io/terms" target="_blank" rel="noreferrer">Terms</a>
-        <a href="https://eluv.io/privacy" target="_blank" rel="noreferrer">Privacy</a>
-      </nav>
-    </div>
-  );
-};
 
 const CoreNav = observer(() => {
   const account = accountsStore.currentAccount;
@@ -44,7 +23,7 @@ const CoreNav = observer(() => {
           <Tabs.Tab value="/apps" disabled={locked}>Apps & Tools</Tabs.Tab>
           {
             // TODO: Remove
-            true || !accountsStore.currentAccount?.tenantContractId ? null :
+            false || !accountsStore.currentAccount?.tenantContractId ? null :
               <Tabs.Tab value="/tenancy" disabled={locked}>Tenancy</Tabs.Tab>
           }
           <Tabs.Tab value="/profile" disabled={locked}>Profile</Tabs.Tab>
@@ -65,12 +44,7 @@ const Navigation = observer(() => {
     return null;
   }
 
-  return (
-    <>
-      <ResourcesNav />
-      <CoreNav />
-    </>
-  );
+  return <CoreNav />;
 });
 
 export default Navigation;

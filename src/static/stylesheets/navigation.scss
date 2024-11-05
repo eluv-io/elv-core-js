@@ -1,34 +1,4 @@
 @import "~elv-components-js/src/stylesheets/styles";
-
-.site-nav-container {
-  @include elv-no-select;
-  display: flex;
-  font-size: $elv-font-s;
-  height: 2rem;
-  justify-content: flex-end;
-
-  nav {
-    display: flex;
-    height: 2rem;
-    max-width: 100vw;
-    width: 400px;
-
-    a {
-      color: $elv-color-text-lighter;
-      flex: 1 1 auto;
-
-      &.active {
-        background-color: $elv-color-lightestgray;
-        color: $elv-color-text-light;
-      }
-
-      &:first-child {
-        border-radius: 0 0 0 5px;
-      }
-    }
-  }
-}
-
 .nav-container {
   @include elv-no-select;
   align-items: center;
@@ -73,28 +43,6 @@
       margin: 0 auto $elv-spacing-l;
       max-width: MIN(400px, 90vw);
       position: relative;
-    }
-  }
-}
-
-nav {
-  display: flex;
-  height: 3rem;
-  justify-content: space-between;
-  width: 800px;
-
-  a {
-    align-items: center;
-    display: flex;
-    flex-grow: 1;
-    justify-content: center;
-
-    &:hover {
-      background: $elv-color-lightergray;
-    }
-
-    &:active {
-      background: $elv-color-lightgray;
     }
   }
 }

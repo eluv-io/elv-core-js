@@ -1,7 +1,7 @@
 import {configure, flow, makeAutoObservable} from "mobx";
 import {ElvClient, ElvWalletClient, Utils} from "@eluvio/elv-client-js";
-import AccountStore from "./Accounts";
-import TenantStore from "./Tenant";
+import AccountStore from "./AccountStore";
+import TenantStore from "./TenantStore";
 
 // Force strict mode so mutations are only allowed within actions.
 configure({

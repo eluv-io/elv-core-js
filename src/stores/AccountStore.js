@@ -1,5 +1,6 @@
 import {flow, makeAutoObservable} from "mobx";
 import UrlJoin from "url-join";
+import {DownloadFromUrl} from "../Utils";
 
 class AccountStore {
   accounts = {};
@@ -47,6 +48,31 @@ class AccountStore {
       imageUrl,
       height
     });
+  }
+
+  ExportAccounts() {
+    const accounts = new Blob([this.SaveAccounts()], {type: "text/plain"});
+
+    DownloadFromUrl(
+      window.URL.createObjectURL(accounts),
+      "EluvioAccounts.elv"
+    );
+  }
+
+  ImportAccounts(accounts) {
+    accounts = JSON.parse(this.rootStore.client.utils.FromB64(accounts));
+
+    Object.keys(accounts).forEach(address => {
+      const formattedAddress = this.rootStore.client.utils.FormatAddress(address);
+      if(!this.accounts[formattedAddress]) {
+        this.accounts[formattedAddress] = {
+          ...accounts[address],
+          metadata: {public: {}}
+        };
+      }
+    });
+
+    this.SaveAccounts();
   }
 
   LoadAccounts = flow(function * () {
@@ -421,6 +447,8 @@ class AccountStore {
       `elv-accounts-${this.network}`,
       btoa(JSON.stringify(savedAccounts))
     );
+
+    return btoa(JSON.stringify(savedAccounts));
   }
 }
 

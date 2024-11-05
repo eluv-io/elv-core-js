@@ -1,0 +1,25 @@
+.footer {
+  background: var(--background-secondary);
+  bottom: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  padding: 30px 0 50px;
+  position: absolute;
+  width: 100%;
+}
+
+.nav {
+  align-items: center;
+  display: flex;
+  gap: 50px;
+  justify-content: center;
+  margin: 0 auto;
+
+  a {
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: var(--text-primary);
+    }
+  }
+}
