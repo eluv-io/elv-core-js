@@ -1,5 +1,6 @@
 import "@babel/polyfill";
 import "./static/stylesheets/defaults.scss";
+import "./static/stylesheets/modules/shared.module.scss";
 
 import React from "react";
 import { render } from "react-dom";
@@ -16,6 +17,7 @@ import Navigation from "./Navigation";
 import AppRoutes from "./Routes";
 import {Group, Loader, MantineProvider} from "@mantine/core";
 import ScrollToTop from "./ScrollToTop";
+import Footer from "./Footer";
 
 const App = observer(() => {
   if(rootStore.configError) {
@@ -48,10 +50,14 @@ const App = observer(() => {
   return (
     <BrowserRouter>
       <ScrollToTop />
-      <div className="router-container">
+      <div className={`router-container ${rootStore.activeApp ? "router-container--app" : ""}`}>
         <Header />
         <Navigation />
         <AppRoutes />
+        {
+          rootStore.activeApp ? null :
+            <Footer />
+        }
       </div>
     </BrowserRouter>
   );

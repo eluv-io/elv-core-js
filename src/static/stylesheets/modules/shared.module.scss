@@ -1,0 +1,14 @@
+@import "variables.module.scss";
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.actions {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}

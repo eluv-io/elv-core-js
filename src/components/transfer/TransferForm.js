@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Navigate} from "react-router";
 import {observer} from "mobx-react";
-import {Title, Paper, Select, TextInput, NumberInput, Button, Group, Text} from "@mantine/core";
+import {Title, Select, TextInput, NumberInput, Button, Group, Text} from "@mantine/core";
 import {accountsStore} from "../../stores";
 import {Utils} from "@eluvio/elv-client-js";
 import {Link} from "react-router-dom";
@@ -53,69 +53,73 @@ const TransferForm = observer(() => {
 
   return (
     <div className="page-content">
-      <Paper withBorder p="xl" pr={50} shadow="sm" className="form-container">
+      <div className="form-container">
         <form onSubmit={() => {}}>
-          <Title order={4} mb="xl">Transfer Funds</Title>
-          <Select
-            mb="md"
-            searchable
-            data={accounts}
-            label="Recipient"
-            value={recipientAddress}
-            onChange={address => setRecipientAddress(address)}
-          />
-          {
-            recipientAddress ? null :
-              <TextInput
-                error={customRecipientAddress && !Utils.ValidAddress(customRecipientAddress) ? "Invalid Address" : ""}
-                placeholder={Utils.nullAddress}
-                mb="md"
-                label="Recipient Address"
-                value={customRecipientAddress}
-                onChange={event => setCustomRecipientAddress(event.currentTarget.value)}
-              />
-          }
-          <NumberInput
-            error={!amount ? true : (insufficientFunds ? "Insufficient Funds" : undefined)}
-            mb="md"
-            label="Amount"
-            value={amount}
-            min={0}
-            step={0.05}
-            precision={2}
-            stepHoldDelay={500}
-            stepHoldInterval={50}
-            onChange={value => setAmount(value)}
-            onKeyDown={event => {
-              if(event.key !== "Enter") { return; }
+          <div className="form-header">
+            <Title order={4} fw={400}>Transfer Funds</Title>
+          </div>
+          <div className="form-content">
+            <Select
+              mb="md"
+              searchable
+              data={accounts}
+              label="Recipient"
+              value={recipientAddress}
+              onChange={address => setRecipientAddress(address)}
+            />
+            {
+              recipientAddress ? null :
+                <TextInput
+                  error={customRecipientAddress && !Utils.ValidAddress(customRecipientAddress) ? "Invalid Address" : ""}
+                  placeholder={Utils.nullAddress}
+                  mb="md"
+                  label="Recipient Address"
+                  value={customRecipientAddress}
+                  onChange={event => setCustomRecipientAddress(event.currentTarget.value)}
+                />
+            }
+            <NumberInput
+              error={!amount ? true : (insufficientFunds ? "Insufficient Funds" : undefined)}
+              mb="md"
+              label="Amount"
+              value={amount}
+              min={0}
+              step={0.05}
+              precision={2}
+              stepHoldDelay={500}
+              stepHoldInterval={50}
+              onChange={value => setAmount(value)}
+              onKeyDown={event => {
+                if(event.key !== "Enter") { return; }
 
-              Submit();
-            }}
-          />
-          <Group mt={50} />
-          { !error ? null : <Text mb="md" color="red" ta="center">Something went wrong, please try again</Text> }
-          <Group position="right" noWrap>
-            <Button
-              variant="default"
-              type="button"
-              component={Link}
-              to="/accounts"
-              w={150}
-            >
-              Cancel
-            </Button>
-            <Button
-              disabled={!valid}
-              loading={submitting}
-              type="button"
-              w={150}
-              onClick={Submit}
-            >
-              Submit
-            </Button>
-          </Group>
+                Submit();
+              }}
+            />
+            <Group mt={50} />
+            { !error ? null : <Text mb="md" color="red" ta="center">Something went wrong, please try again</Text> }
+            <Group position="right" noWrap>
+              <Button
+                variant="default"
+                type="button"
+                component={Link}
+                to="/accounts"
+                w={150}
+              >
+                Cancel
+              </Button>
+              <Button
+                disabled={!valid}
+                loading={submitting}
+                type="button"
+                w={150}
+                onClick={Submit}
+              >
+                Submit
+              </Button>
+            </Group>
+          </div>
         </form>
-      </Paper>
+      </div>
     </div>
   );
 });

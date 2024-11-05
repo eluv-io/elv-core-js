@@ -9,7 +9,7 @@ import Onboard from "./components/onboarding/Onboard";
 import TenantOverview from "./components/tenancy/TenantOverview";
 import {observer} from "mobx-react";
 import LoginGate from "./components/login/LoginGate";
-import Accounts from "./components/account/Accounts";
+import Accounts from "./components/account/Accounts2";
 import {Routes, Route, useNavigate} from "react-router-dom";
 import TenantInvites from "./components/tenancy/TenantInvites";
 import {Navigate, Outlet, useLocation} from "react-router";
