@@ -55,7 +55,7 @@ const Invite = observer(({invite}) => {
       { showPermissionsModal ? <TenantUserPermissionsModal address={invite.data.address} inviteId={invite.data.id} Close={() => setShowPermissionsModal(false)} /> : null }
       <Paper withBorder p="xs" className="invite">
         { alert ? <IconAlertCircle className="invite__indicator" /> : null }
-        <Group noWrap>
+        <Group wrap="nowrap">
           <CroppedIcon
             icon={user.profileImage || DefaultAccountImage}
             alternateIcon={DefaultAccountImage}
@@ -104,7 +104,7 @@ const TenantInvites = observer(() => {
     >
       { showInviteModal ? <TenantInviteModal Close={() => setShowInviteModal(false)} /> : null }
       <div className="page-content tenant-page">
-        <Group align="center" position="center" className="tenant-page__nav" noWrap>
+        <Group align="center" position="center" className="tenant-page__nav" wrap="nowrap">
           <Tabs h="max-content" variant="pills" color="gray.6" value={tab} onTabChange={newTab => setTab(newTab)} className="tenant-page__tabs">
             <Tabs.List grow>
               <Tabs.Tab value={tenantStore.INVITE_EVENTS.ACCEPTED}>Accepted</Tabs.Tab>

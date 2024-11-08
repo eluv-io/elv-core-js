@@ -1,14 +1,21 @@
 import {flow, makeAutoObservable} from "mobx";
 import UrlJoin from "url-join";
 import {DownloadFromUrl} from "../Utils";
+import {Utils} from "@eluvio/elv-client-js";
+import {v4 as UUID, parse as ParseUUID} from "uuid";
 
 class AccountStore {
+  oryClient;
+
   accounts = {};
   currentAccountAddress;
+  currentOryAccountAddress;
   accountsLoaded = false;
   tenantAdmins = [];
 
   loadingAccount;
+
+  authNonce = localStorage.getItem("auth-nonce") || Utils.B58(ParseUUID(UUID()));
 
   get isTenantAdmin() {
     return this.tenantAdmins.includes(this.currentAccountAddress);
@@ -22,7 +29,11 @@ class AccountStore {
     return Object.keys(this.accounts)
       .map(address => [address, (this.accounts[address] || {}).name])
       .sort(([addressA, nameA], [addressB, nameB]) => {
-        if(nameA && nameB) {
+        if(Utils.EqualAddress(addressA, this.currentAccountAddress)) {
+          return -1;
+        } else if(Utils.EqualAddress(addressB, this.currentAccountAddress)) {
+          return 1;
+        } else if(nameA && nameB) {
           return nameA.toLowerCase() < nameB.toLowerCase() ? -1 : 1;
         } else if(nameA) {
           return -1;
@@ -35,13 +46,194 @@ class AccountStore {
       .map(([address]) => address);
   }
 
+  get authToken() {
+    const token = this.currentAccount.signingToken;
+
+    if(token) {
+      const { expiresAt } = Utils.FromB58ToStr(token);
+
+      if(expiresAt < Date.now() - 6 * 24 * 60 * 1000) {
+        this.currentAccount.authToken = undefined;
+        this.currentAccount.signingToken = undefined;
+      } else {
+        return token;
+      }
+    }
+
+    return undefined;
+  }
+
   constructor(rootStore) {
     makeAutoObservable(this);
     this.rootStore = rootStore;
 
     this.network = (EluvioConfiguration["config-url"].match(/\.(net\d+)\./) || [])[1] || "";
     this.rootStore.coreUrl = EluvioConfiguration["coreUrl"] || "";
+
+    this.Log = rootStore.Log;
+
+    localStorage.setItem("auth-nonce", this.authNonce);
+
+    this.InitializeOryClient();
   }
+
+  InitializeOryClient = flow(function * () {
+    const {Configuration, FrontendApi} = yield import("@ory/client");
+    this.oryClient = new FrontendApi(
+      new Configuration({
+        features: {
+          kratos_feature_flags_use_continue_with_transitions: true,
+          use_continue_with_transitions: true
+        },
+        basePath: EluvioConfiguration.ory_configuration.url,
+        // we always want to include the cookies in each request
+        // cookies are used for sessions and CSRF protection
+        baseOptions: {
+          withCredentials: true
+        }
+      })
+    );
+
+    this.CurrentOryAccountAddress();
+  })
+
+  CurrentOryAccountAddress = flow(function * () {
+    try {
+      const response = yield this.oryClient.toSession({
+        tokenizeAs: EluvioConfiguration.ory_configuration.jwt_template
+      });
+
+      const email = response.data.identity.traits.email;
+
+      this.currentOryAccountAddress = Object.keys(this.accounts)
+        .find(address => this.accounts[address] === email);
+    } catch (error) {
+      this.currentOryAccountAddress = undefined;
+    }
+
+    return this.currentOryAccountAddress;
+  });
+
+  AuthenticateOry = flow(function * ({userData, sendWelcomeEmail, sendVerificationEmail, force=false}={}) {
+    try {
+      const response = yield this.oryClient.toSession({
+        tokenizeAs: EluvioConfiguration.ory_configuration.jwt_template
+      });
+
+      const email = response.data.identity.traits.email;
+
+      const tokens = yield this.rootStore.walletClient.AuthenticateOAuth({
+        idToken: response.data.tokenized,
+        email,
+        tenantId: this.rootStore.eluvioTenantId,
+        shareEmail: userData?.share_email,
+        extraData: userData || {},
+        nonce: this.authNonce,
+        createRemoteToken: false,
+        force
+      });
+
+      const address = this.rootStore.client.CurrentAccountAddress();
+
+      this.accounts[address] = {
+        type: "custodial",
+        email,
+        name: email,
+        address,
+        signer: this.rootStore.client.signer,
+        authToken: tokens.authToken,
+        signingToken: tokens.signingToken
+      };
+
+      yield this.SetCurrentAccount({signer: this.rootStore.client.signer});
+
+      if(this.accounts[address].balance > 0.1) {
+        yield this.ReplaceUserMetadata({
+          metadataSubtree: UrlJoin("public", "name"),
+          metadata: email
+        });
+      }
+
+      this.SaveAccounts();
+
+      if(sendWelcomeEmail) {
+        this.SendLoginEmail({email, type: "send_welcome_email"});
+      }
+
+      if(sendVerificationEmail) {
+        this.SendLoginEmail({email, type: "request_email_verification"});
+      }
+    } catch (error) {
+      this.Log("Error logging in with Ory:", true);
+      this.Log(error, true);
+
+      if([400, 403, 503].includes(parseInt(error?.status))) {
+        throw { login_limited: true };
+      }
+    }
+  });
+
+  LogOutOry = flow(function * () {
+    try {
+      const response = yield this.oryClient.createBrowserLogoutFlow();
+      yield this.oryClient.updateLogoutFlow({token: response.data.logout_token});
+    } catch (error) {
+      this.Log(error, true);
+    }
+
+    this.currentOryAccountAddress = undefined;
+  })
+
+  // Auth
+  SendLoginEmail = flow(function * ({email, type, code}) {
+    let callbackUrl = new URL(window.location.origin);
+
+    switch (type) {
+      case "request_email_verification":
+        callbackUrl.pathname = "/login/verify";
+        break;
+      case "create_account":
+        callbackUrl.pathname = "login/register";
+        break;
+      case "reset_password":
+        callbackUrl.pathname = "login/reset-password";
+    }
+
+    try {
+      const result = yield this.rootStore.client.utils.ResponseToJson(
+        this.rootStore.client.authClient.MakeAuthServiceRequest({
+          path: UrlJoin("as", "wlt", "ory", type),
+          method: "POST",
+          queryParams: code ? { code } : {},
+          body: {
+            tenant: this.rootStore.eluvioTenantId,
+            email,
+            callback_url: callbackUrl.toString()
+          },
+          headers: type === "reset_password" ?
+            {} :
+            { Authorization: `Bearer ${this.authToken}` }
+        })
+      );
+
+      /*
+      if(type === "confirm_email") {
+        this.SetAlertNotification(this.l10n.login.email_confirmed);
+      }
+
+       */
+
+      return result;
+    } catch (error) {
+      this.Log(error, true);
+
+      if(type === "confirm_email") {
+        //this.SetAlertNotification(this.l10n.login.errors.email_confirmation_failed);
+      } else {
+        throw error;
+      }
+    }
+  });
 
   ResizeImage(imageUrl, height) {
     return client.utils.ResizeImage({
@@ -81,10 +273,8 @@ class AccountStore {
       try {
         this.tenantAdmins = JSON.parse(tenantAdmins);
       } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error("Unable to parse tenant admin list:");
-        // eslint-disable-next-line no-console
-        console.error(error);
+        this.Log("Unable to parse tenant admin list:", true);
+        this.Log(error, true);
       }
     }
 
@@ -107,11 +297,11 @@ class AccountStore {
               public: {}
             };
           }
+
+          accounts[address].type = accounts[address].type || "key";
         } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error("Error loading account " + address);
-          // eslint-disable-next-line no-console
-          console.error(error);
+          this.Log("Error loading account " + address, true);
+          this.Log(error, true);
 
           accounts[address].metadata = {
             public: {}
@@ -125,6 +315,22 @@ class AccountStore {
     Object.keys(accounts).map(account => this.AccountBalance(account));
 
     this.accountsLoaded = true;
+
+    if(this.currentAccount?.signingToken) {
+      try {
+        yield this.rootStore.walletClient.Authenticate({token: this.currentAccount.signingToken});
+        yield this.SetCurrentAccount({signer: this.rootStore.client.signer});
+      } catch (error) {
+        this.Log("Failed to load custodial account", true);
+        this.Log(error, true);
+
+        this.currentAccount.signingToken = undefined;
+        this.currentAccount.authToken = undefined;
+        this.currentAccount.signer = undefined;
+
+        this.SaveAccounts();
+      }
+    }
   });
 
   AccountBalance = flow(function * (address) {
@@ -143,13 +349,24 @@ class AccountStore {
     return balance;
   });
 
-  LockAccount({address}) {
+  LockAccount = flow(function * ({address}) {
     if(!(Object.keys(this.accounts).includes(address))) {
       return;
     }
 
     this.accounts[address].signer = undefined;
-  }
+    this.accounts[address].signingToken = undefined;
+    this.accounts[address].authToken = undefined;
+
+    if(Utils.EqualAddress(address, this.currentAccountAddress)) {
+      this.currentAccountAddress = undefined;
+      yield this.rootStore.InitializeClient();
+    }
+
+    if(this.accounts[address].type === "custodial" && this.oryClient) {
+      this.LogOutOry();
+    }
+  });
 
   UnlockAccount = flow(function * ({address, password}) {
     const client = this.rootStore.client;
@@ -229,10 +446,8 @@ class AccountStore {
         this.CheckTenantDetails();
       }
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error("Error loading account", address);
-      // eslint-disable-next-line no-console
-      console.error(error);
+      this.Log("Error loading account " + address, true);
+      this.Log(error, true);
     } finally {
       this.loadingAccount = undefined;
     }
@@ -290,6 +505,7 @@ class AccountStore {
     const address = client.utils.FormatAddress(signer.address);
 
     this.accounts[address] = {
+      type: "key",
       address,
       signer,
       encryptedPrivateKey
@@ -375,10 +591,8 @@ class AccountStore {
         this.accounts[address].imageUrl = (yield this.ProfileImage({address}));
       }
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error("Error loading account image:");
-      // eslint-disable-next-line no-console
-      console.error(error);
+      this.Log("Error loading account image:", true);
+      this.Log(error, true);
     }
 
     yield this.AccountBalance(address);
@@ -435,11 +649,15 @@ class AccountStore {
     let savedAccounts = {};
     Object.values(this.accounts).forEach(account =>
       savedAccounts[account.address] = {
-        name: (account.name || "").toString(),
-        imageUrl: account.image,
+        email: account.email || "",
+        type: account.type || "key",
+        name: (account.name || account.email || "").toString(),
+        imageUrl: account.imageUrl,
         address: account.address,
         encryptedPrivateKey: account.encryptedPrivateKey,
-        tenantContractId: account.tenantContractId
+        tenantContractId: account.tenantContractId,
+        authToken: account.authToken,
+        signingToken: account.signingToken
       }
     );
 

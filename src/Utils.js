@@ -33,3 +33,8 @@ export const DownloadFromUrl = (url, filename, options={}) => {
   document.body.removeChild(element);
   window.URL.revokeObjectURL(url);
 };
+
+export const ValidEmail = email => {
+  return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    .test(email);
+};

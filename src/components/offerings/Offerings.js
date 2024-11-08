@@ -1,5 +1,4 @@
 import React from "react";
-import {ImageIcon} from "elv-components-js";
 import ReactMarkdown from "react-markdown";
 
 import "../../static/stylesheets/offerings.scss";
@@ -7,6 +6,7 @@ import "../../static/stylesheets/offerings.scss";
 import OfferingsConfig from "./offerings.yaml";
 
 import CheckIcon from "../../static/icons/Check.svg";
+import {ImageIcon} from "../Misc";
 
 const RateTableSection = ({columns, section}) => {
   let { shared_name, shared_description, rows, column_sizing } = section;

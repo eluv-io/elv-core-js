@@ -3,19 +3,20 @@ import AccountStyles from "../../static/stylesheets/modules/accounts.module.scss
 import {observer} from "mobx-react";
 import {accountsStore} from "../../stores";
 import {Button, FileButton} from "@mantine/core";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import React, {useState} from "react";
 import {CreateModuleClassMatcher} from "../../Utils";
 
 import DefaultAccountImage from "../../static/icons/User.svg";
-import {ImageIcon} from "elv-components-js";
 import LoginModal from "../login/LoginModal";
 import {Utils} from "@eluvio/elv-client-js";
+import {ButtonWithLoader, ImageIcon} from "../Misc";
 
 const S = CreateModuleClassMatcher(AccountStyles);
 
 const Account = observer(({address}) => {
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
   const account = accountsStore.accounts[address];
 
 
@@ -50,10 +51,35 @@ const Account = observer(({address}) => {
         <div className={S("actions")}>
           {
             isCurrentAccount && !accountLocked ?
-              <Button variant="filled" w="100%" onClick={() => accountsStore.LockAccount({address})}>
+              <Button
+                variant="filled"
+                w="100%"
+                loading={signingOut}
+                onClick={() => {
+                  setSigningOut(true);
+                  accountsStore.LockAccount({address})
+                    .finally(() => setSigningOut(false));
+                }}
+              >
                 Sign Out
               </Button> :
-              <Button variant="outline" w="100%" onClick={() => setShowLoginModal(true)}>
+              <Button
+                variant="outline"
+                w="100%"
+                loading={signingOut}
+                onClick={async () => {
+                  if(accountsStore.currentAccountAddress) {
+                    setSigningOut(true);
+                    try {
+                      await accountsStore.LockAccount({address: accountsStore.currentAccountAddress});
+                    } finally {
+                      setSigningOut(false);
+                    }
+                  }
+
+                  setShowLoginModal(true);
+                }}
+              >
                 Sign In
               </Button>
           }
@@ -64,14 +90,24 @@ const Account = observer(({address}) => {
 });
 
 const Accounts = observer(() => {
+  const navigate = useNavigate();
+
   return (
     <div className="page-content">
       <div className={S("accounts-page")}>
         <div className={S("add-account")}>
           <p>Add/Switch Accounts</p>
-          <Button component={Link} to="/accounts/add">
+          <ButtonWithLoader
+            onClick={async () => {
+              try {
+                await accountsStore.LogOutOry();
+              } finally {
+                navigate("/login");
+              }
+            }}
+          >
             Add Account
-          </Button>
+          </ButtonWithLoader>
         </div>
         <div className={S("accounts")}>
           {accountsStore.sortedAccounts.map(address =>

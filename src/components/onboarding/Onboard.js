@@ -16,9 +16,10 @@ import {
 } from "@mantine/core";
 import {accountsStore, rootStore, tenantStore} from "../../stores";
 import {useDisclosure} from "@mantine/hooks";
-import {ImageIcon, LoadingElement} from "elv-components-js";
+import {LoadingElement} from "elv-components-js";
 
 import DownloadIcon from "../../static/icons/download.svg";
+import {ImageIcon} from "../Misc";
 
 const DownloadMnemonic = mnemonic => {
   const element = document.createElement("a");
@@ -41,7 +42,7 @@ const TenantInfo = observer(({tenantContractId}) => {
       loading={!tenantMetadata}
       render={() =>
         <Paper withBorder p="xl" pr={60} style={{position: "relative"}} className="content-container tenant-info">
-          <Group noWrap spacing="xl" align="top" className="tenant-info__group">
+          <Group wrap="nowrap" gap="xl" align="top" className="tenant-info__group">
             <Image
               radius="sm"
               withPlaceholder
@@ -196,7 +197,7 @@ const Onboard = observer(() => {
           />
           <Group mt={50} />
           { !error ? null : <Text mb="md" color="red" ta="center">Something went wrong, please try again</Text> }
-          <Group position="right">
+          <Group justify="right">
             <Button
               disabled={!valid}
               loading={submitting}

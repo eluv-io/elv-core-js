@@ -1,0 +1,161 @@
+.login-modal {
+  padding: 25px 30px 50px;
+}
+
+.modal-overlay {
+  background-color: var(--background-modal);
+}
+
+.header {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+
+  &__logo {
+    max-width: 100%;
+    width: 250px;
+  }
+
+  &__title {
+    font-size: 28px;
+    text-align: center;
+    user-select: none;
+  }
+}
+
+.content {
+  border-top: 1px solid var(--border);
+  margin-top: 30px;
+  padding-top: 15px;
+}
+
+.type-selector {
+  align-items: center;
+  color: var(--text-secondary);
+  display: flex;
+  font-size: 14px;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+  user-select: none;
+
+  &__label {
+    margin-right: 20px;
+  }
+
+  &__switch-label {
+    transition: color 0.25s ease;
+
+    &--active {
+      color: var(--accent);
+    }
+  }
+}
+
+.terms {
+  color: var(--text-tertiary);
+  display: grid;
+  font-size: 12px;
+  gap: 20px;
+  margin-top: 30px;
+  text-align: center;
+
+  a {
+    text-decoration: underline;
+  }
+
+  &__option {
+    align-items: center;
+    display: flex;
+    gap: 15px;
+    text-align: left;
+  }
+}
+
+.error {
+  color: #a00;
+  font-size: 14px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.ory-login {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 290px;
+
+  &--loading {
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__message {
+    color: var(--text-secondary);
+    font-size: 14px;
+    padding-inline: 20px;
+
+    text-align: center;
+  }
+}
+
+.ory-login-form {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+}
+
+.account-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.input-wrapper,
+.input,
+.inner-input {
+  background: 0;
+  font-size: 16px;
+  height: 50px;
+  min-height: 50px;
+  text-align: center;
+  width: 100%;
+
+  input {
+    padding-inline: 30px;
+  }
+}
+
+.input {
+  border: 1px solid var(--border);
+  border-radius: 5px;
+}
+
+.input-visibility-toggle {
+  * {
+    color: var(--accent);
+    opacity: 0.75;
+  }
+}
+
+.button {
+  font-size: 16px;
+  height: 50px;
+  width: 100%;
+}
+
+.button-link {
+  color: var(--accent);
+  font-size: 14px;
+  margin: 10px auto 0;
+  width: max-content;
+
+  &--secondary {
+    color: var(--text-tertiary);
+    font-size: 12px;
+  }
+}

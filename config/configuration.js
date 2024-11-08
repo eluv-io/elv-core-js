@@ -12,5 +12,9 @@ const EluvioConfiguration = {
     "AI Clip Search": "http://localhost:3001",
     "Creator Studio": "http://localhost:9000",
   },
+  "ory_configuration": {
+    "url": "http://localhost:3000",
+    "jwt_template": "jwt_uefa_template1"
+  },
   "version": "local"
 };

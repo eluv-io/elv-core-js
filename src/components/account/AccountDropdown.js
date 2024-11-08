@@ -19,7 +19,7 @@ const Account = forwardRef(({
   ...others
 }, ref) => {
   return (
-    <Group ref={ref} noWrap p="xs" {...others}>
+    <Group ref={ref} wrap="nowrap" p="xs" {...others}>
       <CroppedIcon
         icon={imageUrl || DefaultAccountImage}
         alternateIcon={DefaultAccountImage}
@@ -28,7 +28,7 @@ const Account = forwardRef(({
       />
       <div>
         <Text fz="xs">{ name || address }</Text>
-        <Group noWrap>
+        <Group wrap="nowrap">
           <Balance balance={balance} className="header-account-balance"/>
         </Group>
       </div>

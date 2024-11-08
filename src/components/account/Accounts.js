@@ -87,7 +87,7 @@ const Account = observer(({address}) => {
           </div>
           <div className="account-actions">
             <LoadingElement loadingClassname="account-loading" loading={accountsStore.loadingAccount === address}>
-              <Group spacing="sm" noWrap>
+              <Group gap="sm" wrap="nowrap">
                 { selectAccountButton }
                 { lockAccountButton }
               </Group>

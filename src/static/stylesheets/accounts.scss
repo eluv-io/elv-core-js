@@ -138,6 +138,10 @@
 }
 
 .account-form {
+  background-color: #ff0000;
+  display: grid;
+  gap: 10px;
+
   .mnemonic-container {
     align-items: center;
     display: flex;
