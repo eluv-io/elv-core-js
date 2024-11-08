@@ -49,8 +49,8 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
               <thead>
                 <tr>
                   <th>Group</th>
-                  <th><Group position="center">Manager</Group></th>
-                  <th><Group position="center">Member</Group></th>
+                  <th><Group justify="center">Manager</Group></th>
+                  <th><Group justify="center">Member</Group></th>
                 </tr>
               </thead>
               <tbody>
@@ -77,7 +77,7 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
                           </Group>
                         </td>
                         <td>
-                          <Group position="center">
+                          <Group justify="center">
                             <Checkbox
                               disabled={isTenantUsersGroup || settings.owner}
                               aria-label={`Manager of ${name || group.address}`}
@@ -93,7 +93,7 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
               </tbody>
             </Table>
             { !error ? null : <Text mb="md" color="red" ta="center">Something went wrong, please try again</Text> }
-            <Group position="right" mt={50} noWrap>
+            <Group justify="right" mt={50} wrap="nowrap">
               <Button
                 variant="default"
                 type="button"

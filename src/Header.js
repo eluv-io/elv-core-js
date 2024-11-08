@@ -4,7 +4,7 @@ import React from "react";
 import {observer} from "mobx-react";
 import {rootStore} from "./stores";
 import {Link} from "react-router-dom";
-import {HeaderAccount} from "./components/account/AccountDropdown";
+//import {HeaderAccount} from "./components/account/AccountDropdown";
 
 import Logo from "./static/images/Logo.png";
 import LogoDemo from "./static/images/LogoDemo.png";
@@ -27,7 +27,7 @@ const Header = observer(() => {
         <img src={logo} alt="Eluvio" />
       </Link>
       <div className="toggle-header-section"/>
-      <HeaderAccount />
+      { /* <HeaderAccount /> */ }
     </header>
   );
 });

@@ -14,9 +14,10 @@ import {
   Textarea,
 } from "@mantine/core";
 import {accountsStore, tenantStore} from "../../stores";
-import { ImageIcon, LoadingElement} from "elv-components-js";
+import { LoadingElement} from "elv-components-js";
 
 import EditIcon from "../../static/icons/edit.svg";
+import {ImageIcon} from "../Misc";
 
 const TenantForm = observer(({Back}) => {
   const fileInputRef = useRef();
@@ -53,7 +54,7 @@ const TenantForm = observer(({Back}) => {
               reader.readAsDataURL(file);
             }}
           />
-          <Group position="center">
+          <Group justify="center">
             <UnstyledButton type="button" onClick={() => fileInputRef?.current.click()}>
               <Image
                 radius="sm"
@@ -83,7 +84,7 @@ const TenantForm = observer(({Back}) => {
               setTenantInfo({...tenantInfo, description: event.currentTarget.value});
             }}
           />
-          <Group position="right" mt={50}>
+          <Group justify="right" mt={50}>
             <Button variant="default" onClick={() => Back()}>Cancel</Button>
             <Button
               disabled={!tenantInfo.name}
@@ -143,7 +144,7 @@ const TenantOverview = observer(() => {
                   <ImageIcon icon={EditIcon} />
                 </ActionIcon>
             }
-            <Group noWrap spacing="xl" align="top" className="tenant-info__group">
+            <Group wrap="nowrap" gap="xl" align="top" className="tenant-info__group">
               <Image
                 radius="sm"
                 withPlaceholder

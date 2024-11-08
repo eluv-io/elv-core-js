@@ -44,7 +44,7 @@ const TenantInviteModal = observer(({existingInviteUrl="", Close}) => {
             </Tooltip>
           )}
         </CopyButton>
-        <Group position="right" mt={50}>
+        <Group justify="right" mt={50}>
           <Button
             type="button"
             onClick={Close}
@@ -87,7 +87,7 @@ const TenantInviteModal = observer(({existingInviteUrl="", Close}) => {
           }}
         />
         { !error ? null : <Text mb="md" color="red" ta="center">Something went wrong, please try again</Text> }
-        <Group position="right" mt={50} noWrap>
+        <Group justify="right" mt={50} wrap="nowrap">
           <Button
             variant="default"
             type="button"

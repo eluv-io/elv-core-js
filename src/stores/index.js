@@ -2,6 +2,7 @@ import {configure, flow, makeAutoObservable} from "mobx";
 import {ElvClient, ElvWalletClient, Utils} from "@eluvio/elv-client-js";
 import AccountStore from "./AccountStore";
 import TenantStore from "./TenantStore";
+import LocalizationEN from "../static/localizations/en.yml";
 
 // Force strict mode so mutations are only allowed within actions.
 configure({
@@ -18,6 +19,8 @@ class RootStore {
   simplePasswords = false;
   utils = Utils;
   activeApp;
+  eluvioTenantId;
+  l10n = LocalizationEN;
 
   get darkMode() {
     if(!this.activeApp) { return false; }
@@ -25,6 +28,17 @@ class RootStore {
     const darkModeApps = ["Video Editor"];
 
     return !!darkModeApps.find(app => this.activeApp.includes(app));
+  }
+
+  Log(message="", error=false) {
+    // eslint-disable-next-line no-console
+    const logMethod = error === "warn" ? console.warn : error ? console.error : console.log;
+
+    if(typeof message === "string") {
+      message = `Eluvio Media Wallet | ${message}`;
+    }
+
+    logMethod(message);
   }
 
   constructor() {
@@ -63,6 +77,8 @@ class RootStore {
       });
 
       this.client.walletClient = this.walletClient;
+
+      this.eluvioTenantId = yield this.client.ContentObjectTenantId({objectId: this.walletClient.mainSiteId});
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error);

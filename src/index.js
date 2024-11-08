@@ -1,9 +1,9 @@
-import "@babel/polyfill";
+import "@mantine/core/styles.css";
 import "./static/stylesheets/defaults.scss";
 import "./static/stylesheets/modules/shared.module.scss";
 
 import React from "react";
-import { render } from "react-dom";
+import { createRoot } from "react-dom/client";
 import {BrowserRouter} from "react-router-dom";
 
 import {observer} from "mobx-react";
@@ -18,6 +18,7 @@ import AppRoutes from "./Routes";
 import {Group, Loader, MantineProvider} from "@mantine/core";
 import ScrollToTop from "./ScrollToTop";
 import Footer from "./Footer";
+import MantineTheme from "./static/MantineTheme";
 
 const App = observer(() => {
   if(rootStore.configError) {
@@ -41,7 +42,7 @@ const App = observer(() => {
 
   if(!rootStore.client || !accountsStore.accountsLoaded) {
     return (
-      <Group h="100vh" align="center" position="center">
+      <Group h="100vh" align="center" justify="center">
         <Loader />
       </Group>
     );
@@ -71,14 +72,12 @@ document.body.appendChild(
   element
 );
 
-render(
-  (
-    <React.Fragment>
-      <MantineProvider withGlobalStyles>
-        <AppComponent />
-      </MantineProvider>
-      <div className="app-version">{EluvioConfiguration.version}</div>
-    </React.Fragment>
-  ),
-  document.getElementById("app")
+const root = createRoot(document.getElementById("app"));
+root.render(
+  <React.Fragment>
+    <MantineProvider withGlobalStyles theme={MantineTheme}>
+      <AppComponent />
+    </MantineProvider>
+    <div className="app-version">{EluvioConfiguration.version}</div>
+  </React.Fragment>
 );

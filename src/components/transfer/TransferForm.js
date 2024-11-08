@@ -97,7 +97,7 @@ const TransferForm = observer(() => {
             />
             <Group mt={50} />
             { !error ? null : <Text mb="md" color="red" ta="center">Something went wrong, please try again</Text> }
-            <Group position="right" noWrap>
+            <Group justify="right" wrap="nowrap">
               <Button
                 variant="default"
                 type="button"

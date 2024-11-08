@@ -111,7 +111,7 @@ class Profile extends React.Component {
       <div className="info-section">
         <h4>Tenant Information</h4>
         <h5 className="subheader">Please set the tenant ID to be used for your Content Fabric usage. A tenant ID must be associated with your user address in order to access Fabric services. If you don't know your tenant ID please consult your tenant admin.</h5>
-        <Group spacing="xs" align="end" position="center">
+        <Group gap="xs" align="end" position="center">
           <TextInput label="Tenant ID" miw={300} placeholder="iten..." onChange={event => this.setState({newTenantContractIdId: event.target.value})} value={this.state.newTenantContractIdId} />
           <Button variant="default" onClick={() => this.SetCurrentTenant(!!tenantContractId)} disabled={!this.state.newTenantContractIdId}>
             Set Tenant

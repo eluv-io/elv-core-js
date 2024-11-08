@@ -5,7 +5,7 @@ import {Button, Group, Modal, PasswordInput} from "@mantine/core";
 import {observer} from "mobx-react";
 import {Link, useNavigate} from "react-router-dom";
 import {accountsStore} from "../../stores";
-import AccountDropdown from "../account/AccountDropdown";
+//import AccountDropdown from "../account/AccountDropdown";
 
 const LoginModal = observer(({title, address, allowAccountSwitch, setUnlocking, Close}) => {
   const [password, setPassword] = useState("");
@@ -55,8 +55,8 @@ const LoginModal = observer(({title, address, allowAccountSwitch, setUnlocking, 
       title={title || "Enter your password to unlock your account"}
     >
       {
-        !allowAccountSwitch ? null :
-          <AccountDropdown />
+        !allowAccountSwitch ? null : null
+        //<AccountDropdown />
       }
       <form onSubmit={event => event.preventDefault()}>
         <PasswordInput
@@ -72,7 +72,7 @@ const LoginModal = observer(({title, address, allowAccountSwitch, setUnlocking, 
             Submit();
           }}
         />
-        <Group position="right" mt={50} noWrap>
+        <Group justify="right" mt={50} wrap="nowrap">
           <Button
             fz="xs"
             variant="default"

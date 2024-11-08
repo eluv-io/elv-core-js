@@ -2,7 +2,6 @@ import "../../static/stylesheets/apps.scss";
 
 import React from "react";
 import GenericAppLogo from "../../static/icons/App.svg";
-import {ImageIcon} from "elv-components-js";
 import UrlJoin from "url-join";
 import {Link} from "react-router-dom";
 
@@ -16,6 +15,7 @@ import StreamSampleIcon from "../../static/images/app_icons/stream-sample.svg";
 import StudioIcon from "../../static/images/app_icons/Media Ingest.png";
 import ClipSearchIcon from "../../static/images/app_icons/AI Clip Search - beta.png";
 import LiveStreamManagerIcon from "../../static/images/app_icons/Livestream Manager.png";
+import {ImageIcon} from "../Misc";
 
 const icons = {
   "Fabric Browser": FabricBrowserIcon,
