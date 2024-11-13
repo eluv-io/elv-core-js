@@ -30,6 +30,8 @@ class TenantStore {
     makeAutoObservable(this);
 
     this.rootStore = rootStore;
+
+    this.Log = rootStore.Log;
   }
 
   get client() {
@@ -124,22 +126,27 @@ class TenantStore {
   });
 
   LoadPublicTenantMetadata = flow(function * ({tenantContractId, force}={}) {
-    tenantContractId = tenantContractId || this.tenantContractId;
-    if(!tenantContractId || (this.tenantMetadata[tenantContractId] && !force)) {
-      return;
+    try {
+      tenantContractId = tenantContractId || this.tenantContractId;
+      if(!tenantContractId || (this.tenantMetadata[tenantContractId] && !force)) {
+        return;
+      }
+
+      const libraryId = yield this.client.ContentObjectLibraryId({objectId: tenantContractId});
+      const objectId = Utils.AddressToObjectId(Utils.HashToAddress(tenantContractId));
+
+      this.tenantMetadata[tenantContractId] = {
+        public: yield this.client.ContentObjectMetadata({
+          libraryId,
+          objectId,
+          metadataSubtree: "/public",
+          produceLinkUrls: true
+        })
+      };
+    } catch (error) {
+      this.Log("Failed to load tenant contract metadata for " + tenantContractId, true);
+      this.Log(error, true);
     }
-
-    const libraryId = yield this.client.ContentObjectLibraryId({objectId: tenantContractId});
-    const objectId = Utils.AddressToObjectId(Utils.HashToAddress(tenantContractId));
-
-    this.tenantMetadata[tenantContractId] = {
-      public: yield this.client.ContentObjectMetadata({
-        libraryId,
-        objectId,
-        metadataSubtree: "/public",
-        produceLinkUrls: true
-      })
-    };
   });
 
   // Groups

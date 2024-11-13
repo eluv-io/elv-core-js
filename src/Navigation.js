@@ -14,11 +14,28 @@ const CoreNav = observer(() => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const locked = !account || account?.balance < 0.1;
+  const locked = false && !account || account?.balance < 0.1;
+
+  return (
+    <nav>
+      <NavLink to="/apps">Apps</NavLink>
+      <NavLink to="/tenancy">Tenancy</NavLink>
+      <NavLink to="/profile">Profile</NavLink>
+      <NavLink to="/accounts">Accounts</NavLink>
+      <NavLink to="/transfer">Transfer</NavLink>
+    </nav>
+  );
 
   return (
     <div className="nav-container">
-      <Tabs value={`/${location.pathname.split("/")[1]}`} onTabChange={pathname => navigate(pathname)} className="nav-container__tabs">
+      <Tabs
+        value={`/${location.pathname.split("/")[1]}`}
+        onClick={pathname => {
+          console.log("NAV", pathname);
+          navigate(pathname);
+        }}
+        className="nav-container__tabs"
+      >
         <Tabs.List grow>
           <Tabs.Tab value="/apps" disabled={locked}>Apps & Tools</Tabs.Tab>
           {

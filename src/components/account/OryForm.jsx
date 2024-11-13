@@ -6,6 +6,8 @@ import {rootStore, accountsStore} from "../../stores";
 import {Button, Loader, PasswordInput, TextInput} from "@mantine/core";
 import {CreateModuleClassMatcher, ValidEmail} from "../../Utils";
 import {ButtonWithLoader} from "../Misc";
+import {Link} from "react-router-dom";
+import {AccountSelector} from "./AccountMenu";
 
 const S = CreateModuleClassMatcher(LoginStyles);
 
@@ -65,7 +67,6 @@ const ForgotPasswordForm = ({OrySubmit, Cancel}) => {
         placeholder="Email"
         required
         autofocus
-        classNames={{input: S("input")}}
       />
       <ButtonWithLoader
         formNoValidate
@@ -153,7 +154,7 @@ const SubmitRecoveryCode = async ({flows, setFlows, setFlowType, setErrorMessage
   }
 };
 
-const OryForm = observer(({userData, Close}) => {
+const OryForm = observer(({userData, isLoginGate, Close}) => {
   const [flowType, setFlowType] = useState(searchParams.has("flow") ? "initializeFlow" : "login");
   const [flows, setFlows] = useState({});
   const [loading, setLoading] = useState(false);
@@ -218,25 +219,19 @@ const OryForm = observer(({userData, Close}) => {
   let title;
   let additionalContent = [];
   if(flowType === "login") {
-    if(flow.refresh) {
-      title = rootStore.l10n.login.ory.refresh;
-    } else if(flow.requested_aal === "aal2") {
-      title = rootStore.l10n.login.ory.aal2;
-    } else {
-      title = rootStore.l10n.login.ory.actions.sign_in;
-    }
-
     if(!flow.refresh && flow.requested_aal !== "aal2") {
-      additionalContent.push(
-        <Button
-          key="registration-link"
-          onClick={() => setFlowType("registration")}
-          color="gray.8"
-          className={S("button")}
-        >
-          {rootStore.l10n.login.ory.actions.registration}
-        </Button>
-      );
+      if(!isLoginGate) {
+        additionalContent.push(
+          <Button
+            key="registration-link"
+            onClick={() => setFlowType("registration")}
+            color="gray.8"
+            className={S("button")}
+          >
+            {rootStore.l10n.login.ory.actions.registration}
+          </Button>
+        );
+      }
 
       additionalContent.push(
         <button
@@ -252,13 +247,14 @@ const OryForm = observer(({userData, Close}) => {
       );
 
       additionalContent.push(
-        <button
+        <Link
+          to="/accounts"
           key="back-link"
-          onClick={() => Close()}
+          onClick={() => Close?.()}
           className={S("button-link", "button-link--secondary")}
         >
           { rootStore.l10n.login.ory.actions.back_to_accounts }
-        </button>
+        </Link>
       );
     } else {
       additionalContent.push(
@@ -398,7 +394,7 @@ const OryForm = observer(({userData, Close}) => {
       setStatusMessage(undefined);
 
       if(next) {
-        Close(true);
+        Close?.(true);
       }
     } catch(error) {
       if(error.login_limited) {
@@ -454,7 +450,11 @@ const OryForm = observer(({userData, Close}) => {
     ...(flow?.ui?.messages || []),
     statusMessage
   ].filter(m => m);
-  
+
+  console.log(messages, errorMessage, title);
+
+  console.log(flow);
+
   return (
     <div className={S("ory-login")}>
       {
@@ -553,26 +553,24 @@ const OryForm = observer(({userData, Close}) => {
                         <PasswordInput
                           key={`input-${key}`}
                           {...attributes}
-                          h={50}
-                          classNames={{
-                            root: S("input-container"),
-                            wrapper: S("input-wrapper"),
-                            input: S("input"),
-                            innerInput: S("inner-input"),
-                            visibilityToggle: S("input-visibility-toggle")
-                          }}
                         />
                       );
                     }
 
                     if(attributes.type !== "hidden") {
+                      if(isLoginGate && attributes.type === "email") {
+                        return (
+                          <>
+                            <AccountSelector center key={key} className={S("account-selector")} />
+                            <input key={`hidden-${key}`} {...attributes} type="hidden" value={accountsStore.currentAccount?.email} />
+                          </>
+                        );
+                      }
+
                       return (
                         <TextInput
                           key={`inputs-${key}`}
                           {...attributes}
-                          b={0}
-                          border={0}
-                          classNames={{input: S("input")}}
                         />
                       );
                     }
@@ -584,9 +582,14 @@ const OryForm = observer(({userData, Close}) => {
               })
         }
         {additionalContent}
+        {
+          !errorMessage ? null :
+            <div className={S("error")}>
+              { errorMessage }
+            </div>
+        }
       </form>
     </div>
-
   );
 });
 

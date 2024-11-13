@@ -13,6 +13,7 @@ class AccountStore {
   accountsLoaded = false;
   tenantAdmins = [];
 
+  authenticating = false;
   loadingAccount;
 
   authNonce = localStorage.getItem("auth-nonce") || Utils.B58(ParseUUID(UUID()));
@@ -27,23 +28,21 @@ class AccountStore {
 
   get sortedAccounts() {
     return Object.keys(this.accounts)
-      .map(address => [address, (this.accounts[address] || {}).name])
-      .sort(([addressA, nameA], [addressB, nameB]) => {
-        if(Utils.EqualAddress(addressA, this.currentAccountAddress)) {
-          return -1;
-        } else if(Utils.EqualAddress(addressB, this.currentAccountAddress)) {
-          return 1;
-        } else if(nameA && nameB) {
-          return nameA.toLowerCase() < nameB.toLowerCase() ? -1 : 1;
-        } else if(nameA) {
-          return -1;
-        } else if(nameB) {
-          return 1;
-        } else {
-          return addressA.toLowerCase() < addressB.toLowerCase() ? -1 : 1;
+      .map(address => this.accounts[address])
+      .sort((a, b) => {
+        if(a.lastSignedInAt || b.lastSignedInAt) {
+          if(!a.lastSignedInAt) {
+            return 1;
+          } else if(!b.lastSignedInAt) {
+            return -1;
+          }
+
+          return a.lastSignedInAt > b.lastSignedInAt ? -1 : 1;
         }
+
+        return (a?.name?.toLowerCase() || "zz") < (b?.name?.toLowerCase() || "zz") ? -1 : 1;
       })
-      .map(([address]) => address);
+      .map(account => account.address);
   }
 
   get authToken() {
@@ -142,7 +141,8 @@ class AccountStore {
         address,
         signer: this.rootStore.client.signer,
         authToken: tokens.authToken,
-        signingToken: tokens.signingToken
+        signingToken: tokens.signingToken,
+        lastSignedInAt: Date.now()
       };
 
       yield this.SetCurrentAccount({signer: this.rootStore.client.signer});
@@ -313,10 +313,11 @@ class AccountStore {
     this.accounts = accounts;
 
     Object.keys(accounts).map(account => this.AccountBalance(account));
-
     this.accountsLoaded = true;
 
     if(this.currentAccount?.signingToken) {
+      this.authenticating = true;
+
       try {
         yield this.rootStore.walletClient.Authenticate({token: this.currentAccount.signingToken});
         yield this.SetCurrentAccount({signer: this.rootStore.client.signer});
@@ -330,23 +331,29 @@ class AccountStore {
 
         this.SaveAccounts();
       }
+
+      this.authenticating = false;
     }
   });
 
   AccountBalance = flow(function * (address) {
-    const client = this.rootStore.client;
+    try {
+      const client = this.rootStore.client;
 
-    address = client.utils.FormatAddress(address);
+      address = client.utils.FormatAddress(address);
 
-    const balance = client.utils.ToBigNumber(
-      yield client.GetBalance({address})
-    ).toFixed(3);
+      const balance = client.utils.ToBigNumber(
+        yield client.GetBalance({address})
+      ).toFixed(3);
 
-    if(Object.keys(this.accounts).includes(address)) {
-      this.accounts[address].balance = balance;
+      if(Object.keys(this.accounts).includes(address)) {
+        this.accounts[address].balance = balance;
+      }
+
+      return balance;
+    } catch (error) {
+      this.Log(error, true);
     }
-
-    return balance;
   });
 
   LockAccount = flow(function * ({address}) {
@@ -363,8 +370,8 @@ class AccountStore {
       yield this.rootStore.InitializeClient();
     }
 
-    if(this.accounts[address].type === "custodial" && this.oryClient) {
-      this.LogOutOry();
+    if(this.oryClient) {
+      yield this.LogOutOry();
     }
   });
 
@@ -408,6 +415,7 @@ class AccountStore {
     yield this.rootStore.client.userProfileClient.SetTenantContractId({tenantContractId: id});
     this.accounts[this.currentAccountAddress].tenantContractId = yield this.rootStore.client.userProfileClient.TenantContractId();
     yield this.UserMetadata();
+    yield this.rootStore.tenantStore.LoadPublicTenantMetadata({tenantContractId: id});
 
     this.SaveAccounts();
   });
@@ -430,7 +438,18 @@ class AccountStore {
         }
       }
 
+      if(this.accounts[address]?.tenantContractId) {
+        yield this.rootStore.tenantStore.LoadPublicTenantMetadata({
+          tenantContractId: this.accounts[address].tenantContractId
+        });
+
+        this.accounts[address].tenantName =
+          this.rootStore.tenantStore.tenantMetadata[this.accounts[address].tenantContractId]?.public?.name ||
+          this.accounts[address].tenantName || "";
+      }
+
       this.accounts[address].signer = signer;
+      this.accounts[address].lastSignedInAt = Date.now();
 
       yield this.AccountBalance(address);
 
@@ -445,6 +464,8 @@ class AccountStore {
         this.UserMetadata();
         this.CheckTenantDetails();
       }
+
+      this.SaveAccounts();
     } catch (error) {
       this.Log("Error loading account " + address, true);
       this.Log(error, true);
@@ -535,6 +556,10 @@ class AccountStore {
       yield this.SetTenantContractId({
         id: tenantContractId
       });
+    }
+
+    if(this.accounts[address].tenantContractId) {
+      this.accounts[address].tenantName = this.rootStore.tenantStore.tenantMetadata[this.accounts[address].tenantContractId]?.public?.name || "";
     }
 
     this.SaveAccounts();
@@ -630,20 +655,21 @@ class AccountStore {
     yield this.UserMetadata();
   });
 
-  RemoveAccount(address) {
+  RemoveAccount = flow(function * (address) {
     if(!(Object.keys(this.accounts).includes(address))) {
       return;
     }
 
     if(this.currentAccountAddress === address) {
-      this.rootStore.InitializeClient();
+      yield this.LogOutOry();
+      yield this.rootStore.InitializeClient();
       this.currentAccountAddress = undefined;
     }
 
     delete this.accounts[address];
 
     this.SaveAccounts();
-  }
+  });
 
   SaveAccounts() {
     let savedAccounts = {};
@@ -656,8 +682,10 @@ class AccountStore {
         address: account.address,
         encryptedPrivateKey: account.encryptedPrivateKey,
         tenantContractId: account.tenantContractId,
+        tenantName: account.tenantName || this.rootStore.tenantStore.tenantMetadata[account.tenantContractId]?.public?.name || "",
         authToken: account.authToken,
-        signingToken: account.signingToken
+        signingToken: account.signingToken,
+        lastSignedInAt: account.lastSignedInAt
       }
     );
 

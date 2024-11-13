@@ -2,21 +2,23 @@ import AccountStyles from "../../static/stylesheets/modules/accounts.module.scss
 
 import {observer} from "mobx-react";
 import {accountsStore} from "../../stores";
-import {Button, FileButton} from "@mantine/core";
-import {Link, useNavigate} from "react-router-dom";
+import {Button, FileButton, Text} from "@mantine/core";
+import {useNavigate} from "react-router-dom";
 import React, {useState} from "react";
 import {CreateModuleClassMatcher} from "../../Utils";
 
-import DefaultAccountImage from "../../static/icons/User.svg";
-import LoginModal from "../login/LoginModal";
 import {Utils} from "@eluvio/elv-client-js";
 import {ButtonWithLoader, ImageIcon} from "../Misc";
+import {LoginGateModal} from "../login/Login";
+import {modals} from "@mantine/modals";
+
+import XIcon from "../../static/icons/X.svg";
+import DefaultAccountImage from "../../static/icons/User.svg";
 
 const S = CreateModuleClassMatcher(AccountStyles);
 
 const Account = observer(({address}) => {
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [signingOut, setSigningOut] = useState(false);
   const account = accountsStore.accounts[address];
 
 
@@ -30,9 +32,25 @@ const Account = observer(({address}) => {
     <>
       {
         !showLoginModal ? null :
-          <LoginModal address={address} Close={() => setShowLoginModal(false)}/>
+          <LoginGateModal
+            address={address}
+            Close={() => setShowLoginModal(false)}
+          />
       }
       <div className={S("account")}>
+        <button
+          onClick={() => modals.openConfirmModal({
+            title: `Remove ${account?.name || account?.email || "Account"}`,
+            children: <Text my="md">Are you sure you want to remove this account?</Text>,
+            onConfirm: async () => await accountsStore.RemoveAccount(address),
+            labels: { confirm: "Confirm", cancel: "Cancel" },
+            centered: true
+          })}
+          className={S("remove-account")}
+        >
+          <ImageIcon icon={XIcon} />
+        </button>
+
         <div className={S("image-container")}>
           <ImageIcon
             icon={profileImage}
@@ -44,6 +62,12 @@ const Account = observer(({address}) => {
           <div title={account.name || account.address} className={S("name", "ellipsis")}>
             {account.name || address}
           </div>
+          {
+            !account.tenantName ? null :
+              <div title={account.address} className={S("tenant", "ellipsis")}>
+                Tenant: {account.tenantName}
+              </div>
+          }
           <div title={account.address} className={S("address", "ellipsis")}>
             {address}
           </div>
@@ -51,37 +75,35 @@ const Account = observer(({address}) => {
         <div className={S("actions")}>
           {
             isCurrentAccount && !accountLocked ?
-              <Button
+              <ButtonWithLoader
+                className={S("action")}
                 variant="filled"
                 w="100%"
-                loading={signingOut}
-                onClick={() => {
-                  setSigningOut(true);
-                  accountsStore.LockAccount({address})
-                    .finally(() => setSigningOut(false));
-                }}
+                onClick={async () => await accountsStore.LockAccount({address})}
               >
                 Sign Out
-              </Button> :
-              <Button
+              </ButtonWithLoader> :
+              <ButtonWithLoader
+                className={S("action")}
                 variant="outline"
                 w="100%"
-                loading={signingOut}
                 onClick={async () => {
                   if(accountsStore.currentAccountAddress) {
-                    setSigningOut(true);
                     try {
                       await accountsStore.LockAccount({address: accountsStore.currentAccountAddress});
-                    } finally {
-                      setSigningOut(false);
+                    } catch (error) {
+                      // eslint-disable-next-line no-console
+                      console.error(error);
                     }
                   }
+
+                  await accountsStore.SetCurrentAccount({address: address});
 
                   setShowLoginModal(true);
                 }}
               >
                 Sign In
-              </Button>
+              </ButtonWithLoader>
           }
         </div>
       </div>

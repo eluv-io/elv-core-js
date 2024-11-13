@@ -14,10 +14,11 @@ body,
 }
 
 body {
+  color: #222;
   height: 100vh;
 
   * {
-    font-family: Inter;
+    font-family: "Inter", "Helvetica Neue", helvetica, sans-serif;
   }
 }
 
@@ -50,7 +51,7 @@ body {
 
 .form-container,
 .content-container {
-  width: 800px;
+  width: 500px;
 
   @media screen and (max-width: 850px) {
     width: 90vw;

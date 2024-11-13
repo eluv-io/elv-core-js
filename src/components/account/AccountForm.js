@@ -93,7 +93,6 @@ const AccountForm = observer(({UpdateFormData}) => {
             placeholder="Private Key"
             value={formData.privateKey}
             onChange={event => setFormData({...formData, privateKey: event.currentTarget.value})}
-            classNames={{input: S("input")}}
           />
       }
       {
@@ -159,12 +158,6 @@ const AccountForm = observer(({UpdateFormData}) => {
         description="Password must be at least 6 characters long and must contain at least one uppercase letter, lowercase letter, number and symbol"
         value={formData.password}
         onChange={event => setFormData({...formData, password: event.currentTarget.value})}
-        classNames={{
-          wrapper: S("input-wrapper"),
-          input: S("input"),
-          innerInput: S("inner-input"),
-          visibilityToggle: S("input-visibility-toggle")
-        }}
       />
       <PasswordInput
         aria-label="Password Confirmation"
@@ -172,12 +165,6 @@ const AccountForm = observer(({UpdateFormData}) => {
         value={formData.passwordConfirmation}
         onChange={event => setFormData({...formData, passwordConfirmation: event.currentTarget.value})}
         error={formData.password && formData.passwordConfirmation && formData.password !== formData.passwordConfirmation}
-        classNames={{
-          wrapper: S("input-wrapper"),
-          input: S("input"),
-          innerInput: S("inner-input"),
-          visibilityToggle: S("input-visibility-toggle")
-        }}
       />
     </form>
   );
