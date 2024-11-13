@@ -7,7 +7,7 @@ import Offerings from "./components/offerings/Offerings";
 import Onboard from "./components/onboarding/Onboard";
 import TenantOverview from "./components/tenancy/TenantOverview";
 import {observer} from "mobx-react";
-import LoginGate from "./components/login/LoginGate";
+//import LoginGate from "./components/login/LoginGate";
 import Accounts from "./components/account/Accounts2";
 import {Routes, Route, useNavigate} from "react-router-dom";
 import TenantInvites from "./components/tenancy/TenantInvites";
@@ -16,7 +16,7 @@ import {tenantStore} from "./stores";
 import {Tabs} from "@mantine/core";
 import {useMediaQuery} from "@mantine/hooks";
 import TenantUsers from "./components/tenancy/TenantUsers";
-import Login from "./components/login/Login";
+import Login, {LoginGate} from "./components/login/Login";
 
 const GatedRoute = ({Component}) => {
   return (

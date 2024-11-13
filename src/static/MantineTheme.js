@@ -1,4 +1,6 @@
-import {createTheme, em, Button} from "@mantine/core";
+import {createTheme, em, Button, PasswordInput, TextInput, Select} from "@mantine/core";
+
+import SharedStyles from "./stylesheets/modules/shared.module.scss";
 
 const MantineTheme = createTheme({
   /** Put your mantine theme override here */
@@ -26,6 +28,31 @@ const MantineTheme = createTheme({
             transform: "none!important",
             transitionDuration: 0,
           }
+        }
+      }
+    }),
+    PasswordInput: PasswordInput.extend({
+      defaultProps: {
+        classNames: {
+          root: SharedStyles["input-container"],
+          wrapper: SharedStyles["input-wrapper"],
+          input: SharedStyles["input"],
+          innerInput: SharedStyles["inner-input"],
+          visibilityToggle: SharedStyles["input-visibility-toggle"]
+        }
+      }
+    }),
+    TextInput: TextInput.extend({
+      defaultProps: {
+        classNames: {
+          input: SharedStyles["input"]
+        }
+      }
+    }),
+    Select: Select.extend({
+      defaultProps: {
+        classNames: {
+          input: SharedStyles["input"]
         }
       }
     })

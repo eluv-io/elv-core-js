@@ -9,13 +9,11 @@ import {BrowserRouter} from "react-router-dom";
 import {observer} from "mobx-react";
 import {accountsStore, rootStore} from "./stores";
 
-import {Action, ErrorHandler} from "elv-components-js";
-
 import Header from "./Header";
 import Navigation from "./Navigation";
-
 import AppRoutes from "./Routes";
-import {Group, Loader, MantineProvider} from "@mantine/core";
+import {Button, Group, Loader, MantineProvider} from "@mantine/core";
+import { ModalsProvider } from "@mantine/modals";
 import ScrollToTop from "./ScrollToTop";
 import Footer from "./Footer";
 import MantineTheme from "./static/MantineTheme";
@@ -32,9 +30,9 @@ const App = observer(() => {
             {EluvioConfiguration["config-url"]}
           </h1>
 
-          <Action onClick={() => rootStore.InitializeClient()}>
+          <Button onClick={() => rootStore.InitializeClient()}>
             Retry
-          </Action>
+          </Button>
         </div>
       </div>
     );
@@ -64,7 +62,6 @@ const App = observer(() => {
   );
 });
 
-const AppComponent = ErrorHandler(App);
 
 const element = document.createElement("div");
 element.id = "app";
@@ -76,7 +73,9 @@ const root = createRoot(document.getElementById("app"));
 root.render(
   <React.Fragment>
     <MantineProvider withGlobalStyles theme={MantineTheme}>
-      <AppComponent />
+      <ModalsProvider>
+        <App />
+      </ModalsProvider>
     </MantineProvider>
     <div className="app-version">{EluvioConfiguration.version}</div>
   </React.Fragment>

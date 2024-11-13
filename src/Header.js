@@ -10,6 +10,7 @@ import Logo from "./static/images/Logo.png";
 import LogoDemo from "./static/images/LogoDemo.png";
 import LogoTest from "./static/images/LogoTest.png";
 import LogoPreview from "./static/images/LogoPreview.png";
+import AccountMenu from "./components/account/AccountMenu";
 
 const Header = observer(() => {
   let logo = Logo;
@@ -27,7 +28,7 @@ const Header = observer(() => {
         <img src={logo} alt="Eluvio" />
       </Link>
       <div className="toggle-header-section"/>
-      { /* <HeaderAccount /> */ }
+      <AccountMenu />
     </header>
   );
 });

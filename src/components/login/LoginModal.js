@@ -1,10 +1,12 @@
 import "../../static/stylesheets/login.scss";
 
 import React, {useState} from "react";
-import {Button, Group, Modal, PasswordInput} from "@mantine/core";
+import {Button, Group, Loader, Modal, PasswordInput, Title} from "@mantine/core";
 import {observer} from "mobx-react";
 import {Link, useNavigate} from "react-router-dom";
 import {accountsStore} from "../../stores";
+import {AccountSelector} from "../account/AccountMenu";
+import OryForm from "../account/OryForm";
 //import AccountDropdown from "../account/AccountDropdown";
 
 const LoginModal = observer(({title, address, allowAccountSwitch, setUnlocking, Close}) => {
@@ -44,6 +46,40 @@ const LoginModal = observer(({title, address, allowAccountSwitch, setUnlocking, 
     }
   };
 
+  if(accountsStore.authenticating) {
+    return (
+      <Modal
+        padding="xl"
+        centered
+        opened
+        withCloseButton={false}
+        closeOnClickOutside={false}
+        //title={title || "Authenticating..."}
+      >
+        <Title order={3} ta="center" mb="xl" fw={500}>Authenticating...</Title>
+        <Group justify="center">
+          <Loader />
+        </Group>
+      </Modal>
+    );
+  }
+
+  if(accountsStore.currentAccount?.type === "custodial") {
+    return (
+      <Modal
+        padding="xl"
+        centered
+        opened
+        onClose={() => {
+          Close ? Close() : navigate("/accounts");
+        }}
+        title={title || "Log in"}
+      >
+        <OryForm />
+      </Modal>
+    );
+  }
+
   return (
     <Modal
       padding="xl"
@@ -55,8 +91,8 @@ const LoginModal = observer(({title, address, allowAccountSwitch, setUnlocking, 
       title={title || "Enter your password to unlock your account"}
     >
       {
-        !allowAccountSwitch ? null : null
-        //<AccountDropdown />
+        !allowAccountSwitch ? null :
+          <AccountSelector />
       }
       <form onSubmit={event => event.preventDefault()}>
         <PasswordInput

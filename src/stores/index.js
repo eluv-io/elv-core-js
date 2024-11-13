@@ -98,7 +98,7 @@ class RootStore {
       (new URLSearchParams(window.location.search).has("simplePasswords")) ||
       (new URLSearchParams(window.location.search).has("sp"))
     ) {
-      this.simplePasswords = true;
+      //this.simplePasswords = true;
     }
 
     window.client = this.client;
