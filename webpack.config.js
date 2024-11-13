@@ -32,15 +32,14 @@ module.exports = env => {
       clean: true,
       //filename: "main.js",
       filename: "[name].bundle.js",
-      //publicPath: process.env.ASSET_PATH,
-      publicPath: "/",
+      publicPath: process.env.ELV_CORE_JS_ASSET_PATH || "/",
       chunkFilename: "bundle.[id].[chunkhash].js"
     },
     devServer: {
       hot: true,
       historyApiFallback: true,
       allowedHosts: "all",
-      port: 8082,
+      port: process.env.ELV_CORE_JS_PORT || 8082,
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type, Accept",
