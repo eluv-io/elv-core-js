@@ -2,7 +2,7 @@ import AccountStyles from "../../static/stylesheets/modules/accounts.module.scss
 
 import {observer} from "mobx-react";
 import {accountsStore} from "../../stores";
-import {Button, FileButton, Text} from "@mantine/core";
+import {Button, FileButton, Group, Text} from "@mantine/core";
 import {useNavigate} from "react-router-dom";
 import React, {useState} from "react";
 import {CreateModuleClassMatcher} from "../../Utils";
@@ -144,11 +144,12 @@ const Accounts = observer(() => {
             <Account address={address} key={`account-${address}`} />
           )}
         </div>
-        <div className={S("actions")}>
-          <Button variant="outline" onClick={() => accountsStore.ExportAccounts()}>
+        <Group justify="center">
+          <Button variant="outline" color="gray.6" onClick={() => accountsStore.ExportAccounts()}>
             Export Accounts
           </Button>
           <FileButton
+            color="gray.6"
             accept=".elv"
             onChange={async file => {
               accountsStore.ImportAccounts(await file.text());
@@ -156,7 +157,7 @@ const Accounts = observer(() => {
           >
             {(props) => <Button {...props} variant="outline">Import Accounts</Button>}
           </FileButton>
-        </div>
+        </Group>
       </div>
     </div>
   );
