@@ -11,10 +11,9 @@ import {
   Group,
   Image,
   UnstyledButton,
-  Textarea,
+  Textarea, Loader,
 } from "@mantine/core";
 import {accountsStore, tenantStore} from "../../stores";
-import { LoadingElement} from "elv-components-js";
 
 import EditIcon from "../../static/icons/edit.svg";
 import {ImageIcon} from "../Misc";
@@ -125,45 +124,43 @@ const TenantOverview = observer(() => {
     return <TenantForm key={`tenant-form-${accountsStore.currentAccount.tenantContractId}`} Back={() => setEditing(false)} />;
   }
 
+  if(!tenantStore.publicTenantMetadata) {
+    return <Loader />;
+  }
+
   return (
-    <LoadingElement
-      fullPage
-      loading={!tenantStore.publicTenantMetadata}
-      render={() =>
-        <div className="page-content">
-          <Paper withBorder p="xl" pr={60} style={{position: "relative"}} className="content-container tenant-info">
-            {
-              !tenantStore.isTenantAdmin ? null :
-                <ActionIcon
-                  onClick={() => setEditing(true)}
-                  title="Edit Tenancy Info"
-                  color="blue.5"
-                  variant="transparent"
-                  className="tenant-info__edit"
-                >
-                  <ImageIcon icon={EditIcon} />
-                </ActionIcon>
-            }
-            <Group wrap="nowrap" gap="xl" align="top" className="tenant-info__group">
-              <Image
-                radius="sm"
-                withPlaceholder
-                width={200}
-                height={200}
-                miw={200}
-                src={tenantStore.publicTenantMetadata.image?.url}
-                className="tenant-info__image"
-              />
-              <div>
-                <Title fw={500} order={3} className="tenant-info__title">{tenantStore.publicTenantMetadata.name}</Title>
-                <Text fz="xs" color="dimmed" mb="sm">{tenantStore.tenantContractId}</Text>
-                <Text fz="sm" color="dimmed" className="pre-wrap">{tenantStore.publicTenantMetadata.description}</Text>
-              </div>
-            </Group>
-          </Paper>
-        </div>
-      }
-    />
+    <div className="page-content">
+      <Paper withBorder p="xl" pr={60} style={{position: "relative"}} className="content-container tenant-info">
+        {
+          !tenantStore.isTenantAdmin ? null :
+            <ActionIcon
+              onClick={() => setEditing(true)}
+              title="Edit Tenancy Info"
+              color="blue.5"
+              variant="transparent"
+              className="tenant-info__edit"
+            >
+              <ImageIcon icon={EditIcon} />
+            </ActionIcon>
+        }
+        <Group wrap="nowrap" gap="xl" align="top" className="tenant-info__group">
+          <Image
+            radius="sm"
+            withPlaceholder
+            width={200}
+            height={200}
+            miw={200}
+            src={tenantStore.publicTenantMetadata.image?.url}
+            className="tenant-info__image"
+          />
+          <div>
+            <Title fw={500} order={3} className="tenant-info__title">{tenantStore.publicTenantMetadata.name}</Title>
+            <Text fz="xs" color="dimmed" mb="sm">{tenantStore.tenantContractId}</Text>
+            <Text fz="sm" color="dimmed" className="pre-wrap">{tenantStore.publicTenantMetadata.description}</Text>
+          </div>
+        </Group>
+      </Paper>
+    </div>
   );
 });
 

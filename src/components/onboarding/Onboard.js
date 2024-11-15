@@ -12,11 +12,10 @@ import {
   Text,
   Checkbox,
   Group,
-  Image
+  Image, Loader
 } from "@mantine/core";
 import {accountsStore, rootStore, tenantStore} from "../../stores";
 import {useDisclosure} from "@mantine/hooks";
-import {LoadingElement} from "elv-components-js";
 
 import DownloadIcon from "../../static/icons/download.svg";
 import {ImageIcon} from "../Misc";
@@ -36,30 +35,28 @@ const TenantInfo = observer(({tenantContractId}) => {
 
   const tenantMetadata = tenantStore.tenantMetadata[tenantContractId]?.public;
 
+  if(!tenantMetadata) {
+    return <Loader />;
+  }
+
   return (
-    <LoadingElement
-      fullPage
-      loading={!tenantMetadata}
-      render={() =>
-        <Paper withBorder p="xl" pr={60} style={{position: "relative"}} className="content-container tenant-info">
-          <Group wrap="nowrap" gap="xl" align="top" className="tenant-info__group">
-            <Image
-              radius="sm"
-              withPlaceholder
-              width={200}
-              miw={200}
-              height={200}
-              src={tenantMetadata.image?.url}
-              className="tenant-info__image"
-            />
-            <div>
-              <Title mb="sm" fw={500} order={3} className="tenant-info__title">{tenantMetadata.name}</Title>
-              <Text fz="sm" color="dimmed" className="pre-wrap">{tenantMetadata.description}</Text>
-            </div>
-          </Group>
-        </Paper>
-      }
-    />
+    <Paper withBorder p="xl" pr={60} style={{position: "relative"}} className="content-container tenant-info">
+      <Group wrap="nowrap" gap="xl" align="top" className="tenant-info__group">
+        <Image
+          radius="sm"
+          withPlaceholder
+          width={200}
+          miw={200}
+          height={200}
+          src={tenantMetadata.image?.url}
+          className="tenant-info__image"
+        />
+        <div>
+          <Title mb="sm" fw={500} order={3} className="tenant-info__title">{tenantMetadata.name}</Title>
+          <Text fz="sm" color="dimmed" className="pre-wrap">{tenantMetadata.description}</Text>
+        </div>
+      </Group>
+    </Paper>
   );
 });
 

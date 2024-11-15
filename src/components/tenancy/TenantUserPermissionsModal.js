@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react";
-import {Button, Checkbox, Group, Modal, Table, Text} from "@mantine/core";
+import {Button, Checkbox, Group, Loader, Modal, Table, Text} from "@mantine/core";
 import {rootStore, tenantStore} from "../../stores";
-import {LoadingElement} from "elv-components-js";
 
 const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
   const groups = tenantStore.managedGroups;
@@ -41,9 +40,9 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
       title="Set User Permissions"
       onClose={Close}
     >
-      <LoadingElement
-        loading={!groups || !permissions}
-        render={() => (
+      {
+        !groups || !permissions ?
+          <Loader /> :
           <form onSubmit={() => {}}>
             <Table>
               <thead>
@@ -128,8 +127,7 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
               </Button>
             </Group>
           </form>
-        )}
-      />
+      }
     </Modal>
   );
 });

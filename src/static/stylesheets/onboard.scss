@@ -1,7 +1,5 @@
-@import "~elv-components-js/src/stylesheets/styles";
-
 .onboard {
-  margin: $elv-spacing-l auto $elv-spacing-xxl;
+  margin: 15px auto 25px;
 }
 
 .onboard-form {
@@ -18,7 +16,7 @@
     right: 20px;
 
     * {
-      stroke: $elv-color-mediumblue;
+      stroke: var(--accent);
     }
   }
 

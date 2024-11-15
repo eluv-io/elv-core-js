@@ -1,15 +1,17 @@
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react";
-import {Tabs, ActionIcon, Group, Paper, Text, Button} from "@mantine/core";
+import {Tabs, ActionIcon, Group, Paper, Text, Button, Loader} from "@mantine/core";
 import TenantInviteModal from "./TenantInviteModal";
 
 import {IconUserPlus} from "@tabler/icons-react";
-import {Balance,  CroppedIcon, LoadingElement} from "elv-components-js";
 import {tenantStore} from "../../stores";
 import DefaultAccountImage from "../../static/icons/User.svg";
 import TenantUserPermissionsModal from "./TenantUserPermissionsModal";
 
 import {IconAlertCircle} from "@tabler/icons-react";
+import {ImageIcon} from "../Misc";
+
+import FundsIcon from "../../static/icons/elv-token";
 
 const Invite = observer(({invite}) => {
   const [showInviteUrl, setShowInviteUrl] = useState(false);
@@ -56,18 +58,15 @@ const Invite = observer(({invite}) => {
       <Paper withBorder p="xs" className="invite">
         { alert ? <IconAlertCircle className="invite__indicator" /> : null }
         <Group wrap="nowrap">
-          <CroppedIcon
-            icon={user.profileImage || DefaultAccountImage}
-            alternateIcon={DefaultAccountImage}
-            label="Profile Image"
-            className="invite__image"
-            useLoadingIndicator={true}
-          />
+          <ImageIcon icon={user.profileImage || DefaultAccountImage} alternateIcon={DefaultAccountImage} />
           <div className="invite__main">
             <div>
               <Text fw={500}>{name}</Text>
               { address ? <Text fz="xs" className="invite__address">{address}</Text> : null }
-              <Balance balance={user.balance} className="invite__balance" />
+              <Group gap={3}>
+                <ImageIcon icon={FundsIcon} className="icon" />
+                { user.balance || "0.0" }
+              </Group>
             </div>
             <Group mt="md" className="invite__actions">
               { actions }
@@ -97,11 +96,12 @@ const TenantInvites = observer(() => {
     [tenantStore.INVITE_EVENTS.MANAGED]: "No completed invites"
   };
 
+  if(!tenantStore.invites) {
+    return <Loader />;
+  }
+
   return (
-    <LoadingElement
-      loading={!tenantStore.invites}
-      fullPage
-    >
+    <>
       { showInviteModal ? <TenantInviteModal Close={() => setShowInviteModal(false)} /> : null }
       <div className="page-content tenant-page">
         <Group align="center" position="center" className="tenant-page__nav" wrap="nowrap">
@@ -124,7 +124,7 @@ const TenantInvites = observer(() => {
           }
         </div>
       </div>
-    </LoadingElement>
+    </>
   );
 });
 

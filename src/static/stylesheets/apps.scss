@@ -1,5 +1,3 @@
-@import "~elv-components-js/src/stylesheets/styles";
-
 .apps {
   align-items: center;
   display: flex;
@@ -10,17 +8,17 @@
 }
 
 .apps-box {
-  border: 1px solid $elv-color-lightgray;
+  border: 1px solid var(--border);
   border-radius: 25px;
   max-width: 90vw;
   padding: 30px 20px;
   width: max-content;
 
   h2 {
-    color: $elv-color-darkgray;
+    color: var(--text-secondary);
     font-size: 20px;
     font-weight: 500;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     text-align: center;
   }
 
@@ -37,7 +35,7 @@
   flex-direction: column;
   height: max-content;
   justify-content: center;
-  margin: $elv-spacing-xs;
+  margin: 5px;
   opacity: 0.8;
   transition: opacity 0.25s ease;
   width: 175px;
@@ -49,9 +47,9 @@
   }
 
   h4 {
-    font-size: $elv-font-xl;
+    font-size: 18px;
     font-weight: 400;
-    margin: $elv-spacing-m 0;
+    margin: 20px 0;
     text-align: center;
   }
 
