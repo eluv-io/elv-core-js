@@ -12,7 +12,7 @@ import {AccountSelector} from "./AccountMenu";
 const S = CreateModuleClassMatcher(LoginStyles);
 
 const searchParams = new URLSearchParams(window.location.search);
-let timeoutDelay = 100;
+let timeoutDelay = 10;
 
 // Settings form has other stuff in it, build password form manually
 const PasswordResetForm = ({OrySubmit, nodes}) => {
@@ -20,7 +20,6 @@ const PasswordResetForm = ({OrySubmit, nodes}) => {
 
   return (
     <>
-      <div className={S("ory-login__message")}>{rootStore.l10n.login.ory.messages.set_password}</div>
       <input name="csrf_token" type="hidden" required value={csrfToken}/>
       <PasswordInput
         name="password"
@@ -60,7 +59,6 @@ const PasswordResetForm = ({OrySubmit, nodes}) => {
 const ForgotPasswordForm = ({OrySubmit, Cancel}) => {
   return (
     <>
-      <div className={S("ory-login__message")}>{rootStore.l10n.login.ory.messages.recovery_prompt}</div>
       <TextInput
         name="email"
         type="email"
@@ -154,13 +152,17 @@ const SubmitRecoveryCode = async ({flows, setFlows, setFlowType, setErrorMessage
   }
 };
 
-const OryForm = observer(({userData, isLoginGate, Close}) => {
+const OryForm = observer(({userData, isLoginGate, setClosable, Close}) => {
   const [flowType, setFlowType] = useState(searchParams.has("flow") ? "initializeFlow" : "login");
   const [flows, setFlows] = useState({});
   const [loading, setLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState(undefined);
   const [errorMessage, setErrorMessage] = useState(undefined);
   const formRef = useRef();
+
+  useEffect(() => {
+    setClosable?.(!["recovery", "settings"].includes(flowType));
+  }, [flowType]);
 
   useEffect(() => {
     if(!accountsStore.oryClient) { return; }
@@ -202,10 +204,6 @@ const OryForm = observer(({userData, isLoginGate, Close}) => {
     }
   }, [accountsStore.oryClient, flowType]);
 
-
-  console.log(flows, flowType);
-
-
   const flow = flows[flowType];
 
   if(!flow || loading) {
@@ -216,7 +214,6 @@ const OryForm = observer(({userData, isLoginGate, Close}) => {
     );
   }
 
-  let title;
   let additionalContent = [];
   if(flowType === "login") {
     if(!flow.refresh && flow.requested_aal !== "aal2") {
@@ -239,6 +236,7 @@ const OryForm = observer(({userData, isLoginGate, Close}) => {
           onClick={() => {
             setFlows({...flows, recovery_email: {}});
             setFlowType("recovery_email");
+            setTimeout(() => setStatusMessage(rootStore.l10n.login.ory.messages.recovery_prompt), timeoutDelay);
           }}
           className={S("button-link")}
         >
@@ -271,8 +269,6 @@ const OryForm = observer(({userData, isLoginGate, Close}) => {
       );
     }
   } else if(flowType === "registration") {
-    title = rootStore.l10n.login.ory.registration;
-
     additionalContent.push(
       <button
         key="back-link"
@@ -285,8 +281,6 @@ const OryForm = observer(({userData, isLoginGate, Close}) => {
       </button>
     );
   } else if(["recovery", "recovery_code"].includes(flowType)) {
-    title = rootStore.l10n.login.ory.recovery;
-
     additionalContent.push(
       <button
         key="back-link"
@@ -302,8 +296,6 @@ const OryForm = observer(({userData, isLoginGate, Close}) => {
         {rootStore.l10n.login.ory.actions.back_to_sign_in}
       </button>
     );
-  } else if(flowType === "settings") {
-    title = rootStore.l10n.login.ory.update_password;
   }
 
   const LogOut = async () => {
@@ -312,7 +304,7 @@ const OryForm = observer(({userData, isLoginGate, Close}) => {
       await accountsStore.LogOutOry();
       setFlows({});
       setFlowType("reset");
-      setTimeout(() => setFlowType("login"), 250);
+      setTimeout(() => setFlowType("login"), 100);
     } catch(error) {
       rootStore.Log(error);
     } finally {
@@ -374,6 +366,7 @@ const OryForm = observer(({userData, isLoginGate, Close}) => {
           setFlows({...flows, [flowType]: response.data});
 
           if(response.data.state === "passed_challenge") {
+            setTimeout(() => setStatusMessage(rootStore.l10n.login.ory.messages.set_password), timeoutDelay);
             setFlowType("settings");
           }
 
@@ -450,10 +443,6 @@ const OryForm = observer(({userData, isLoginGate, Close}) => {
     ...(flow?.ui?.messages || []),
     statusMessage
   ].filter(m => m);
-
-  console.log(messages, errorMessage, title);
-
-  console.log(flow);
 
   return (
     <div className={S("ory-login")}>

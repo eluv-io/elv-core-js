@@ -41,3 +41,36 @@
     opacity: 0.75;
   }
 }
+
+.copy-button {
+  transition: opacity 0.5s ease;
+
+  &--active {
+    opacity: 0.5;
+  }
+}
+
+.icon {
+  height: 20px;
+  object-fit: contain;
+  width: 20px;
+}
+
+.icon-button {
+  color: var(--text-secondary);
+  height: 20px;
+  transition: opacity 0.25s ease;
+  width: 20px;
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+.message {
+  color: var(--accent);
+}
+
+.error {
+  color: var(--error);
+}

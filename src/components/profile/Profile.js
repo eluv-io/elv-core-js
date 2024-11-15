@@ -232,7 +232,8 @@ class Profile extends React.Component {
             onClick={() => this.state.browseRef.current.click()}
             className="profile-image"
           >
-            <input ref={this.state.browseRef} type="file" multiple={false} accept="image/*" hidden={true} onChange={this.HandleProfileImageChange}/>
+            <input ref={this.state.browseRef} type="file" multiple={false} accept="image/*" hidden={true}
+              onChange={this.HandleProfileImageChange}/>
           </CroppedIconWithAction>
         </div>
       </div>

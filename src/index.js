@@ -51,7 +51,6 @@ const App = observer(() => {
       <ScrollToTop />
       <div className={`router-container ${rootStore.activeApp ? "router-container--app" : ""}`}>
         <Header />
-        <Navigation />
         <AppRoutes />
         {
           rootStore.activeApp ? null :

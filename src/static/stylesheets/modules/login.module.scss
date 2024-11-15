@@ -75,7 +75,7 @@
 }
 
 .error {
-  color: #a00;
+  color: var(--error);
   font-size: 14px;
   margin-top: 20px;
   text-align: center;
@@ -96,6 +96,7 @@
   &__message {
     color: var(--text-secondary);
     font-size: 14px;
+    margin-bottom: 10px;
     padding-inline: 20px;
 
     text-align: center;

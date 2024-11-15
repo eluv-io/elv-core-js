@@ -39,6 +39,7 @@ const Account = observer(({address}) => {
       }
       <div className={S("account")}>
         <button
+          title="Remove Account"
           onClick={() => modals.openConfirmModal({
             title: `Remove ${account?.name || account?.email || "Account"}`,
             children: <Text my="md">Are you sure you want to remove this account?</Text>,
@@ -117,6 +118,13 @@ const Accounts = observer(() => {
   return (
     <div className="page-content">
       <div className={S("accounts-page")}>
+        {
+          !accountsStore.currentAccount?.lowBalance ? null :
+            <Text ta="center" mb={50} fw={500} className={S("message")}>
+              This account has an insufficient balance. Please fund the account to proceed.
+            </Text>
+        }
+
         <div className={S("add-account")}>
           <p>Add/Switch Accounts</p>
           <ButtonWithLoader

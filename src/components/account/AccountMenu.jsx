@@ -4,13 +4,14 @@ import {observer} from "mobx-react";
 import {CreateModuleClassMatcher, JoinClassNames} from "../../Utils";
 import React, {useEffect, useState} from "react";
 import {ButtonWithLoader, ImageIcon} from "../Misc";
-import DefaultAccountImage from "../../static/icons/User.svg";
 import {accountsStore} from "../../stores";
 import {Link} from "react-router-dom";
 import {Combobox, Popover, UnstyledButton, useCombobox} from "@mantine/core";
 
 const S = CreateModuleClassMatcher(AccountMenuStyles);
 
+import DefaultAccountImage from "../../static/icons/User.svg";
+import AppsIcon from "../../static/icons/apps";
 import SwitchAccountsIcon from "../../static/icons/switch-accounts";
 import ProfileIcon from "../../static/icons/User";
 import TransferFundsIcon from "../../static/icons/dollar-sign";
@@ -55,7 +56,7 @@ export const AccountSelector = observer(({center, className=""}) => {
   return (
     <Combobox
       onOptionSubmit={address => {
-        accountsStore.SetCurrentAccount({address: address});
+        accountsStore.SetCurrentAccount({address, switchAccount: true});
         combobox.closeDropdown();
       }}
       store={combobox}
@@ -119,21 +120,26 @@ export const AccountSelector = observer(({center, className=""}) => {
 });
 
 const AccountMenu = observer(({Close}) => {
+  const limited = !accountsStore.currentAccount || accountsStore.currentAccount?.lowBalance;
   return (
     <div className={S("account-menu")}>
       <h2 className={S("account-menu__header")}>Signed in</h2>
       <AccountSelector />
       <div className={S("account-menu__separator")} />
       <div className={S("account-menu__actions")}>
+        <Link aria-disabled={limited} disabled to="/apps" onClick={Close} className={S("account-menu__action", limited ? "account-menu__action--disabled" : "")}>
+          <ImageIcon icon={AppsIcon} />
+          <span>Apps</span>
+        </Link>
         <Link to="/accounts" onClick={Close} className={S("account-menu__action")}>
           <ImageIcon icon={SwitchAccountsIcon} />
           <span>Add/Switch Accounts</span>
         </Link>
-        <Link to="/profile" onClick={Close} className={S("account-menu__action")}>
+        <Link aria-disabled={limited} to="/profile" onClick={Close} className={S("account-menu__action", limited ? "account-menu__action--disabled" : "")}>
           <ImageIcon icon={ProfileIcon} />
           <span>Profile</span>
         </Link>
-        <Link to="/transfer" onClick={Close} className={S("account-menu__action")}>
+        <Link aria-disabled={limited} to="/transfer" onClick={Close} className={S("account-menu__action", limited ? "account-menu__action--disabled" : "")}>
           <ImageIcon icon={TransferFundsIcon} />
           <span>Transfer Funds</span>
         </Link>
