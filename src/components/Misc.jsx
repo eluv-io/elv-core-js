@@ -2,7 +2,9 @@ import React, {useState} from "react";
 import {observer} from "mobx-react";
 import {Button} from "@mantine/core";
 import SVG from "react-inlinesvg";
-import {CreateModuleClassMatcher} from "../Utils";
+import {CreateModuleClassMatcher, JoinClassNames} from "../Utils";
+
+import CopyIcon from "../static/icons/copy";
 
 const S = CreateModuleClassMatcher();
 
@@ -12,7 +14,7 @@ export const ButtonWithLoader = observer(({onClick, ...props}) => {
   return (
     <Button
       {...props}
-      loading={loading}
+      loading={loading || props.loading}
       onClick={async event => {
         try {
           setLoading(true);
@@ -61,3 +63,39 @@ export const ImageIcon = ({icon, alternateIcon, title, label, useLoadingIndicato
   }
 };
 
+export const Copy = async (value) => {
+  try {
+    value = (value || "").toString();
+
+    await navigator.clipboard.writeText(value);
+  } catch(error) {
+    const input = document.createElement("input");
+
+    input.value = value;
+    input.select();
+    input.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+  }
+};
+
+export const CopyButton = ({value, className="", ...props}) => {
+  const [copied, setCopied] = useState(false);
+
+  return (
+    <button
+      onClick={() => {
+        if(copied) { return; }
+
+        Copy(value);
+
+        setCopied(true);
+        setTimeout(() => setCopied(false), 600);
+      }}
+      className={JoinClassNames(S("copy-button", copied ? "copy-button--active" : ""), className)}
+      title="Copy to Clipboard"
+      {...props}
+    >
+      <SVG src={CopyIcon} alt="Copy" />
+    </button>
+  );
+};

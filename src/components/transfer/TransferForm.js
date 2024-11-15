@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import {Navigate} from "react-router";
 import {observer} from "mobx-react";
 import {Title, Select, TextInput, NumberInput, Button, Group, Text} from "@mantine/core";
 import {accountsStore} from "../../stores";
@@ -7,7 +6,10 @@ import {Utils} from "@eluvio/elv-client-js";
 import {Link} from "react-router-dom";
 
 const TransferForm = observer(() => {
-  const accounts = Object.values(accountsStore.accounts)
+  const accounts = Object.values(accountsStore.sortedAccounts)
+    .filter(address => address !== accountsStore.currentAccountAddress)
+    .map(address => accountsStore.accounts[address])
+    .filter(account => account)
     .map(account => ({label: account.name || account.address, value: account.address}));
 
   const [recipientAddress, setRecipientAddress] = useState(accounts[0]?.value || "");
@@ -15,7 +17,7 @@ const TransferForm = observer(() => {
   const [amount, setAmount] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(undefined);
-  const [complete, setComplete] = useState(false);
+  const [message, setMessage] = useState("");
 
   accounts.unshift({label: "[Other]", value: ""});
 
@@ -25,10 +27,6 @@ const TransferForm = observer(() => {
     Utils.ValidAddress(recipientAddress || customRecipientAddress) &&
     amount > 0 &&
     !insufficientFunds;
-
-  if(complete) {
-    return <Navigate to="/accounts" />;
-  }
 
   const Submit = async () => {
     if(!valid) { return; }
@@ -42,12 +40,14 @@ const TransferForm = observer(() => {
         ether: amount
       });
 
-      setComplete(true);
+      setMessage("Funds transferred successfully");
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
       setSubmitting(false);
       setError(error.toString());
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -59,6 +59,8 @@ const TransferForm = observer(() => {
             <Title order={4} fw={400}>Transfer Funds</Title>
           </div>
           <div className="form-content">
+            { !error ? null : <Text mb="md" color="red" ta="center">Something went wrong, please try again</Text> }
+            { !message ? null : <Text fz={14} color="blue.6" mb="md" ta="center">{message}</Text> }
             <Select
               mb="md"
               searchable
@@ -96,7 +98,6 @@ const TransferForm = observer(() => {
               }}
             />
             <Group mt={50} />
-            { !error ? null : <Text mb="md" color="red" ta="center">Something went wrong, please try again</Text> }
             <Group justify="right" wrap="nowrap">
               <Button
                 variant="default"

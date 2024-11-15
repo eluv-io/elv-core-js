@@ -17,6 +17,7 @@ import {Tabs} from "@mantine/core";
 import {useMediaQuery} from "@mantine/hooks";
 import TenantUsers from "./components/tenancy/TenantUsers";
 import Login, {LoginGate} from "./components/login/Login";
+import Profile from "./components/profile/Profile2";
 
 const GatedRoute = ({Component}) => {
   return (
@@ -71,7 +72,7 @@ const AppRoutes = observer(() => {
         <Route path="/onboard" element={<Onboard />} />
         <Route path="/transfer" element={<GatedRoute Component={TransferFormPage} />} />
         <Route path="/apps/:app" element={<GatedRoute Component={AppFramePage} />} />
-        <Route path="/profile" element={<GatedRoute Component={() => null} />} />
+        <Route path="/profile" element={<GatedRoute Component={Profile} />} />
         <Route path="/tenancy" element={<GatedRoute Component={TenantOverview} />} />
         <Route path="/tenancy/invites" element={<GatedRoute Component={TenantInvites} />} />
         <Route path="/tenancy/manage" element={<GatedRoute Component={TenantUsers} />} />

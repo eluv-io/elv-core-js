@@ -3,14 +3,14 @@ import LoginStyles from "../../static/stylesheets/modules/login.module.scss";
 import {observer} from "mobx-react";
 import {accountsStore} from "../../stores";
 import {Button, Checkbox, Group, Loader, Modal, PasswordInput, Text, Switch} from "@mantine/core";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {CreateModuleClassMatcher} from "../../Utils";
 import AccountForm from "../account/AccountForm";
 import {Navigate} from "react-router";
 import OryForm from "../account/OryForm";
 
 import EluvioLogo from "../../static/images/Main_Logo_Light";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {AccountSelector} from "../account/AccountMenu";
 
 const S = CreateModuleClassMatcher(LoginStyles);
@@ -30,7 +30,7 @@ const LoginGatePasswordForm = observer(({Close}) => {
         password
       });
 
-      Close?.();
+      Close?.(true);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -83,6 +83,7 @@ const LoginGatePasswordForm = observer(({Close}) => {
 
 export const LoginGateModal = observer(({Close}) => {
   const [shareEmail, setShareEmail] = useState(true);
+  const [closable, setClosable] = useState(true);
   const accountType = accountsStore.currentAccount?.type || "custodial";
 
   return (
@@ -91,7 +92,7 @@ export const LoginGateModal = observer(({Close}) => {
       size="sm"
       w={200}
       opened
-      onClose={Close}
+      onClose={closable ? Close : () => {}}
       withCloseButton={false}
     >
       <div className={S("login-modal")}>
@@ -107,6 +108,7 @@ export const LoginGateModal = observer(({Close}) => {
               <OryForm
                 userData={{share_email: shareEmail}}
                 isLoginGate
+                setClosable={setClosable}
                 Close={Close}
               /> :
               <LoginGatePasswordForm Close={Close} />
@@ -132,9 +134,10 @@ export const LoginGateModal = observer(({Close}) => {
 });
 
 export const LoginGate = observer(({children}) => {
+  const navigate = useNavigate();
   const currentAccount = accountsStore.currentAccount;
 
-  if(!accountsStore.accountsLoaded || accountsStore.authenticating) {
+  if(!accountsStore.accountsLoaded || accountsStore.authenticating || accountsStore.switchingAccounts) {
     return (
       <Modal
         centered
@@ -143,8 +146,14 @@ export const LoginGate = observer(({children}) => {
         opened
         withCloseButton={false}
       >
-        <Text ta="center" fz="xl" my="lg">Authenticating...</Text>
-        <Group justify="center" my="lg">
+        <Text ta="center" fz="xl" my="lg">
+          {
+            accountsStore.switchingAccounts ?
+              "Switching Accounts..." :
+              "Authenticating..."
+          }
+        </Text>
+        <Group justify="center" my="xl">
           <Loader />
         </Group>
       </Modal>
@@ -154,7 +163,9 @@ export const LoginGate = observer(({children}) => {
     return <Navigate to="/accounts"/>;
   } else if(!currentAccount?.signer || accountsStore.loadingAccount) {
     return (
-      <LoginGateModal />
+      <LoginGateModal Close={result => {
+        !result && navigate("/accounts")
+      }}/>
     );
   }
 
@@ -232,6 +243,12 @@ const KeyForm = observer(({Close}) => {
 const LoginModal = observer(({Close}) => {
   const [shareEmail, setShareEmail] = useState(true);
   const [accountType, setAccountType] = useState("custodial");
+  const [closable, setClosable] = useState(true);
+
+  useEffect(() => {
+    // Ensure closable is reset when type changes
+    setClosable(true);
+  }, [accountType]);
 
   return (
     <Modal
@@ -239,7 +256,7 @@ const LoginModal = observer(({Close}) => {
       size="sm"
       w={200}
       opened
-      onClose={Close}
+      onClose={closable ? Close : () => {}}
       withCloseButton={false}
       classNames={{
         overlay: S("modal-overlay"),
@@ -270,7 +287,7 @@ const LoginModal = observer(({Close}) => {
           </div>
           {
             accountType === "custodial" ?
-              <OryForm userData={{share_email: shareEmail}} Close={Close} /> :
+              <OryForm userData={{share_email: shareEmail}} setClosable={setClosable} Close={Close} /> :
               <KeyForm Close={Close} />
           }
         </div>

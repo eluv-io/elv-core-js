@@ -15,6 +15,7 @@ class AccountStore {
 
   authenticating = false;
   loadingAccount;
+  switchingAccounts = false;
 
   authNonce = localStorage.getItem("auth-nonce") || Utils.B58(ParseUUID(UUID()));
 
@@ -135,6 +136,7 @@ class AccountStore {
       const address = this.rootStore.client.CurrentAccountAddress();
 
       this.accounts[address] = {
+        ...(this.accounts[address] || {}),
         type: "custodial",
         email,
         name: email,
@@ -348,6 +350,7 @@ class AccountStore {
 
       if(Object.keys(this.accounts).includes(address)) {
         this.accounts[address].balance = balance;
+        this.accounts[address].lowBalance = parseFloat(balance) < 0.1;
       }
 
       return balance;
@@ -414,42 +417,54 @@ class AccountStore {
 
     yield this.rootStore.client.userProfileClient.SetTenantContractId({tenantContractId: id});
     this.accounts[this.currentAccountAddress].tenantContractId = yield this.rootStore.client.userProfileClient.TenantContractId();
+
     yield this.UserMetadata();
     yield this.rootStore.tenantStore.LoadPublicTenantMetadata({tenantContractId: id});
+
+    this.accounts[this.currentAccountAddress].tenantName =
+      this.rootStore.tenantStore.tenantMetadata[id]?.public?.name || "";
 
     this.SaveAccounts();
   });
 
-  SetCurrentAccount = flow(function * ({address, signer}) {
+  SetCurrentAccount = flow(function * ({address, signer, switchAccount=false}) {
     try {
-      this.rootStore.ResetTenancy();
+      if(switchAccount) {
+        this.switchingAccounts = true;
+      }
 
       address = this.rootStore.client.utils.FormatAddress(address || signer.address);
 
+      let account = { ...this.accounts[address] } || {};
+
+      this.rootStore.ResetTenancy();
+
       this.loadingAccount = address;
 
-      signer = signer || this.accounts[address].signer;
+      signer = signer || account.signer;
 
       if(signer) {
         yield this.rootStore.InitializeClient(signer);
 
         if(yield this.rootStore.client.userProfileClient.WalletAddress()) {
-          this.accounts[address].tenantContractId = yield this.rootStore.client.userProfileClient.TenantContractId();
+          account.tenantContractId = yield this.rootStore.client.userProfileClient.TenantContractId();
         }
       }
 
-      if(this.accounts[address]?.tenantContractId) {
+      if(account.tenantContractId) {
         yield this.rootStore.tenantStore.LoadPublicTenantMetadata({
-          tenantContractId: this.accounts[address].tenantContractId
+          tenantContractId: account.tenantContractId
         });
 
-        this.accounts[address].tenantName =
-          this.rootStore.tenantStore.tenantMetadata[this.accounts[address].tenantContractId]?.public?.name ||
-          this.accounts[address].tenantName || "";
+        account.tenantName =
+          this.rootStore.tenantStore.tenantMetadata[account.tenantContractId]?.public?.name ||
+          account.tenantName || "";
       }
 
-      this.accounts[address].signer = signer;
-      this.accounts[address].lastSignedInAt = Date.now();
+      account.signer = signer;
+      account.lastSignedInAt = Date.now();
+
+      this.accounts[address] = account;
 
       yield this.AccountBalance(address);
 
@@ -470,6 +485,7 @@ class AccountStore {
       this.Log("Error loading account " + address, true);
       this.Log(error, true);
     } finally {
+      this.switchingAccounts = false;
       this.loadingAccount = undefined;
     }
   });
