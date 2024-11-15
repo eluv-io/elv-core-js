@@ -349,7 +349,7 @@ const OryForm = observer(({userData, isLoginGate, setClosable, Close}) => {
           break;
         case "registration":
           await accountsStore.oryClient.updateRegistrationFlow({flow: flow.id, updateRegistrationFlowBody: body});
-          await accountsStore.AuthenticateOry({userData, sendWelcomeEmail: true, sendVerificationEmail: true});
+          await accountsStore.AuthenticateOry({userData, sendWelcomeEmail: true});
           next = true;
 
           break;
@@ -376,7 +376,7 @@ const OryForm = observer(({userData, isLoginGate, setClosable, Close}) => {
 
           if(response.data.state === "success") {
             setStatusMessage(rootStore.l10n.login.ory.messages.password_updated);
-            await accountsStore.AuthenticateOry({userData, sendVerificationEmail: location.pathname.endsWith("/register")});
+            await accountsStore.AuthenticateOry({userData});
           }
 
           setFlows({...flows, [flowType]: response.data});

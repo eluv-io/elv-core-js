@@ -43,9 +43,10 @@ const ProfileImage = observer(() => {
           }
         </div>
         <button
+          disabled={accountsStore.currentAccount?.lowBalance}
           title="Change Profile Image"
           onClick={() => browseRef.current.click()}
-          className={S("profile-image__edit")}
+          className={S("icon-button", "profile-image__edit")}
         >
           <ImageIcon icon={EditIcon} />
         </button>
@@ -194,7 +195,7 @@ const TenantDetails = observer(() => {
             variant="outline"
             h={50}
             w={175}
-            disabled={!tenantContractId || tenantContractId === accountsStore.currentAccount.tenantContractId}
+            disabled={accountsStore.currentAccount?.lowBalance || !tenantContractId || tenantContractId === accountsStore.currentAccount.tenantContractId}
             onClick={async () => {
               setErrorMessage("");
 
@@ -213,7 +214,7 @@ const TenantDetails = observer(() => {
           <TextInput disabled={!accountsStore.isTenantAdmin} placeholder="Tenant Name" value={tenantName} onChange={event => setTenantName(event.target.value)} className={S("tenant__input")} />
           <ButtonWithLoader
             variant="outline"
-            disabled={!accountsStore.isTenantAdmin || !tenantName || tenantName === accountsStore.currentAccount.tenantName}
+            disabled={!accountsStore.currentAccount.tenantContractId || !accountsStore.isTenantAdmin || !tenantName || tenantName === accountsStore.currentAccount.tenantName}
             h={50}
             w={175}
             onClick={async () => {

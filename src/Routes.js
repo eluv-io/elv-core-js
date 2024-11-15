@@ -1,14 +1,13 @@
 import React from "react";
 import AppsPage from "./components/apps/Apps";
 import AppFramePage from "./components/apps/AppFrame";
-import AccountsFormPage from "./components/account/AccountForm";
+import AccountsFormPage from "./components/account/KeyForm";
 import TransferFormPage from "./components/transfer/TransferForm";
 import Offerings from "./components/offerings/Offerings";
 import Onboard from "./components/onboarding/Onboard";
 import TenantOverview from "./components/tenancy/TenantOverview";
 import {observer} from "mobx-react";
-//import LoginGate from "./components/login/LoginGate";
-import Accounts from "./components/account/Accounts2";
+import Accounts from "./components/account/Accounts";
 import {Routes, Route, useNavigate} from "react-router-dom";
 import TenantInvites from "./components/tenancy/TenantInvites";
 import {Navigate, Outlet, useLocation} from "react-router";
@@ -17,7 +16,7 @@ import {Tabs} from "@mantine/core";
 import {useMediaQuery} from "@mantine/hooks";
 import TenantUsers from "./components/tenancy/TenantUsers";
 import Login, {LoginGate} from "./components/login/Login";
-import Profile from "./components/profile/Profile2";
+import Profile from "./components/profile/Profile";
 
 const GatedRoute = ({Component}) => {
   return (
@@ -72,7 +71,7 @@ const AppRoutes = observer(() => {
         <Route path="/onboard" element={<Onboard />} />
         <Route path="/transfer" element={<GatedRoute Component={TransferFormPage} />} />
         <Route path="/apps/:app" element={<GatedRoute Component={AppFramePage} />} />
-        <Route path="/profile" element={<GatedRoute Component={Profile} />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/tenancy" element={<GatedRoute Component={TenantOverview} />} />
         <Route path="/tenancy/invites" element={<GatedRoute Component={TenantInvites} />} />
         <Route path="/tenancy/manage" element={<GatedRoute Component={TenantUsers} />} />

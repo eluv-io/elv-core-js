@@ -135,7 +135,7 @@ const AccountMenu = observer(({Close}) => {
           <ImageIcon icon={SwitchAccountsIcon} />
           <span>Add/Switch Accounts</span>
         </Link>
-        <Link aria-disabled={limited} to="/profile" onClick={Close} className={S("account-menu__action", limited ? "account-menu__action--disabled" : "")}>
+        <Link to="/profile" onClick={Close} className={S("account-menu__action")}>
           <ImageIcon icon={ProfileIcon} />
           <span>Profile</span>
         </Link>

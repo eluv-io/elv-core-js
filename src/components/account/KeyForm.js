@@ -29,7 +29,7 @@ const DownloadMnemonic = mnemonic => {
   element.click();
 };
 
-const AccountForm = observer(({UpdateFormData}) => {
+const KeyForm = observer(({UpdateFormData}) => {
   const [editingMnemonic, setEditingMnemonic] = useState(false);
   const [formData, setFormData] = useState({
     credentialType: "privateKey",
@@ -170,5 +170,5 @@ const AccountForm = observer(({UpdateFormData}) => {
   );
 });
 
-export default AccountForm;
+export default KeyForm;
 
