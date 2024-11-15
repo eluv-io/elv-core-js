@@ -16,6 +16,8 @@ import StudioIcon from "../../static/images/app_icons/Media Ingest.png";
 import ClipSearchIcon from "../../static/images/app_icons/AI Clip Search - beta.png";
 import LiveStreamManagerIcon from "../../static/images/app_icons/Livestream Manager.png";
 import {ImageIcon} from "../Misc";
+import {accountsStore} from "../../stores";
+import {Navigate} from "react-router";
 
 const icons = {
   "Fabric Browser": FabricBrowserIcon,
@@ -53,6 +55,10 @@ class Apps extends React.PureComponent {
   }
 
   render() {
+    if(parseFloat(accountsStore.currentAccount?.balance || 0) < 0.01) {
+      return <Navigate to="/accounts" />;
+    }
+
     const apps = Object.keys(EluvioConfiguration.apps).filter(name => appNames.find(appName => name.toLowerCase().includes(appName.toLowerCase())));
     const tools = Object.keys(EluvioConfiguration.apps).filter(name => !appNames.find(appName => name.toLowerCase().includes(appName.toLowerCase())));
 

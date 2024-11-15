@@ -214,7 +214,7 @@ class AccountStore {
           },
           headers: type === "reset_password" ?
             {} :
-            { Authorization: `Bearer ${this.authToken}` }
+            { Authorization: `Bearer ${this.rootStore.walletClient.AuthToken()}` }
         })
       );
 
@@ -228,12 +228,6 @@ class AccountStore {
       return result;
     } catch (error) {
       this.Log(error, true);
-
-      if(type === "confirm_email") {
-        //this.SetAlertNotification(this.l10n.login.errors.email_confirmation_failed);
-      } else {
-        throw error;
-      }
     }
   });
 
@@ -672,19 +666,15 @@ class AccountStore {
   });
 
   RemoveAccount = flow(function * (address) {
-    if(!(Object.keys(this.accounts).includes(address))) {
-      return;
-    }
-
-    if(this.currentAccountAddress === address) {
-      yield this.LogOutOry();
-      yield this.rootStore.InitializeClient();
-      this.currentAccountAddress = undefined;
-    }
-
     delete this.accounts[address];
 
     this.SaveAccounts();
+
+    if(this.currentAccountAddress === address) {
+      this.currentAccountAddress = undefined;
+      yield this.LogOutOry();
+      yield this.rootStore.InitializeClient();
+    }
   });
 
   SaveAccounts() {

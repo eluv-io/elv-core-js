@@ -11,11 +11,14 @@ import {accountsStore, rootStore} from "./stores";
 
 import Header from "./Header";
 import AppRoutes from "./Routes";
-import {Button, Group, Loader, MantineProvider} from "@mantine/core";
+import {Button, Group, Loader, MantineProvider, Text} from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 import ScrollToTop from "./ScrollToTop";
 import Footer from "./Footer";
 import MantineTheme from "./static/MantineTheme";
+import {CreateModuleClassMatcher} from "./Utils";
+
+const S = CreateModuleClassMatcher();
 
 const App = observer(() => {
   if(rootStore.configError) {
@@ -37,7 +40,7 @@ const App = observer(() => {
     );
   }
 
-  if(!rootStore.client || !accountsStore.accountsLoaded) {
+  if(!rootStore.client || !accountsStore.accountsLoaded || accountsStore.authenticating) {
     return (
       <Group h="100vh" align="center" justify="center">
         <Loader />
@@ -50,6 +53,12 @@ const App = observer(() => {
       <ScrollToTop />
       <div className={`router-container ${rootStore.activeApp ? "router-container--app" : ""}`}>
         <Header />
+        {
+          accountsStore.loadingAccount || !accountsStore.currentAccount?.lowBalance ? null :
+            <Text ta="center" mt={50} fw={500} className={S("message")}>
+              This account has an insufficient balance. Please fund the account to proceed.
+            </Text>
+        }
         <AppRoutes />
         {
           rootStore.activeApp ? null :

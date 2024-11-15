@@ -5,7 +5,7 @@ import {accountsStore} from "../../stores";
 import {Button, Checkbox, Group, Loader, Modal, PasswordInput, Text, Switch} from "@mantine/core";
 import React, {useEffect, useState} from "react";
 import {CreateModuleClassMatcher} from "../../Utils";
-import AccountForm from "../account/AccountForm";
+import KeyForm from "../account/KeyForm";
 import {Navigate} from "react-router";
 import OryForm from "../account/OryForm";
 
@@ -14,6 +14,8 @@ import {Link, useNavigate} from "react-router-dom";
 import {AccountSelector} from "../account/AccountMenu";
 
 const S = CreateModuleClassMatcher(LoginStyles);
+
+/* Login gate */
 
 const LoginGatePasswordForm = observer(({Close}) => {
   const [password, setPassword] = useState("");
@@ -144,6 +146,7 @@ export const LoginGate = observer(({children}) => {
         size="sm"
         w={200}
         opened
+        onClose={() => {}}
         withCloseButton={false}
       >
         <Text ta="center" fz="xl" my="lg">
@@ -162,11 +165,7 @@ export const LoginGate = observer(({children}) => {
     // No account or insufficient balance
     return <Navigate to="/accounts"/>;
   } else if(!currentAccount?.signer || accountsStore.loadingAccount) {
-    return (
-      <LoginGateModal Close={result => {
-        !result && navigate("/accounts")
-      }}/>
-    );
+    return <LoginGateModal Close={result => !result && navigate("/accounts")}/>;
   }
 
   // Enforce tenant ID - Temporarily disabled
@@ -188,14 +187,18 @@ export const LoginGate = observer(({children}) => {
   return children;
 });
 
-const KeyForm = observer(({Close}) => {
+
+/* Full page login for new accounts */
+
+
+const KeyAccountForm = observer(({Close}) => {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
   return (
     <>
-      <AccountForm UpdateFormData={setFormData} />
+      <KeyForm UpdateFormData={setFormData} />
       <div className={S("actions")}>
         <Button
           disabled={!formData.valid}
@@ -288,7 +291,7 @@ const LoginModal = observer(({Close}) => {
           {
             accountType === "custodial" ?
               <OryForm userData={{share_email: shareEmail}} setClosable={setClosable} Close={Close} /> :
-              <KeyForm Close={Close} />
+              <KeyAccountForm Close={Close} />
           }
         </div>
         {
@@ -311,15 +314,13 @@ const LoginModal = observer(({Close}) => {
 });
 
 const Login = observer(() => {
-  const [redirect, setRedirect] = useState(undefined);
-
-  if(redirect) {
-    return <Navigate to={redirect} replace />;
-  }
+  const navigate = useNavigate();
 
   return (
     <div className={S("page-content", "login-page")}>
-      <LoginModal Close={success => setRedirect(success ? "/apps" : "/accounts")} />
+      <LoginModal
+        Close={success => navigate(success ? "/profile" : "/accounts")}
+      />
     </div>
   );
 });

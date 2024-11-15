@@ -86,6 +86,10 @@ class RootStore {
       return;
     }
 
+    this.eluvioTenantId = this.client.networkName.includes("demo") ?
+      "iten3HEEASRTo2rNLeeKw4cfq4sPuX6" :
+      "iten3N9XcQVz1AENtSfAGCGifwsYLmx8";
+
     const networkInfo = this.client.NetworkInfo();
     this.networkName = networkInfo.name;
 
