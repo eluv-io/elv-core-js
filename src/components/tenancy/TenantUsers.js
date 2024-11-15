@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react";
-import {Tabs, Group, Text, Table, TextInput, ActionIcon} from "@mantine/core";
+import {Tabs, Group, Text, Table, TextInput, ActionIcon, Loader} from "@mantine/core";
 
-import {Balance,  CroppedIcon, LoadingElement} from "elv-components-js";
 import {tenantStore} from "../../stores";
 import DefaultAccountImage from "../../static/icons/User.svg";
 
 import {useDebouncedValue} from "@mantine/hooks";
 import {IconUser} from "@tabler/icons-react";
 import TenantUserPermissionsModal from "./TenantUserPermissionsModal";
+import {ImageIcon} from "../Misc";
+import FundsIcon from "../../static/icons/elv-token.png";
 
 const TenantUsers = observer(() => {
   const [tab, setTab] = useState("users");
@@ -22,11 +23,12 @@ const TenantUsers = observer(() => {
 
   const users = tab === "admins" ? tenantStore.tenantAdmins : tenantStore.tenantUsers;
 
+  if(!users) {
+    return <Loader />;
+  }
+
   return (
-    <LoadingElement
-      loading={!users}
-      fullPage
-    >
+    <>
       { showPermissionsModal ? <TenantUserPermissionsModal address={showPermissionsModal} Close={() => setShowPermissionsModal(false)} /> : null }
       <div className="page-content tenant-page">
         <Group align="center" position="center" className="tenant-page__nav" wrap="nowrap">
@@ -80,7 +82,10 @@ const TenantUsers = observer(() => {
                           </Text>
                         </td>
                         <td>
-                          <Balance balance={user.balance}/>
+                          <Group gap={3}>
+                            <ImageIcon icon={FundsIcon} className="icon" />
+                            { user.balance || "0.0" }
+                          </Group>
                         </td>
                         <td>
                           <ActionIcon title="Manage User Permissions" className="tenant-page__tab-button" onClick={() => setShowPermissionsModal(address)}>
@@ -95,7 +100,7 @@ const TenantUsers = observer(() => {
           </Table>
         </div>
       </div>
-    </LoadingElement>
+    </>
   );
 });
 

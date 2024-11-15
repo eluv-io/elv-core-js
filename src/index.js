@@ -10,7 +10,6 @@ import {observer} from "mobx-react";
 import {accountsStore, rootStore} from "./stores";
 
 import Header from "./Header";
-import Navigation from "./Navigation";
 import AppRoutes from "./Routes";
 import {Button, Group, Loader, MantineProvider} from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";

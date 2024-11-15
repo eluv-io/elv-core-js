@@ -1,6 +1,4 @@
-//@import "~elv-components-js/src/stylesheets/defaults";
 @import "./reset";
-@import "~elv-components-js/src/stylesheets/styles";
 
 html,
 body,
@@ -79,43 +77,6 @@ body {
   padding: 20px;
 }
 
-.page-error {
-  align-items: flex-start;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-
-  .page-error-container {
-    align-items: center;
-    border: 1px solid $elv-color-mediumgray;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-top: $elv-spacing-xxl;
-
-    padding: $elv-spacing-l;
-  }
-
-  h1 {
-    font-size: $elv-font-l;
-    font-weight: 600;
-    padding: $elv-spacing-xxs 0;
-  }
-
-  button {
-    margin-top: $elv-spacing-l;
-  }
-}
-
-.actions-container {
-  display: flex;
-  margin: $elv-spacing-s 0;
-
-  *:not(:last-child) {
-    margin-right: $elv-spacing-xs;
-  }
-}
-
 .flex-centered {
   justify-content: center;
 }
@@ -137,10 +98,6 @@ body {
   cursor: pointer;
 }
 
-.indented {
-  padding-left: $elv-spacing-s;
-}
-
 .labelled-field {
   label {
     display: inline-block;
@@ -149,53 +106,23 @@ body {
   }
 }
 
-.small-text {
-  font-size: $elv-font-s;
-}
-
-select {
-  @include elv-select;
-
-  // Increase specificity
-  &.recipient-select {
-    &.recipient-select {
-      font-size: $elv-font-m;
-    }
-  }
-}
-
-// Hide alt image text
-img {
-  &.-elv-icon {
-    color: transparent;
-  }
-}
-
-.-elv-cropped-icon {
-  @include elv-no-select;
-
-  position: relative;
-
-  &::after {
-    border-radius: 50%;
-    box-shadow: 0 0 12px -5px $elv-color-darkgray inset;
-    content: "";
-    display: block;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    width: 100%;
-  }
-
-  svg {
-    stroke: $elv-color-lightgray;
-  }
-}
-
-.-elv-loading-element-fullpage {
-  flex: 1 1 auto;
-}
-
 .pre-wrap {
   white-space: pre-wrap;
+}
+
+.icon {
+  height: 20px;
+  object-fit: contain;
+  width: 20px;
+}
+
+.icon-button {
+  color: var(--text-secondary);
+  height: 20px;
+  transition: opacity 0.25s ease;
+  width: 20px;
+
+  &:disabled {
+    opacity: 0.5;
+  }
 }

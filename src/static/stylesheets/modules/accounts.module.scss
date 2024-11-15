@@ -16,10 +16,11 @@
   display: grid;
   flex-wrap: wrap;
   gap: 30px;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   justify-content: center;
   margin: 30px 0 50px;
   max-width: min(1300px, 80vw);
+  width: max-content;
 }
 
 .account {
