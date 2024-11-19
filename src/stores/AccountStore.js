@@ -613,7 +613,7 @@ class AccountStore {
     const address = this.currentAccountAddress;
 
     this.accounts[address].metadata =
-      (yield this.rootStore.client.userProfileClient.UserMetadata()) || {};
+      (yield this.rootStore.client.userProfileClient.UserMetadata({})) || {};
 
     if(!this.accounts[address].metadata.public) {
       this.accounts[address].metadata.public = {};
