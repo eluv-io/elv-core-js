@@ -101,6 +101,7 @@ const KeyForm = observer(({UpdateFormData}) => {
             aria-label="Encrypted Private Key"
             placeholder="Encrypted Private Key"
             value={formData.encryptedPrivateKey}
+            fz={12}
             minRows={5}
             autosize
             onChange={event => setFormData({...formData, encryptedPrivateKey: event.currentTarget.value})}

@@ -71,7 +71,7 @@ const AppRoutes = observer(() => {
         <Route path="/onboard" element={<Onboard />} />
         <Route path="/transfer" element={<GatedRoute Component={TransferFormPage} />} />
         <Route path="/apps/:app" element={<GatedRoute Component={AppFramePage} />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile" element={<GatedRoute Component={Profile} />} />
         <Route path="/tenancy" element={<GatedRoute Component={TenantOverview} />} />
         <Route path="/tenancy/invites" element={<GatedRoute Component={TenantInvites} />} />
         <Route path="/tenancy/manage" element={<GatedRoute Component={TenantUsers} />} />
