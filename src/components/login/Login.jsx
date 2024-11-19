@@ -161,7 +161,7 @@ export const LoginGate = observer(({children}) => {
         </Group>
       </Modal>
     );
-  } else if(currentAccount?.signer && currentAccount?.balance < 0.1) {
+  } else if(currentAccount?.signer && currentAccount?.balance < 0.1 && location.pathname !== "/profile") {
     // No account or insufficient balance
     return <Navigate to="/accounts"/>;
   } else if(!currentAccount?.signer || accountsStore.loadingAccount) {
