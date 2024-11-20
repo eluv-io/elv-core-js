@@ -6,7 +6,7 @@ import {CreateModuleClassMatcher} from "../../Utils";
 
 import SplashBackground from "../../static/images/SplashBackground.jpg";
 import EluvioLogo from "../../static/images/Main_Logo_Light";
-import {Button} from "@mantine/core";
+import {Button, FileButton, UnstyledButton} from "@mantine/core";
 import {useNavigate} from "react-router-dom";
 import {accountsStore} from "../../stores";
 
@@ -34,7 +34,7 @@ const SplashPage = observer(() => {
           {
             !accountsStore.hasAccount ? null :
               <Button
-                w={150}
+                w={200}
                 h={50}
                 fz={18}
                 onClick={() => navigate("/apps")}
@@ -44,15 +44,41 @@ const SplashPage = observer(() => {
               </Button>
           }
           <Button
-            w={150}
+            w={200}
             h={50}
             fz={18}
             color="gray.6"
             onClick={() => navigate(accountsStore.hasAccount ? "/accounts" : "/login")}
             className={S("splash-page__action")}
           >
-            SIGN IN
+            {
+              accountsStore.hasAccount ?
+                "ACCOUNTS" :
+                "SIGN IN"
+            }
           </Button>
+        </div>
+        <div className={S("splash-page__actions")}>
+          <FileButton
+            accept=".elv"
+            h={50}
+            w={200}
+            onChange={async file => {
+              await accountsStore.ImportAccounts(await file.text());
+
+              navigate("/accounts");
+            }}
+          >
+            {(props) =>
+              <UnstyledButton
+                {...props}
+                variant="outline"
+                className={S("splash-page__import")}
+              >
+                Import Accounts
+              </UnstyledButton>
+            }
+          </FileButton>
         </div>
       </div>
     </div>
