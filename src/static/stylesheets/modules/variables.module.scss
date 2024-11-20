@@ -2,15 +2,22 @@
   --background-primary: #fff;
   --background-secondary: #f8f9fd;
   --background-tertiary: #eee;
-
   --background-modal: #808080;
-
   --text-primary: #222;
   --text-secondary: #6b6b6b;
   --text-tertiary: #aaa;
-
-
   --accent: #228be6;
   --error: #a00;
   --border: #ced4da;
+
+  @keyframes fadein {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
 }

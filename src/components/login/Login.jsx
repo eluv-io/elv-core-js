@@ -75,9 +75,12 @@ const LoginGatePasswordForm = observer(({Close}) => {
         >
           Submit
         </Button>
-        <Link to="/accounts" onClick={() => Close?.()} className={S("button-link")}>
-          Back to Accounts
-        </Link>
+        {
+          !accountsStore.hasAccount ? null :
+            <Link to="/accounts" onClick={() => Close?.()} className={S("button-link")}>
+              Back to Accounts
+            </Link>
+        }
       </div>
     </form>
   );
@@ -229,9 +232,12 @@ const KeyAccountForm = observer(({Close}) => {
         >
           Sign In
         </Button>
-        <Link to="/accounts" onClick={() => Close?.()} className={S("button-link", "button-link--secondary")}>
-          Back to Accounts
-        </Link>
+        {
+          !accountsStore.hasAccount ? null :
+            <Link to="/accounts" onClick={() => Close?.()} className={S("button-link", "button-link--secondary")}>
+              Back to Accounts
+            </Link>
+        }
       </div>
       {
         !error ? null :
@@ -319,7 +325,13 @@ const Login = observer(() => {
   return (
     <div className={S("page-content", "login-page")}>
       <LoginModal
-        Close={success => navigate(success ? "/profile" : "/accounts")}
+        Close={success => {
+          if(success) {
+            navigate("/profile");
+          } else if(accountsStore.hasAccount) {
+            navigate("/accounts");
+          }
+        }}
       />
     </div>
   );

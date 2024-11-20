@@ -15,19 +15,7 @@ const MantineTheme = createTheme({
     Button: Button.extend({
       styles: {
         root: {
-          ":active": {
-            transform: "none",
-            transitionDuration: 0
-          },
-          transitionDuration: 0,
-        },
-        loader: {
-          transitionDuration: 0,
-          transform: "none!important",
-          ":active": {
-            transform: "none!important",
-            transitionDuration: 0,
-          }
+          transition: "background-color 0.15s ease, color 0.15s ease",
         }
       }
     }),

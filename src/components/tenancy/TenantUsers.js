@@ -2,7 +2,7 @@ import TenantStyles from "../../static/stylesheets/modules/tenancy.module.scss";
 
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react";
-import {Tabs, Group, Text, Table, TextInput, Loader, Title, UnstyledButton} from "@mantine/core";
+import {Tabs, Group, Text, Table, TextInput, Loader, UnstyledButton} from "@mantine/core";
 
 import {tenantStore} from "../../stores";
 
@@ -37,7 +37,7 @@ const TenantUsers = observer(() => {
     <>
       { showPermissionsModal ? <TenantUserPermissionsModal address={showPermissionsModal} Close={() => setShowPermissionsModal(false)} /> : null }
       <div className={S("tenant-page")}>
-        <Title order={2} mb="xl" fw={400}>Manage Users</Title>
+        <div className={S("header", "tenant-page__header")}>Manage Users</div>
         <Group>
           <Tabs variant="pills" color="gray.6" value={tab} onChange={newTab => setTab(newTab)}>
             <Tabs.List grow>
@@ -71,7 +71,7 @@ const TenantUsers = observer(() => {
                   (users || [])
                     .filter(address =>
                       !debouncedFilter ||
-                      (tenantStore.users[address]?.name || "").toLowerCase().includes(debouncedFilter.toLowerCase())
+                    (tenantStore.users[address]?.name || "").toLowerCase().includes(debouncedFilter.toLowerCase())
                     )
                     .map(address => {
                       const user = tenantStore.users[address];
@@ -99,8 +99,8 @@ const TenantUsers = observer(() => {
                           </td>
                           <td>
                             <Group gap={3} miw={100}>
-                              <ImageIcon icon={FundsIcon} className={S("icon")} />
-                              { user.balance || "0.0" }
+                              <ImageIcon icon={FundsIcon} className={S("icon")}/>
+                              {user.balance || "0.0"}
                             </Group>
                           </td>
                           <td>
@@ -109,7 +109,7 @@ const TenantUsers = observer(() => {
                               className={S("icon-button")}
                               onClick={() => setShowPermissionsModal(address)}
                             >
-                              <ImageIcon icon={PermissionsIcon} />
+                              <ImageIcon icon={PermissionsIcon}/>
                             </UnstyledButton>
                           </td>
                         </tr>

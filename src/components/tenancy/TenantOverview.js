@@ -145,6 +145,8 @@ const TenantOverview = observer(() => {
 
   return (
     <div className={S("tenant-page")}>
+      <div className={S("header", "tenant-page__header")}>Overview</div>
+
       <Paper
         withBorder
         p="xl"
@@ -159,7 +161,7 @@ const TenantOverview = observer(() => {
               title="Edit Tenancy Info"
               className={S("icon-button", "tenant-overview__edit")}
             >
-              <ImageIcon icon={EditIcon} />
+              <ImageIcon icon={EditIcon}/>
             </UnstyledButton>
         }
         <Group wrap="nowrap" gap="xl" align="top">
@@ -172,7 +174,9 @@ const TenantOverview = observer(() => {
           <div>
             <Title fw={500} order={3}>{tenantStore.publicTenantMetadata.name}</Title>
             <Text fz="xs" mb="sm" className={S("tenant-overview__tenant-id")}>{tenantStore.tenantContractId}</Text>
-            <Text fz="sm" className={S("tenant-overview__description")}>{tenantStore.publicTenantMetadata.description}</Text>
+            <Text fz="sm" className={S("tenant-overview__description")}>
+              {tenantStore.publicTenantMetadata.description}
+            </Text>
           </div>
         </Group>
       </Paper>

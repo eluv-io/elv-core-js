@@ -1,4 +1,4 @@
-@import "variables.module.scss";
+@import "variables.module";
 
 .ellipsis {
   overflow: hidden;
@@ -121,4 +121,10 @@
   justify-content: center;
   min-height: 300px;
   width: 100%;
+}
+
+.header {
+  color: var(--text-secondary);
+  font-size: 18px;
+  font-weight: 600;
 }

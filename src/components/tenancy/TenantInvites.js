@@ -2,7 +2,7 @@ import TenancyStyles from "../../static/stylesheets/modules/tenancy.module.scss"
 
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react";
-import {Tabs, Group, Text, Button, Loader, UnstyledButton, Title, TextInput} from "@mantine/core";
+import {Tabs, Group, Text, Button, Loader, UnstyledButton, TextInput} from "@mantine/core";
 import TenantInviteModal from "./TenantInviteModal";
 
 import {IconUserPlus} from "@tabler/icons-react";
@@ -109,7 +109,7 @@ const TenantInvites = observer(() => {
     <>
       { showInviteModal ? <TenantInviteModal Close={() => setShowInviteModal(false)} /> : null }
       <div className={S("tenant-page")}>
-        <Title order={2} mb="xl" fw={400}>User Invitations</Title>
+        <div className={S("header", "tenant-page__header")}>User Invitations</div>
         <Group align="center" justify="space-between" wrap="nowrap" w={500} pr={10}>
           <Tabs h="max-content" variant="pills" color="gray.6" value={tab} onChange={newTab => setTab(newTab)}>
             <Tabs.List grow>
@@ -118,8 +118,13 @@ const TenantInvites = observer(() => {
               <Tabs.Tab w={125} value={tenantStore.INVITE_EVENTS.MANAGED}>Complete</Tabs.Tab>
             </Tabs.List>
           </Tabs>
-          <UnstyledButton ml={20} title="Invite New User" className={S("icon-button", "icon-button--accent")} onClick={() => setShowInviteModal(true)}>
-            <IconUserPlus />
+          <UnstyledButton
+            ml={20}
+            title="Invite New User"
+            className={S("icon-button", "icon-button--accent")}
+            onClick={() => setShowInviteModal(true)}
+          >
+            <IconUserPlus/>
           </UnstyledButton>
         </Group>
         {

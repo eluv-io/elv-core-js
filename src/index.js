@@ -43,7 +43,7 @@ const App = observer(() => {
   if(!rootStore.client || !accountsStore.accountsLoaded || accountsStore.authenticating) {
     return (
       <Group h="100vh" align="center" justify="center">
-        <Loader />
+        <Loader color="gray.6" />
       </Group>
     );
   }
@@ -52,7 +52,10 @@ const App = observer(() => {
     <BrowserRouter>
       <ScrollToTop />
       <div className={`router-container ${rootStore.activeApp ? "router-container--app" : ""}`}>
-        <Header />
+        {
+          rootStore.pathname === "/" ? null :
+            <Header />
+        }
         {
           accountsStore.loadingAccount || !accountsStore.currentAccount?.lowBalance ? null :
             <Text ta="center" mt={50} fw={500} className={S("message")}>
