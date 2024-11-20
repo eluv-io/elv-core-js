@@ -123,6 +123,11 @@ class TenantStore {
     });
 
     yield this.LoadPublicTenantMetadata({force: true});
+
+    this.rootStore.accountsStore.UpdateTenantName({
+      tenantContractId: this.tenantContractId,
+      name
+    });
   });
 
   LoadPublicTenantMetadata = flow(function * ({tenantContractId, force}={}) {

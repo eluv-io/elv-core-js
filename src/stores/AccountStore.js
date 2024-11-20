@@ -665,6 +665,19 @@ class AccountStore {
     yield this.UserMetadata();
   });
 
+  // Update saved tenant name for accounts when tenant name changes
+  UpdateTenantName({tenantContractId, name}) {
+    if(!name) { return; }
+
+    Object.keys(this.accounts).forEach(address => {
+      if(this.accounts[address].tenantContractId === tenantContractId) {
+        this.accounts[address].tenantName = name;
+      }
+    });
+
+    this.SaveAccounts();
+  }
+
   RemoveAccount = flow(function * (address) {
     delete this.accounts[address];
 

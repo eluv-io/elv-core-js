@@ -12,13 +12,16 @@ import {
   Text,
   Checkbox,
   Group,
-  Image, Loader
+  Image,
+  Loader
 } from "@mantine/core";
 import {accountsStore, rootStore, tenantStore} from "../../stores";
-import {useDisclosure} from "@mantine/hooks";
+import {ImageIcon} from "../Misc";
 
 import DownloadIcon from "../../static/icons/download.svg";
-import {ImageIcon} from "../Misc";
+import {CreateModuleClassMatcher} from "../../Utils";
+
+const S = CreateModuleClassMatcher();
 
 const DownloadMnemonic = mnemonic => {
   const element = document.createElement("a");
@@ -36,7 +39,7 @@ const TenantInfo = observer(({tenantContractId}) => {
   const tenantMetadata = tenantStore.tenantMetadata[tenantContractId]?.public;
 
   if(!tenantMetadata) {
-    return <Loader />;
+    return <Loader className={S("page-loader")} />;
   }
 
   return (
@@ -69,7 +72,7 @@ const Onboard = observer(() => {
     tenantContractId: "",
     faucetToken: ""
   });
-  const [passwordVisible, {toggle}] = useDisclosure(false);
+
   const [formData, setFormData] = useState({
     name: "",
     password: "",
@@ -124,7 +127,7 @@ const Onboard = observer(() => {
   if(complete) {
     return (
       <div className="page-content onboard">
-        <Paper withBorder p="xl" shadow="sm" className="form-container">
+        <Paper withBorder p="xl" shadow="sm">
           <Title order={4} ta="center" mt="xl" mb="md">Account Created</Title>
           <Text ta="center" mb="xl">
             Your tenant administrator will be notified to grant appropriate permissions
@@ -149,8 +152,6 @@ const Onboard = observer(() => {
             }}
           />
           <PasswordInput
-            visible={passwordVisible}
-            onVisibilityChange={toggle}
             mb="md"
             label="Password"
             description="Password must be at least 6 characters long and must contain at least one uppercase letter, lowercase letter, number and symbol"
@@ -160,8 +161,6 @@ const Onboard = observer(() => {
             error={formData.password && formData.passwordConfirmation && formData.password !== formData.passwordConfirmation}
           />
           <PasswordInput
-            visible={passwordVisible}
-            onVisibilityChange={toggle}
             mb="md"
             label="Confirm Password"
             value={formData.passwordConfirmation}

@@ -41,9 +41,10 @@
   width: 175px;
 
   .app-logo {
-    height: auto;
+    height: 100px;
+    width: 100px;
+    object-fit: contain;
     margin: 0 auto;
-    width: 70%;
   }
 
   h4 {
