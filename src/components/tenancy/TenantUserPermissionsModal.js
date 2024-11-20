@@ -1,7 +1,12 @@
+import TenancyStyles from "../../static/stylesheets/modules/tenancy.module.scss";
+
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react";
 import {Button, Checkbox, Group, Loader, Modal, Table, Text} from "@mantine/core";
 import {rootStore, tenantStore} from "../../stores";
+import {CreateModuleClassMatcher} from "../../Utils";
+
+const S = CreateModuleClassMatcher(TenancyStyles);
 
 const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
   const groups = tenantStore.managedGroups;
@@ -41,10 +46,10 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
       onClose={Close}
     >
       {
-        !groups || !permissions ?
-          <Loader /> :
+        !groups || !permissions  ?
+          <Loader className={S("page-loader")} /> :
           <form onSubmit={() => {}}>
-            <Table>
+            <Table mt="xl">
               <thead>
                 <tr>
                   <th>Group</th>
@@ -66,7 +71,7 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
                           </Text>
                         </td>
                         <td>
-                          <Group mt="xs" position="center">
+                          <Group mt="xs" justify="center">
                             <Checkbox
                               disabled={settings.owner}
                               aria-label={`Manager of ${name || group.address}`}
@@ -97,6 +102,7 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
                 variant="default"
                 type="button"
                 onClick={Close}
+                h={40}
                 w={150}
               >
                 Cancel
@@ -104,6 +110,7 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
               <Button
                 disabled={JSON.stringify(originalPermissions) === JSON.stringify(permissions)}
                 type="button"
+                h={40}
                 w={150}
                 loading={submitting}
                 onClick={async () => {

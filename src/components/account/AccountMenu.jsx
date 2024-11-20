@@ -4,7 +4,7 @@ import {observer} from "mobx-react";
 import {CreateModuleClassMatcher, JoinClassNames} from "../../Utils";
 import React, {useEffect, useState} from "react";
 import {ButtonWithLoader, ImageIcon} from "../Misc";
-import {accountsStore} from "../../stores";
+import {accountsStore, tenantStore} from "../../stores";
 import {Link} from "react-router-dom";
 import {Combobox, Popover, UnstyledButton, useCombobox} from "@mantine/core";
 
@@ -15,6 +15,7 @@ import AppsIcon from "../../static/icons/apps";
 import SwitchAccountsIcon from "../../static/icons/switch-accounts";
 import ProfileIcon from "../../static/icons/User";
 import TransferFundsIcon from "../../static/icons/dollar-sign";
+import TenancyIcon from "../../static/icons/settings";
 
 export const AccountSelector = observer(({center, className=""}) => {
   const combobox = useCombobox();
@@ -27,14 +28,11 @@ export const AccountSelector = observer(({center, className=""}) => {
 
       return (
         <Combobox.Option value={address} key={address}>
-          <div className={S("account-selector__image-container")}>
-            <div className={S("account-selector__image-container")}>
-              <ImageIcon
-                icon={profileImage}
-                alternateIcon={DefaultAccountImage}
-                className={S("account-selector__image")}
-              />
-            </div>
+          <div className={S("round-image", "account-selector__image")}>
+            <ImageIcon
+              icon={profileImage}
+              alternateIcon={DefaultAccountImage}
+            />
           </div>
           <div className={S("account-selector__account")}>
             <div className={S(`account-selector__${account.name ? "name" : "address"}`, "ellipsis")}>
@@ -88,11 +86,10 @@ export const AccountSelector = observer(({center, className=""}) => {
                 </div>
               </div> :
               <>
-                <div className={S("account-selector__image-container")}>
+                <div className={S("round-image", "account-selector__image")}>
                   <ImageIcon
                     icon={profileImage}
                     alternateIcon={DefaultAccountImage}
-                    className={S("account-selector__image")}
                   />
                 </div>
                 <div className={S("account-selector__account")}>
@@ -143,6 +140,13 @@ const AccountMenu = observer(({Close}) => {
           <ImageIcon icon={TransferFundsIcon} />
           <span>Transfer Funds</span>
         </Link>
+        {
+          !tenantStore.isTenantAdmin ? null :
+            <Link aria-disabled={limited} to="/tenancy" onClick={Close} className={S("account-menu__action", limited ? "account-menu__action--disabled" : "")}>
+              <ImageIcon icon={TenancyIcon} />
+              <span>Tenancy Management</span>
+            </Link>
+        }
       </div>
       <ButtonWithLoader
         className={S("account-menu__sign-out")}
@@ -174,14 +178,11 @@ const HeaderProfile = observer(() => {
       <Popover opened={showMenu} onChange={setShowMenu}>
         <Popover.Target className={S("header-profile")}>
           <UnstyledButton onClick={() => setShowMenu(!showMenu)} className={S("header-profile__content")}>
-            <div className={S("header-profile__image-container")}>
-              <div className={S("header-profile__image-container")}>
-                <ImageIcon
-                  icon={profileImage}
-                  alternateIcon={DefaultAccountImage}
-                  className={S("header-profile__image")}
-                />
-              </div>
+            <div className={S("round-image", "header-profile__image")}>
+              <ImageIcon
+                icon={profileImage}
+                alternateIcon={DefaultAccountImage}
+              />
             </div>
             <div className={S("header-profile__account")}>
               <div className={S(`header-profile__${accountsStore.currentAccount.name ? "name" : "address"}`, "ellipsis")}>

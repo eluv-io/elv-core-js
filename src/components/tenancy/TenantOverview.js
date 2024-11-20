@@ -1,22 +1,26 @@
-import "../../static/stylesheets/onboard.scss";
+import TenantStyles from "../../static/stylesheets/modules/tenancy.module.scss";
+
 import React, {useEffect, useRef, useState} from "react";
 import {observer} from "mobx-react";
 import {
-  ActionIcon,
   Button,
   Paper,
   TextInput,
   Title,
   Text,
   Group,
-  Image,
   UnstyledButton,
-  Textarea, Loader,
+  Textarea,
+  Loader,
 } from "@mantine/core";
 import {accountsStore, tenantStore} from "../../stores";
-
-import EditIcon from "../../static/icons/edit.svg";
 import {ImageIcon} from "../Misc";
+import {CreateModuleClassMatcher, JoinClassNames} from "../../Utils";
+
+import TenancyIcon from "../../static/icons/users";
+import EditIcon from "../../static/icons/edit.svg";
+
+const S = CreateModuleClassMatcher(TenantStyles);
 
 const TenantForm = observer(({Back}) => {
   const fileInputRef = useRef();
@@ -30,85 +34,96 @@ const TenantForm = observer(({Back}) => {
   });
 
   return (
-    <div className="page-content">
-      <Paper withBorder p="xl" shadow="sm" mb="xl" className="form-container">
-        <Title mb="xl" order={3} fw={500} ta="center">Edit Tenancy Info</Title>
-        <form onSubmit={() => {}}>
-          <input
-            type="file"
-            ref={fileInputRef}
-            hidden
-            accept="image/*"
-            onChange={async event => {
-              const file = event.target.files[0];
-              setTenantInfo({...tenantInfo, newImage: file});
+    <div className={S("tenant-page")}>
+      <div className={JoinClassNames("form-container", S("tenant-form"))}>
+        <form onSubmit={() => {
+        }} className="form">
+          <div className="form-header">
+            <Title order={4} fw={400}>Manage Tenancy Info</Title>
+          </div>
+          <div className="form-content">
+            <input
+              type="file"
+              ref={fileInputRef}
+              hidden
+              accept="image/*"
+              onChange={async event => {
+                const file = event.target.files[0];
+                setTenantInfo({...tenantInfo, newImage: file});
 
-              const reader = new FileReader();
-              reader.onload = event => setTenantInfo({
-                ...tenantInfo,
-                newImage: file,
-                newImageUrl: event.target.result
-              });
+                const reader = new FileReader();
+                reader.onload = event => setTenantInfo({
+                  ...tenantInfo,
+                  newImage: file,
+                  newImageUrl: event.target.result
+                });
 
-              reader.readAsDataURL(file);
-            }}
-          />
-          <Group justify="center">
-            <UnstyledButton type="button" onClick={() => fileInputRef?.current.click()}>
-              <Image
-                radius="sm"
-                withPlaceholder
-                width={250}
-                height={250}
-                src={tenantInfo.newImageUrl || tenantStore.publicTenantMetadata.image?.url}
-              />
-            </UnstyledButton>
-          </Group>
-          <TextInput
-            my="md"
-            label="Tenant Name"
-            value={tenantInfo.name}
-            required
-            onChange={event => {
-              setTenantInfo({...tenantInfo, name: event.currentTarget.value});
-            }}
-          />
-          <Textarea
-            mb="md"
-            label="Description"
-            minRows={5}
-            autosize
-            value={tenantInfo.description}
-            onChange={event => {
-              setTenantInfo({...tenantInfo, description: event.currentTarget.value});
-            }}
-          />
-          <Group justify="right" mt={50}>
-            <Button variant="default" onClick={() => Back()}>Cancel</Button>
-            <Button
-              disabled={!tenantInfo.name}
-              loading={submitting}
-              onClick={async () => {
-                setSubmitting(true);
-
-                try {
-                  await tenantStore.UpdateTenantInfo({
-                    name: tenantInfo.name,
-                    description: tenantInfo.description,
-                    image: tenantInfo.newImage
-                  });
-
-                  Back();
-                } catch (error) {
-                  setSubmitting(false);
-                }
+                reader.readAsDataURL(file);
               }}
-            >
-              Submit
-            </Button>
-          </Group>
+            />
+            <Group justify="center">
+              <UnstyledButton
+                type="button"
+                onClick={() => fileInputRef?.current.click()}
+                className={S("tenant-image", "tenant-form__image")}
+              >
+                <div className={S("tenant-image")}>
+                  <ImageIcon
+                    icon={tenantInfo.newImageUrl || tenantStore.publicTenantMetadata.image?.url || TenancyIcon}
+                    alternateIcon={TenancyIcon}
+                  />
+                </div>
+              </UnstyledButton>
+            </Group>
+            <TextInput
+              my="md"
+              label="Tenant Name"
+              placeholder="Tenant Name"
+              value={tenantInfo.name}
+              required
+              onChange={event => {
+                setTenantInfo({...tenantInfo, name: event.currentTarget.value});
+              }}
+            />
+            <Textarea
+              mb="md"
+              label="Description"
+              minRows={5}
+              autosize
+              value={tenantInfo.description}
+              onChange={event => {
+                setTenantInfo({...tenantInfo, description: event.currentTarget.value});
+              }}
+            />
+            <Group justify="right" mt={50} gap={10}>
+              <Button h={40} w={150} variant="default" onClick={() => Back()}>Cancel</Button>
+              <Button
+                h={40}
+                w={150}
+                disabled={!tenantInfo.name}
+                loading={submitting}
+                onClick={async () => {
+                  setSubmitting(true);
+
+                  try {
+                    await tenantStore.UpdateTenantInfo({
+                      name: tenantInfo.name,
+                      description: tenantInfo.description,
+                      image: tenantInfo.newImage
+                    });
+
+                    Back();
+                  } catch (error) {
+                    setSubmitting(false);
+                  }
+                }}
+              >
+                Submit
+              </Button>
+            </Group>
+          </div>
         </form>
-      </Paper>
+      </div>
     </div>
   );
 });
@@ -129,34 +144,35 @@ const TenantOverview = observer(() => {
   }
 
   return (
-    <div className="page-content">
-      <Paper withBorder p="xl" pr={60} style={{position: "relative"}} className="content-container tenant-info">
+    <div className={S("tenant-page")}>
+      <Paper
+        withBorder
+        p="xl"
+        pr={60}
+        w={800}
+        className={S("tenant-overview")}
+      >
         {
           !tenantStore.isTenantAdmin ? null :
-            <ActionIcon
+            <UnstyledButton
               onClick={() => setEditing(true)}
               title="Edit Tenancy Info"
-              color="blue.5"
-              variant="transparent"
-              className="tenant-info__edit"
+              className={S("icon-button", "tenant-overview__edit")}
             >
               <ImageIcon icon={EditIcon} />
-            </ActionIcon>
+            </UnstyledButton>
         }
-        <Group wrap="nowrap" gap="xl" align="top" className="tenant-info__group">
-          <Image
-            radius="sm"
-            withPlaceholder
-            width={200}
-            height={200}
-            miw={200}
-            src={tenantStore.publicTenantMetadata.image?.url}
-            className="tenant-info__image"
-          />
+        <Group wrap="nowrap" gap="xl" align="top">
+          <div className={S("tenant-image", "tenant-overview__image")}>
+            <ImageIcon
+              icon={tenantStore.publicTenantMetadata.image?.url || TenancyIcon}
+              alternateIcon={TenancyIcon}
+            />
+          </div>
           <div>
-            <Title fw={500} order={3} className="tenant-info__title">{tenantStore.publicTenantMetadata.name}</Title>
-            <Text fz="xs" color="dimmed" mb="sm">{tenantStore.tenantContractId}</Text>
-            <Text fz="sm" color="dimmed" className="pre-wrap">{tenantStore.publicTenantMetadata.description}</Text>
+            <Title fw={500} order={3}>{tenantStore.publicTenantMetadata.name}</Title>
+            <Text fz="xs" mb="sm" className={S("tenant-overview__tenant-id")}>{tenantStore.tenantContractId}</Text>
+            <Text fz="sm" className={S("tenant-overview__description")}>{tenantStore.publicTenantMetadata.description}</Text>
           </div>
         </Group>
       </Paper>

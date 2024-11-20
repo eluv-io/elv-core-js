@@ -1,7 +1,13 @@
+import TenantStyles from "../../static/stylesheets/modules/tenancy.module.scss";
+
 import {observer} from "mobx-react";
 import React, {useState} from "react";
 import {accountsStore, tenantStore} from "../../stores";
-import {Button, CopyButton, Group, Modal, NumberInput, Paper, Text, TextInput, Tooltip} from "@mantine/core";
+import {Button, Group, Modal, NumberInput, Text, TextInput} from "@mantine/core";
+import {CreateModuleClassMatcher} from "../../Utils";
+import {CopyButton} from "../Misc";
+
+const S = CreateModuleClassMatcher(TenantStyles);
 
 const TenantInviteModal = observer(({existingInviteUrl="", Close}) => {
   const [name, setName] = useState("");
@@ -29,26 +35,22 @@ const TenantInviteModal = observer(({existingInviteUrl="", Close}) => {
   let content;
   if(inviteUrl) {
     content = (
-      <div>
+      <div className={S("tenant-invite-modal__content")}>
         <Text fz="sm">
           Share this URL with the new user to have them set up their account. After the account is created, you will be notified to grant permissions.
         </Text>
-        <CopyButton value={inviteUrl} timeout={5000}>
-          {({ copied, copy }) => (
-            <Tooltip label={copied ? "Copied!" : "Copy"} position="bottom-start">
-              <Paper withBorder p="md" my="md" className="tenant-invite-modal__url-container">
-                <Text fz="xs" color="dimmed" className="tenant-invite-modal__url" onClick={copy}>
-                  { inviteUrl }
-                </Text>
-              </Paper>
-            </Tooltip>
-          )}
-        </CopyButton>
+        <div className={S("tenant-invite-modal__url-container")}>
+          <div className={S("tenant-invite-modal__url")}>
+            { inviteUrl }
+          </div>
+          <CopyButton value={inviteUrl} className={S("icon-button")} />
+        </div>
         <Group justify="right" mt={50}>
           <Button
             type="button"
             onClick={Close}
             w={150}
+            h={40}
           >
             Done
           </Button>
@@ -60,6 +62,7 @@ const TenantInviteModal = observer(({existingInviteUrl="", Close}) => {
       <form onSubmit={() => {}}>
         <TextInput
           label="Name"
+          mt="md"
           mb="md"
           value={name}
           onChange={event => setName(event.currentTarget.value)}
@@ -93,6 +96,7 @@ const TenantInviteModal = observer(({existingInviteUrl="", Close}) => {
             type="button"
             onClick={Close}
             w={150}
+            h={40}
           >
             Cancel
           </Button>
@@ -100,6 +104,7 @@ const TenantInviteModal = observer(({existingInviteUrl="", Close}) => {
             disabled={!valid}
             type="button"
             w={150}
+            h={40}
             loading={submitting}
             onClick={Submit}
           >

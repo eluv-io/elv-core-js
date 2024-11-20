@@ -7,7 +7,7 @@ import {CreateModuleClassMatcher} from "../../Utils";
 import {ButtonWithLoader, CopyButton, ImageIcon} from "../Misc";
 
 
-import {Button, Group, Loader, Text, TextInput} from "@mantine/core";
+import {Button, Group, Loader, Text, TextInput, Title, UnstyledButton} from "@mantine/core";
 import {useNavigate} from "react-router-dom";
 import UrlJoin from "url-join";
 
@@ -19,6 +19,7 @@ import CaretUpIcon from "../../static/icons/caret-up";
 import CaretDownIcon from "../../static/icons/caret-down";
 import KeyIcon from "../../static/icons/Key";
 import FundsIcon from "../../static/icons/elv-token";
+import TenancyIcon from "../../static/icons/users";
 
 const S = CreateModuleClassMatcher(ProfileStyles);
 
@@ -29,7 +30,7 @@ const ProfileImage = observer(() => {
   return (
     <div className={S("profile-image")}>
       <div className={S("profile-image__image-wrapper")}>
-        <div className={S("profile-image__image-container")}>
+        <div className={S("round-image", "profile-image__image")}>
           {
             loading ?
               <div className={S("profile-image__loader")}>
@@ -38,7 +39,6 @@ const ProfileImage = observer(() => {
               <ImageIcon
                 icon={accountsStore.currentAccount.imageUrl || DefaultAccountImage}
                 alternateIcon={DefaultAccountImage}
-                className={S("profile-image__image")}
               />
           }
         </div>
@@ -85,9 +85,9 @@ const ProfileName = observer(() => {
         </Text>
         {
           accountsStore.currentAccount.type === "custodial" ? null :
-            <button onClick={() => setEditing(true)} className={S("icon-button")}>
+            <UnstyledButton onClick={() => setEditing(true)} className={S("icon-button")}>
               <ImageIcon icon={EditIcon} />
-            </button>
+            </UnstyledButton>
         }
       </Group>
     );
@@ -121,16 +121,16 @@ const ProfileName = observer(() => {
         onKeyDown={event => event.key === "Enter" && Submit()}
         ml={60}
       />
-      <button key="submit" onClick={Submit} className={S("icon-button")}>
+      <UnstyledButton key="submit" onClick={Submit} className={S("icon-button")}>
         {
           submitting ?
             <Loader size={20} /> :
             <ImageIcon icon={CheckIcon} />
         }
-      </button>
-      <button disabled={submitting} onClick={() => setEditing(false)} className={S("icon-button")}>
+      </UnstyledButton>
+      <UnstyledButton disabled={submitting} onClick={() => setEditing(false)} className={S("icon-button")}>
         <ImageIcon icon={XIcon} />
-      </button>
+      </UnstyledButton>
     </Group>
   );
 });
@@ -146,9 +146,9 @@ const PrivateKeyDetails = observer(() => {
 
   return (
     <div className={S("key")}>
-      <button onClick={() => setShow(!show)} className={S("icon-button", "key__toggle")}>
+      <UnstyledButton onClick={() => setShow(!show)} className={S("icon-button", "key__toggle")}>
         <ImageIcon icon={KeyIcon} />
-      </button>
+      </UnstyledButton>
       {
         !show ? null :
           <div className={S("key__details")}>
@@ -176,20 +176,36 @@ const PrivateKeyDetails = observer(() => {
   );
 });
 
+const TenantInfo = observer(() => {
+  if(!tenantStore.publicTenantMetadata) { return null; }
+
+  return (
+    <div key={accountsStore.currentAccount?.tenantContractId} className={S("tenant__info")}>
+      <div className={S("tenant-image", "tenant__image")}>
+        <ImageIcon
+          icon={tenantStore.publicTenantMetadata.image?.url || TenancyIcon}
+          alternateIcon={TenancyIcon}
+        />
+      </div>
+      <div className={S("tenant__text")}>
+        <Title fw={500} order={3} mb={5} className="tenant-info__title">{tenantStore.publicTenantMetadata.name}</Title>
+        <div className={S("tenant__description")}>
+          { tenantStore.publicTenantMetadata.description || "" }
+        </div>
+      </div>
+    </div>
+  );
+});
+
 const TenantDetails = observer(() => {
   const [tenantContractId, setTenantContractId] = useState(accountsStore.currentAccount.tenantContractId);
-  const [tenantName, setTenantName] = useState(accountsStore.currentAccount.tenantName);
   const [errorMessage, setErrorMessage] = useState("");
-
-  useEffect(() => {
-    setTenantName(accountsStore.currentAccount.tenantName);
-  }, [accountsStore.currentAccount.tenantName]);
 
   return (
     <div className={S("profile__content-block", "tenant")}>
       <div className={S("tenant__content")}>
         <Text mb="md" fz={20} fw={500}>Tenant Information</Text>
-        <Group mb="sm">
+        <Group mb="sm" gap={10}>
           <TextInput fz={12} placeholder="Tenant Contract ID" value={tenantContractId} onChange={event => setTenantContractId(event.target.value)} className={S("tenant__input", "tenant__input--contract")} />
           <ButtonWithLoader
             variant="outline"
@@ -210,33 +226,13 @@ const TenantDetails = observer(() => {
             Set Tenant ID
           </ButtonWithLoader>
         </Group>
-        <Group>
-          <TextInput disabled={!accountsStore.isTenantAdmin} placeholder="Tenant Name" value={tenantName} onChange={event => setTenantName(event.target.value)} className={S("tenant__input")} />
-          <ButtonWithLoader
-            variant="outline"
-            disabled={!accountsStore.currentAccount.tenantContractId || !accountsStore.isTenantAdmin || !tenantName || tenantName === accountsStore.currentAccount.tenantName}
-            h={50}
-            w={175}
-            onClick={async () => {
-              setErrorMessage("");
-
-              try {
-                await tenantStore.UpdateTenantInfo({name: tenantName});
-              } catch(error) {
-                accountsStore.Log(error, true);
-                setErrorMessage("Unable to update tenant name");
-              }
-            }}
-          >
-            Set Tenant Name
-          </ButtonWithLoader>
-        </Group>
         {
           !errorMessage ? null :
             <Text mt="md" fz={14} fw={500} className={S("tenant__error", "error")}>
               { errorMessage }
             </Text>
         }
+        <TenantInfo />
       </div>
     </div>
   );

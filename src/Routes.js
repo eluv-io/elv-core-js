@@ -8,12 +8,10 @@ import Onboard from "./components/onboarding/Onboard";
 import TenantOverview from "./components/tenancy/TenantOverview";
 import {observer} from "mobx-react";
 import Accounts from "./components/account/Accounts";
-import {Routes, Route, useNavigate} from "react-router-dom";
+import {Routes, Route, NavLink} from "react-router-dom";
 import TenantInvites from "./components/tenancy/TenantInvites";
 import {Navigate, Outlet, useLocation} from "react-router";
-import {tenantStore} from "./stores";
-import {Tabs} from "@mantine/core";
-import {useMediaQuery} from "@mantine/hooks";
+import {accountsStore, tenantStore} from "./stores";
 import TenantUsers from "./components/tenancy/TenantUsers";
 import Login, {LoginGate} from "./components/login/Login";
 import Profile from "./components/profile/Profile";
@@ -28,8 +26,6 @@ const GatedRoute = ({Component}) => {
 
 const ContentNav = observer(() => {
   const location = useLocation();
-  const navigate = useNavigate();
-  const narrow = useMediaQuery("(max-width: 1200px)");
 
   if(
     !location.pathname.startsWith("/tenancy") ||
@@ -43,18 +39,23 @@ const ContentNav = observer(() => {
   }
 
   return (
-    <div className="side-nav">
-      <Tabs variant={narrow ? "outline" : "default"} orientation={narrow ? "horizontal" : "vertical"} className="side-nav__tabs" h="max-content" value={location.pathname} onTabChange={pathname => navigate(pathname)}>
-        <Tabs.List grow>
-          <Tabs.Tab value="/tenancy">Overview</Tabs.Tab>
-          <Tabs.Tab value="/tenancy/manage">Manage</Tabs.Tab>
-          <Tabs.Tab value="/tenancy/invites">Invites</Tabs.Tab>
-        </Tabs.List>
-      </Tabs>
+    <nav className="side-nav">
+      <nav className="side-nav__nav">
+        <h2 className="side-nav__title">
+          {
+            tenantStore.publicTenantMetadata?.name ||
+            accountsStore.currentAccount?.tenantName ||
+            "Tenant"
+          }
+        </h2>
+        <NavLink to="/tenancy" end className="side-nav__link">Overview</NavLink>
+        <NavLink to="/tenancy/manage" end className="side-nav__link">Manage</NavLink>
+        <NavLink to="/tenancy/invites" end className="side-nav__link">Invites</NavLink>
+      </nav>
       <div className="content">
         <Outlet />
       </div>
-    </div>
+    </nav>
   );
 });
 

@@ -52,11 +52,10 @@ const Account = observer(({address}) => {
           <ImageIcon icon={XIcon} />
         </button>
 
-        <div className={S("image-container")}>
+        <div className={S("round-image", "image")}>
           <ImageIcon
             icon={profileImage}
             alternateIcon={DefaultAccountImage}
-            className={S("image")}
           />
         </div>
         <div className={S("text")}>
