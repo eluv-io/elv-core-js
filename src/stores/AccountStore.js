@@ -19,6 +19,10 @@ class AccountStore {
 
   authNonce = localStorage.getItem("auth-nonce") || Utils.B58(ParseUUID(UUID()));
 
+  get hasAccount() {
+    return Object.keys(this.accounts).length > 0;
+  }
+
   get isTenantAdmin() {
     return this.tenantAdmins.includes(this.currentAccountAddress);
   }

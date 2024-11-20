@@ -1,5 +1,6 @@
 import {useLocation} from "react-router-dom";
 import {useEffect} from "react";
+import {rootStore} from "./stores";
 
 export const ScrollTo = ({top=0, target, behavior="smooth"}) => {
   if(target) {
@@ -20,6 +21,8 @@ const ScrollToTop = () => {
   useEffect(() => {
     ScrollTo({top: 0, behavior: "auto"});
   }, [location.pathname]);
+
+  rootStore.SetPathname(location.pathname);
 
   return null;
 };

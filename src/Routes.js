@@ -10,11 +10,12 @@ import {observer} from "mobx-react";
 import Accounts from "./components/account/Accounts";
 import {Routes, Route, NavLink} from "react-router-dom";
 import TenantInvites from "./components/tenancy/TenantInvites";
-import {Navigate, Outlet, useLocation} from "react-router";
+import {Outlet, useLocation} from "react-router";
 import {accountsStore, tenantStore} from "./stores";
 import TenantUsers from "./components/tenancy/TenantUsers";
 import Login, {LoginGate} from "./components/login/Login";
 import Profile from "./components/profile/Profile";
+import SplashPage from "./components/login/SplashPage";
 
 const GatedRoute = ({Component}) => {
   return (
@@ -50,7 +51,7 @@ const ContentNav = observer(() => {
         </h2>
         <NavLink to="/tenancy" end className="side-nav__link">Overview</NavLink>
         <NavLink to="/tenancy/manage" end className="side-nav__link">Manage</NavLink>
-        <NavLink to="/tenancy/invites" end className="side-nav__link">Invites</NavLink>
+        <NavLink to="/tenancy/invites" end className="side-nav__link">Invite</NavLink>
       </nav>
       <div className="content">
         <Outlet />
@@ -63,7 +64,7 @@ const AppRoutes = observer(() => {
   return (
     <Routes>
       <Route path="/" element={<ContentNav />}>
-        <Route index element={<Navigate to="/accounts" replace />} />
+        <Route path="/" element={<SplashPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/accounts" element={<Accounts />} />
         <Route path="/accounts/add" element={<AccountsFormPage />} />

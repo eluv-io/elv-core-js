@@ -3,12 +3,6 @@
   display: flex;
   gap: 30px;
   justify-content: center;
-
-  p {
-    color: var(--text-secondary);
-    font-size: 18px;
-    font-weight: 600;
-  }
 }
 
 .accounts {
@@ -26,7 +20,7 @@
 .account {
   border: 1px solid var(--border);
   border-radius: 10px;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px 0 rgb(0 0 0 / 0.1);
   display: flex;
   flex-direction: column;
   height: 100%;

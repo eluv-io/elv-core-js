@@ -5,7 +5,7 @@
     top: 10px;
   }
 
-  @media screen and (max-width: 850px) {
+  @media screen and (width <= 850px) {
     padding-right: 1.5rem;
 
     &__group {
@@ -60,7 +60,9 @@
 
   &__image {
     $image-size: 110px;
+
     @include elv-cropped-image($image-size, $image-size, 50%, $image-size, $image-size);
+
     align-items: center;
     display: flex;
     padding: 5px;
@@ -87,8 +89,8 @@
     width: 100%;
   }
 
-  @media screen and (max-width: 850px) {
-    width: MIN(350px, 90vw);
+  @media screen and (width <= 850px) {
+    width: min(350px, 90vw);
 
     &__address {
       max-width: 200px;

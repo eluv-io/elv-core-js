@@ -244,16 +244,18 @@ const OryForm = observer(({userData, isLoginGate, setClosable, Close}) => {
         </button>
       );
 
-      additionalContent.push(
-        <Link
-          to="/accounts"
-          key="back-link"
-          onClick={() => Close?.()}
-          className={S("button-link", "button-link--secondary")}
-        >
-          { rootStore.l10n.login.ory.actions.back_to_accounts }
-        </Link>
-      );
+      if(accountsStore.hasAccount) {
+        additionalContent.push(
+          <Link
+            to="/accounts"
+            key="back-link"
+            onClick={() => Close?.()}
+            className={S("button-link", "button-link--secondary")}
+          >
+            {rootStore.l10n.login.ory.actions.back_to_accounts}
+          </Link>
+        );
+      }
     } else {
       additionalContent.push(
         <button
@@ -489,6 +491,10 @@ const OryForm = observer(({userData, isLoginGate, setClosable, Close}) => {
                 }
 
                 if(nodeType === "submit" && attributes.value) {
+                  if(node.meta.label.text === "Sign up") {
+                    node.meta.label.text = "Sign Up";
+                  }
+
                   // recovery code resend button
                   if(
                     node.meta.label?.id === 1070007 ||

@@ -16,7 +16,7 @@ body {
   height: 100vh;
 
   * {
-    font-family: "Inter", "Helvetica Neue", helvetica, sans-serif;
+    font-family: Inter, "Helvetica Neue", helvetica, sans-serif;
 
     ::-webkit-scrollbar {
       opacity: 1;
@@ -72,25 +72,25 @@ body {
 }
 
 .form-container {
-  width: 500px;
-
-  @media screen and (max-width: 850px) {
-    width: 90vw;
-  }
-}
-
-.form-container {
   border: 1px solid var(--border);
   border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 20px rgb(0 0 0 / 0.1);
   margin-top: 20px;
   overflow: hidden;
+  width: 500px;
+
+  @media screen and (width <= 850px) {
+    width: 90vw;
+  }
 }
 
 .form-header {
   align-items: center;
   background-color: var(--background-secondary);
+  color: var(--text-secondary);
   display: flex;
+  font-size: 18px;
+  font-weight: 600;
   height: 50px;
   justify-content: center;
   padding: 20px;
@@ -164,7 +164,6 @@ body {
 
   &__nav {
     background-color: var(--background-secondary);
-    box-shadow: 0 10px 5px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     gap: 10px;

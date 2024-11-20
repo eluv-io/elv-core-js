@@ -1,7 +1,6 @@
 .header-profile {
   &__content {
     align-items: center;
-    //width: 225px;
     display: flex;
     gap: 10px;
     height: 100%;
@@ -50,11 +49,11 @@
 
 .account-menu {
   min-width: 300px;
-  padding: 5px 10px 10px 10px;
+  padding: 5px 10px 10px;
 
   &__dropdown {
     border-radius: 5px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 15px rgb(0 0 0 / 0.1);
   }
 
   &__header {
@@ -99,9 +98,9 @@
       position: relative;
       user-select: none;
 
-      &:after {
+      &::after {
         content: " ";
-        inset: 0 0 0 0;
+        inset: 0;
         position: absolute;
         z-index: 1;
       }
@@ -134,11 +133,10 @@
   &__dropdown {
     background-color: var(--background-primary);
     border-radius: 5px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 15px rgb(0 0 0 / 0.1);
     display: flex;
     max-height: 400px;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden auto;
     overscroll-behavior: contain;
     width: 500px;
 

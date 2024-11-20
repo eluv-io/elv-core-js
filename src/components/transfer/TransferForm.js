@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {observer} from "mobx-react";
-import {Title, Select, TextInput, NumberInput, Button, Group, Text} from "@mantine/core";
+import {Select, TextInput, NumberInput, Button, Group, Text} from "@mantine/core";
 import {accountsStore} from "../../stores";
 import {Utils} from "@eluvio/elv-client-js";
 import {Link} from "react-router-dom";
@@ -56,7 +56,7 @@ const TransferForm = observer(() => {
       <div className="form-container">
         <form onSubmit={() => {}}>
           <div className="form-header">
-            <Title order={4} fw={400}>Transfer Funds</Title>
+            Transfer Funds
           </div>
           <div className="form-content">
             { !error ? null : <Text mb="md" color="red" ta="center">Something went wrong, please try again</Text> }

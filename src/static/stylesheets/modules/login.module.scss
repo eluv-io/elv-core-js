@@ -1,3 +1,5 @@
+@import "./variables.module";
+
 .login-modal {
   padding: 25px 30px 50px;
 }
@@ -20,6 +22,7 @@
 
   &__title {
     font-size: 28px;
+    font-weight: 500;
     text-align: center;
     user-select: none;
   }
@@ -98,7 +101,6 @@
     font-size: 14px;
     margin-bottom: 10px;
     padding-inline: 20px;
-
     text-align: center;
   }
 }
@@ -167,4 +169,60 @@
 
 .actions {
   margin-top: 10px;
+}
+
+// Splash page
+.splash-page {
+  align-items: center;
+  animation: fadein ease-in-out 1s 0.1s forwards;
+  display: flex;
+  justify-content: center;
+  min-height: calc(100vh - 140px);
+  opacity: 0;
+  position: relative;
+
+  &__background {
+    background-position: top;
+    background-size: cover;
+    inset: 0;
+    position: absolute;
+  }
+
+  &__content {
+    display: block;
+    padding-bottom: 100px;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__welcome {
+    color: var(--text-secondary);
+    font-size: 42px;
+    text-align: center;
+  }
+
+  &__logo-container {
+    margin-top: 20px;
+    padding: 5px 0;
+    position: relative;
+  }
+
+  &__logo {
+    height: 200px;
+  }
+
+  &__logo-tagline {
+    bottom: 0;
+    font-size: 32px;
+    font-weight: 500;
+    left: 0;
+    position: absolute;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 75px;
+  }
 }

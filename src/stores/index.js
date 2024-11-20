@@ -21,6 +21,7 @@ class RootStore {
   activeApp;
   eluvioTenantId;
   l10n = LocalizationEN;
+  pathname = location.pathname;
 
   get darkMode() {
     if(!this.activeApp) { return false; }
@@ -216,6 +217,10 @@ class RootStore {
       console.error(error);
     }
   });
+
+  SetPathname(pathname) {
+    this.pathname = pathname;
+  }
 }
 
 const root = new RootStore();

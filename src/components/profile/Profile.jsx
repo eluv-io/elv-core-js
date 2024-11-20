@@ -294,8 +294,8 @@ const Profile = observer(() => {
         <ProfileImage />
       </Group>
       <div className={S("profile")}>
-        <div className={S("profile__header")}>
-          <Text fz={20} fw={500}>Account Details</Text>
+        <div className={S("header", "profile__header")}>
+          Account Details
         </div>
 
         <div className={S("profile__content-block")}>
