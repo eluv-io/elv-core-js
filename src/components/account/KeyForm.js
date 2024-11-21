@@ -93,6 +93,7 @@ const KeyForm = observer(({UpdateFormData}) => {
             placeholder="Private Key"
             value={formData.privateKey}
             onChange={event => setFormData({...formData, privateKey: event.currentTarget.value})}
+            className={S("input__fz-xs")}
           />
       }
       {

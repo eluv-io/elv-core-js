@@ -22,6 +22,8 @@ class RootStore {
   eluvioTenantId;
   l10n = LocalizationEN;
   pathname = location.pathname;
+  toastMessage = "Test Message";
+  showToastMessage = false;
 
   get darkMode() {
     if(!this.activeApp) { return false; }
@@ -217,6 +219,14 @@ class RootStore {
       console.error(error);
     }
   });
+
+  SetToastMessage(message) {
+    clearTimeout(this.toastMessageTimeout);
+
+    this.toastMessage = message;
+    this.showToastMessage = true;
+    this.toastMessageTimeout = setTimeout(() => this.showToastMessage = false, 5000);
+  }
 
   SetPathname(pathname) {
     this.pathname = pathname;

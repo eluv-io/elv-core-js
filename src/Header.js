@@ -2,15 +2,16 @@ import "./static/stylesheets/header.scss";
 
 import React from "react";
 import {observer} from "mobx-react";
-import {rootStore} from "./stores";
-import {Link} from "react-router-dom";
-//import {HeaderAccount} from "./components/account/AccountDropdown";
+import {accountsStore, rootStore} from "./stores";
+import {Link, NavLink} from "react-router-dom";
+import {ImageIcon} from "./components/Misc";
 
 import Logo from "./static/images/Logo.png";
 import LogoDemo from "./static/images/LogoDemo.png";
 import LogoTest from "./static/images/LogoTest.png";
 import LogoPreview from "./static/images/LogoPreview.png";
 import AccountMenu from "./components/account/AccountMenu";
+import AppsLogo from "./static/icons/apps";
 
 const Header = observer(() => {
   let logo = Logo;
@@ -28,7 +29,15 @@ const Header = observer(() => {
         <img src={logo} alt="Eluvio" />
       </Link>
       <div className="toggle-header-section"/>
-      <AccountMenu />
+      <div className="header-menu">
+        {
+          !accountsStore.currentAccount || accountsStore.currentAccount?.lowBalance ? null :
+            <NavLink to="/apps" title="Apps" className="header-apps-link">
+              <ImageIcon icon={AppsLogo} alt="Eluvio" />
+            </NavLink>
+        }
+        <AccountMenu />
+      </div>
     </header>
   );
 });
