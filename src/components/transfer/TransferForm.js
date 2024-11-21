@@ -1,11 +1,15 @@
 import React, {useState} from "react";
 import {observer} from "mobx-react";
 import {Select, TextInput, NumberInput, Button, Group, Text} from "@mantine/core";
-import {accountsStore} from "../../stores";
+import {rootStore, accountsStore} from "../../stores";
 import {Utils} from "@eluvio/elv-client-js";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import {CreateModuleClassMatcher} from "../../Utils";
+
+const S = CreateModuleClassMatcher();
 
 const TransferForm = observer(() => {
+  const navigate = useNavigate();
   const accounts = Object.values(accountsStore.sortedAccounts)
     .filter(address => address !== accountsStore.currentAccountAddress)
     .map(address => accountsStore.accounts[address])
@@ -17,7 +21,6 @@ const TransferForm = observer(() => {
   const [amount, setAmount] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(undefined);
-  const [message, setMessage] = useState("");
 
   accounts.unshift({label: "[Other]", value: ""});
 
@@ -40,7 +43,8 @@ const TransferForm = observer(() => {
         ether: amount
       });
 
-      setMessage("Funds transferred successfully");
+      rootStore.SetToastMessage("Funds transferred successfully");
+      navigate("/accounts");
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -60,7 +64,6 @@ const TransferForm = observer(() => {
           </div>
           <div className="form-content">
             { !error ? null : <Text mb="md" color="red" ta="center">Something went wrong, please try again</Text> }
-            { !message ? null : <Text fz={14} color="blue.6" mb="md" ta="center">{message}</Text> }
             <Select
               mb="md"
               searchable
@@ -78,6 +81,7 @@ const TransferForm = observer(() => {
                   label="Recipient Address"
                   value={customRecipientAddress}
                   onChange={event => setCustomRecipientAddress(event.currentTarget.value)}
+                  className={S("input__fz-sm", "input__placeholder-fz-sm")}
                 />
             }
             <NumberInput

@@ -16,6 +16,7 @@ import SwitchAccountsIcon from "../../static/icons/switch-accounts";
 import ProfileIcon from "../../static/icons/User";
 import TransferFundsIcon from "../../static/icons/dollar-sign";
 import TenancyIcon from "../../static/icons/settings";
+import MenuIcon from "../../static/icons/menu";
 
 export const AccountSelector = observer(({center, className=""}) => {
   const combobox = useCombobox();
@@ -195,6 +196,10 @@ const HeaderProfile = observer(() => {
                   </div>
               }
             </div>
+            <ImageIcon
+              icon={MenuIcon}
+              className={S("header-profile__image", "header-profile__menu-icon", showMenu ? "header-profile__menu-icon--active" : "")}
+            />
           </UnstyledButton>
         </Popover.Target>
         <Popover.Dropdown classNames={{dropdown: S("account-menu__dropdown")}}>

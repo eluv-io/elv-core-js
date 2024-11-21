@@ -42,14 +42,14 @@ const ProfileImage = observer(() => {
               />
           }
         </div>
-        <button
+        <UnstyledButton
           disabled={accountsStore.currentAccount?.lowBalance}
           title="Change Profile Image"
           onClick={() => browseRef.current.click()}
           className={S("icon-button", "profile-image__edit")}
         >
           <ImageIcon icon={EditIcon} />
-        </button>
+        </UnstyledButton>
       </div>
 
       <input
@@ -75,8 +75,8 @@ const ProfileName = observer(() => {
 
   if(!editing) {
     return (
-      <Group justify="center" align="center" mt={5}>
-        <Text mt={5} fz={18} ml={accountsStore.currentAccount.type === "custodial" ? 0 : 30}>
+      <Group justify="center" align="center" mt={5} gap={10}>
+        <Text mt={5} fz={18} fw={600} ml={accountsStore.currentAccount.type === "custodial" ? 0 : 30}>
           {
             accountsStore.currentAccount.email ||
             accountsStore.currentAccount.name ||
@@ -85,7 +85,10 @@ const ProfileName = observer(() => {
         </Text>
         {
           accountsStore.currentAccount.type === "custodial" ? null :
-            <UnstyledButton onClick={() => setEditing(true)} className={S("icon-button")}>
+            <UnstyledButton
+              onClick={() => setEditing(true)}
+              className={S("icon-button")}
+            >
               <ImageIcon icon={EditIcon} />
             </UnstyledButton>
         }
@@ -290,8 +293,11 @@ const Profile = observer(() => {
 
   return (
     <div className="page-content">
-      <Group justify="center" mb="xl">
+      <Group justify="center" mb="xs">
         <ProfileImage />
+      </Group>
+      <Group justify="center" mb="xl">
+        <ProfileName />
       </Group>
       <div className={S("profile")}>
         <div className={S("header", "profile__header")}>
@@ -317,7 +323,13 @@ const Profile = observer(() => {
         </div>
         <div className={S("profile__content-block")}>
           <Text fw={500} fz={20}>Signed in as</Text>
-          <ProfileName />
+          <Text mt={5} fz={18}>
+            {
+              accountsStore.currentAccount.email ||
+              accountsStore.currentAccount.name ||
+              accountsStore.currentAccount.address
+            }
+          </Text>
           <Group justify="center" mt="md">
             <ButtonWithLoader
               variant="outline"

@@ -63,6 +63,34 @@
   input {
     padding-inline: 30px;
   }
+
+  &__fz-sm {
+    input {
+      font-size: 14px;
+
+      &::placeholder {
+        font-size: 16px;
+      }
+    }
+  }
+
+  &__fz-xs {
+    input {
+      font-size: 12px;
+
+      &::placeholder {
+        font-size: 16px;
+      }
+    }
+  }
+
+  &__placeholder-fz-sm {
+    input {
+      &::placeholder {
+        font-size: 14px;
+      }
+    }
+  }
 }
 
 .input {
@@ -92,7 +120,7 @@
 }
 
 .icon-button {
-  color: var(--text-secondary);
+  color: var(--text-tertiary);
   height: 20px;
   transition: opacity 0.25s ease;
   width: 20px;
@@ -127,4 +155,46 @@
   color: var(--text-secondary);
   font-size: 18px;
   font-weight: 600;
+}
+
+.toast-message {
+  align-items: center;
+  background: var(--background-primary);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgb(0 0 0 / 0.05);
+  display: flex;
+  justify-content: center;
+  max-width: 300px;
+  min-width: 100px;
+  opacity: 1;
+  padding: 10px 20px;
+  position: absolute;
+  right: 20px;
+  top: 60px;
+  transition: opacity 0.75s ease-out;
+  width: max-content;
+  z-index: 10;
+
+  &__dismissed {
+    opacity: 0;
+    transition: opacity 0.25s ease-in;
+  }
+
+  &__message {
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+  }
+
+  &__close {
+    color: var(--text-tertiary);
+    height: 20px;
+    position: absolute;
+    right: 10px;
+    stroke-width: 1px;
+    top: 10px;
+    width: 20px;
+  }
 }
