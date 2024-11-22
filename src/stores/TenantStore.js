@@ -1,8 +1,11 @@
 import {flow, makeAutoObservable, runInAction} from "mobx";
 import {ElvClient, Utils} from "@eluvio/elv-client-js";
 import {v4 as UUID, parse as UUIDParse} from "uuid";
+import UrlJoin from "url-join";
 
 class TenantStore {
+  onboardParams;
+
   tenantMetadata = {};
 
   managedGroups;
@@ -23,7 +26,8 @@ class TenantStore {
   INVITE_EVENTS = {
     SENT: "CORE_INVITE_SENT",
     ACCEPTED: "CORE_INVITE_ACCEPTED",
-    MANAGED: "CORE_INVITE_MANAGED"
+    MANAGED: "CORE_INVITE_MANAGED",
+    DELETED: "CORE_INVITE_DELETED"
   };
 
   constructor(rootStore) {
@@ -32,6 +36,16 @@ class TenantStore {
     this.rootStore = rootStore;
 
     this.Log = rootStore.Log;
+
+    const obp = new URLSearchParams(window.location.search).get("obp");
+    if(obp) {
+      try {
+        this.onboardParams = JSON.parse(Utils.FromB58ToStr(obp));
+      } catch (error) {
+        this.Log("Failed to parse onboarding params", true);
+        this.Log(error, true);
+      }
+    }
   }
 
   get client() {
@@ -63,10 +77,8 @@ class TenantStore {
       try {
         this.inviteListener.close();
       } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error("Error closing notification listener:");
-        // eslint-disable-next-line no-console
-        console.error(error);
+        this.Log("Error closing notification listener:", "warn");
+        this.Log(error, "warn");
       }
 
       this.inviteListener = undefined;
@@ -174,8 +186,9 @@ class TenantStore {
               return group;
             }
           } catch (error) {
-            // eslint-disable-next-line no-console
-            console.log("Error retrieving manager info for group", group.address, group, error);
+            this.Log(`Error retrieving manager info for group ${group.address}`, true);
+            this.Log(group, true);
+            this.Log(error, true);
           }
         })
       );
@@ -344,7 +357,7 @@ class TenantStore {
 
   // Invites
 
-  GenerateInvite = flow(function * ({name, funds}) {
+  GenerateInvite = flow(function * ({name, email, funds}) {
     yield new Promise(resolve => setTimeout(resolve, 2000));
 
     const id = Utils.B58(UUIDParse(UUID()));
@@ -353,6 +366,7 @@ class TenantStore {
       JSON.stringify({
         id,
         name,
+        email,
         adminAddress: this.rootStore.accountsStore.currentAccountAddress,
         tenantContractId: this.tenantContractId,
         faucetToken: "asd"
@@ -369,14 +383,33 @@ class TenantStore {
       data: {
         id,
         name,
+        email,
+        tenantContractId: this.tenantContractId,
+        adminAddress: this.rootStore.accountsStore.currentAccountAddress,
         url: url.toString()
       }
     });
 
-    return url.toString();
+    this.rootStore.accountsStore.SendLoginEmail({
+      type: "create_account",
+      email,
+      callbackUrl: url.toString()
+    });
+
+    return id;
   });
 
-  ConsumeInvite = flow(function * ({tenantContractId, name, address, inviteId, adminAddress, faucetToken}) {
+  ConsumeInvite = flow(function * ({
+    id,
+    tenantContractId,
+    name,
+    email,
+    adminAddress,
+    profileImageFile,
+    faucetToken
+  }) {
+    const address = this.rootStore.accountsStore.currentAccountAddress;
+
     // TODO: Implement faucet
     const wallet = this.client.GenerateWallet();
     const fundedClient = yield ElvClient.FromConfigurationUrl({configUrl: EluvioConfiguration["config-url"]});
@@ -385,37 +418,60 @@ class TenantStore {
     fundedClient.SetSigner({signer: fundedSigner});
     yield fundedClient.SendFunds({
       recipient: address,
-      ether: 1
+      ether: 0.15
     });
+
+    // Ensure user wallet contract is created
+    yield this.rootStore.client.userProfileClient.CreateWallet();
+    yield new Promise(resolve => setTimeout(resolve, 1000));
+    yield this.rootStore.client.userProfileClient.WalletAddress(true);
+
+    yield this.rootStore.accountsStore.AccountBalance(address);
+    yield this.rootStore.accountsStore.SetTenantContractId({id: tenantContractId});
+    yield this.rootStore.accountsStore.UserMetadata();
+
+    try {
+      yield this.rootStore.accountsStore.ReplaceUserMetadata({
+        metadataSubtree: UrlJoin("public", "name"),
+        metadata: name || email
+      });
+
+      if(profileImageFile) {
+        yield this.rootStore.accountsStore.ReplaceUserProfileImage(profileImageFile);
+      }
+    } catch (error) {
+      this.Log(error, true);
+    }
 
     yield this.rootStore.walletClient.PushNotification({
       tenantId: tenantContractId,
       eventType: this.INVITE_EVENTS.ACCEPTED,
       userAddress: adminAddress,
       data: {
-        id: inviteId,
+        id,
         address,
-        name
+        name,
+        email: this.rootStore.accountsStore.currentAccount?.email || email
       }
     });
   })
 
-  CompleteInvite = flow(function * ({inviteId}) {
+  CompleteInvite = flow(function * ({id}) {
     const notifications = yield this.rootStore.walletClient.Notifications({
       tenantId: this.tenantContractId,
       types: [this.INVITE_EVENTS.ACCEPTED, this.INVITE_EVENTS.MANAGED],
       limit: 10000
     });
 
-    if(notifications.find(invite => invite.type === this.INVITE_EVENTS.MANAGED && invite.data.id === inviteId)) {
+    if(notifications.find(invite => invite.type === this.INVITE_EVENTS.MANAGED && invite.data.id === id)) {
       // Already completed
       return;
     }
 
-    const acceptedInvite = notifications.find(invite => invite.type === this.INVITE_EVENTS.ACCEPTED && invite.data.id === inviteId);
+    const acceptedInvite = notifications.find(invite => invite.type === this.INVITE_EVENTS.ACCEPTED && invite.data.id === id);
 
     if(!acceptedInvite) {
-      throw Error("Unable to find corresponding invite for " + inviteId);
+      throw Error("Unable to find corresponding invite for " + id);
     }
 
     yield this.rootStore.walletClient.PushNotification({
@@ -428,6 +484,19 @@ class TenantStore {
     });
   });
 
+  DeleteInvite = flow(function * ({id}) {
+    yield this.rootStore.walletClient.PushNotification({
+      tenantId: this.tenantContractId,
+      eventType: this.INVITE_EVENTS.DELETED,
+      userAddress: this.rootStore.accountsStore.currentAccountAddress,
+      data: {
+        id,
+      }
+    });
+
+    delete this.invites[id];
+  });
+
   LoadInviteNotifications = flow(function * () {
     if(this.invites) { return; }
 
@@ -438,13 +507,19 @@ class TenantStore {
     });
 
     let invites = {};
+    let deletedInvites = {};
     // Collapse invites by ID by iterating from oldest to newest
     inviteNotifications
       .sort((a, b) => a.created < b.created ? -1 : 1)
       .forEach(invite => {
-        if(!invite.data?.id) { return; }
-
-        invites[invite.data.id] = invite;
+        if(!invite.data?.id) {
+          return;
+        } if(invite.type === this.INVITE_EVENTS.DELETED) {
+          deletedInvites[invite.data.id] = true;
+          delete invites[invite.data.id];
+        } else if(!deletedInvites[invite.id]) {
+          invites[invite.data.id] = invite;
+        }
       });
 
     this.invites = invites;

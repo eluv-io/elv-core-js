@@ -1,9 +1,21 @@
 import LoginStyles from "../../static/stylesheets/modules/login.module.scss";
 
 import {observer} from "mobx-react";
-import {accountsStore} from "../../stores";
-import {Button, Checkbox, Group, Loader, Modal, PasswordInput, Text, Switch} from "@mantine/core";
-import React, {useEffect, useState} from "react";
+import {rootStore, accountsStore, tenantStore} from "../../stores";
+import {
+  Button,
+  Checkbox,
+  Group,
+  Loader,
+  Modal,
+  PasswordInput,
+  Text,
+  Switch,
+  Grid,
+  UnstyledButton,
+  TextInput
+} from "@mantine/core";
+import React, {useEffect, useRef, useState} from "react";
 import {CreateModuleClassMatcher} from "../../Utils";
 import KeyForm from "../account/KeyForm";
 import {Navigate} from "react-router";
@@ -12,6 +24,9 @@ import OryForm from "../account/OryForm";
 import EluvioLogo from "../../static/images/Main_Logo_Light";
 import {Link, useNavigate} from "react-router-dom";
 import {AccountSelector} from "../account/AccountMenu";
+import {ButtonWithLoader, ImageIcon} from "../Misc";
+import DefaultAccountImage from "../../static/icons/User.svg";
+import EditIcon from "../../static/icons/edit.svg";
 
 const S = CreateModuleClassMatcher(LoginStyles);
 
@@ -194,14 +209,14 @@ export const LoginGate = observer(({children}) => {
 /* Full page login for new accounts */
 
 
-const KeyAccountForm = observer(({Close}) => {
+const KeyAccountForm = observer(({onboardParams, Close}) => {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
   return (
     <>
-      <KeyForm UpdateFormData={setFormData} />
+      <KeyForm onboardParams={onboardParams} UpdateFormData={setFormData} />
       <div className={S("actions")}>
         <Button
           disabled={!formData.valid}
@@ -218,7 +233,8 @@ const KeyAccountForm = observer(({Close}) => {
                 privateKey: formData.privateKey,
                 encryptedPrivateKey: formData.encryptedPrivateKey,
                 password: formData.password,
-                passwordConfirmation: formData.passwordConfirmation
+                passwordConfirmation: formData.passwordConfirmation,
+                onboardParams
               });
 
               Close(true);
@@ -249,15 +265,203 @@ const KeyAccountForm = observer(({Close}) => {
   );
 });
 
-const LoginModal = observer(({Close}) => {
+const LoginModalContent = observer(({onboardParams, accountType, setAccountType, setClosable, Close}) => {
   const [shareEmail, setShareEmail] = useState(true);
+
+  return (
+    <>
+      <div className={S("content")}>
+        <div className={S("type-selector")}>
+          <label htmlFor="type" className={S("type-selector__label")}>Sign In With</label>
+          <div
+            className={S("type-selector__switch-label", accountType === "custodial" ? "type-selector__switch-label--active" : "")}>
+            Email
+          </div>
+          <Switch
+            color="gray.3"
+            name="type"
+            checked={accountType === "key"}
+            onChange={event => setAccountType(event.target.checked ? "key" : "custodial")}
+          />
+          <div
+            className={S("type-selector__switch-label", accountType === "key" ? "type-selector__switch-label--active" : "")}>
+            Key
+          </div>
+        </div>
+        {
+          accountType === "custodial" ?
+            <OryForm
+              onboardParams={onboardParams}
+              userData={{share_email: shareEmail}}
+              setClosable={setClosable}
+              Close={Close}
+            /> :
+            <KeyAccountForm onboardParams={onboardParams} Close={Close}/>
+        }
+      </div>
+      {
+        accountType === "key" ? null :
+          <div className={S("terms")}>
+            <div className={S("terms__text")}>
+              By creating an account or signing in, I agree to the <a target="_blank" href="https://eluv.io/privacy">Eluvio
+              Privacy Policy</a> and the <a target="_blank" href="https://eluv.io/terms">Eluvio Terms and Conditions</a>
+            </div>
+            <div className={S("terms__option")}>
+              <Checkbox
+                size="xs"
+                name="share-email"
+                color="gray.3"
+                checked={shareEmail}
+                onChange={event => setShareEmail(event.currentTarget.checked)}
+              />
+              <label htmlFor="share-email" className={S("terms__text")}>
+                By checking this box, I give consent for my email address to be stored with my wallet address. Eluvio
+                may also send informational and marketing emails to this address.
+              </label>
+            </div>
+          </div>
+      }
+    </>
+  );
+});
+
+const OnboardForm = observer(({onboardParams, Close}) => {
+  const browseRef = useRef();
+  const [name, setName] = useState(onboardParams.name || onboardParams.email);
+  const [profileImageFile, setProfileImageFile] = useState(undefined);
+  const [profileImageUrl, setProfileImageUrl] = useState(undefined);
+  const [error, setError] = useState("");
+  const [finished, setFinished] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  if(finished) {
+    return (
+      <div className={S("content", "onboard")}>
+        <div className={S("header")}>
+          Account Setup Complete
+        </div>
+        <Text my="xl" ta="center" className={S("message")}>
+          Your account is now set up. Your administrator has been notified in order to grant appropriate permissions.
+        </Text>
+        <div className={S("actions")}>
+          <Button onClick={() => Close(true)} className={S("button")}>
+            Continue
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  const Submit = async () => {
+    try {
+      setSubmitting(true);
+
+      await tenantStore.ConsumeInvite({
+        ...onboardParams,
+        name,
+        profileImageFile
+      });
+
+      setFinished(true);
+    } catch(error) {
+      rootStore.Log("Error initializing account:", true);
+      rootStore.Log(error, true);
+
+      setError("Unable to complete account setup. Please try again.");
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className={S("content", "onboard")}>
+      <div className={S("header")}>
+        Set Up Your Account
+      </div>
+      <Group my="md" justify="center">
+        <div className={S("profile-image")}>
+          <div className={S("profile-image__image-wrapper")}>
+            <div className={S("round-image", "profile-image__image")}>
+              <ImageIcon
+                icon={profileImageUrl || DefaultAccountImage}
+                alternateIcon={DefaultAccountImage}
+              />
+            </div>
+            <UnstyledButton
+              title="Change Profile Image"
+              onClick={() => browseRef.current.click()}
+              className={S("icon-button", "profile-image__edit")}
+            >
+              <ImageIcon icon={EditIcon}/>
+            </UnstyledButton>
+          </div>
+
+          <input
+            ref={browseRef}
+            type="file"
+            multiple={false}
+            accept="image/*"
+            hidden={true}
+            onChange={event => {
+              const file = event.target.files[0];
+              setProfileImageFile(file);
+
+              const reader  = new FileReader();
+              reader.onload = event => setProfileImageUrl(event.target.result?.toString());
+              reader.readAsDataURL(file);
+            }}
+          />
+        </div>
+      </Group>
+      <TextInput
+        value={name}
+        placeholder="Name"
+        onChange={event => setName(event.currentTarget.value)}
+        onKeyDown={event => {
+          if(event.key !== "Enter") { return; }
+
+          Submit();
+        }}
+      />
+      <div className={S("actions")}>
+        <ButtonWithLoader
+          loading={submitting}
+          disabled={!name}
+          onClick={Submit}
+          className={S("button")}
+        >
+          Continue
+        </ButtonWithLoader>
+      </div>
+      {
+        !error ? null :
+          <Text mt="xl" className={S("error")}>
+            {error}
+          </Text>
+      }
+    </div>
+  );
+});
+
+const LoginModal = observer(({Close}) => {
   const [accountType, setAccountType] = useState("custodial");
   const [closable, setClosable] = useState(true);
+  const [showOnboardForm, setShowOnboardForm] = useState(false);
+
+  const onboardParams = rootStore.pathname.startsWith("/onboard") && tenantStore.onboardParams;
 
   useEffect(() => {
     // Ensure closable is reset when type changes
     setClosable(true);
   }, [accountType]);
+
+
+  const onLogin = async success => {
+    if(!success || !onboardParams) {
+      return Close(success);
+    }
+
+    setShowOnboardForm(true);
+  };
 
   return (
     <Modal
@@ -265,7 +469,7 @@ const LoginModal = observer(({Close}) => {
       size="sm"
       w={200}
       opened
-      onClose={closable ? Close : () => {}}
+      onClose={closable && !showOnboardForm ? Close : () => {}}
       withCloseButton={false}
       classNames={{
         overlay: S("modal-overlay"),
@@ -273,50 +477,25 @@ const LoginModal = observer(({Close}) => {
     >
       <div className={S("login-modal")}>
         <div className={S("header")}>
-          <img src={EluvioLogo} className={S("header__logo")} />
+          <img src={EluvioLogo} className={S("header__logo")}/>
           <div className={S("header__title")}>
             Content Fabric
           </div>
         </div>
-        <div className={S("content")}>
-          <div className={S("type-selector")}>
-            <label htmlFor="type" className={S("type-selector__label")}>Sign In With</label>
-            <div className={S("type-selector__switch-label", accountType === "custodial" ? "type-selector__switch-label--active" : "")}>
-              Email
-            </div>
-            <Switch
-              color="gray.3"
-              name="type"
-              checked={accountType === "key"}
-              onChange={event => setAccountType(event.target.checked ? "key" : "custodial")}
-            />
-            <div className={S("type-selector__switch-label", accountType === "key" ? "type-selector__switch-label--active" : "")}>
-              Key
-            </div>
-          </div>
-          {
-            accountType === "custodial" ?
-              <OryForm userData={{share_email: shareEmail}} setClosable={setClosable} Close={Close} /> :
-              <KeyAccountForm Close={Close} />
-          }
-        </div>
         {
-          accountType === "key" ? null :
-            <div className={S("terms")}>
-              <div className={S("terms__text")}>
-                By creating an account or signing in, I agree to the <a target="_blank" href="https://eluv.io/privacy">Eluvio Privacy Policy</a> and the <a target="_blank" href="https://eluv.io/terms">Eluvio Terms and Conditions</a>
-              </div>
-              <div className={S("terms__option")}>
-                <Checkbox size="xs" name="share-email" color="gray.3" checked={shareEmail} onChange={event => setShareEmail(event.currentTarget.checked)} />
-                <label htmlFor="share-email" className={S("terms__text")}>
-                  By checking this box, I give consent for my email address to be stored with my wallet address. Eluvio may also send informational and marketing emails to this address.
-                </label>
-              </div>
-            </div>
+          showOnboardForm ?
+            <OnboardForm onboardParams={onboardParams} Close={Close}/> :
+            <LoginModalContent
+              onboardParams={onboardParams}
+              accountType={accountType}
+              setAccountType={setAccountType}
+              setClosable={setClosable}
+              Close={onLogin}
+            />
         }
       </div>
     </Modal>
-  );
+);
 });
 
 const Login = observer(() => {

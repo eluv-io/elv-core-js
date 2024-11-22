@@ -14,6 +14,7 @@ body,
 body {
   color: #222;
   height: 100vh;
+  scrollbar-gutter: stable both-edges;
 
   * {
     font-family: Inter, "Helvetica Neue", helvetica, sans-serif;
@@ -34,6 +35,10 @@ body {
       opacity: 1;
     }
   }
+}
+
+b {
+  font-weight: bold;
 }
 
 .page-content {

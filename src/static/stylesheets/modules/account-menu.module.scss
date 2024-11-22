@@ -8,6 +8,7 @@
     max-height: 100px;
     max-width: 500px;
     text-align: left;
+    user-select: none;
   }
 
   &--no-account {
@@ -23,9 +24,17 @@
     width: 30px;
   }
 
+  &__icon-button {
+    color: var(--text-secondary);
+    height: 30px;
+    padding: 3px;
+    width: 30px;
+  }
+
   &__menu-icon {
-    padding: 5px;
+    height: 100%;
     transition: color 0.25s ease;
+    width: 100%;
 
     &:hover,
     &--active {

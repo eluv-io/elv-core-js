@@ -34,10 +34,6 @@
   margin: 0;
   width: 600px;
 
-  input {
-    text-align: left;
-  }
-
   &__image {
     height: 250px;
     width: 250px;
@@ -100,7 +96,7 @@
   margin-top: 10px;
   max-height: calc(100vh - 300px);
   overflow-y: auto;
-  width: 600px;
+  width: 525px;
 
   &__filter {
     input {
@@ -119,16 +115,14 @@
   position: relative;
   width: 500px;
 
+  &:hover {
+    .invite__delete {
+      opacity: 1;
+    }
+  }
+
   &__text {
     display: grid;
-  }
-
-  &__address {
-    font-size: 10px;
-  }
-
-  &__time {
-    font-size: 12px;
   }
 
   &__image {
@@ -137,11 +131,19 @@
     width: 125px;
   }
 
-  &__indicator {
-    color: var(--text-tertiary);
+  &__alert {
+    color: var(--accent);
+    left: 10px;
+    position: absolute;
+    top: 10px;
+  }
+
+  &__delete {
+    opacity: 0;
     position: absolute;
     right: 10px;
     top: 10px;
+    transition: opacity 0.25s ease;
   }
 }
 

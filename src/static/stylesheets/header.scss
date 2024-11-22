@@ -33,30 +33,6 @@ header {
   }
 }
 
-.header-menu {
-  align-items: center;
-  display: flex;
-  gap: 5px;
-  height: 100%;
-}
-
-.header-apps-link {
-  color: var(--text-secondary);
-  height: 100%;
-  padding: 8px;
-  transition: color 0.25s ease;
-  width: max-content;
-
-  &:hover {
-    color: var(--accent);
-  }
-
-  svg {
-    height: 100%;
-    width: auto;
-  }
-}
-
 .logo {
   display: flex;
   height: 100%;

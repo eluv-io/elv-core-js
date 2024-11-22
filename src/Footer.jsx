@@ -10,9 +10,8 @@ const S = CreateModuleClassMatcher(FooterStyles);
 
 const Footer = observer(() => {
   const location = useLocation();
-  if(location.pathname.match(/^\/apps\/.+$/) || location.pathname.startsWith("/onboard")) {
+  if(location.pathname.match(/^\/apps\/.+$/)) {
     // App frame is visible - hide navigation
-    // or onboard form
     return null;
   }
 

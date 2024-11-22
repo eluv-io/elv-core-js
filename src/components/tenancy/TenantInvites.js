@@ -9,11 +9,13 @@ import {IconUserPlus} from "@tabler/icons-react";
 import {tenantStore} from "../../stores";
 import TenantUserPermissionsModal from "./TenantUserPermissionsModal";
 import {CreateModuleClassMatcher} from "../../Utils";
-import {IconAlertCircle} from "@tabler/icons-react";
 import {ImageIcon} from "../Misc";
-
-import DefaultAccountImage from "../../static/icons/User.svg";
 import {useDebouncedValue} from "@mantine/hooks";
+import {modals} from "@mantine/modals";
+
+import XIcon from "../../static/icons/X";
+import DefaultAccountImage from "../../static/icons/User.svg";
+import AlertIcon from "../../static/icons/alert-circle";
 
 
 const S = CreateModuleClassMatcher(TenancyStyles);
@@ -58,9 +60,18 @@ const Invite = observer(({invite}) => {
 
   return (
     <>
-      { showInviteUrl ? <TenantInviteModal existingInviteUrl={invite.data.url} Close={() => setShowInviteUrl(false)} /> : null }
+      { showInviteUrl ? <TenantInviteModal existingInviteId={invite.data.id} Close={() => setShowInviteUrl(false)} /> : null }
       { showPermissionsModal ? <TenantUserPermissionsModal address={invite.data.address} inviteId={invite.data.id} Close={() => setShowPermissionsModal(false)} /> : null }
       <div className={S("invite")}>
+        {
+          !alert ? null :
+            <ImageIcon
+              icon={AlertIcon}
+              title="The user has accepted your invitation. Please set their permissions."
+              className={S("icon", "invite__alert")}
+            />
+        }
+
         {
           !address ? null :
             <div className={S("round-image", "invite__image")}>
@@ -68,13 +79,25 @@ const Invite = observer(({invite}) => {
             </div>
         }
 
-        {alert ? <IconAlertCircle className={S("invite__indicator")}/> : null}
+        <UnstyledButton
+          onClick={() => modals.openConfirmModal({
+            title: "Remove Invite",
+            children: <Text my="md">Are you sure you want to remove this invite from your history?</Text>,
+            onConfirm: async () => await tenantStore.DeleteInvite({id: invite.data.id}),
+            labels: { confirm: "Confirm", cancel: "Cancel" },
+            centered: true
+          })}
+          className={S("icon-button", "invite__delete")}
+        >
+          <ImageIcon icon={XIcon} />
+        </UnstyledButton>
         <div className={S("invite__text")}>
-          <Text fw={500}>{name}</Text>
-          {address ? <div className={S("invite__address")}>{address}</div> : null}
-          <div className={S("invite__time")}>
+          <Text fw={600}>{name}</Text>
+          { invite?.data?.email ? <Text fz={12}>{invite.data.email}</Text> : null }
+          {address ? <Text fz={10}>{address}</Text> : null}
+          <Text fz={14} fw={500} mt="sm" className={S("invite__time")}>
             {time}
-          </div>
+          </Text>
           <Group mt="md" className={S("invite__actions")}>
             {actions}
           </Group>
@@ -129,7 +152,7 @@ const TenantInvites = observer(() => {
         </Group>
         {
           !invites || invites.length === 0 ?
-            <Text fw={500} w={400} ta="center" italic mt={50}>{emptyTabDescriptions[tab]}</Text> :
+            <Text fw={500} w={400} ta="center" mt={50}>{emptyTabDescriptions[tab]}</Text> :
             <>
               <TextInput
                 mt="md"

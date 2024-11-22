@@ -49,7 +49,7 @@ const PasswordResetForm = ({OrySubmit, nodes}) => {
         }}
       />
       <input name="method" type="hidden" placeholder="Save" value="password"/>
-      <ButtonWithLoader onClick={OrySubmit} type="submit" action={false} className={S("button")}>
+      <ButtonWithLoader onClick={OrySubmit} type="submit" className={S("button")}>
         {rootStore.l10n.login.ory.actions.update_password}
       </ButtonWithLoader>
     </>
@@ -152,8 +152,8 @@ const SubmitRecoveryCode = async ({flows, setFlows, setFlowType, setErrorMessage
   }
 };
 
-const OryForm = observer(({userData, isLoginGate, setClosable, Close}) => {
-  const [flowType, setFlowType] = useState(searchParams.has("flow") ? "initializeFlow" : "login");
+const OryForm = observer(({onboardParams, userData, isLoginGate, setClosable, Close}) => {
+  const [flowType, setFlowType] = useState(onboardParams ? "registration" : "login");
   const [flows, setFlows] = useState({});
   const [loading, setLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState(undefined);
@@ -508,7 +508,6 @@ const OryForm = observer(({userData, isLoginGate, setClosable, Close}) => {
                         key={`button-${key}`}
                         formNoValidate
                         type="submit"
-                        action={false}
                         className={S("button")}
                       >
                         {node.meta.label.text}
@@ -565,6 +564,10 @@ const OryForm = observer(({userData, isLoginGate, setClosable, Close}) => {
                       return (
                         <TextInput
                           key={`inputs-${key}`}
+                          defaultValue={
+                            flowType === "registration" && attributes.type === "email" ?
+                              onboardParams?.email : ""
+                          }
                           {...attributes}
                         />
                       );

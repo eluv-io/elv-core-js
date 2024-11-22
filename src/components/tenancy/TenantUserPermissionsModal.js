@@ -119,8 +119,10 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
                     await tenantStore.SetUserGroupPermissions({userAddress: address, originalPermissions, permissions});
 
                     if(inviteId) {
-                      await tenantStore.CompleteInvite({inviteId});
+                      await tenantStore.CompleteInvite({id: inviteId});
                     }
+
+                    rootStore.SetToastMessage("User permissions updated successfully");
 
                     Close();
                   } catch (error) {

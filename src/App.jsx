@@ -16,6 +16,10 @@ import {CreateModuleClassMatcher} from "./Utils";
 const S = CreateModuleClassMatcher();
 
 const ToastMessage = observer(() => {
+  if(rootStore.activeApp) {
+    //return null;
+  }
+
   return (
     <div className={S("toast-message", !rootStore.showToastMessage ? "toast-message__dismissed" : "")}>
       <div className={S("toast-message__message")}>
@@ -58,7 +62,7 @@ const App = observer(() => {
       <ScrollToTop />
       <div className={`router-container ${rootStore.activeApp ? "router-container--app" : ""}`}>
         {
-          rootStore.pathname === "/" ? null :
+          rootStore.pathname === "/" || rootStore.pathname.startsWith("/onboard") ? null :
             <Header />
         }
         {

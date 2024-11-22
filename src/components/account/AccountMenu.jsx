@@ -176,36 +176,44 @@ const HeaderProfile = observer(() => {
     const profileImage = accountsStore.ResizeImage(accountsStore.currentAccount.imageUrl, 200) || DefaultAccountImage;
 
     return (
-      <Popover opened={showMenu} onChange={setShowMenu}>
-        <Popover.Target className={S("header-profile")}>
-          <UnstyledButton onClick={() => setShowMenu(!showMenu)} className={S("header-profile__content")}>
-            <div className={S("round-image", "header-profile__image")}>
-              <ImageIcon
-                icon={profileImage}
-                alternateIcon={DefaultAccountImage}
-              />
-            </div>
-            <div className={S("header-profile__account")}>
-              <div className={S(`header-profile__${accountsStore.currentAccount.name ? "name" : "address"}`, "ellipsis")}>
-                {accountsStore.currentAccount.name || accountsStore.currentAccount.address}
+      <div className={S("header-profile__content")}>
+        <div className={S("round-image", "header-profile__image")}>
+          <ImageIcon
+            icon={profileImage}
+            alternateIcon={DefaultAccountImage}
+          />
+        </div>
+        <div className={S("header-profile__account")}>
+          <div className={S(`header-profile__${accountsStore.currentAccount.name ? "name" : "address"}`, "ellipsis")}>
+            {accountsStore.currentAccount.name || accountsStore.currentAccount.address}
+          </div>
+          {
+            !accountsStore.currentAccount.tenantName ? null :
+              <div className={S("header-profile__tenant", "ellipsis")}>
+                Tenant: {accountsStore.currentAccount.tenantName}
               </div>
-              {
-                !accountsStore.currentAccount.tenantName ? null :
-                  <div className={S("header-profile__tenant", "ellipsis")}>
-                    Tenant: { accountsStore.currentAccount.tenantName }
-                  </div>
-              }
-            </div>
-            <ImageIcon
-              icon={MenuIcon}
-              className={S("header-profile__image", "header-profile__menu-icon", showMenu ? "header-profile__menu-icon--active" : "")}
-            />
-          </UnstyledButton>
-        </Popover.Target>
-        <Popover.Dropdown classNames={{dropdown: S("account-menu__dropdown")}}>
-          <AccountMenu Close={() => setShowMenu(false)} />
-        </Popover.Dropdown>
-      </Popover>
+          }
+        </div>
+        <Link to="/apps" className={S("header-profile__icon-button")}>
+          <ImageIcon
+            icon={AppsIcon}
+            className={S("header-profile__image", "header-profile__menu-icon")}
+          />
+        </Link>
+        <Popover opened={showMenu} onChange={setShowMenu} offset={10}>
+          <Popover.Target>
+            <UnstyledButton onClick={() => setShowMenu(!showMenu)} className={S("header-profile__icon-button")}>
+              <ImageIcon
+                icon={MenuIcon}
+                className={S("header-profile__image", "header-profile__menu-icon", showMenu ? "header-profile__menu-icon--active" : "")}
+              />
+            </UnstyledButton>
+          </Popover.Target>
+          <Popover.Dropdown classNames={{dropdown: S("account-menu__dropdown")}}>
+            <AccountMenu Close={() => setShowMenu(false)}/>
+          </Popover.Dropdown>
+        </Popover>
+      </div>
     );
   }
 });

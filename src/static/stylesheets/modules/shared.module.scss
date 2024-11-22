@@ -57,7 +57,6 @@
   font-size: 16px;
   height: 50px;
   min-height: 50px;
-  text-align: center;
   width: 100%;
 
   input {
@@ -178,7 +177,9 @@
 
   &__dismissed {
     opacity: 0;
+    pointer-events: none;
     transition: opacity 0.25s ease-in;
+    user-select: none;
   }
 
   &__message {

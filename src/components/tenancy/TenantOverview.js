@@ -13,7 +13,7 @@ import {
   Textarea,
   Loader,
 } from "@mantine/core";
-import {accountsStore, tenantStore} from "../../stores";
+import {rootStore, accountsStore, tenantStore} from "../../stores";
 import {ImageIcon} from "../Misc";
 import {CreateModuleClassMatcher, JoinClassNames} from "../../Utils";
 
@@ -36,8 +36,7 @@ const TenantForm = observer(({Back}) => {
   return (
     <div className={S("tenant-page")}>
       <div className={JoinClassNames("form-container", S("tenant-form"))}>
-        <form onSubmit={() => {
-        }} className="form">
+        <form onSubmit={() => {}} className={S("left-input")}>
           <div className="form-header">
             <Title order={4} fw={400}>Manage Tenancy Info</Title>
           </div>
@@ -111,6 +110,8 @@ const TenantForm = observer(({Back}) => {
                       description: tenantInfo.description,
                       image: tenantInfo.newImage
                     });
+
+                    rootStore.SetToastMessage("Tenant information successfully updated");
 
                     Back();
                   } catch (error) {

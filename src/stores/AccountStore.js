@@ -118,7 +118,7 @@ class AccountStore {
     return this.currentOryAccountAddress;
   });
 
-  AuthenticateOry = flow(function * ({userData, sendWelcomeEmail, sendVerificationEmail, force=false}={}) {
+  AuthenticateOry = flow(function * ({userData, sendVerificationEmail, force=false}={}) {
     try {
       const response = yield this.oryClient.toSession({
         tokenizeAs: EluvioConfiguration.ory_configuration.jwt_template
@@ -162,10 +162,6 @@ class AccountStore {
 
       this.SaveAccounts();
 
-      if(sendWelcomeEmail) {
-        this.SendLoginEmail({email, type: "send_welcome_email"});
-      }
-
       if(sendVerificationEmail) {
         this.SendLoginEmail({email, type: "request_email_verification"});
       }
@@ -191,20 +187,7 @@ class AccountStore {
   })
 
   // Auth
-  SendLoginEmail = flow(function * ({email, type, code}) {
-    let callbackUrl = new URL(window.location.origin);
-
-    switch (type) {
-      case "request_email_verification":
-        callbackUrl.pathname = "/login/verify";
-        break;
-      case "create_account":
-        callbackUrl.pathname = "login/register";
-        break;
-      case "reset_password":
-        callbackUrl.pathname = "login/reset-password";
-    }
-
+  SendLoginEmail = flow(function * ({email, type, code, callbackUrl}) {
     try {
       const result = yield this.rootStore.client.utils.ResponseToJson(
         this.rootStore.client.authClient.MakeAuthServiceRequest({

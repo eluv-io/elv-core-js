@@ -2,29 +2,34 @@ import TenantStyles from "../../static/stylesheets/modules/tenancy.module.scss";
 
 import {observer} from "mobx-react";
 import React, {useState} from "react";
-import {accountsStore, tenantStore} from "../../stores";
+import {rootStore, accountsStore, tenantStore} from "../../stores";
 import {Button, Group, Modal, NumberInput, Text, TextInput} from "@mantine/core";
-import {CreateModuleClassMatcher} from "../../Utils";
+import {CreateModuleClassMatcher, ValidEmail} from "../../Utils";
 import {CopyButton} from "../Misc";
 
 const S = CreateModuleClassMatcher(TenantStyles);
 
-const TenantInviteModal = observer(({existingInviteUrl="", Close}) => {
+const TenantInviteModal = observer(({existingInviteId="", Close}) => {
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [funds, setFunds] = useState(1);
   const [submitting, setSubmitting] = useState(false);
-  const [inviteUrl, setInviteUrl] = useState(existingInviteUrl);
   const [error, setError] = useState(undefined);
 
   const insufficientFunds = accountsStore.currentAccount.balance < funds + 0.05;
-  const valid = name && !insufficientFunds;
+  const valid = name && email && ValidEmail(email) && !insufficientFunds;
+
+  const invite = existingInviteId && tenantStore.invites[existingInviteId];
 
   const Submit = async () => {
     if(!valid || insufficientFunds) { return; }
 
     try {
       setSubmitting(true);
-      setInviteUrl(await tenantStore.GenerateInvite({name, funds}));
+      await tenantStore.GenerateInvite({name, email, funds});
+      rootStore.SetToastMessage(`An invite has been sent to ${email}`);
+
+      Close();
     } catch (error) {
       setError(error);
     } finally {
@@ -33,22 +38,27 @@ const TenantInviteModal = observer(({existingInviteUrl="", Close}) => {
   };
 
   let content;
-  if(inviteUrl) {
+  if(invite) {
     content = (
       <div className={S("tenant-invite-modal__content")}>
         <Text fz="sm">
-          Share this URL with the new user to have them set up their account. After the account is created, you will be notified to grant permissions.
+          An invitation email has been sent to <b>{invite.data.email || invite.data.name}</b>.
+        </Text>
+
+        <Text fz="sm" mt="md">
+          You may also share this URL with the new user to have them set up their account. After the account is created, you will be notified to grant permissions.
         </Text>
         <div className={S("tenant-invite-modal__url-container")}>
           <div className={S("tenant-invite-modal__url")}>
-            { inviteUrl }
+            { invite.data.url }
           </div>
-          <CopyButton value={inviteUrl} className={S("icon-button")} />
+          <CopyButton value={invite.data.url} className={S("icon-button")} />
         </div>
         <Group justify="right" mt={50}>
           <Button
             type="button"
             onClick={Close}
+            variant="default"
             w={150}
             h={40}
           >
@@ -66,6 +76,18 @@ const TenantInviteModal = observer(({existingInviteUrl="", Close}) => {
           mb="md"
           value={name}
           onChange={event => setName(event.currentTarget.value)}
+          onKeyDown={event => {
+            if(event.key !== "Enter") { return; }
+
+            Submit();
+          }}
+        />
+        <TextInput
+          label="Email Address"
+          mt="md"
+          mb="md"
+          value={email}
+          onChange={event => setEmail(event.currentTarget.value)}
           onKeyDown={event => {
             if(event.key !== "Enter") { return; }
 

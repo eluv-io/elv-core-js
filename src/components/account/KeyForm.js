@@ -11,7 +11,8 @@ import {
   PasswordInput,
   TextInput,
   Textarea,
-  ActionIcon
+  Loader,
+  UnstyledButton
 } from "@mantine/core";
 import {accountsStore} from "../../stores";
 import EditIcon from "../../static/icons/edit.svg";
@@ -29,16 +30,30 @@ const DownloadMnemonic = mnemonic => {
   element.click();
 };
 
-const KeyForm = observer(({UpdateFormData}) => {
+const KeyForm = observer(({onboardParams, UpdateFormData}) => {
   const [editingMnemonic, setEditingMnemonic] = useState(false);
   const [formData, setFormData] = useState({
-    credentialType: "privateKey",
+    credentialType: onboardParams ? "mnemonic" : "privateKey",
     privateKey: "",
     encryptedPrivateKey: "",
     mnemonic: "",
     password: "",
     passwordConfirmation: ""
   });
+
+  // Generating a mnemonic causes the UI to stutter a bit. Delay it until after initial render
+  useEffect(() => {
+    if(formData.mnemonic || formData.credentialType !== "mnemonic") {
+      return;
+    }
+
+    setTimeout(() => {
+      setFormData({
+        ...formData,
+        mnemonic: accountsStore.GenerateMnemonic()
+      });
+    }, 10);
+  }, [formData.credentialType]);
 
   useEffect(() => {
     setEditingMnemonic(false);
@@ -71,17 +86,11 @@ const KeyForm = observer(({UpdateFormData}) => {
         ]}
         value={formData.credentialType}
         onChange={value => {
-          let mnemonic = "";
-          if(value === "mnemonic") {
-            mnemonic = accountsStore.GenerateMnemonic();
-          }
-
           setFormData({
             ...formData,
-            credentialType: value,
+            credentialType: value || formData.credentialType,
             privateKey: "",
             encryptedPrivateKey: "",
-            mnemonic
           });
         }}
         classNames={{input: S("input")}}
@@ -102,7 +111,6 @@ const KeyForm = observer(({UpdateFormData}) => {
             aria-label="Encrypted Private Key"
             placeholder="Encrypted Private Key"
             value={formData.encryptedPrivateKey}
-            fz={12}
             minRows={5}
             autosize
             onChange={event => setFormData({...formData, encryptedPrivateKey: event.currentTarget.value})}
@@ -126,29 +134,31 @@ const KeyForm = observer(({UpdateFormData}) => {
                   placeholder="Mnemonic phrase"
                   mt="sm"
                 /> :
-                <Paper withBorder p="md" mt="sm" className="mnemonic-container">
+                <Paper withBorder p="md" mt="sm" className={S("mnemonic")}>
                   <Group wrap="nowrap" gap={5}>
-                    <Text italic fz="sm">{formData.mnemonic}</Text>
-                    <ActionIcon
-                      variant="transparent"
-                      title="Modify Mnemonic Phrase"
-                      aria-label="Modify Mnemonic Phrase"
-                      className="mnemonic-edit"
-                      size="xs"
-                      onClick={() => setEditingMnemonic(true)}
-                    >
-                      <ImageIcon icon={EditIcon}/>
-                    </ActionIcon>
-                    <ActionIcon
-                      variant="transparent"
-                      title="Download Mnemonic Phrase"
-                      aria-label="Download Mnemonic Phrase"
-                      className="mnemonic-download"
-                      size="xs"
-                      onClick={() => DownloadMnemonic(formData.mnemonic)}
-                    >
-                      <ImageIcon icon={DownloadIcon}/>
-                    </ActionIcon>
+                    <Text fz="sm" className={S("mnemonic__text")}>{formData.mnemonic}</Text>
+                    {
+                      !formData.mnemonic ?
+                        <Group justify="center" w="100%"><Loader /></Group> :
+                        <div className={S("mnemonic__actions")}>
+                          <UnstyledButton
+                            title="Modify Mnemonic Phrase"
+                            aria-label="Modify Mnemonic Phrase"
+                            className={S("icon-button", "mnemonic__action")}
+                            onClick={() => setEditingMnemonic(true)}
+                          >
+                            <ImageIcon icon={EditIcon}/>
+                          </UnstyledButton>
+                          <UnstyledButton
+                            title="Download Mnemonic Phrase"
+                            aria-label="Download Mnemonic Phrase"
+                            className={S("icon-button", "mnemonic__action")}
+                            onClick={() => DownloadMnemonic(formData.mnemonic)}
+                          >
+                            <ImageIcon icon={DownloadIcon}/>
+                          </UnstyledButton>
+                        </div>
+                    }
                   </Group>
                 </Paper>
             }
