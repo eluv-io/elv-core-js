@@ -18,19 +18,21 @@ body {
 
   * {
     font-family: Inter, "Helvetica Neue", helvetica, sans-serif;
+    scrollbar-color: #AAA #FAFAFA;
+    scrollbar-width: thin;
 
     ::-webkit-scrollbar {
       opacity: 1;
-      width: 8px;
+      width: 5px;
     }
 
     ::-webkit-scrollbar-track {
-      background: #333;
+      background: #eee;
       opacity: 1;
     }
 
     ::-webkit-scrollbar-thumb {
-      background-color: #555;
+      background-color: #aaa;
       border-radius: 100px;
       opacity: 1;
     }
@@ -54,11 +56,6 @@ b {
 
 .app-version {
   display: none;
-}
-
-.header {
-  position: fixed;
-  top: 0;
 }
 
 .router-container {
@@ -98,7 +95,6 @@ b {
   font-weight: 600;
   height: 50px;
   justify-content: center;
-  padding: 20px;
 }
 
 .form-content {

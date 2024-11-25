@@ -1,15 +1,18 @@
-import "./static/stylesheets/header.scss";
+import HeaderStyles from "./static/stylesheets/modules/header.module.scss";
 
 import React from "react";
 import {observer} from "mobx-react";
 import {rootStore} from "./stores";
 import {Link} from "react-router-dom";
+import {CreateModuleClassMatcher} from "./Utils";
 
 import Logo from "./static/images/Logo.png";
 import LogoDemo from "./static/images/LogoDemo.png";
 import LogoTest from "./static/images/LogoTest.png";
 import LogoPreview from "./static/images/LogoPreview.png";
 import AccountMenu from "./components/account/AccountMenu";
+
+const S = CreateModuleClassMatcher(HeaderStyles);
 
 const Header = observer(() => {
   let logo = Logo;
@@ -22,11 +25,11 @@ const Header = observer(() => {
   }
 
   return (
-    <header className={`header ${rootStore.darkMode ? "header--dark" : ""}`}>
-      <Link to="/apps" className="logo">
+    <header className={S("header", rootStore.darkMode ? "header--dark" : "")}>
+      <Link to="/apps" className={S("header__logo")}>
         <img src={logo} alt="Eluvio" />
       </Link>
-      <div className="toggle-header-section"/>
+      <div className={S("header__gap")} />
       <AccountMenu />
     </header>
   );

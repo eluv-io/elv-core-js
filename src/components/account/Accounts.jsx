@@ -18,6 +18,7 @@ import DefaultAccountImage from "../../static/icons/User.svg";
 const S = CreateModuleClassMatcher(AccountStyles);
 
 const Account = observer(({address}) => {
+  const navigate = useNavigate();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const account = accountsStore.accounts[address];
 
@@ -34,7 +35,13 @@ const Account = observer(({address}) => {
         !showLoginModal ? null :
           <LoginGateModal
             address={address}
-            Close={() => setShowLoginModal(false)}
+            Close={success => {
+              setShowLoginModal(false);
+
+              if(success) {
+                navigate("/apps");
+              }
+            }}
           />
       }
       <div className={S("account")}>
@@ -75,14 +82,14 @@ const Account = observer(({address}) => {
         <div className={S("actions")}>
           {
             isCurrentAccount && !accountLocked ?
-              <ButtonWithLoader
+              <Button
                 className={S("action")}
                 variant="filled"
                 w="100%"
-                onClick={async () => await accountsStore.LockAccount({address})}
+                onClick={() => navigate("/profile")}
               >
-                Sign Out
-              </ButtonWithLoader> :
+                Profile
+              </Button> :
               <ButtonWithLoader
                 className={S("action")}
                 variant="outline"

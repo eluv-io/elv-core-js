@@ -44,6 +44,7 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
       padding="xl"
       title="Set User Permissions"
       onClose={Close}
+      withCloseButton={false}
     >
       {
         !groups || !permissions  ?

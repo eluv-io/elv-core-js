@@ -41,31 +41,14 @@ const Actions = observer(() => {
   return (
     <>
       <div className={S("splash-page__actions")}>
-        {
-          !accountsStore.hasAccount ? null :
-            <Button
-              w={200}
-              h={50}
-              fz={18}
-              onClick={() => navigate("/apps")}
-              className={S("splash-page__action")}
-            >
-              APPS
-            </Button>
-        }
         <Button
           w={200}
           h={50}
           fz={18}
-          color="gray.6"
-          onClick={() => navigate(accountsStore.hasAccount ? "/accounts" : "/login")}
+          onClick={() => navigate(accountsStore.hasAccount ? "/apps" : "/login")}
           className={S("splash-page__action")}
         >
-          {
-            accountsStore.hasAccount ?
-              "ACCOUNTS" :
-              "SIGN IN"
-          }
+          SIGN IN
         </Button>
       </div>
       <div className={S("splash-page__actions")}>

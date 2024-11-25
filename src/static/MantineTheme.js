@@ -1,4 +1,4 @@
-import {createTheme, em, Button, PasswordInput, TextInput, Select, NumberInput} from "@mantine/core";
+import {createTheme, em, Button, PasswordInput, TextInput, Select, NumberInput, Modal} from "@mantine/core";
 
 import SharedStyles from "./stylesheets/modules/shared.module.scss";
 
@@ -48,6 +48,13 @@ const MantineTheme = createTheme({
       defaultProps: {
         classNames: {
           input: SharedStyles["input"]
+        }
+      }
+    }),
+    Modal: Modal.extend({
+      defaultProps: {
+        classNames: {
+          header: SharedStyles["modal__header"],
         }
       }
     })

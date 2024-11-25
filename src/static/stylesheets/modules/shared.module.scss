@@ -199,3 +199,20 @@
     width: 20px;
   }
 }
+
+.modal {
+  &__header {
+    background-color: var(--background-secondary);
+    display: flex;
+    height: 50px;
+    justify-content: center;
+    padding: 0;
+    text-align: center;
+
+    * {
+      color: var(--text-secondary);
+      font-size: 18px;
+      font-weight: 600;
+    }
+  }
+}

@@ -1,0 +1,52 @@
+.header {
+  align-items: center;
+  background-color: var(--background-primary);
+  box-shadow: 2px 1px 5px rgb(0 0 0 / 0.15);
+  display: flex;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: 40px;
+  height: 40px;
+  max-height: 40px;
+  padding: 0 10px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 20;
+
+  &--dark {
+    background-color: #131315;
+    border-bottom: 1px solid #000;
+    box-shadow: none;
+
+    * {
+      color: #fff;
+    }
+
+    .-elv-token-icon {
+      filter: invert(100%);
+    }
+
+    .header__logo {
+      img {
+        filter: invert(100%);
+      }
+    }
+  }
+
+  &__gap {
+    flex-grow: 1;
+    height: 100%;
+  }
+
+  &__logo {
+    display: flex;
+    height: 100%;
+    width: max-content;
+
+    img {
+      height: 100%;
+      padding: 10px;
+      width: auto;
+    }
+  }
+}

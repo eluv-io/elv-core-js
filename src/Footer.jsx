@@ -2,7 +2,6 @@ import FooterStyles from "./static/stylesheets/modules/footer.module.scss";
 
 import React from "react";
 import {observer} from "mobx-react";
-import {NavLink} from "react-router-dom";
 import {CreateModuleClassMatcher} from "./Utils";
 import {useLocation} from "react-router";
 
@@ -18,7 +17,7 @@ const Footer = observer(() => {
   return (
     <div className={S("footer")}>
       <nav className={S("nav")}>
-        <a href="https://eluv.io/features/pricing" target="_blank" rel="noreferrer">Offerings</a>
+        <a href="https://eluv.io/features/pricing" target="_blank" rel="noreferrer">eluv.io</a>
         <a href="https://eluv.io/terms" target="_blank" rel="noreferrer">End User Agreement</a>
         <a href="https://eluv.io/privacy" target="_blank" rel="noreferrer">Privacy Policy</a>
         <a href="https://eluv.io/platform-terms" target="_blank" rel="noreferrer">Tenant Platform Services Agreement</a>

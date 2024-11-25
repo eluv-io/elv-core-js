@@ -54,17 +54,6 @@ const TenantInviteModal = observer(({existingInviteId="", Close}) => {
           </div>
           <CopyButton value={invite.data.url} className={S("icon-button")} />
         </div>
-        <Group justify="right" mt={50}>
-          <Button
-            type="button"
-            onClick={Close}
-            variant="default"
-            w={150}
-            h={40}
-          >
-            Done
-          </Button>
-        </Group>
       </div>
     );
   } else {
@@ -144,6 +133,7 @@ const TenantInviteModal = observer(({existingInviteId="", Close}) => {
       padding="xl"
       title="Invite New User"
       onClose={Close}
+      withCloseButton={false}
     >
       {content}
     </Modal>

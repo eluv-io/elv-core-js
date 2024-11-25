@@ -11,7 +11,6 @@ import {
   PasswordInput,
   Text,
   Switch,
-  Grid,
   UnstyledButton,
   TextInput
 } from "@mantine/core";
@@ -334,6 +333,46 @@ const OnboardForm = observer(({onboardParams, Close}) => {
   const [finished, setFinished] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
+  if(submitting) {
+    return (
+      <div className={S("content", "onboard")}>
+        <Group my="md" justify="center">
+          <div className={S("profile-image")}>
+            <div className={S("profile-image__image-wrapper")}>
+              <div className={S("round-image", "profile-image__image")}>
+                <ImageIcon
+                  icon={profileImageUrl || DefaultAccountImage}
+                  alternateIcon={DefaultAccountImage}
+                />
+              </div>
+            </div>
+
+            <input
+              ref={browseRef}
+              type="file"
+              multiple={false}
+              accept="image/*"
+              hidden={true}
+              onChange={event => {
+                const file = event.target.files[0];
+                setProfileImageFile(file);
+
+                const reader  = new FileReader();
+                reader.onload = event => setProfileImageUrl(event.target.result?.toString());
+                reader.readAsDataURL(file);
+              }}
+            />
+          </div>
+        </Group>
+        <Text fw={500} ta="center" fz={18}>{name}</Text>
+        <Group mt={50} mb="sm" justify="center">
+          <Loader />
+        </Group>
+        <Text ta="center" fw={500}>Initializing your account...</Text>
+      </div>
+    );
+  }
+
   if(finished) {
     return (
       <div className={S("content", "onboard")}>
@@ -344,7 +383,7 @@ const OnboardForm = observer(({onboardParams, Close}) => {
           Your account is now set up. Your administrator has been notified in order to grant appropriate permissions.
         </Text>
         <div className={S("actions")}>
-          <Button onClick={() => Close(true)} className={S("button")}>
+          <Button onClick={() => Close("/profile")} className={S("button")}>
             Continue
           </Button>
         </div>
@@ -495,7 +534,7 @@ const LoginModal = observer(({Close}) => {
         }
       </div>
     </Modal>
-);
+  );
 });
 
 const Login = observer(() => {
@@ -505,8 +544,10 @@ const Login = observer(() => {
     <div className={S("page-content", "login-page")}>
       <LoginModal
         Close={success => {
-          if(success) {
-            navigate("/profile");
+          if(typeof success === "string") {
+            navigate(success);
+          } else if(success) {
+            navigate(accountsStore.currentAccount.lowBalance ? "/profile" : "/apps");
           } else if(accountsStore.hasAccount) {
             navigate("/accounts");
           }

@@ -331,6 +331,12 @@ const Profile = observer(() => {
             }
           </Text>
           <Group justify="center" mt="md">
+            {
+              !tenantStore.isTenantAdmin ? null :
+                <Button onClick={() => navigate("/tenancy")}>
+                  Manage Tenancy
+                </Button>
+            }
             <ButtonWithLoader
               variant="outline"
               w={150}

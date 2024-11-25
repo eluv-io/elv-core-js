@@ -3,7 +3,6 @@ import AppsPage from "./components/apps/Apps";
 import AppFramePage from "./components/apps/AppFrame";
 import AccountsFormPage from "./components/account/KeyForm";
 import TransferFormPage from "./components/transfer/TransferForm";
-import Offerings from "./components/offerings/Offerings";
 import TenantOverview from "./components/tenancy/TenantOverview";
 import {observer} from "mobx-react";
 import Accounts from "./components/account/Accounts";
@@ -68,7 +67,6 @@ const AppRoutes = observer(() => {
         <Route path="/accounts" element={<Accounts />} />
         <Route path="/accounts/add" element={<AccountsFormPage />} />
         <Route path="/apps" element={<AppsPage />} />
-        <Route path="/offerings" element={<Offerings />} />
         <Route path="/onboard" element={<SplashPage />} />
         <Route path="/onboard/login" element={<Login />} />
         <Route path="/transfer" element={<GatedRoute Component={TransferFormPage} />} />

@@ -357,8 +357,44 @@ class TenantStore {
 
   // Invites
 
-  GenerateInvite = flow(function * ({name, email, funds}) {
-    yield new Promise(resolve => setTimeout(resolve, 2000));
+  CreateShortURL = flow(function * (url) {
+    try {
+      // Normalize URL
+      url = new URL(url).toString();
+      const {url_mapping} = yield (yield fetch("https://elv.lv/tiny/create", {method: "POST", body: url})).json();
+      return url_mapping.shortened_url;
+    } catch (error) {
+      this.Log(error, true);
+    }
+  });
+
+  GenerateInvite = flow(function * ({name, email, funds=0.1}) {
+    /*
+    const response = yield this.rootStore.client.MakeAuthServiceRequest({
+      path: UrlJoin("as", "faucet", "get_tenant", this.tenantContractId)
+    });
+
+    console.log(response);
+    return;
+
+
+    const body = { eth_amount: funds, ts: Date.now() };
+    const token = yield this.rootStore.client.Sign(JSON.stringify(body));
+    console.log(body, token);
+    const response = yield this.rootStore.client.MakeAuthServiceRequest({
+      path: UrlJoin("as", "faucet", "add_otp", this.tenantContractId),
+      method: "POST",
+      body,
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    console.log(response);
+    return;
+
+     */
+
 
     const id = Utils.B58(UUIDParse(UUID()));
 
@@ -376,6 +412,8 @@ class TenantStore {
     let url = new URL(window.location.origin);
     url.pathname = "/onboard";
     url.searchParams.set("obp", params);
+
+    url = yield this.CreateShortURL(url.toString());
 
     yield this.rootStore.walletClient.PushNotification({
       tenantId: this.tenantContractId,
