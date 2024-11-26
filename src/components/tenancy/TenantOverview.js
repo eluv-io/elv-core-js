@@ -146,7 +146,7 @@ const TenantOverview = observer(() => {
 
   return (
     <div className={S("tenant-page")}>
-      <div className={S("header", "tenant-page__header")}>Overview</div>
+      <div className={S("header-text", "tenant-page__header")}>Overview</div>
 
       <Paper
         withBorder

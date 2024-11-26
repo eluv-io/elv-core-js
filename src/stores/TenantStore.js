@@ -1,5 +1,5 @@
 import {flow, makeAutoObservable, runInAction} from "mobx";
-import {ElvClient, Utils} from "@eluvio/elv-client-js";
+import {Utils} from "@eluvio/elv-client-js";
 import {v4 as UUID, parse as UUIDParse} from "uuid";
 import UrlJoin from "url-join";
 
@@ -369,32 +369,18 @@ class TenantStore {
   });
 
   GenerateInvite = flow(function * ({name, email, funds=0.1}) {
-    /*
-    const response = yield this.rootStore.client.MakeAuthServiceRequest({
-      path: UrlJoin("as", "faucet", "get_tenant", this.tenantContractId)
-    });
-
-    console.log(response);
-    return;
-
-
     const body = { eth_amount: funds, ts: Date.now() };
     const token = yield this.rootStore.client.Sign(JSON.stringify(body));
-    console.log(body, token);
-    const response = yield this.rootStore.client.MakeAuthServiceRequest({
-      path: UrlJoin("as", "faucet", "add_otp", this.tenantContractId),
-      method: "POST",
-      body,
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-
-    console.log(response);
-    return;
-
-     */
-
+    const { otp_id } = yield this.rootStore.client.utils.ResponseToJson(
+      this.rootStore.client.MakeAuthServiceRequest({
+        path: UrlJoin("as", "faucet", "add_otp", this.tenantContractId),
+        method: "POST",
+        body,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+    );
 
     const id = Utils.B58(UUIDParse(UUID()));
 
@@ -405,7 +391,7 @@ class TenantStore {
         email,
         adminAddress: this.rootStore.accountsStore.currentAccountAddress,
         tenantContractId: this.tenantContractId,
-        faucetToken: "asd"
+        faucetToken: otp_id
       })
     );
 
@@ -448,15 +434,12 @@ class TenantStore {
   }) {
     const address = this.rootStore.accountsStore.currentAccountAddress;
 
-    // TODO: Implement faucet
-    const wallet = this.client.GenerateWallet();
-    const fundedClient = yield ElvClient.FromConfigurationUrl({configUrl: EluvioConfiguration["config-url"]});
-    const fundedSigner = wallet.AddAccount({privateKey: "0x89eb99fe9ce236af2b6e1db964320534ef6634127ecdeb816f6e4c72bc72bcec"});
-
-    fundedClient.SetSigner({signer: fundedSigner});
-    yield fundedClient.SendFunds({
-      recipient: address,
-      ether: 0.15
+    yield this.rootStore.client.MakeAuthServiceRequest({
+      path: UrlJoin("as", "faucet", "claim_otp", faucetToken),
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${this.rootStore.walletClient.AuthToken()}`
+      }
     });
 
     // Ensure user wallet contract is created

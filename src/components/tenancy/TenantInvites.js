@@ -132,7 +132,7 @@ const TenantInvites = observer(() => {
     <>
       { showInviteModal ? <TenantInviteModal Close={() => setShowInviteModal(false)} /> : null }
       <div className={S("tenant-page")}>
-        <div className={S("header", "tenant-page__header")}>User Invitations</div>
+        <div className={S("header-text", "tenant-page__header")}>User Invitations</div>
         <Group align="center" justify="space-between" wrap="nowrap" w={500} pr={10}>
           <Tabs h="max-content" variant="pills" color="gray.6" value={tab} onChange={newTab => setTab(newTab)}>
             <Tabs.List grow>

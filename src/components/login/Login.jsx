@@ -115,7 +115,7 @@ export const LoginGateModal = observer(({Close}) => {
       withCloseButton={false}
     >
       <div className={S("login-modal")}>
-        <div className={S("header")}>
+        <div className={S("header-text")}>
           <img src={EluvioLogo} className={S("header__logo")} />
           <div className={S("header__title")}>
             Content Fabric
@@ -333,6 +333,24 @@ const OnboardForm = observer(({onboardParams, Close}) => {
   const [finished, setFinished] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
+  if(finished) {
+    return (
+      <div className={S("content", "onboard")}>
+        <div className={S("header-text")}>
+          Account Setup Complete
+        </div>
+        <Text my="xl" ta="center" className={S("message")}>
+          Your account is now set up. Your administrator has been notified in order to grant appropriate permissions.
+        </Text>
+        <div className={S("actions")}>
+          <Button onClick={() => Close("/profile")} className={S("button")}>
+            Continue
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   if(submitting) {
     return (
       <div className={S("content", "onboard")}>
@@ -373,24 +391,6 @@ const OnboardForm = observer(({onboardParams, Close}) => {
     );
   }
 
-  if(finished) {
-    return (
-      <div className={S("content", "onboard")}>
-        <div className={S("header")}>
-          Account Setup Complete
-        </div>
-        <Text my="xl" ta="center" className={S("message")}>
-          Your account is now set up. Your administrator has been notified in order to grant appropriate permissions.
-        </Text>
-        <div className={S("actions")}>
-          <Button onClick={() => Close("/profile")} className={S("button")}>
-            Continue
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
   const Submit = async () => {
     try {
       setSubmitting(true);
@@ -413,7 +413,7 @@ const OnboardForm = observer(({onboardParams, Close}) => {
 
   return (
     <div className={S("content", "onboard")}>
-      <div className={S("header")}>
+      <div className={S("header-text")}>
         Set Up Your Account
       </div>
       <Group my="md" justify="center">
@@ -515,7 +515,7 @@ const LoginModal = observer(({Close}) => {
       }}
     >
       <div className={S("login-modal")}>
-        <div className={S("header")}>
+        <div className={S("header-text")}>
           <img src={EluvioLogo} className={S("header__logo")}/>
           <div className={S("header__title")}>
             Content Fabric

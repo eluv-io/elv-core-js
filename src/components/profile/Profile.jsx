@@ -300,7 +300,7 @@ const Profile = observer(() => {
         <ProfileName />
       </Group>
       <div className={S("profile")}>
-        <div className={S("header", "profile__header")}>
+        <div className={S("header-text", "profile__header")}>
           Account Details
         </div>
 

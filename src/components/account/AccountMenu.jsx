@@ -16,7 +16,6 @@ import SwitchAccountsIcon from "../../static/icons/switch-accounts";
 import ProfileIcon from "../../static/icons/User";
 import TransferFundsIcon from "../../static/icons/dollar-sign";
 import TenancyIcon from "../../static/icons/settings";
-import MenuIcon from "../../static/icons/menu";
 
 export const AccountSelector = observer(({center, className=""}) => {
   const combobox = useCombobox();
@@ -170,7 +169,7 @@ const HeaderProfile = observer(() => {
     const profileImage = accountsStore.ResizeImage(accountsStore.currentAccount.imageUrl, 200) || DefaultAccountImage;
 
     return (
-      <Popover opened={showMenu} onChange={setShowMenu} offset={10}>
+      <Popover opened={showMenu} onChange={setShowMenu} offset={15}>
         <Popover.Target>
           <UnstyledButton onClick={() => setShowMenu(!showMenu)} className={S("header-profile__content")}>
             <div className={S("round-image", "header-profile__image")}>
@@ -190,12 +189,6 @@ const HeaderProfile = observer(() => {
                     Tenant: {accountsStore.currentAccount.tenantName}
                   </div>
               }
-            </div>
-            <div className={S("header-profile__icon-button")}>
-              <ImageIcon
-                icon={MenuIcon}
-                className={S("header-profile__image", "header-profile__menu-icon", showMenu ? "header-profile__menu-icon--active" : "")}
-              />
             </div>
           </UnstyledButton>
         </Popover.Target>

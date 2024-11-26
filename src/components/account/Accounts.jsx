@@ -125,7 +125,7 @@ const Accounts = observer(() => {
     <div className="page-content">
       <div className={S("accounts-page")}>
         <div className={S("add-account")}>
-          <div className={S("header")}>Add/Switch Accounts</div>
+          <div className={S("header-text")}>Add/Switch Accounts</div>
           <ButtonWithLoader
             onClick={async () => {
               try {

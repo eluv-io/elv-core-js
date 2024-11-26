@@ -244,7 +244,7 @@ const OryForm = observer(({onboardParams, userData, isLoginGate, setClosable, Cl
         </button>
       );
 
-      if(accountsStore.hasAccount) {
+      if(!onboardParams && accountsStore.hasAccount) {
         additionalContent.push(
           <Link
             to="/accounts"

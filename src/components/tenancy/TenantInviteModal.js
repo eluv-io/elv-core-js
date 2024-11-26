@@ -12,7 +12,7 @@ const S = CreateModuleClassMatcher(TenantStyles);
 const TenantInviteModal = observer(({existingInviteId="", Close}) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [funds, setFunds] = useState(1);
+  const [funds, setFunds] = useState(0.1);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(undefined);
 
@@ -31,6 +31,7 @@ const TenantInviteModal = observer(({existingInviteId="", Close}) => {
 
       Close();
     } catch (error) {
+      tenantStore.Log(error, true);
       setError(error);
     } finally {
       setSubmitting(false);

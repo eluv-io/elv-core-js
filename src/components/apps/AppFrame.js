@@ -304,9 +304,9 @@ const AppFrameWrapper = observer(() => {
     rootStore.SetActiveApp(app);
 
     return () => rootStore.SetActiveApp(undefined);
-  }, []);
+  }, [app]);
 
-  return <AppFrame app={app} key={rootStore.accountsStore.currentAccountAddress} />;
+  return <AppFrame app={app} key={`${app}-${rootStore.accountsStore.currentAccountAddress}`} />;
 });
 
 export default AppFrameWrapper;

@@ -37,7 +37,7 @@ const TenantUsers = observer(() => {
     <>
       { showPermissionsModal ? <TenantUserPermissionsModal address={showPermissionsModal} Close={() => setShowPermissionsModal(false)} /> : null }
       <div className={S("tenant-page")}>
-        <div className={S("header", "tenant-page__header")}>Manage Users</div>
+        <div className={S("header-text", "tenant-page__header")}>Manage Users</div>
         <Group>
           <Tabs variant="pills" color="gray.6" value={tab} onChange={newTab => setTab(newTab)}>
             <Tabs.List grow>
