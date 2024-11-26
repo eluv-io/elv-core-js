@@ -3,14 +3,13 @@ import AccountMenuStyles from "../../static/stylesheets/modules/account-menu.mod
 import {observer} from "mobx-react";
 import {CreateModuleClassMatcher, JoinClassNames} from "../../Utils";
 import React, {useEffect, useState} from "react";
-import {ButtonWithLoader, ImageIcon} from "../Misc";
+import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "../Misc";
 import {accountsStore, tenantStore} from "../../stores";
 import {Link} from "react-router-dom";
 import {Combobox, Popover, UnstyledButton, useCombobox} from "@mantine/core";
 
 const S = CreateModuleClassMatcher(AccountMenuStyles);
 
-import DefaultAccountImage from "../../static/icons/User.svg";
 import AppsIcon from "../../static/icons/apps";
 import SwitchAccountsIcon from "../../static/icons/switch-accounts";
 import ProfileIcon from "../../static/icons/User";
@@ -24,14 +23,14 @@ export const AccountSelector = observer(({center, className=""}) => {
     .filter(address => address !== accountsStore.currentAccountAddress)
     .map(address => {
       const account = accountsStore.accounts[address];
-      const profileImage = accountsStore.ResizeImage(account.imageUrl, 200) || DefaultAccountImage;
+      const profileImage = accountsStore.ResizeImage(account.imageUrl, 200);
 
       return (
         <Combobox.Option value={address} key={address}>
           <div className={S("round-image", "account-selector__image")}>
             <ImageIcon
               icon={profileImage}
-              alternateIcon={DefaultAccountImage}
+              alternateIcon={DefaultProfileImage(account)}
             />
           </div>
           <div className={S("account-selector__account")}>
@@ -49,7 +48,7 @@ export const AccountSelector = observer(({center, className=""}) => {
       );
     });
 
-  const profileImage = accountsStore.ResizeImage(accountsStore?.currentAccount?.imageUrl, 200) || DefaultAccountImage;
+  const profileImage = accountsStore.ResizeImage(accountsStore?.currentAccount?.imageUrl, 200);
 
   return (
     <Combobox
@@ -89,7 +88,7 @@ export const AccountSelector = observer(({center, className=""}) => {
                 <div className={S("round-image", "account-selector__image")}>
                   <ImageIcon
                     icon={profileImage}
-                    alternateIcon={DefaultAccountImage}
+                    alternateIcon={DefaultProfileImage(accountsStore.currentAccount)}
                   />
                 </div>
                 <div className={S("account-selector__account")}>
@@ -166,16 +165,19 @@ const HeaderProfile = observer(() => {
       </Link>
     );
   } else {
-    const profileImage = accountsStore.ResizeImage(accountsStore.currentAccount.imageUrl, 200) || DefaultAccountImage;
+    const profileImage = accountsStore.ResizeImage(accountsStore.currentAccount.imageUrl, 200);
 
     return (
       <Popover opened={showMenu} onChange={setShowMenu} offset={15}>
         <Popover.Target>
-          <UnstyledButton onClick={() => setShowMenu(!showMenu)} className={S("header-profile__content")}>
+          <UnstyledButton
+            onClick={() => setShowMenu(!showMenu)}
+            className={S("header-profile__content", showMenu ? "header-profile__content--active" : "")}
+          >
             <div className={S("round-image", "header-profile__image")}>
               <ImageIcon
                 icon={profileImage}
-                alternateIcon={DefaultAccountImage}
+                alternateIcon={DefaultProfileImage(accountsStore.currentAccount)}
               />
             </div>
             <div className={S("header-profile__account")}>

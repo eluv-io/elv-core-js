@@ -8,10 +8,9 @@ import {tenantStore} from "../../stores";
 
 import {useDebouncedValue} from "@mantine/hooks";
 import TenantUserPermissionsModal from "./TenantUserPermissionsModal";
-import {ImageIcon} from "../Misc";
+import {DefaultProfileImage, ImageIcon} from "../Misc";
 import {CreateModuleClassMatcher} from "../../Utils";
 
-import DefaultAccountImage from "../../static/icons/User.svg";
 import PermissionsIcon from "../../static/icons/sliders";
 import FundsIcon from "../../static/icons/elv-token.png";
 
@@ -27,7 +26,14 @@ const TenantUsers = observer(() => {
     tenantStore.LoadTenantUsers();
   }, []);
 
-  const users = tab === "admins" ? tenantStore.tenantAdmins : tenantStore.tenantUsers;
+  const users = ((tab === "admins" ?
+    tenantStore.tenantAdmins :
+    tenantStore.tenantUsers
+  ) || [])
+    .filter(address =>
+      !debouncedFilter ||
+      (tenantStore.users[address]?.name || "").toLowerCase().includes(debouncedFilter.toLowerCase())
+    );
 
   if(!users) {
     return <Loader className={S("page-loader")} />;
@@ -38,24 +44,21 @@ const TenantUsers = observer(() => {
       { showPermissionsModal ? <TenantUserPermissionsModal address={showPermissionsModal} Close={() => setShowPermissionsModal(false)} /> : null }
       <div className={S("tenant-page")}>
         <div className={S("header-text", "tenant-page__header")}>Manage Users</div>
-        <Group>
+        <Group align="center" gap={30} w={1000} mb="xl">
           <Tabs variant="pills" color="gray.6" value={tab} onChange={newTab => setTab(newTab)}>
             <Tabs.List grow>
               <Tabs.Tab w={125} value="users">Users</Tabs.Tab>
               <Tabs.Tab w={125} value="admins">Admins</Tabs.Tab>
             </Tabs.List>
           </Tabs>
-        </Group>
-        <div className={S("tenant-users")}>
           <TextInput
-            mt="xl"
-            mb="md"
             value={filter}
             onChange={event => setFilter(event.target.value)}
             placeholder="Filter Users"
-            maw={500}
             className={S("tenant-users__filter")}
           />
+        </Group>
+        <div className={S("tenant-users")}>
           <div className={S("tenant-users__table-container")}>
             <Table w="100%" withBorder className={S("tenant-users__table")}>
               <thead>
@@ -68,57 +71,53 @@ const TenantUsers = observer(() => {
               </thead>
               <tbody>
                 {
-                  (users || [])
-                    .filter(address =>
-                      !debouncedFilter ||
-                    (tenantStore.users[address]?.name || "").toLowerCase().includes(debouncedFilter.toLowerCase())
-                    )
-                    .map(address => {
-                      const user = tenantStore.users[address];
+                  users.map(address => {
+                    const user = tenantStore.users[address];
 
-                      return (
-                        <tr>
-                          <td>
-                            <Group>
-                              <div className={S("round-image", "tenant-users__image")}>
-                                <ImageIcon
-                                  icon={user.profileImage || DefaultAccountImage}
-                                  alternateIcon={DefaultAccountImage}
-                                  label="Profile Image"
-                                />
-                              </div>
-                              <Text fw={500}>
-                                {user.name || ""}
-                              </Text>
-                            </Group>
-                          </td>
-                          <td>
-                            <Text fz="xs">
-                              {address}
+                    return (
+                      <tr>
+                        <td>
+                          <Group>
+                            <div className={S("round-image", "tenant-users__image")}>
+                              <ImageIcon
+                                icon={user.profileImage || DefaultProfileImage(user)}
+                                alternateIcon={DefaultProfileImage(user)}
+                                label="Profile Image"
+                              />
+                            </div>
+                            <Text fw={600}>
+                              {user.name || ""}
                             </Text>
-                          </td>
-                          <td>
-                            <Group gap={3} miw={100}>
-                              <ImageIcon icon={FundsIcon} className={S("icon")}/>
-                              {user.balance || "0.0"}
-                            </Group>
-                          </td>
-                          <td>
-                            <UnstyledButton
-                              title="Manage User Permissions"
-                              className={S("icon-button")}
-                              onClick={() => setShowPermissionsModal(address)}
-                            >
-                              <ImageIcon icon={PermissionsIcon}/>
-                            </UnstyledButton>
-                          </td>
-                        </tr>
-                      );
-                    })
+                          </Group>
+                        </td>
+                        <td>
+                          <Text fz="sm">
+                            {address}
+                          </Text>
+                        </td>
+                        <td>
+                          <Group gap={3} miw={100}>
+                            <ImageIcon icon={FundsIcon} className={S("icon")}/>
+                            {user.balance || "0.0"}
+                          </Group>
+                        </td>
+                        <td>
+                          <UnstyledButton
+                            title="Manage User Permissions"
+                            className={S("icon-button")}
+                            onClick={() => setShowPermissionsModal(address)}
+                          >
+                            <ImageIcon icon={PermissionsIcon}/>
+                          </UnstyledButton>
+                        </td>
+                      </tr>
+                    );
+                  })
                 }
               </tbody>
             </Table>
           </div>
+          <Text fz="sm" ta="center" mt="sm">{users.length} User{users.length === 1 ? "" : "s"}</Text>
         </div>
       </div>
     </>

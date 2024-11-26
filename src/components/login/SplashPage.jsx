@@ -48,7 +48,11 @@ const Actions = observer(() => {
           onClick={() => navigate(accountsStore.hasAccount ? "/apps" : "/login")}
           className={S("splash-page__action")}
         >
-          SIGN IN
+          {
+            accountsStore.hasAccount ?
+              "JUMP BACK IN" :
+              "SIGN IN"
+          }
         </Button>
       </div>
       <div className={S("splash-page__actions")}>

@@ -2,16 +2,15 @@ import ProfileStyles from "../../static/stylesheets/modules/profile.module.scss"
 
 import {observer} from "mobx-react";
 import {rootStore, accountsStore, tenantStore} from "../../stores";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import {CreateModuleClassMatcher} from "../../Utils";
-import {ButtonWithLoader, CopyButton, ImageIcon} from "../Misc";
+import {ButtonWithLoader, CopyButton, DefaultProfileImage, ImageIcon} from "../Misc";
 
 
 import {Button, Group, Loader, Text, TextInput, Title, UnstyledButton} from "@mantine/core";
 import {useNavigate} from "react-router-dom";
 import UrlJoin from "url-join";
 
-import DefaultAccountImage from "../../static/icons/User.svg";
 import EditIcon from "../../static/icons/edit";
 import CheckIcon from "../../static/icons/Check";
 import XIcon from "../../static/icons/X";
@@ -37,8 +36,8 @@ const ProfileImage = observer(() => {
                 <Loader color="gray.2" size="xl" />
               </div> :
               <ImageIcon
-                icon={accountsStore.currentAccount.imageUrl || DefaultAccountImage}
-                alternateIcon={DefaultAccountImage}
+                icon={accountsStore.currentAccount.imageUrl}
+                alternateIcon={DefaultProfileImage(accountsStore.currentAccount)}
               />
           }
         </div>

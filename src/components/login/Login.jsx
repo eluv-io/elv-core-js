@@ -23,8 +23,7 @@ import OryForm from "../account/OryForm";
 import EluvioLogo from "../../static/images/Main_Logo_Light";
 import {Link, useNavigate} from "react-router-dom";
 import {AccountSelector} from "../account/AccountMenu";
-import {ButtonWithLoader, ImageIcon} from "../Misc";
-import DefaultAccountImage from "../../static/icons/User.svg";
+import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "../Misc";
 import EditIcon from "../../static/icons/edit.svg";
 
 const S = CreateModuleClassMatcher(LoginStyles);
@@ -115,7 +114,7 @@ export const LoginGateModal = observer(({Close}) => {
       withCloseButton={false}
     >
       <div className={S("login-modal")}>
-        <div className={S("header-text")}>
+        <div className={S("header")}>
           <img src={EluvioLogo} className={S("header__logo")} />
           <div className={S("header__title")}>
             Content Fabric
@@ -359,8 +358,8 @@ const OnboardForm = observer(({onboardParams, Close}) => {
             <div className={S("profile-image__image-wrapper")}>
               <div className={S("round-image", "profile-image__image")}>
                 <ImageIcon
-                  icon={profileImageUrl || DefaultAccountImage}
-                  alternateIcon={DefaultAccountImage}
+                  icon={profileImageUrl}
+                  alternateIcon={DefaultProfileImage(name || onboardParams.email)}
                 />
               </div>
             </div>
@@ -421,8 +420,8 @@ const OnboardForm = observer(({onboardParams, Close}) => {
           <div className={S("profile-image__image-wrapper")}>
             <div className={S("round-image", "profile-image__image")}>
               <ImageIcon
-                icon={profileImageUrl || DefaultAccountImage}
-                alternateIcon={DefaultAccountImage}
+                icon={profileImageUrl}
+                alternateIcon={DefaultProfileImage(name || onboardParams.email)}
               />
             </div>
             <UnstyledButton
@@ -515,7 +514,7 @@ const LoginModal = observer(({Close}) => {
       }}
     >
       <div className={S("login-modal")}>
-        <div className={S("header-text")}>
+        <div className={S("header")}>
           <img src={EluvioLogo} className={S("header__logo")}/>
           <div className={S("header__title")}>
             Content Fabric

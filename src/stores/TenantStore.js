@@ -259,7 +259,8 @@ class TenantStore {
     this.users[address] = {
       name: name.status === "fulfilled" && name.value || undefined,
       profileImage: profileImage.status === "fulfilled" && profileImage.value || undefined,
-      balance: balance.status === "fulfilled" && balance.value || undefined
+      balance: balance.status === "fulfilled" && balance.value || undefined,
+      address
     };
   });
 

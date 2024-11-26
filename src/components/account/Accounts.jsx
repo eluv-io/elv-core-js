@@ -8,12 +8,11 @@ import React, {useState} from "react";
 import {CreateModuleClassMatcher} from "../../Utils";
 
 import {Utils} from "@eluvio/elv-client-js";
-import {ButtonWithLoader, ImageIcon} from "../Misc";
+import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "../Misc";
 import {LoginGateModal} from "../login/Login";
 import {modals} from "@mantine/modals";
 
 import XIcon from "../../static/icons/X.svg";
-import DefaultAccountImage from "../../static/icons/User.svg";
 
 const S = CreateModuleClassMatcher(AccountStyles);
 
@@ -25,7 +24,7 @@ const Account = observer(({address}) => {
 
   if(!account) { return null; }
 
-  const profileImage = accountsStore.ResizeImage(account.imageUrl, 200) || DefaultAccountImage;
+  const profileImage = accountsStore.ResizeImage(account.imageUrl, 200);
   const accountLocked = !account.signer;
   const isCurrentAccount = Utils.EqualAddress(accountsStore.currentAccountAddress, account.address);
 
@@ -48,11 +47,12 @@ const Account = observer(({address}) => {
         <button
           title="Remove Account"
           onClick={() => modals.openConfirmModal({
-            title: `Remove ${account?.name || account?.email || "Account"}`,
-            children: <Text my="md">Are you sure you want to remove this account?</Text>,
+            title: "Remove Account",
+            children: <Text my="lg" ta="center">Are you sure you want to remove this account?</Text>,
             onConfirm: async () => await accountsStore.RemoveAccount(address),
             labels: { confirm: "Confirm", cancel: "Cancel" },
-            centered: true
+            centered: true,
+            withCloseButton: false
           })}
           className={S("remove-account")}
         >
@@ -62,7 +62,7 @@ const Account = observer(({address}) => {
         <div className={S("round-image", "image")}>
           <ImageIcon
             icon={profileImage}
-            alternateIcon={DefaultAccountImage}
+            alternateIcon={DefaultProfileImage(account)}
           />
         </div>
         <div className={S("text")}>

@@ -22,7 +22,7 @@ class RootStore {
   eluvioTenantId;
   l10n = LocalizationEN;
   pathname = location.pathname;
-  toastMessage = "Test Message";
+  toastMessage = "";
   showToastMessage = false;
 
   get darkMode() {

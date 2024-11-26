@@ -32,6 +32,7 @@ export const ImageIcon = ({icon, alternateIcon, title, label, useLoadingIndicato
   const [loading, setLoading] = React.useState(true);
 
   label = label || title;
+  icon = icon || alternateIcon;
 
   className = "image-icon " + (className || "");
 
@@ -98,4 +99,43 @@ export const CopyButton = ({value, className="", ...props}) => {
       <SVG src={CopyIcon} alt="Copy" />
     </button>
   );
+};
+
+const HSLColor = (str, s, l) => {
+  let hash = 0;
+  for(let i=0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  return `hsl(${Math.abs(hash % 360)}, ${s}%, ${l}%)`;
+};
+
+const canvas = document.createElement("canvas");
+let profileImageUrls = {};
+export const DefaultProfileImage = ({name, email, address}={}) => {
+  name = name || email || "";
+
+  if(!profileImageUrls[name]) {
+    const context = canvas.getContext("2d");
+
+    canvas.width = 200;
+    canvas.height = 200;
+
+    const gradient = context.createLinearGradient(0, 0, context.canvas.width, 0);
+    gradient.addColorStop(0, HSLColor(name || address, 100, 30));
+    gradient.addColorStop(1, HSLColor(name || address, 100, 20));
+
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    context.font = "400 100px Helvetica";
+    context.fillStyle = "#FFFFFF";
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+    context.fillText(name.toUpperCase().charAt(0), canvas.width / 2, canvas.height / 2 + 10);
+
+    profileImageUrls[name] = canvas.toDataURL("image/png");
+  }
+
+  return profileImageUrls[name];
 };

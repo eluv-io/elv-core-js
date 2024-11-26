@@ -5,6 +5,8 @@ import {rootStore, accountsStore} from "../../stores";
 import {Utils} from "@eluvio/elv-client-js";
 import {Link, useNavigate} from "react-router-dom";
 import {CreateModuleClassMatcher} from "../../Utils";
+import {ImageIcon} from "../Misc";
+import FundsIcon from "../../static/icons/elv-token.png";
 
 const S = CreateModuleClassMatcher();
 
@@ -88,6 +90,13 @@ const TransferForm = observer(() => {
               error={!amount ? true : (insufficientFunds ? "Insufficient Funds" : undefined)}
               mb="md"
               label="Amount"
+              description={
+                <Group gap={0}>
+                  <Text fz={12} fw={500} mr={5}>Available Balance:</Text>
+                  <ImageIcon icon={FundsIcon} className={S("icon", "icon--small")} />
+                  <Text fz={12} fw={600}>{accountsStore.currentAccount.balance || "0.0"}</Text>
+                </Group>
+              }
               value={amount}
               min={0}
               step={0.05}
@@ -101,6 +110,7 @@ const TransferForm = observer(() => {
                 Submit();
               }}
             />
+
             <Group mt={50} />
             <Group justify="right" wrap="nowrap">
               <Button
@@ -108,11 +118,13 @@ const TransferForm = observer(() => {
                 type="button"
                 component={Link}
                 to="/accounts"
+                h={40}
                 w={150}
               >
                 Cancel
               </Button>
               <Button
+                h={40}
                 disabled={!valid}
                 loading={submitting}
                 type="button"

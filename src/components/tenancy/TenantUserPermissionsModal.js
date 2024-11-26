@@ -48,7 +48,7 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
     >
       {
         !groups || !permissions  ?
-          <Loader className={S("page-loader")} /> :
+          <Loader className={S("page-loader", "page-loader--short")} /> :
           <form onSubmit={() => {}}>
             <Table mt="xl">
               <thead>

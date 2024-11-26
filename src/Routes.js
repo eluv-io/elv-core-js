@@ -14,6 +14,11 @@ import TenantUsers from "./components/tenancy/TenantUsers";
 import Login, {LoginGate} from "./components/login/Login";
 import Profile from "./components/profile/Profile";
 import SplashPage from "./components/login/SplashPage";
+import {ImageIcon} from "./components/Misc";
+
+import OverviewIcon from "./static/icons/overview";
+import ManageIcon from "./static/icons/settings";
+import InviteIcon from "./static/icons/add-user";
 
 const GatedRoute = ({Component}) => {
   return (
@@ -47,9 +52,18 @@ const ContentNav = observer(() => {
             "Tenant"
           }
         </h2>
-        <NavLink to="/tenancy" end className="side-nav__link">Overview</NavLink>
-        <NavLink to="/tenancy/manage" end className="side-nav__link">Manage</NavLink>
-        <NavLink to="/tenancy/invites" end className="side-nav__link">Invite</NavLink>
+        <NavLink to="/tenancy" end className="side-nav__link">
+          <ImageIcon icon={OverviewIcon} />
+          <span>Overview</span>
+        </NavLink>
+        <NavLink to="/tenancy/manage" end className="side-nav__link">
+          <ImageIcon icon={ManageIcon} />
+          <span>Manage</span>
+        </NavLink>
+        <NavLink to="/tenancy/invites" end className="side-nav__link">
+          <ImageIcon icon={InviteIcon} />
+          <span>Invite</span>
+        </NavLink>
       </nav>
       <div className="content">
         <Outlet />
