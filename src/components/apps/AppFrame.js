@@ -173,11 +173,9 @@ class AppFrame extends React.Component {
         "*"
       );
     } catch (error) {
-      /* eslint-disable no-console */
-      console.error("Error responding to message");
-      console.error(responseMessage);
-      console.error(error);
-      /* eslint-enable no-console */
+      rootStore.Log("Error responding to message", true);
+      rootStore.Log(responseMessage, true);
+      rootStore.Log(error, true);
     }
 
     this.UpdateBalance();

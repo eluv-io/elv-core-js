@@ -11,7 +11,7 @@ import AppRoutes from "./Routes";
 import {Button, Group, Loader, Text} from "@mantine/core";
 import ScrollToTop from "./ScrollToTop";
 import Footer from "./Footer";
-import {CreateModuleClassMatcher} from "./Utils";
+import {CreateModuleClassMatcher} from "./utils/Utils";
 
 const S = CreateModuleClassMatcher();
 

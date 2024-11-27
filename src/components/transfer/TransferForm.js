@@ -1,10 +1,10 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react";
 import {Select, TextInput, NumberInput, Button, Group, Text} from "@mantine/core";
-import {rootStore, accountsStore} from "../../stores";
+import {rootStore, accountsStore, tenantStore} from "../../stores";
 import {Utils} from "@eluvio/elv-client-js";
 import {Link, useNavigate} from "react-router-dom";
-import {CreateModuleClassMatcher} from "../../Utils";
+import {CreateModuleClassMatcher} from "../../utils/Utils";
 import {ImageIcon} from "../Misc";
 import FundsIcon from "../../static/icons/elv-token.png";
 
@@ -23,6 +23,21 @@ const TransferForm = observer(() => {
   const [amount, setAmount] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(undefined);
+
+  useEffect(() => {
+    if(!accountsStore.isTenantAdmin) { return; }
+
+    tenantStore.LoadTenantFundingAccount({
+      tenantContractId: accountsStore.currentAccount.tenantContractId
+    });
+  }, [accountsStore.isTenantAdmin]);
+
+  if(accountsStore.isTenantAdmin && tenantStore.tenantFundingAccount) {
+    accounts.unshift({
+      label: "Tenant Funding Address",
+      value: tenantStore.tenantFundingAccount.tenant_funding_address
+    });
+  }
 
   accounts.unshift({label: "[Other]", value: ""});
 
@@ -48,8 +63,7 @@ const TransferForm = observer(() => {
       rootStore.SetToastMessage("Funds transferred successfully");
       navigate("/accounts");
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
+      rootStore.Log(error, true);
       setSubmitting(false);
       setError(error.toString());
     } finally {
@@ -93,7 +107,7 @@ const TransferForm = observer(() => {
               description={
                 <Group gap={0}>
                   <Text fz={12} fw={500} mr={5}>Available Balance:</Text>
-                  <ImageIcon icon={FundsIcon} className={S("icon", "icon--small")} />
+                  <ImageIcon icon={FundsIcon} className={S("icon", "icon--small", "icon--faded")} />
                   <Text fz={12} fw={600}>{accountsStore.currentAccount.balance || "0.0"}</Text>
                 </Group>
               }

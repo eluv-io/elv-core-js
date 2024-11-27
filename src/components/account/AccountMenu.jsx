@@ -1,7 +1,7 @@
 import AccountMenuStyles from "../../static/stylesheets/modules/account-menu.module.scss";
 
 import {observer} from "mobx-react";
-import {CreateModuleClassMatcher, JoinClassNames} from "../../Utils";
+import {CreateModuleClassMatcher, JoinClassNames} from "../../utils/Utils";
 import React, {useEffect, useState} from "react";
 import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "../Misc";
 import {accountsStore, tenantStore} from "../../stores";

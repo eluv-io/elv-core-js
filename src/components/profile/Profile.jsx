@@ -3,7 +3,7 @@ import ProfileStyles from "../../static/stylesheets/modules/profile.module.scss"
 import {observer} from "mobx-react";
 import {rootStore, accountsStore, tenantStore} from "../../stores";
 import React, {useRef, useState} from "react";
-import {CreateModuleClassMatcher} from "../../Utils";
+import {CreateModuleClassMatcher} from "../../utils/Utils";
 import {ButtonWithLoader, CopyButton, DefaultProfileImage, ImageIcon} from "../Misc";
 
 
@@ -118,10 +118,12 @@ const ProfileName = observer(() => {
     <Group justify="center" mt={5}>
       <TextInput
         w={225}
+        ta="center"
         value={name}
         onChange={event => setName(event.target.value)}
         onKeyDown={event => event.key === "Enter" && Submit()}
         ml={60}
+        className={S("profile__name-input")}
       />
       <UnstyledButton key="submit" onClick={Submit} className={S("icon-button")}>
         {

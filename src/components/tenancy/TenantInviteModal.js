@@ -2,10 +2,11 @@ import TenantStyles from "../../static/stylesheets/modules/tenancy.module.scss";
 
 import {observer} from "mobx-react";
 import React, {useState} from "react";
-import {rootStore, accountsStore, tenantStore} from "../../stores";
+import {rootStore,  tenantStore} from "../../stores";
 import {Button, Group, Modal, NumberInput, Text, TextInput} from "@mantine/core";
-import {CreateModuleClassMatcher, ValidEmail} from "../../Utils";
-import {CopyButton} from "../Misc";
+import {CreateModuleClassMatcher, ValidEmail} from "../../utils/Utils";
+import {CopyButton, ImageIcon} from "../Misc";
+import FundsIcon from "../../static/icons/elv-token.png";
 
 const S = CreateModuleClassMatcher(TenantStyles);
 
@@ -16,8 +17,9 @@ const TenantInviteModal = observer(({existingInviteId="", Close}) => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(undefined);
 
-  const insufficientFunds = accountsStore.currentAccount.balance < funds + 0.05;
-  const valid = name && email && ValidEmail(email) && !insufficientFunds;
+  const fundingLimit = tenantStore.tenantFundingAccount?.per_top_up_limit || 0.2;
+  const insufficientFunds = tenantStore.tenantFunds < funds + 0.05;
+  const valid = name && email && ValidEmail(email) && !insufficientFunds && funds <= fundingLimit;
 
   const invite = existingInviteId && tenantStore.invites[existingInviteId];
 
@@ -85,9 +87,23 @@ const TenantInviteModal = observer(({existingInviteId="", Close}) => {
           }}
         />
         <NumberInput
-          error={!funds ? true : (insufficientFunds ? "Insufficient Funds" : undefined)}
+          error={
+            !funds ? true :
+              insufficientFunds ?
+                "Insufficient Funds" :
+                funds > fundingLimit ?
+                  `Limit: ${fundingLimit.toFixed(2)}` :
+                  undefined
+          }
           mb="md"
           label="Funds"
+          description={
+            <Group gap={0}>
+              <Text fz={12} fw={500} mr={2}>Limit:</Text>
+              <ImageIcon icon={FundsIcon} className={S("icon", "icon--small", "icon--faded")} />
+              <Text fz={12} fw={600}>{fundingLimit?.toFixed(2) || "0.0"}</Text>
+            </Group>
+          }
           value={funds}
           min={0}
           step={0.05}

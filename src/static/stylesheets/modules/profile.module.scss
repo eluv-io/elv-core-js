@@ -82,6 +82,12 @@
       width: 20px;
     }
   }
+
+  &__name-input {
+    input {
+      text-align: center;
+    }
+  }
 }
 
 .key {

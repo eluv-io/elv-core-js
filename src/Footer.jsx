@@ -2,7 +2,7 @@ import FooterStyles from "./static/stylesheets/modules/footer.module.scss";
 
 import React from "react";
 import {observer} from "mobx-react";
-import {CreateModuleClassMatcher} from "./Utils";
+import {CreateModuleClassMatcher} from "./utils/Utils";
 import {useLocation} from "react-router";
 
 const S = CreateModuleClassMatcher(FooterStyles);

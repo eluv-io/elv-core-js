@@ -2,7 +2,7 @@ import LoginStyles from "../../static/stylesheets/modules/login.module.scss";
 
 import React, {useEffect} from "react";
 import {observer} from "mobx-react";
-import {CreateModuleClassMatcher} from "../../Utils";
+import {CreateModuleClassMatcher} from "../../utils/Utils";
 
 import SplashBackground from "../../static/images/SplashBackground.jpg";
 import EluvioLogo from "../../static/images/Main_Logo_Light";

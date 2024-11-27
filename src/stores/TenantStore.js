@@ -7,6 +7,7 @@ class TenantStore {
   onboardParams;
 
   tenantMetadata = {};
+  tenantFundingAccounts = {};
 
   managedGroups;
   specialGroups = {
@@ -62,6 +63,14 @@ class TenantStore {
 
   get publicTenantMetadata() {
     return this.tenantMetadata[this.tenantContractId]?.public;
+  }
+
+  get tenantFundingAccount() {
+    return this.tenantFundingAccounts[this.rootStore.accountsStore.currentAccount?.tenantContractId];
+  }
+
+  get tenantFunds() {
+    return parseFloat(this.tenantFundingAccount?.funding_address_balance) || 0;
   }
 
   Reset() {
@@ -164,6 +173,29 @@ class TenantStore {
       this.Log("Failed to load tenant contract metadata for " + tenantContractId, true);
       this.Log(error, true);
     }
+  });
+
+  LoadTenantFundingAccount = flow(function * ({tenantContractId}={}) {
+    tenantContractId = tenantContractId || this.rootStore.accountsStore.currentAccount.tenantContractId;
+    if(!this.tenantFundingAccounts[tenantContractId]) {
+      this.tenantFundingAccounts[tenantContractId] = (yield this.rootStore.client.utils.ResponseToJson(
+        this.rootStore.client.MakeAuthServiceRequest({
+          path: UrlJoin("as", "faucet", "get_tenant", tenantContractId),
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${this.rootStore.walletClient.AuthToken()}`
+          }
+        })
+      ))?.tenant_record;
+    } else {
+      this.tenantFundingAccounts[tenantContractId].funding_address_balance = parseFloat(
+        yield this.rootStore.client.GetBalance({
+          address: this.tenantFundingAccounts[tenantContractId].tenant_funding_address
+        })
+      );
+    }
+
+    return this.tenantFundingAccounts[tenantContractId];
   });
 
   // Groups
@@ -416,7 +448,7 @@ class TenantStore {
     });
 
     this.rootStore.accountsStore.SendLoginEmail({
-      type: "create_account",
+      type: "send_invite_email",
       email,
       callbackUrl: url.toString()
     });
@@ -476,7 +508,7 @@ class TenantStore {
         email: this.rootStore.accountsStore.currentAccount?.email || email
       }
     });
-  })
+  });
 
   CompleteInvite = flow(function * ({id}) {
     const notifications = yield this.rootStore.walletClient.Notifications({

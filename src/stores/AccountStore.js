@@ -1,6 +1,6 @@
 import {flow, makeAutoObservable} from "mobx";
 import UrlJoin from "url-join";
-import {DownloadFromUrl} from "../Utils";
+import {DownloadFromUrl} from "../utils/Utils";
 import {Utils} from "@eluvio/elv-client-js";
 import {v4 as UUID, parse as ParseUUID} from "uuid";
 
@@ -99,7 +99,7 @@ class AccountStore {
     );
 
     this.CurrentOryAccountAddress();
-  })
+  });
 
   CurrentOryAccountAddress = flow(function * () {
     try {
@@ -184,21 +184,20 @@ class AccountStore {
     }
 
     this.currentOryAccountAddress = undefined;
-  })
+  });
 
   // Auth
   SendLoginEmail = flow(function * ({email, type, code, callbackUrl}) {
     try {
       const result = yield this.rootStore.client.utils.ResponseToJson(
         this.rootStore.client.authClient.MakeAuthServiceRequest({
-          path: UrlJoin("as", "wlt", "ory", type),
+          path: UrlJoin("as", "wlt", type === "send_invite_email" ? "" : "ory", type),
           method: "POST",
           queryParams: code ? { code } : {},
           body: {
             tenant: this.rootStore.eluvioTenantId,
             email,
-            callback_url: callbackUrl.toString(),
-            only_send_email: true
+            callback_url: callbackUrl.toString()
           },
           headers: type === "reset_password" ?
             {} :

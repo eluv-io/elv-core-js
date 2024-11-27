@@ -1,4 +1,4 @@
-import SharedStyles from "./static/stylesheets/modules/shared.module.scss";
+import SharedStyles from "../static/stylesheets/modules/shared.module.scss";
 
 export const JoinClassNames = (...cs) => cs.map(c => c || "").join(" ");
 

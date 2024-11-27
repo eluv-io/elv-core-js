@@ -4,7 +4,7 @@ import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react";
 import {Button, Checkbox, Group, Loader, Modal, Table, Text} from "@mantine/core";
 import {rootStore, tenantStore} from "../../stores";
-import {CreateModuleClassMatcher} from "../../Utils";
+import {CreateModuleClassMatcher} from "../../utils/Utils";
 
 const S = CreateModuleClassMatcher(TenancyStyles);
 

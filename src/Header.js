@@ -4,7 +4,7 @@ import React, {useState} from "react";
 import {observer} from "mobx-react";
 import {accountsStore, rootStore} from "./stores";
 import {Link} from "react-router-dom";
-import {CreateModuleClassMatcher} from "./Utils";
+import {CreateModuleClassMatcher} from "./utils/Utils";
 import {Popover, UnstyledButton} from "@mantine/core";
 import {ImageIcon} from "./components/Misc";
 import AppInfo from "./components/apps/AppInfo";

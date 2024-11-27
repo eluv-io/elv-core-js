@@ -5,7 +5,7 @@ import {accountsStore} from "../../stores";
 import {Button, FileButton, Group, Text} from "@mantine/core";
 import {useNavigate} from "react-router-dom";
 import React, {useState} from "react";
-import {CreateModuleClassMatcher} from "../../Utils";
+import {CreateModuleClassMatcher} from "../../utils/Utils";
 
 import {Utils} from "@eluvio/elv-client-js";
 import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "../Misc";

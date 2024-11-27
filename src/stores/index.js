@@ -83,8 +83,7 @@ class RootStore {
 
       this.eluvioTenantId = yield this.client.ContentObjectTenantId({objectId: this.walletClient.mainSiteId});
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
+      this.Log(error, true);
       this.configError = true;
       return;
     }
@@ -147,10 +146,8 @@ class RootStore {
       }
     } catch (error) {
       this.configError = true;
-      // eslint-disable-next-line no-console
-      console.error("Ethereum Check Failed:");
-      // eslint-disable-next-line no-console
-      console.error(error);
+      this.Log("Ethereum Check Failed:", true);
+      this.Log(error, true);
     }
   });
 
@@ -192,8 +189,7 @@ class RootStore {
 
       this.searchClient = client;
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
+      this.Log(error, true);
     }
 
     try {
@@ -213,10 +209,9 @@ class RootStore {
       });
     } catch (error) {
       this.configError = true;
-      // eslint-disable-next-line no-console
-      console.error("Ethereum Check Failed:");
-      // eslint-disable-next-line no-console
-      console.error(error);
+
+      this.Log("Ethereum Check Failed:", true);
+      this.Log(error, true);
     }
   });
 

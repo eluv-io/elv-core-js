@@ -15,10 +15,11 @@ import {
 } from "@mantine/core";
 import {rootStore, accountsStore, tenantStore} from "../../stores";
 import {ImageIcon} from "../Misc";
-import {CreateModuleClassMatcher, JoinClassNames} from "../../Utils";
+import {CreateModuleClassMatcher, JoinClassNames} from "../../utils/Utils";
 
 import TenancyIcon from "../../static/icons/users";
 import EditIcon from "../../static/icons/edit.svg";
+import FundsIcon from "../../static/icons/elv-token";
 
 const S = CreateModuleClassMatcher(TenantStyles);
 
@@ -134,6 +135,7 @@ const TenantOverview = observer(() => {
 
   useEffect(() => {
     tenantStore.LoadPublicTenantMetadata();
+    tenantStore.LoadTenantFundingAccount({tenantContractId: accountsStore.currentAccount.tenantContractId});
   }, [accountsStore.currentAccount.tenantContractId]);
 
   if(editing) {
@@ -181,6 +183,25 @@ const TenantOverview = observer(() => {
           </div>
         </Group>
       </Paper>
+
+      {
+        !tenantStore.tenantFundingAccount ? null :
+          <Paper
+            withBorder
+            p="md"
+            pr={60}
+            w={350}
+            mt="md"
+            className={S("tenant-overview")}
+          >
+            <Title fw={500} order={4}>Tenant Funds</Title>
+            <Text fz={12}>{tenantStore.tenantFundingAccount.tenant_funding_address}</Text>
+            <Group gap={5} mt="sm">
+              <ImageIcon icon={FundsIcon} className={S("icon")} />
+              <Text fz={14}>{tenantStore.tenantFunds?.toFixed(2)}</Text>
+            </Group>
+          </Paper>
+      }
     </div>
   );
 });

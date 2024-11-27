@@ -15,7 +15,7 @@ import {
   TextInput
 } from "@mantine/core";
 import React, {useEffect, useRef, useState} from "react";
-import {CreateModuleClassMatcher} from "../../Utils";
+import {CreateModuleClassMatcher} from "../../utils/Utils";
 import KeyForm from "../account/KeyForm";
 import {Navigate} from "react-router";
 import OryForm from "../account/OryForm";
@@ -24,7 +24,9 @@ import EluvioLogo from "../../static/images/Main_Logo_Light";
 import {Link, useNavigate} from "react-router-dom";
 import {AccountSelector} from "../account/AccountMenu";
 import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "../Misc";
+
 import EditIcon from "../../static/icons/edit.svg";
+import DefaultProfileIcon from "../../static/icons/User";
 
 const S = CreateModuleClassMatcher(LoginStyles);
 
@@ -335,10 +337,7 @@ const OnboardForm = observer(({onboardParams, Close}) => {
   if(finished) {
     return (
       <div className={S("content", "onboard")}>
-        <div className={S("header-text")}>
-          Account Setup Complete
-        </div>
-        <Text my="xl" ta="center" className={S("message")}>
+        <Text mb="xl" className={S("header-text")}>
           Your account is now set up. Your administrator has been notified in order to grant appropriate permissions.
         </Text>
         <div className={S("actions")}>
@@ -359,7 +358,7 @@ const OnboardForm = observer(({onboardParams, Close}) => {
               <div className={S("round-image", "profile-image__image")}>
                 <ImageIcon
                   icon={profileImageUrl}
-                  alternateIcon={DefaultProfileImage(name || onboardParams.email)}
+                  alternateIcon={DefaultProfileImage({name, email: accountsStore.currentAccount.email})}
                 />
               </div>
             </div>
@@ -419,10 +418,7 @@ const OnboardForm = observer(({onboardParams, Close}) => {
         <div className={S("profile-image")}>
           <div className={S("profile-image__image-wrapper")}>
             <div className={S("round-image", "profile-image__image")}>
-              <ImageIcon
-                icon={profileImageUrl}
-                alternateIcon={DefaultProfileImage(name || onboardParams.email)}
-              />
+              <ImageIcon icon={profileImageUrl} alternateIcon={DefaultProfileIcon} />
             </div>
             <UnstyledButton
               title="Change Profile Image"

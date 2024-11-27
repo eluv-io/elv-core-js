@@ -121,6 +121,10 @@
     height: 12px;
     width: 12px;
   }
+
+  &--faded {
+    opacity: 0.5;
+  }
 }
 
 .icon-button {

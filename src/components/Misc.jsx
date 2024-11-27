@@ -2,7 +2,9 @@ import React, {useState} from "react";
 import {observer} from "mobx-react";
 import {Button} from "@mantine/core";
 import SVG from "react-inlinesvg";
-import {CreateModuleClassMatcher, JoinClassNames} from "../Utils";
+import {CreateModuleClassMatcher, JoinClassNames} from "../utils/Utils";
+import SHA1 from "../utils/Hash";
+
 
 import CopyIcon from "../static/icons/copy";
 
@@ -101,13 +103,10 @@ export const CopyButton = ({value, className="", ...props}) => {
   );
 };
 
-const HSLColor = (str, s, l) => {
-  let hash = 0;
-  for(let i=0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
+const HSLColor = (str="", s, l) => {
+  const hue = SHA1(str).reduce((a, v) => a + v, 0) % 360;
 
-  return `hsl(${Math.abs(hash % 360)}, ${s}%, ${l}%)`;
+  return `hsl(${hue}, ${s}%, ${l}%)`;
 };
 
 const canvas = document.createElement("canvas");

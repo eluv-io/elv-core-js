@@ -17,7 +17,7 @@ import {
 import {accountsStore} from "../../stores";
 import EditIcon from "../../static/icons/edit.svg";
 import DownloadIcon from "../../static/icons/download.svg";
-import {CreateModuleClassMatcher} from "../../Utils";
+import {CreateModuleClassMatcher} from "../../utils/Utils";
 import {ImageIcon} from "../Misc";
 
 const S = CreateModuleClassMatcher(LoginStyles);

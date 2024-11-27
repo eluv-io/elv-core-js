@@ -9,7 +9,7 @@ import {tenantStore} from "../../stores";
 import {useDebouncedValue} from "@mantine/hooks";
 import TenantUserPermissionsModal from "./TenantUserPermissionsModal";
 import {DefaultProfileImage, ImageIcon} from "../Misc";
-import {CreateModuleClassMatcher} from "../../Utils";
+import {CreateModuleClassMatcher} from "../../utils/Utils";
 
 import PermissionsIcon from "../../static/icons/sliders";
 import FundsIcon from "../../static/icons/elv-token.png";
@@ -31,9 +31,27 @@ const TenantUsers = observer(() => {
     tenantStore.tenantUsers
   ) || [])
     .filter(address =>
+      tab !== "users" ||
+      !tenantStore.tenantAdmins.includes(address)
+    )
+    .map(address => tenantStore.users[address])
+    .filter(user =>
       !debouncedFilter ||
-      (tenantStore.users[address]?.name || "").toLowerCase().includes(debouncedFilter.toLowerCase())
-    );
+      (user?.name || "").toLowerCase().includes(debouncedFilter.toLowerCase())
+    )
+    .sort((a, b) => {
+      if(a.name) {
+        if(b.name) {
+          return a.name.toLocaleLowerCase() < b.name.toLocaleLowerCase() ? -1 : 1;
+        }
+
+        return -1;
+      } else if(b.name) {
+        return 1;
+      }
+
+      return a.address < b.address ? -1 : 1;
+    });
 
   if(!users) {
     return <Loader className={S("page-loader")} />;
@@ -71,48 +89,44 @@ const TenantUsers = observer(() => {
               </thead>
               <tbody>
                 {
-                  users.map(address => {
-                    const user = tenantStore.users[address];
-
-                    return (
-                      <tr>
-                        <td>
-                          <Group>
-                            <div className={S("round-image", "tenant-users__image")}>
-                              <ImageIcon
-                                icon={user.profileImage || DefaultProfileImage(user)}
-                                alternateIcon={DefaultProfileImage(user)}
-                                label="Profile Image"
-                              />
-                            </div>
-                            <Text fw={600}>
-                              {user.name || ""}
-                            </Text>
-                          </Group>
-                        </td>
-                        <td>
-                          <Text fz="sm">
-                            {address}
+                  users.map(user => (
+                    <tr>
+                      <td>
+                        <Group>
+                          <div className={S("round-image", "tenant-users__image")}>
+                            <ImageIcon
+                              icon={user.profileImage || DefaultProfileImage(user)}
+                              alternateIcon={DefaultProfileImage(user)}
+                              label="Profile Image"
+                            />
+                          </div>
+                          <Text fw={600}>
+                            {user.name || ""}
                           </Text>
-                        </td>
-                        <td>
-                          <Group gap={3} miw={100}>
-                            <ImageIcon icon={FundsIcon} className={S("icon")}/>
-                            {user.balance || "0.0"}
-                          </Group>
-                        </td>
-                        <td>
-                          <UnstyledButton
-                            title="Manage User Permissions"
-                            className={S("icon-button")}
-                            onClick={() => setShowPermissionsModal(address)}
-                          >
-                            <ImageIcon icon={PermissionsIcon}/>
-                          </UnstyledButton>
-                        </td>
-                      </tr>
-                    );
-                  })
+                        </Group>
+                      </td>
+                      <td>
+                        <Text fz="sm">
+                          {user.address}
+                        </Text>
+                      </td>
+                      <td>
+                        <Group gap={3} miw={100}>
+                          <ImageIcon icon={FundsIcon} className={S("icon")}/>
+                          {user.balance || "0.0"}
+                        </Group>
+                      </td>
+                      <td>
+                        <UnstyledButton
+                          title="Manage User Permissions"
+                          className={S("icon-button")}
+                          onClick={() => setShowPermissionsModal(user.address)}
+                        >
+                          <ImageIcon icon={PermissionsIcon}/>
+                        </UnstyledButton>
+                      </td>
+                    </tr>
+                  ))
                 }
               </tbody>
             </Table>

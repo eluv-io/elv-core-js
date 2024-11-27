@@ -4,7 +4,7 @@ import React, {useState, useEffect, useRef} from "react";
 import {observer} from "mobx-react";
 import {rootStore, accountsStore} from "../../stores";
 import {Button, Loader, PasswordInput, TextInput} from "@mantine/core";
-import {CreateModuleClassMatcher, ValidEmail} from "../../Utils";
+import {CreateModuleClassMatcher, ValidEmail} from "../../utils/Utils";
 import {ButtonWithLoader} from "../Misc";
 import {Link} from "react-router-dom";
 import {AccountSelector} from "./AccountMenu";

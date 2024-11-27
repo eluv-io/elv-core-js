@@ -7,7 +7,7 @@ import TenantInviteModal from "./TenantInviteModal";
 
 import {tenantStore} from "../../stores";
 import TenantUserPermissionsModal from "./TenantUserPermissionsModal";
-import {CreateModuleClassMatcher} from "../../Utils";
+import {CreateModuleClassMatcher} from "../../utils/Utils";
 import {DefaultProfileImage, ImageIcon} from "../Misc";
 import {useDebouncedValue} from "@mantine/hooks";
 import {modals} from "@mantine/modals";
@@ -129,6 +129,7 @@ const TenantInvites = observer(() => {
 
   useEffect(() => {
     tenantStore.LoadInviteNotifications();
+    tenantStore.LoadTenantFundingAccount();
   }, []);
 
   const invites = tenantStore.Invites(tab);
