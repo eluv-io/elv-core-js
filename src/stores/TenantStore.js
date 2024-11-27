@@ -443,7 +443,7 @@ class TenantStore {
     }
   });
 
-  GenerateInvite = flow(function * ({name, email, funds=0.1}) {
+  GenerateInvite = flow(function * ({name, email, funds=0.2}) {
     const body = { eth_amount: funds, ts: Date.now() };
     const token = yield this.rootStore.client.Sign(JSON.stringify(body));
     const { otp_id } = yield this.rootStore.client.utils.ResponseToJson(

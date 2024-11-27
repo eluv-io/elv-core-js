@@ -153,7 +153,7 @@ class AccountStore {
 
       yield this.SetCurrentAccount({signer: this.rootStore.client.signer});
 
-      if(this.accounts[address].balance > 0.1) {
+      if(this.accounts[address].balance > 0.02) {
         yield this.ReplaceUserMetadata({
           metadataSubtree: UrlJoin("public", "name"),
           metadata: email
@@ -456,7 +456,7 @@ class AccountStore {
         address.toString()
       );
 
-      if(signer && this.accounts[address].balance > 0.1) {
+      if(signer && this.accounts[address].balance > 0.02) {
         this.UserMetadata();
         this.CheckTenantDetails();
       }
