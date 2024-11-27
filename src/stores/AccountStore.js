@@ -331,7 +331,7 @@ class AccountStore {
 
       if(Object.keys(this.accounts).includes(address)) {
         this.accounts[address].balance = balance;
-        this.accounts[address].lowBalance = parseFloat(balance) < 0.1;
+        this.accounts[address].lowBalance = parseFloat(balance) < 0.02;
       }
 
       return balance;

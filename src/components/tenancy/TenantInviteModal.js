@@ -13,7 +13,7 @@ const S = CreateModuleClassMatcher(TenantStyles);
 const TenantInviteModal = observer(({existingInviteId="", Close}) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [funds, setFunds] = useState(0.1);
+  const [funds, setFunds] = useState(0.2);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(undefined);
 
