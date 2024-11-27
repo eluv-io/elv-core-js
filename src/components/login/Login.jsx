@@ -361,7 +361,7 @@ const OnboardForm = observer(({onboardParams, Close}) => {
   const [finished, setFinished] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  if(finished) {
+  if(finished || true) {
     return (
       <div className={S("content", "onboard")}>
         <TenantInfo tenantContractId={onboardParams.tenantContractId} />
@@ -369,7 +369,7 @@ const OnboardForm = observer(({onboardParams, Close}) => {
         <Text mb="lg" fz={16} className={S("header-text")}>
           Your account is now set up.
         </Text>
-        <Text mb="xl" fz={16} className={S("header-text")}>
+        <Text mb="xl" px="sm" fz={16} className={S("header-text")}>
           Your administrator has been notified in order to grant appropriate permissions.
         </Text>
         <div className={S("actions")}>

@@ -97,7 +97,7 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
                 }
               </tbody>
             </Table>
-            { !error ? null : <Text mb="md" color="red" ta="center">Something went wrong, please try again</Text> }
+            { !error ? null : <Text mb="md" mt="xl" color="red" ta="center">Something went wrong, please try again</Text> }
             <Group justify="right" mt={50} wrap="nowrap">
               <Button
                 variant="default"
@@ -127,6 +127,7 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
 
                     Close();
                   } catch (error) {
+                    tenantStore.Log(error, true);
                     setOriginalPermissions(await tenantStore.UserManagedGroupMembership({userAddress: address}));
                     setError(error);
                     setSubmitting(false);
