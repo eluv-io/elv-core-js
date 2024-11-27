@@ -2,6 +2,7 @@ import {flow, makeAutoObservable, runInAction} from "mobx";
 import {Utils} from "@eluvio/elv-client-js";
 import {v4 as UUID, parse as UUIDParse} from "uuid";
 import UrlJoin from "url-join";
+import {accountsStore} from "./index";
 
 class TenantStore {
   onboardParams;
@@ -280,20 +281,22 @@ class TenantStore {
   });
 
   LoadUser = flow(function * ({address}) {
-    if(this.users[address]) { return; }
+    if(!this.users[address]) {
+      const [name, profileImage, balance] = yield Promise.allSettled([
+        this.client.userProfileClient.PublicUserMetadata({address, metadataSubtree: "name"}),
+        this.client.userProfileClient.UserProfileImage({address}),
+        this.rootStore.accountsStore.AccountBalance(address)
+      ]);
 
-    const [name, profileImage, balance] = yield Promise.allSettled([
-      this.client.userProfileClient.PublicUserMetadata({address, metadataSubtree: "name"}),
-      this.client.userProfileClient.UserProfileImage({address}),
-      this.rootStore.accountsStore.AccountBalance(address)
-    ]);
-
-    this.users[address] = {
-      name: name.status === "fulfilled" && name.value || undefined,
-      profileImage: profileImage.status === "fulfilled" && profileImage.value || undefined,
-      balance: balance.status === "fulfilled" && balance.value || undefined,
-      address
-    };
+      this.users[address] = {
+        name: name.status === "fulfilled" && name.value || undefined,
+        profileImage: profileImage.status === "fulfilled" && profileImage.value || undefined,
+        balance: balance.status === "fulfilled" && balance.value || undefined,
+        address
+      };
+    } else {
+      this.users[address].balance = yield this.rootStore.accountsStore.AccountBalance(address);
+    }
   });
 
   LoadTenantUsers = flow(function * () {
@@ -386,6 +389,45 @@ class TenantStore {
         }
       })
     );
+  });
+
+  TopUpFunds = flow(function * (address) {
+    yield this.LoadTenantFundingAccount();
+    const balance = parseFloat(yield this.rootStore.client.GetBalance({address}));
+
+    const funds = parseFloat(this.tenantFundingAccount.per_top_up_limit) - balance;
+
+    if(funds < 0.01) {
+      return;
+    }
+
+    const body = { eth_amount: funds, ts: Date.now() };
+    const token = yield this.rootStore.client.Sign(JSON.stringify(body));
+    const { otp_id } = yield this.rootStore.client.utils.ResponseToJson(
+      this.rootStore.client.MakeAuthServiceRequest({
+        path: UrlJoin("as", "faucet", "add_otp", this.tenantContractId),
+        method: "POST",
+        body,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+    );
+
+    yield this.rootStore.client.MakeAuthServiceRequest({
+      path: UrlJoin("as", "faucet", "claim_otp", otp_id),
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${this.rootStore.walletClient.AuthToken()}`
+      }
+    });
+
+    yield accountsStore.SendFunds({
+      recipient: address,
+      ether: funds
+    });
+
+    yield this.LoadUser({address});
   });
 
   // Invites

@@ -13,6 +13,8 @@ import {CreateModuleClassMatcher} from "../../utils/Utils";
 
 import PermissionsIcon from "../../static/icons/sliders";
 import FundsIcon from "../../static/icons/elv-token.png";
+import TopUpIcon from "../../static/icons/up-lines";
+import {modals} from "@mantine/modals";
 
 const S = CreateModuleClassMatcher(TenantStyles);
 
@@ -21,9 +23,12 @@ const TenantUsers = observer(() => {
   const [filter, setFilter] = useState("");
   const [debouncedFilter] = useDebouncedValue(filter, 200);
   const [showPermissionsModal, setShowPermissionsModal] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    tenantStore.LoadTenantUsers();
+    tenantStore.LoadTenantUsers()
+      .finally(() => setLoading(false));
+    tenantStore.LoadTenantFundingAccount();
   }, []);
 
   const users = ((tab === "admins" ?
@@ -53,9 +58,11 @@ const TenantUsers = observer(() => {
       return a.address < b.address ? -1 : 1;
     });
 
-  if(!users) {
+  if(loading) {
     return <Loader className={S("page-loader")} />;
   }
+
+  const fundingLimit = tenantStore.tenantFundingAccount?.per_top_up_limit || 0.2;
 
   return (
     <>
@@ -113,17 +120,41 @@ const TenantUsers = observer(() => {
                       <td>
                         <Group gap={3} miw={100}>
                           <ImageIcon icon={FundsIcon} className={S("icon")}/>
-                          {user.balance || "0.0"}
+                          {parseFloat(user.balance).toFixed(2) || "0.0"}
                         </Group>
                       </td>
                       <td>
-                        <UnstyledButton
-                          title="Manage User Permissions"
-                          className={S("icon-button")}
-                          onClick={() => setShowPermissionsModal(user.address)}
-                        >
-                          <ImageIcon icon={PermissionsIcon}/>
-                        </UnstyledButton>
+                        <Group>
+                          <UnstyledButton
+                            title="Top Up Funds"
+                            className={S("icon-button")}
+                            disabled={
+                              parseFloat(user.balance) > fundingLimit - 0.01 ||
+                              tenantStore.tenantFunds < 0.1
+                            }
+                            onClick={() => modals.openConfirmModal({
+                              title: "Top Up Account",
+                              children: (
+                                <Text my="lg" ta="center">
+                                  Are you sure you want to top this account up to <ImageIcon icon={FundsIcon} className={S("icon", "icon--small")} />{fundingLimit}?
+                                </Text>
+                              ),
+                              onConfirm: async () => await tenantStore.TopUpFunds(user.address),
+                              labels: { confirm: "Confirm", cancel: "Cancel" },
+                              centered: true,
+                              withCloseButton: false
+                            })}
+                          >
+                            <ImageIcon icon={TopUpIcon}/>
+                          </UnstyledButton>
+                          <UnstyledButton
+                            title="Manage User Permissions"
+                            className={S("icon-button")}
+                            onClick={() => setShowPermissionsModal(user.address)}
+                          >
+                            <ImageIcon icon={PermissionsIcon}/>
+                          </UnstyledButton>
+                        </Group>
                       </td>
                     </tr>
                   ))

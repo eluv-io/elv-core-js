@@ -131,7 +131,7 @@ export const DefaultProfileImage = ({name, email, address}={}) => {
     context.fillStyle = "#FFFFFF";
     context.textAlign = "center";
     context.textBaseline = "middle";
-    context.fillText(name.toUpperCase().charAt(0), canvas.width / 2, canvas.height / 2 + 10);
+    context.fillText(name.toUpperCase().charAt(0), canvas.width / 2, canvas.height / 2 + 5);
 
     profileImageUrls[name] = canvas.toDataURL("image/png");
   }

@@ -12,7 +12,7 @@ import {
   Text,
   Switch,
   UnstyledButton,
-  TextInput
+  TextInput, Title
 } from "@mantine/core";
 import React, {useEffect, useRef, useState} from "react";
 import {CreateModuleClassMatcher} from "../../utils/Utils";
@@ -27,6 +27,7 @@ import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "../Misc";
 
 import EditIcon from "../../static/icons/edit.svg";
 import DefaultProfileIcon from "../../static/icons/User";
+import TenancyIcon from "../../static/icons/users.svg";
 
 const S = CreateModuleClassMatcher(LoginStyles);
 
@@ -325,6 +326,32 @@ const LoginModalContent = observer(({onboardParams, accountType, setAccountType,
   );
 });
 
+const TenantInfo = observer(({tenantContractId}) => {
+  useEffect(() => {
+    tenantStore.LoadPublicTenantMetadata({tenantContractId});
+  }, [tenantContractId]);
+
+  const metadata = tenantStore.tenantMetadata[tenantContractId]?.public;
+
+  if(!metadata) {
+    return null;
+  }
+
+  return (
+    <div className={S("tenant-info")}>
+      <div className={S("tenant-image", "tenant-info__image")}>
+        <ImageIcon
+          icon={metadata.image?.url}
+          alternateIcon={TenancyIcon}
+        />
+      </div>
+      <div className={S("tenant-info__text")}>
+        <Text fw={500} fz={18} mt={5}>{metadata.name}</Text>
+      </div>
+    </div>
+  );
+});
+
 const OnboardForm = observer(({onboardParams, Close}) => {
   const browseRef = useRef();
   const [name, setName] = useState(onboardParams.name || onboardParams.email);
@@ -337,8 +364,13 @@ const OnboardForm = observer(({onboardParams, Close}) => {
   if(finished) {
     return (
       <div className={S("content", "onboard")}>
-        <Text mb="xl" className={S("header-text")}>
-          Your account is now set up. Your administrator has been notified in order to grant appropriate permissions.
+        <TenantInfo tenantContractId={onboardParams.tenantContractId} />
+
+        <Text mb="lg" fz={16} className={S("header-text")}>
+          Your account is now set up.
+        </Text>
+        <Text mb="xl" fz={16} className={S("header-text")}>
+          Your administrator has been notified in order to grant appropriate permissions.
         </Text>
         <div className={S("actions")}>
           <Button onClick={() => Close("/profile")} className={S("button")}>
@@ -352,6 +384,7 @@ const OnboardForm = observer(({onboardParams, Close}) => {
   if(submitting) {
     return (
       <div className={S("content", "onboard")}>
+        <TenantInfo tenantContractId={onboardParams.tenantContractId} />
         <Group my="md" justify="center">
           <div className={S("profile-image")}>
             <div className={S("profile-image__image-wrapper")}>
@@ -391,6 +424,7 @@ const OnboardForm = observer(({onboardParams, Close}) => {
 
   const Submit = async () => {
     try {
+      setError(undefined);
       setSubmitting(true);
 
       await tenantStore.ConsumeInvite({
@@ -411,6 +445,7 @@ const OnboardForm = observer(({onboardParams, Close}) => {
 
   return (
     <div className={S("content", "onboard")}>
+      <TenantInfo tenantContractId={onboardParams.tenantContractId} />
       <div className={S("header-text")}>
         Set Up Your Account
       </div>

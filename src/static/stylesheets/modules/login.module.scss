@@ -312,3 +312,19 @@
     }
   }
 }
+
+.tenant-info {
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin: 0 auto 30px;
+  padding: 10px 15px;
+
+  &__image {
+    height: 50px;
+    width: 50px;
+  }
+}
