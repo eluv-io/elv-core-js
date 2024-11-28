@@ -120,7 +120,9 @@
     width: 40px;
 
     &:hover {
-      background-color: var(--background-tertiary);
+      &:not(&:disabled) {
+        background-color: var(--background-tertiary);
+      }
     }
   }
 }

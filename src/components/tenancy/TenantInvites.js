@@ -128,6 +128,7 @@ const TenantInvites = observer(() => {
   const [debouncedFilter] = useDebouncedValue(filter, 200);
 
   useEffect(() => {
+    tenantStore.LoadManagedGroups();
     tenantStore.LoadInviteNotifications();
     tenantStore.LoadTenantFundingAccount();
   }, []);
@@ -138,6 +139,11 @@ const TenantInvites = observer(() => {
     [tenantStore.INVITE_EVENTS.ACCEPTED]: "No new accepted invites",
     [tenantStore.INVITE_EVENTS.MANAGED]: "No completed invites"
   };
+
+  const canInvite = (
+    tenantStore.specialGroups.tenantUsers?.isOwner ||
+    tenantStore.specialGroups.tenantUsers?.isManager
+  );
 
   if(!tenantStore.invites) {
     return <Loader className={S("page-loader")} />;
@@ -164,7 +170,12 @@ const TenantInvites = observer(() => {
           />
           <UnstyledButton
             ml={20}
-            title="Invite New User"
+            disabled={!canInvite}
+            title={
+              canInvite ?
+                "Invite New User" :
+                "You must be a manager of the tenant users group to invite new users"
+            }
             className={S("icon-button", "icon-button--accent", "invites__add")}
             onClick={() => setShowInviteModal(true)}
           >

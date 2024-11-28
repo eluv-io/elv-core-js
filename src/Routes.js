@@ -28,15 +28,7 @@ const GatedRoute = ({Component}) => {
   );
 };
 
-const ContentNav = observer(() => {
-  if(!rootStore.pathname.startsWith("/tenancy")) {
-    return (
-      <div className="content">
-        <Outlet />
-      </div>
-    );
-  }
-
+const TenantNav = observer(() => {
   if(!tenantStore.isTenantAdmin) {
     return <Navigate to="/accounts" />;
   }
@@ -69,6 +61,18 @@ const ContentNav = observer(() => {
       </div>
     </nav>
   );
+});
+
+const ContentNav = observer(() => {
+  if(!rootStore.pathname.startsWith("/tenancy")) {
+    return (
+      <div className="content">
+        <Outlet />
+      </div>
+    );
+  }
+
+  return <TenantNav />;
 });
 
 const AppRoutes = observer(() => {
