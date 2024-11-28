@@ -152,8 +152,11 @@
   }
 
   &__name {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   &__detail {
