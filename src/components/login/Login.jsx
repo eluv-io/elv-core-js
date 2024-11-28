@@ -12,7 +12,7 @@ import {
   Text,
   Switch,
   UnstyledButton,
-  TextInput, Title
+  TextInput
 } from "@mantine/core";
 import React, {useEffect, useRef, useState} from "react";
 import {CreateModuleClassMatcher} from "../../utils/Utils";
@@ -106,6 +106,10 @@ export const LoginGateModal = observer(({Close}) => {
   const [shareEmail, setShareEmail] = useState(true);
   const [closable, setClosable] = useState(true);
   const accountType = accountsStore.currentAccount?.type || "custodial";
+
+  if(accountsStore.sortedAccounts.length === 0) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <Modal
@@ -361,7 +365,7 @@ const OnboardForm = observer(({onboardParams, Close}) => {
   const [finished, setFinished] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  if(finished || true) {
+  if(finished) {
     return (
       <div className={S("content", "onboard")}>
         <TenantInfo tenantContractId={onboardParams.tenantContractId} />

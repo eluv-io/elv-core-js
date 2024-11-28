@@ -107,7 +107,7 @@ const TenantUsers = observer(() => {
                               label="Profile Image"
                             />
                           </div>
-                          <Text fw={600}>
+                          <Text fw={500}>
                             {user.name || ""}
                           </Text>
                         </Group>
@@ -150,6 +150,7 @@ const TenantUsers = observer(() => {
                           <UnstyledButton
                             title="Manage User Permissions"
                             className={S("icon-button")}
+                            disabled={!tenantStore.managedGroups || tenantStore.managedGroups.length === 0}
                             onClick={() => setShowPermissionsModal(user.address)}
                           >
                             <ImageIcon icon={PermissionsIcon}/>

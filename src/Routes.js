@@ -8,8 +8,8 @@ import {observer} from "mobx-react";
 import Accounts from "./components/account/Accounts";
 import {Routes, Route, NavLink} from "react-router-dom";
 import TenantInvites from "./components/tenancy/TenantInvites";
-import {Outlet, useLocation} from "react-router";
-import {accountsStore, tenantStore} from "./stores";
+import {Navigate, Outlet} from "react-router";
+import {accountsStore, rootStore, tenantStore} from "./stores";
 import TenantUsers from "./components/tenancy/TenantUsers";
 import Login, {LoginGate} from "./components/login/Login";
 import Profile from "./components/profile/Profile";
@@ -29,17 +29,16 @@ const GatedRoute = ({Component}) => {
 };
 
 const ContentNav = observer(() => {
-  const location = useLocation();
-
-  if(
-    !location.pathname.startsWith("/tenancy") ||
-    !tenantStore.isTenantAdmin
-  ) {
+  if(!rootStore.pathname.startsWith("/tenancy")) {
     return (
       <div className="content">
         <Outlet />
       </div>
     );
+  }
+
+  if(!tenantStore.isTenantAdmin) {
+    return <Navigate to="/accounts" />;
   }
 
   return (

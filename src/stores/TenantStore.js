@@ -8,8 +8,9 @@ class TenantStore {
   onboardParams;
 
   tenantMetadata = {};
-  tenantFundingAccounts = {};
+  tenantFundingAccount;
 
+  groups;
   managedGroups;
   specialGroups = {
     tenantAdmins: undefined,
@@ -66,16 +67,13 @@ class TenantStore {
     return this.tenantMetadata[this.tenantContractId]?.public;
   }
 
-  get tenantFundingAccount() {
-    return this.tenantFundingAccounts[this.rootStore.accountsStore.currentAccount?.tenantContractId];
-  }
-
   get tenantFunds() {
     return parseFloat(this.tenantFundingAccount?.funding_address_balance) || 0;
   }
 
   Reset() {
     this.specialGroups = { tenantAdmins: undefined, tenantUsers: undefined, contentAdmins: undefined };
+    this.groups = undefined;
     this.managedGroups = undefined;
     this.invites = undefined;
     this.tenantUsers = undefined;
@@ -176,10 +174,10 @@ class TenantStore {
     }
   });
 
-  LoadTenantFundingAccount = flow(function * ({tenantContractId}={}) {
-    tenantContractId = tenantContractId || this.rootStore.accountsStore.currentAccount.tenantContractId;
-    if(!this.tenantFundingAccounts[tenantContractId]) {
-      this.tenantFundingAccounts[tenantContractId] = (yield this.rootStore.client.utils.ResponseToJson(
+  LoadTenantFundingAccount = flow(function * () {
+    const tenantContractId = this.rootStore.accountsStore.currentAccount.tenantContractId;
+    if(!this.tenantFundingAccount) {
+      this.tenantFundingAccount = (yield this.rootStore.client.utils.ResponseToJson(
         this.rootStore.client.MakeAuthServiceRequest({
           path: UrlJoin("as", "faucet", "get_tenant", tenantContractId),
           method: "GET",
@@ -189,42 +187,41 @@ class TenantStore {
         })
       ))?.tenant_record;
     } else {
-      this.tenantFundingAccounts[tenantContractId].funding_address_balance = parseFloat(
+      this.tenantFundingAccount.funding_address_balance = parseFloat(
         yield this.rootStore.client.GetBalance({
-          address: this.tenantFundingAccounts[tenantContractId].tenant_funding_address
+          address: this.tenantFundingAccount.tenant_funding_address
         })
       );
     }
 
-    return this.tenantFundingAccounts[tenantContractId];
+    return this.tenantFundingAccount;
   });
 
   // Groups
 
   LoadManagedGroups = flow(function * () {
     if(!this.managedGroups) {
-      const allGroups = yield this.client.ListAccessGroups();
-      let managedGroups = yield Promise.all(
-        allGroups.map(async group => {
+      const allGroups = (yield Promise.all(
+        (yield this.client.ListAccessGroups()).map(async group => {
           try {
+            group.isMember = true;
+
             // Owner
             const owner = await this.client.AccessGroupOwner({contractAddress: group.address});
-            if(Utils.EqualAddress(owner, this.rootStore.accountsStore.currentAccountAddress)) {
-              return group;
-            }
+            group.isOwner = Utils.EqualAddress(owner, this.rootStore.accountsStore.currentAccountAddress);
 
             // Manager
             const managers = await this.client.AccessGroupManagers({contractAddress: group.address});
-            if(managers.find(userAddress => Utils.EqualAddress(userAddress, this.rootStore.accountsStore.currentAccountAddress))) {
-              return group;
-            }
+            group.isManager = managers.find(userAddress => Utils.EqualAddress(userAddress, this.rootStore.accountsStore.currentAccountAddress));
+
+            return group;
           } catch (error) {
             this.Log(`Error retrieving manager info for group ${group.address}`, true);
             this.Log(group, true);
             this.Log(error, true);
           }
-        })
-      );
+        }))
+      ).filter(g => g);
 
       const tenantContractId = yield this.client.userProfileClient.TenantContractId();
       const tenantAdminGroupAddress = yield this.client.CallContractMethod({
@@ -247,34 +244,50 @@ class TenantStore {
       });
 
       // Sort special groups to the top of the list, if present
-      const contentAdminGroupIndex = managedGroups.findIndex(group => Utils.EqualAddress(group?.address, contentAdminGroupAddress));
+      const contentAdminGroupIndex = allGroups.findIndex(group => Utils.EqualAddress(group?.address, contentAdminGroupAddress));
       if(contentAdminGroupAddress >= 0) {
-        const contentAdminGroup = managedGroups[contentAdminGroupIndex];
-        delete managedGroups[contentAdminGroupIndex];
-        managedGroups.unshift(contentAdminGroup);
+        const contentAdminGroup = allGroups[contentAdminGroupIndex];
+        delete allGroups[contentAdminGroupIndex];
+        allGroups.unshift(contentAdminGroup);
 
         this.specialGroups.contentAdmins = contentAdminGroup;
+      } else {
+        this.specialGroups.contentAdmins = {
+          address: contentAdminGroupAddress,
+          meta: { public: { name: "Content Admins" } }
+        };
       }
 
-      const tenantAdminGroupIndex = managedGroups.findIndex(group => Utils.EqualAddress(group?.address, tenantAdminGroupAddress));
+      const tenantAdminGroupIndex = allGroups.findIndex(group => Utils.EqualAddress(group?.address, tenantAdminGroupAddress));
       if(tenantAdminGroupAddress >= 0) {
-        const tenantAdminGroup = managedGroups[tenantAdminGroupIndex];
-        delete managedGroups[tenantAdminGroupIndex];
-        managedGroups.unshift(tenantAdminGroup);
+        const tenantAdminGroup = allGroups[tenantAdminGroupIndex];
+        delete allGroups[tenantAdminGroupIndex];
+        allGroups.unshift(tenantAdminGroup);
 
         this.specialGroups.tenantAdmins = tenantAdminGroup;
+      } else {
+        this.specialGroups.tenantAdmins = {
+          address: tenantAdminGroupAddress,
+          meta: { public: { name: "Tenant Admins" } }
+        };
       }
 
-      const tenantUsersGroupIndex = managedGroups.findIndex(group => Utils.EqualAddress(group?.address, tenantUsersGroupAddress));
+      const tenantUsersGroupIndex = allGroups.findIndex(group => Utils.EqualAddress(group?.address, tenantUsersGroupAddress));
       if(tenantUsersGroupIndex >= 0) {
-        const tenantUsersGroup = managedGroups[tenantUsersGroupIndex];
-        delete managedGroups[tenantUsersGroupIndex];
-        managedGroups.unshift(tenantUsersGroup);
+        const tenantUsersGroup = allGroups[tenantUsersGroupIndex];
+        delete allGroups[tenantUsersGroupIndex];
+        allGroups.unshift(tenantUsersGroup);
 
         this.specialGroups.tenantUsers = tenantUsersGroup;
+      } else {
+        this.specialGroups.tenantUsers = {
+          address: tenantUsersGroupAddress,
+          meta: { public: { name: "Tenant Users" } }
+        };
       }
 
-      this.managedGroups = managedGroups.filter(group => group);
+      this.groups = allGroups;
+      this.managedGroups = allGroups.filter(group => group?.isOwner || group?.isManager);
     }
 
     return this.managedGroups;
@@ -306,7 +319,7 @@ class TenantStore {
       yield this.LoadManagedGroups();
     }
 
-    const tenantUsersGroupAddress = this.specialGroups.tenantUsers.address;
+    const tenantUsersGroupAddress = this.specialGroups.tenantUsers?.address;
     const [tenantUsersOwner, tenantUsersManagers, tenantUsersMembers] = yield Promise.allSettled([
       this.client.AccessGroupOwner({contractAddress: tenantUsersGroupAddress}),
       this.client.AccessGroupManagers({contractAddress: tenantUsersGroupAddress}),
