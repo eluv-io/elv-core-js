@@ -74,7 +74,13 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
                         <td>
                           <Group mt="xs" justify="center">
                             <Checkbox
-                              disabled={settings.owner}
+                              disabled={settings.owner || !group.isOwner}
+                              title={
+                                settings.owner ?
+                                  "This user is the owner of this group" :
+                                  !group.isOwner ? "Only group owners may add managers" :
+                                    undefined
+                              }
                               aria-label={`Manager of ${name || group.address}`}
                               checked={settings.owner || settings.manager}
                               onChange={event => setPermissions({...permissions, [group.address]: { ...settings, manager: event.currentTarget.checked }})}
@@ -84,7 +90,15 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
                         <td>
                           <Group justify="center">
                             <Checkbox
-                              disabled={isTenantUsersGroup || settings.owner}
+                              disabled={isTenantUsersGroup || settings.owner || settings.manager}
+                              title={
+                                isTenantUsersGroup ?
+                                  "Users may not be removed from the tenant users group" :
+                                  settings.owner ?
+                                    "This user is the owner of this group" :
+                                    settings.manager ? "Managers of groups are also members" :
+                                      undefined
+                              }
                               aria-label={`Manager of ${name || group.address}`}
                               checked={settings.owner || settings.manager || settings.member}
                               onChange={event => setPermissions({...permissions, [group.address]: { ...settings, member: event.currentTarget.checked }})}
