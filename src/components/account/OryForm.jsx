@@ -158,6 +158,7 @@ const OryForm = observer(({onboardParams, userData, isLoginGate, setClosable, Cl
   const [loading, setLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState(undefined);
   const [errorMessage, setErrorMessage] = useState(undefined);
+  const [authenticating, setAuthenticating] = useState(false);
   const formRef = useRef();
 
   useEffect(() => {
@@ -206,7 +207,7 @@ const OryForm = observer(({onboardParams, userData, isLoginGate, setClosable, Cl
 
   const flow = flows[flowType];
 
-  if(!flow || loading) {
+  if(!flow || loading || authenticating) {
     return (
       <div className={S("ory-login", "ory-login--loading")}>
         <Loader />
@@ -340,18 +341,24 @@ const OryForm = observer(({onboardParams, userData, isLoginGate, setClosable, Cl
       switch(flowType) {
         case "login":
           await accountsStore.oryClient.updateLoginFlow({flow: flow.id, updateLoginFlowBody: body});
-          await accountsStore.AuthenticateOry({userData});
+          setAuthenticating(true);
+          await accountsStore.AuthenticateOry({userData})
+            .finally(() => setAuthenticating(false));
           next = true;
 
           break;
         case "login_limited":
-          await accountsStore.AuthenticateOry({userData, force: true});
+          setAuthenticating(true);
+          await accountsStore.AuthenticateOry({userData, force: true})
+            .finally(() => setAuthenticating(false));
           next = true;
 
           break;
         case "registration":
           await accountsStore.oryClient.updateRegistrationFlow({flow: flow.id, updateRegistrationFlowBody: body});
-          await accountsStore.AuthenticateOry({userData, sendWelcomeEmail: true});
+          setAuthenticating(true);
+          await accountsStore.AuthenticateOry({userData, sendWelcomeEmail: true})
+            .finally(() => setAuthenticating(false));
           next = true;
 
           break;

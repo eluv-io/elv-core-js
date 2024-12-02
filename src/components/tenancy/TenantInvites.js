@@ -176,7 +176,7 @@ const TenantInvites = observer(() => {
                 "Invite New User" :
                 "You must be a manager of the tenant users group to invite new users"
             }
-            className={S("icon-button", "icon-button--accent", "invites__add")}
+            className={S("icon-button", canInvite ? "icon-button--accent" : "", "invites__add")}
             onClick={() => setShowInviteModal(true)}
           >
             <ImageIcon icon={AddUserIcon} />
