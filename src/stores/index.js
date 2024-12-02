@@ -125,7 +125,7 @@ class RootStore {
         });
 
         this.signerSet = true;
-        yield this.InitializeSearchClient(signer);
+        this.InitializeSearchClient(signer);
       } else {
         this.signerSet = false;
 
@@ -135,11 +135,6 @@ class RootStore {
           signer: wallet.AddAccountFromMnemonic({mnemonic: wallet.GenerateMnemonic()})
         });
       }
-
-      yield this.client.CallContractMethod({
-        contractAddress: this.client.contentSpaceAddress,
-        methodName: "version"
-      });
 
       if(!this.accountsStore.accountsLoaded) {
         this.accountsStore.LoadAccounts();
@@ -202,11 +197,6 @@ class RootStore {
           signer: wallet.AddAccountFromMnemonic({mnemonic: wallet.GenerateMnemonic()})
         });
       }
-
-      yield this.searchClient.CallContractMethod({
-        contractAddress: this.searchClient.contentSpaceAddress,
-        methodName: "version"
-      });
     } catch (error) {
       this.configError = true;
 
