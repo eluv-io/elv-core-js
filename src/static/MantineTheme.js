@@ -47,7 +47,7 @@ const MantineTheme = createTheme({
     Select: Select.extend({
       defaultProps: {
         classNames: {
-          input: SharedStyles["input"]
+          input: `${SharedStyles["input"]} ${SharedStyles["input--select"]}`
         }
       }
     }),

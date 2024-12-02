@@ -93,7 +93,6 @@ const KeyForm = observer(({onboardParams, UpdateFormData}) => {
             encryptedPrivateKey: "",
           });
         }}
-        classNames={{input: S("input")}}
       />
       {
         formData.credentialType !== "privateKey" ? null :

@@ -11,7 +11,7 @@ import TenantInvites from "./components/tenancy/TenantInvites";
 import {Navigate, Outlet} from "react-router";
 import {accountsStore, rootStore, tenantStore} from "./stores";
 import TenantUsers from "./components/tenancy/TenantUsers";
-import Login, {LoginGate} from "./components/login/Login";
+import Login, {LoginGate, LoginGateModal} from "./components/login/Login";
 import Profile from "./components/profile/Profile";
 import SplashPage from "./components/login/SplashPage";
 import {ImageIcon} from "./components/Misc";
@@ -64,6 +64,10 @@ const TenantNav = observer(() => {
 });
 
 const ContentNav = observer(() => {
+  if(rootStore.showLoginGate) {
+    return <LoginGateModal Close={() => rootStore.SetShowLoginGate(false)} />;
+  }
+
   if(!rootStore.pathname.startsWith("/tenancy")) {
     return (
       <div className="content">

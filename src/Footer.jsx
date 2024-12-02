@@ -17,7 +17,7 @@ const Footer = observer(() => {
   return (
     <div className={S("footer")}>
       <nav className={S("nav")}>
-        <a href="https://eluv.io/features/pricing" target="_blank" rel="noreferrer">eluv.io</a>
+        <a href="https://eluv.io" target="_blank" rel="noreferrer">eluv.io</a>
         <a href="https://eluv.io/terms" target="_blank" rel="noreferrer">End User Agreement</a>
         <a href="https://eluv.io/privacy" target="_blank" rel="noreferrer">Privacy Policy</a>
         <a href="https://eluv.io/platform-terms" target="_blank" rel="noreferrer">Tenant Platform Services Agreement</a>

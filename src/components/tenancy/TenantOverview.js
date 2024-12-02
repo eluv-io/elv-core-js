@@ -143,7 +143,7 @@ const TenantOverview = observer(() => {
   }
 
   if(!tenantStore.publicTenantMetadata) {
-    return <Loader />;
+    return <Loader className={S("page-loader")} />;
   }
 
   return (

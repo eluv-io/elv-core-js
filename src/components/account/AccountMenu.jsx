@@ -4,9 +4,9 @@ import {observer} from "mobx-react";
 import {CreateModuleClassMatcher, JoinClassNames} from "../../utils/Utils";
 import React, {useState} from "react";
 import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "../Misc";
-import {accountsStore, tenantStore} from "../../stores";
+import {rootStore, accountsStore, tenantStore} from "../../stores";
 import {Link, useNavigate} from "react-router-dom";
-import {Combobox, Popover, UnstyledButton, useCombobox} from "@mantine/core";
+import {Button, Combobox, Popover, UnstyledButton, useCombobox} from "@mantine/core";
 
 const S = CreateModuleClassMatcher(AccountMenuStyles);
 
@@ -15,6 +15,7 @@ import SwitchAccountsIcon from "../../static/icons/switch-accounts";
 import ProfileIcon from "../../static/icons/User";
 import TransferFundsIcon from "../../static/icons/dollar-sign";
 import TenancyIcon from "../../static/icons/settings";
+import {LoginGateModal} from "../login/Login";
 
 export const AccountSelector = observer(({center, className=""}) => {
   const combobox = useCombobox();
@@ -110,11 +111,19 @@ export const AccountSelector = observer(({center, className=""}) => {
 });
 
 const AccountMenu = observer(({Close}) => {
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
   const limited = !accountsStore.currentAccount || accountsStore.currentAccount?.lowBalance;
+
+  if(showLoginModal) {
+    return <LoginGateModal Close={() => setShowLoginModal(false)} />;
+  }
+
   return (
     <div className={S("account-menu")}>
-      <h2 className={S("account-menu__header")}>Signed in</h2>
+      <h2 className={S("account-menu__header")}>
+        { accountsStore.isUnlocked ? "Signed in" : "Selected Account" }
+      </h2>
       <AccountSelector />
       <div className={S("account-menu__separator")} />
       <div className={S("account-menu__actions")}>
@@ -142,16 +151,30 @@ const AccountMenu = observer(({Close}) => {
             </Link>
         }
       </div>
-      <ButtonWithLoader
-        className={S("account-menu__sign-out")}
-        onClick={async () => {
-          Close();
-          navigate("/accounts");
-          await accountsStore.LockAccount({address: accountsStore.currentAccountAddress});
-        }}
-      >
-        Sign Out
-      </ButtonWithLoader>
+      {
+        accountsStore.isUnlocked ?
+          <ButtonWithLoader
+            h={45}
+            className={S("account-menu__sign-out")}
+            onClick={async () => {
+              Close();
+              navigate("/accounts");
+              await accountsStore.LockAccount({address: accountsStore.currentAccountAddress});
+            }}
+          >
+            Sign Out
+          </ButtonWithLoader> :
+          <Button
+            h={45}
+            className={S("account-menu__sign-out")}
+            onClick={() => {
+              rootStore.SetShowLoginGate(true);
+              Close();
+            }}
+          >
+            Sign In
+          </Button>
+      }
     </div>
   );
 });
@@ -176,6 +199,7 @@ const HeaderProfile = observer(() => {
             className={
               S(
                 "header-profile__content",
+                !accountsStore.isUnlocked ? "header-profile__content--locked" : "",
                 showMenu ? "header-profile__content--active" : "",
                 rootStore.darkMode ? "header-profile__content--dark" : "",
               )

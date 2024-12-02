@@ -161,12 +161,12 @@ class TenantStore {
       const objectId = Utils.AddressToObjectId(Utils.HashToAddress(tenantContractId));
 
       this.tenantMetadata[tenantContractId] = {
-        public: yield this.client.ContentObjectMetadata({
+        public: (yield this.client.ContentObjectMetadata({
           libraryId,
           objectId,
           metadataSubtree: "/public",
           produceLinkUrls: true
-        })
+        })) || {}
       };
     } catch (error) {
       this.Log("Failed to load tenant contract metadata for " + tenantContractId, true);
@@ -212,7 +212,7 @@ class TenantStore {
 
             // Manager
             const managers = await this.client.AccessGroupManagers({contractAddress: group.address});
-            group.isManager = managers.find(userAddress => Utils.EqualAddress(userAddress, this.rootStore.accountsStore.currentAccountAddress));
+            group.isManager = !!managers.find(userAddress => Utils.EqualAddress(userAddress, this.rootStore.accountsStore.currentAccountAddress));
 
             return group;
           } catch (error) {
@@ -224,24 +224,43 @@ class TenantStore {
       ).filter(g => g);
 
       const tenantContractId = yield this.client.userProfileClient.TenantContractId();
-      const tenantAdminGroupAddress = yield this.client.CallContractMethod({
-        contractAddress: this.client.utils.HashToAddress(tenantContractId),
-        methodName: "groupsMapping",
-        methodArgs: ["tenant_admin", 0],
-        formatArguments: true,
-      });
-      const tenantUsersGroupAddress = yield this.client.CallContractMethod({
-        contractAddress: this.client.utils.HashToAddress(tenantContractId),
-        methodName: "groupsMapping",
-        methodArgs: ["tenant_users", 0],
-        formatArguments: true,
-      });
-      const contentAdminGroupAddress = yield this.client.CallContractMethod({
-        contractAddress: this.client.utils.HashToAddress(tenantContractId),
-        methodName: "groupsMapping",
-        methodArgs: ["content_admin", 0],
-        formatArguments: true,
-      });
+
+      let tenantAdminGroupAddress, tenantUsersGroupAddress, contentAdminGroupAddress;
+      try {
+        tenantAdminGroupAddress = yield this.client.CallContractMethod({
+          contractAddress: this.client.utils.HashToAddress(tenantContractId),
+          methodName: "groupsMapping",
+          methodArgs: ["tenant_admin", 0],
+          formatArguments: true,
+        });
+      } catch (error) {
+        this.Log("Failed to load tenant admin group", true);
+        this.Log(error, true);
+      }
+
+      try {
+        tenantUsersGroupAddress = yield this.client.CallContractMethod({
+          contractAddress: this.client.utils.HashToAddress(tenantContractId),
+          methodName: "groupsMapping",
+          methodArgs: ["tenant_users", 0],
+          formatArguments: true,
+        });
+      } catch (error) {
+        this.Log("Failed to load tenant admin group", true);
+        this.Log(error, true);
+      }
+
+      try {
+        contentAdminGroupAddress = yield this.client.CallContractMethod({
+          contractAddress: this.client.utils.HashToAddress(tenantContractId),
+          methodName: "groupsMapping",
+          methodArgs: ["content_admin", 0],
+          formatArguments: true,
+        });
+      } catch (error) {
+        this.Log("Failed to load tenant admin group", true);
+        this.Log(error, true);
+      }
 
       // Sort special groups to the top of the list, if present
       const contentAdminGroupIndex = allGroups.findIndex(group => Utils.EqualAddress(group?.address, contentAdminGroupAddress));
@@ -385,6 +404,13 @@ class TenantStore {
   SetUserGroupPermissions = flow(function * ({userAddress, originalPermissions, permissions}) {
     yield Promise.all(
       Object.keys(permissions).map(async groupAddress => {
+        const group = this.managedGroups.find(group => Utils.EqualAddress(group.address, groupAddress));
+
+        if(!(group?.isOwner || group?.isManager)) {
+          // Skip groups that the current user doesn't manage
+          return;
+        }
+
         if(permissions[groupAddress].manager && !originalPermissions[groupAddress]?.manager) {
           // Set manager
           await this.client.AddAccessGroupManager({contractAddress: groupAddress, memberAddress: userAddress});

@@ -24,6 +24,7 @@ class RootStore {
   pathname = location.pathname;
   toastMessage = "";
   showToastMessage = false;
+  showLoginGate = false;
 
   get darkMode() {
     if(!this.activeApp) { return false; }
@@ -80,17 +81,16 @@ class RootStore {
       });
 
       this.client.walletClient = this.walletClient;
-
-      this.eluvioTenantId = yield this.client.ContentObjectTenantId({objectId: this.walletClient.mainSiteId});
     } catch (error) {
       this.Log(error, true);
       this.configError = true;
       return;
     }
 
-    this.eluvioTenantId = this.client.networkName.includes("demo") ?
-      "iten3HEEASRTo2rNLeeKw4cfq4sPuX6" :
-      "iten3N9XcQVz1AENtSfAGCGifwsYLmx8";
+    this.eluvioTenantId =
+      this.client.networkName.includes("demo") ?
+        "iten3HEEASRTo2rNLeeKw4cfq4sPuX6" :
+        "iten34Y7Tzso2mRqhzZ6yJDZs2Sqf8L";
 
     const networkInfo = this.client.NetworkInfo();
     this.networkName = networkInfo.name;
@@ -215,6 +215,10 @@ class RootStore {
 
   SetPathname(pathname) {
     this.pathname = pathname;
+  }
+
+  SetShowLoginGate(show) {
+    this.showLoginGate = show;
   }
 }
 

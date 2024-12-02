@@ -95,6 +95,10 @@
 .input {
   border: 1px solid var(--border);
   border-radius: 5px;
+
+  &--select {
+    padding-inline: 30px;
+  }
 }
 
 .input-visibility-toggle {

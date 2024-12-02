@@ -32,6 +32,10 @@ class AccountStore {
     return this.currentAccountAddress ? this.accounts[this.currentAccountAddress] : undefined;
   }
 
+  get isUnlocked() {
+    return !!this.currentAccount?.signer;
+  }
+
   get sortedAccounts() {
     return Object.keys(this.accounts)
       .map(address => this.accounts[address])
