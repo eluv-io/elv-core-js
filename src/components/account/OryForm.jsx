@@ -166,7 +166,7 @@ const OryForm = observer(({onboardParams, userData, isLoginGate, setClosable, Cl
   }, [flowType]);
 
   useEffect(() => {
-    if(!accountsStore.oryClient) { return; }
+    if(!accountsStore.oryClient || accountsStore.oryLoggingOut) { return; }
 
     setErrorMessage(undefined);
     setStatusMessage(undefined);
@@ -203,11 +203,11 @@ const OryForm = observer(({onboardParams, userData, isLoginGate, setClosable, Cl
           .then(({data}) => setFlows({...flows, [flowType]: data}));
         break;
     }
-  }, [accountsStore.oryClient, flowType]);
+  }, [accountsStore.oryClient, accountsStore.oryLoggingOut, flowType]);
 
   const flow = flows[flowType];
 
-  if(!flow || loading || authenticating) {
+  if(!flow || loading || authenticating || accountsStore.oryLoggingOut) {
     return (
       <div className={S("ory-login", "ory-login--loading")}>
         <Loader />

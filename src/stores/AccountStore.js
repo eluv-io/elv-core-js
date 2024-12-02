@@ -16,6 +16,7 @@ class AccountStore {
   authenticating = false;
   loadingAccount;
   switchingAccounts = false;
+  oryLoggingOut = false;
 
   authNonce = localStorage.getItem("auth-nonce") || Utils.B58(ParseUUID(UUID()));
 
@@ -169,13 +170,17 @@ class AccountStore {
   });
 
   LogOutOry = flow(function * () {
+    if(this.oryLoggingOut) { return; }
+
     try {
+      this.oryLoggingOut = true;
       const response = yield this.oryClient.createBrowserLogoutFlow();
       yield this.oryClient.updateLogoutFlow({token: response.data.logout_token});
     } catch (error) {
       this.Log(error, true);
     }
 
+    this.oryLoggingOut = false;
     this.currentOryAccountAddress = undefined;
   });
 
