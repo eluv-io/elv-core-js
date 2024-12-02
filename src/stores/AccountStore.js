@@ -153,13 +153,6 @@ class AccountStore {
 
       yield this.SetCurrentAccount({signer: this.rootStore.client.signer});
 
-      if(this.accounts[address].balance > 0.02) {
-        yield this.ReplaceUserMetadata({
-          metadataSubtree: UrlJoin("public", "name"),
-          metadata: email
-        });
-      }
-
       this.SaveAccounts();
 
       if(sendVerificationEmail) {

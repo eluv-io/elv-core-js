@@ -2,10 +2,10 @@ import AccountMenuStyles from "../../static/stylesheets/modules/account-menu.mod
 
 import {observer} from "mobx-react";
 import {CreateModuleClassMatcher, JoinClassNames} from "../../utils/Utils";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "../Misc";
 import {accountsStore, tenantStore} from "../../stores";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {Combobox, Popover, UnstyledButton, useCombobox} from "@mantine/core";
 
 const S = CreateModuleClassMatcher(AccountMenuStyles);
@@ -110,6 +110,7 @@ export const AccountSelector = observer(({center, className=""}) => {
 });
 
 const AccountMenu = observer(({Close}) => {
+  const navigate = useNavigate();
   const limited = !accountsStore.currentAccount || accountsStore.currentAccount?.lowBalance;
   return (
     <div className={S("account-menu")}>
@@ -145,6 +146,7 @@ const AccountMenu = observer(({Close}) => {
         className={S("account-menu__sign-out")}
         onClick={async () => {
           Close();
+          navigate("/accounts");
           await accountsStore.LockAccount({address: accountsStore.currentAccountAddress});
         }}
       >
