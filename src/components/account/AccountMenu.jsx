@@ -143,7 +143,10 @@ const AccountMenu = observer(({Close}) => {
       </div>
       <ButtonWithLoader
         className={S("account-menu__sign-out")}
-        onClick={async () => await accountsStore.LockAccount({address: accountsStore.currentAccountAddress})}
+        onClick={async () => {
+          Close();
+          await accountsStore.LockAccount({address: accountsStore.currentAccountAddress});
+        }}
       >
         Sign Out
       </ButtonWithLoader>
@@ -153,10 +156,6 @@ const AccountMenu = observer(({Close}) => {
 
 const HeaderProfile = observer(() => {
   const [showMenu, setShowMenu] = useState(false);
-
-  useEffect(() => {
-    window.__HideMenu = showMenu ? undefined : () => setShowMenu(false);
-  }, [showMenu]);
 
   if(!accountsStore.currentAccount) {
     return (
