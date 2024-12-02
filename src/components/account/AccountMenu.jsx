@@ -172,7 +172,13 @@ const HeaderProfile = observer(() => {
         <Popover.Target>
           <UnstyledButton
             onClick={() => setShowMenu(!showMenu)}
-            className={S("header-profile__content", showMenu ? "header-profile__content--active" : "")}
+            className={
+              S(
+                "header-profile__content",
+                showMenu ? "header-profile__content--active" : "",
+                rootStore.darkMode ? "header-profile__content--dark" : "",
+              )
+            }
           >
             <div className={S("round-image", "header-profile__image")}>
               <ImageIcon

@@ -16,12 +16,27 @@
     user-select: none;
 
     * {
-      color: var(--text-secondary)!important;
+      color: var(--text-secondary);
     }
 
     &--active,
     &:hover {
       border: 1px solid var(--accent);
+    }
+
+    &--dark {
+      background-color: var(--background--dark);
+      border: 1px solid var(--border--dark);
+
+      * {
+        color: white;
+      }
+
+      .header-profile__image {
+        * {
+          background-color: var(--background--dark);
+        }
+      }
     }
   }
 

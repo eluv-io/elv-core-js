@@ -14,16 +14,12 @@
   z-index: 20;
 
   &--dark {
-    background-color: #131315;
-    border-bottom: 1px solid #000;
+    background-color: var(--background--dark);
+    border-bottom: 1px solid var(--border--dark);
     box-shadow: none;
 
     * {
-      color: #fff;
-    }
-
-    .-elv-token-icon {
-      filter: invert(100%);
+      color: var(--text--dark);
     }
 
     .header__logo {
