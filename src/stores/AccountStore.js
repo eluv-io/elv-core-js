@@ -199,7 +199,7 @@ class AccountStore {
           body: {
             tenant: this.rootStore.eluvioTenantId,
             email,
-            callback_url: callbackUrl.toString()
+            callback_url: callbackUrl?.toString()
           },
           headers: type === "reset_password" ?
             {} :

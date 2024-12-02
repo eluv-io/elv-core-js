@@ -417,7 +417,7 @@ const OryForm = observer(({onboardParams, userData, isLoginGate, setClosable, Cl
         return;
       }
 
-      const fieldErrors = error.response?.data?.ui?.nodes
+      const fieldErrors = error?.response?.data?.ui?.nodes
         ?.map(node =>
           node.messages
             ?.filter(message => message.type === "error")
