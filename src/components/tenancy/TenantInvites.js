@@ -79,6 +79,7 @@ const Invite = observer(({invite}) => {
               {
                 !loaded ? null :
                   <ImageIcon
+                    label="Profile Image"
                     icon={user.profileImage}
                     alternateIcon={DefaultProfileImage(invite.data)}
                   />
@@ -87,6 +88,7 @@ const Invite = observer(({invite}) => {
         }
 
         <UnstyledButton
+          title="Remove Invite"
           onClick={() => modals.openConfirmModal({
             title: "Remove Invite",
             children: <Text my="lg" ta="center">Are you sure you want to remove this invite from your history?</Text>,
@@ -163,6 +165,7 @@ const TenantInvites = observer(() => {
             </Tabs.List>
           </Tabs>
           <TextInput
+            aria-label="Filter Users"
             value={filter}
             onChange={event => setFilter(event.target.value)}
             placeholder="Filter Users"

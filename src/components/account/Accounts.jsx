@@ -13,6 +13,8 @@ import {LoginGateModal} from "../login/Login";
 import {modals} from "@mantine/modals";
 
 import XIcon from "../../static/icons/X.svg";
+import PlusIcon from "../../static/icons/plus";
+import KeyIcon from "../../static/icons/Key";
 
 const S = CreateModuleClassMatcher(AccountStyles);
 
@@ -64,6 +66,10 @@ const Account = observer(({address}) => {
             icon={profileImage}
             alternateIcon={DefaultProfileImage(account)}
           />
+          {
+            account.type === "custodial" ? null :
+              <ImageIcon icon={KeyIcon} className={S("round-image__badge")} />
+          }
         </div>
         <div className={S("text")}>
           <div title={account.name || account.address} className={S("name", "ellipsis")}>
@@ -127,7 +133,7 @@ const Accounts = observer(() => {
         <Group justify="center" mb={50}>
           <ButtonWithLoader
             h={45}
-            px="xl"
+            px="lg"
             fz="md"
             onClick={async () => {
               try {
@@ -137,7 +143,8 @@ const Accounts = observer(() => {
               }
             }}
           >
-            Add/Switch Accounts
+            <Text fw={600} mr="sm">Add Account</Text>
+            <ImageIcon icon={PlusIcon} className={S("icon")} />
           </ButtonWithLoader>
         </Group>
         <div className={S("accounts")}>

@@ -17,16 +17,31 @@
 .round-image {
   border-radius: 100%;
   height: 120px;
-  overflow: hidden;
+  position: relative;
   width: 120px;
 
   & > * {
     background: var(--background-secondary);
+    border-radius: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
     stroke: var(--text-tertiary);
     width: 100%;
+  }
+
+  &__badge {
+    background-color: var(--background-primary);
+    border: 1px solid var(--border);
+    border-radius: 100%;
+    bottom: 5px;
+    height: 30px;
+    padding: 5px;
+    position: absolute;
+    right: 5px;
+    stroke: var(--text-secondary);
+    width: 30px;
+    z-index: 1;
   }
 }
 

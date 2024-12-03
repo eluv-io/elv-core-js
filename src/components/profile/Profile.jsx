@@ -74,22 +74,28 @@ const ProfileName = observer(() => {
 
   if(!editing) {
     return (
-      <Group justify="center" align="center" mt={5} gap={10}>
-        <Text mt={5} fz={18} fw={600} ml={accountsStore.currentAccount.type === "custodial" ? 0 : 30}>
-          {
-            accountsStore.currentAccount.name ||
-            accountsStore.currentAccount.email ||
-            accountsStore.currentAccount.address
-          }
-        </Text>
-        <UnstyledButton
-          disabled={accountsStore.currentAccount?.lowBalance}
-          onClick={() => setEditing(true)}
-          className={S("icon-button")}
-        >
-          <ImageIcon icon={EditIcon} />
-        </UnstyledButton>
-      </Group>
+      <div>
+        <Group justify="center" align="center" mt={5} gap={10}>
+          <Text mt={5} fz={18} fw={600}>
+            {
+              accountsStore.currentAccount.name ||
+              accountsStore.currentAccount.email ||
+              accountsStore.currentAccount.address
+            }
+          </Text>
+          <UnstyledButton
+            disabled={accountsStore.currentAccount?.lowBalance}
+            onClick={() => setEditing(true)}
+            className={S("icon-button")}
+          >
+            <ImageIcon icon={EditIcon} />
+          </UnstyledButton>
+        </Group>
+        {
+          !accountsStore.currentAccount.tenantContractId ? null :
+            <Text fz="xs" ta="center" fw={500} pr={20} color="gray.7">{accountsStore.currentAccount.tenantContractId}</Text>
+        }
+      </div>
     );
   }
 

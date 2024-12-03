@@ -77,6 +77,7 @@ const TenantUsers = observer(() => {
             </Tabs.List>
           </Tabs>
           <TextInput
+            aria-label="Filter Users"
             value={filter}
             onChange={event => setFilter(event.target.value)}
             placeholder="Filter Users"
@@ -91,7 +92,7 @@ const TenantUsers = observer(() => {
                   <th>Name</th>
                   <th>Address</th>
                   <th>Balance</th>
-                  <th></th>
+                  <td></td>
                 </tr>
               </thead>
               <tbody>
@@ -119,7 +120,7 @@ const TenantUsers = observer(() => {
                       </td>
                       <td>
                         <Group gap={3} miw={100}>
-                          <ImageIcon icon={FundsIcon} className={S("icon")}/>
+                          <ImageIcon label="Funds Icon" icon={FundsIcon} className={S("icon")}/>
                           {parseFloat(user.balance).toFixed(2) || "0.0"}
                         </Group>
                       </td>
@@ -136,7 +137,7 @@ const TenantUsers = observer(() => {
                               title: "Top Up Account",
                               children: (
                                 <Text my="lg" ta="center">
-                                  Are you sure you want to top this account up to <ImageIcon icon={FundsIcon} className={S("icon", "icon--small")} />{fundingLimit}?
+                                  Are you sure you want to top this account up to <ImageIcon label="Funds Icon" icon={FundsIcon} className={S("icon", "icon--small")} />{fundingLimit}?
                                 </Text>
                               ),
                               onConfirm: async () => await tenantStore.TopUpFunds(user.address),

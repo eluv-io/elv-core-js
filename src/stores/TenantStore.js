@@ -168,6 +168,10 @@ class TenantStore {
           produceLinkUrls: true
         })) || {}
       };
+
+      if(this.tenantMetadata[tenantContractId]?.public?.name?.startsWith("iq__")) {
+        this.tenantMetadata[tenantContractId].public.name = "";
+      }
     } catch (error) {
       this.Log("Failed to load tenant contract metadata for " + tenantContractId, true);
       this.Log(error, true);

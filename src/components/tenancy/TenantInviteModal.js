@@ -100,7 +100,7 @@ const TenantInviteModal = observer(({existingInviteId="", Close}) => {
           description={
             <Group gap={0}>
               <Text fz={12} fw={500} mr={2}>Limit:</Text>
-              <ImageIcon icon={FundsIcon} className={S("icon", "icon--small", "icon--faded")} />
+              <ImageIcon label="Funds Icon" icon={FundsIcon} className={S("icon", "icon--small", "icon--faded")} />
               <Text fz={12} fw={600}>{fundingLimit?.toFixed(2) || "0.0"}</Text>
             </Group>
           }

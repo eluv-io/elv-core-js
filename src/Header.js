@@ -30,6 +30,7 @@ const AppsMenu = observer(() => {
     <Popover opened={showMenu} onChange={setShowMenu} offset={20} position="bottom-start">
       <Popover.Target>
         <UnstyledButton
+          aria-label="All Applications"
           onClick={() => setShowMenu(!showMenu)}
           className={S("apps-menu__button", showMenu ? "apps-menu__button--active" : "")}
         >

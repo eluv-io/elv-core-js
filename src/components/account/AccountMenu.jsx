@@ -34,6 +34,7 @@ export const AccountSelector = observer(({center, className=""}) => {
         <Combobox.Option value={address} key={address}>
           <div className={S("round-image", "account-selector__image")}>
             <ImageIcon
+              label="Profile Image"
               icon={profileImage}
               alternateIcon={DefaultProfileImage(account)}
             />
@@ -92,6 +93,7 @@ export const AccountSelector = observer(({center, className=""}) => {
               <>
                 <div className={S("round-image", "account-selector__image")}>
                   <ImageIcon
+                    label="Profile Image"
                     icon={profileImage}
                     alternateIcon={DefaultProfileImage(accountsStore.currentAccount)}
                   />
@@ -101,7 +103,7 @@ export const AccountSelector = observer(({center, className=""}) => {
                     {accountsStore.currentAccount.name || accountsStore.currentAccount.address}
                   </div>
                 </div>
-                <ImageIcon icon={ArrowDown} className={S("account-selector__arrow")} />
+                <ImageIcon label="Arrow" icon={ArrowDown} className={S("account-selector__arrow")} />
               </>
           }
         </UnstyledButton>
@@ -133,25 +135,25 @@ const AccountMenu = observer(({Close}) => {
       <div className={S("account-menu__separator")} />
       <div className={S("account-menu__actions")}>
         <Link aria-disabled={limited} disabled to="/apps" onClick={Close} className={S("account-menu__action", limited ? "account-menu__action--disabled" : "")}>
-          <ImageIcon icon={AppsIcon} />
+          <ImageIcon label="Apps Icon" icon={AppsIcon} />
           <span>Apps</span>
         </Link>
         <Link to="/accounts" onClick={Close} className={S("account-menu__action")}>
-          <ImageIcon icon={SwitchAccountsIcon} />
+          <ImageIcon label="Accounts Icon" icon={SwitchAccountsIcon} />
           <span>Add/Switch Accounts</span>
         </Link>
         <Link to="/profile" onClick={Close} className={S("account-menu__action")}>
-          <ImageIcon icon={ProfileIcon} />
+          <ImageIcon label="Profile Icon" icon={ProfileIcon} />
           <span>Profile</span>
         </Link>
         <Link aria-disabled={limited} to="/transfer" onClick={Close} className={S("account-menu__action", limited ? "account-menu__action--disabled" : "")}>
-          <ImageIcon icon={TransferFundsIcon} />
+          <ImageIcon label="Transfer Icon" icon={TransferFundsIcon} />
           <span>Transfer Funds</span>
         </Link>
         {
           !tenantStore.isTenantAdmin ? null :
             <Link aria-disabled={limited} to="/tenancy" onClick={Close} className={S("account-menu__action", limited ? "account-menu__action--disabled" : "")}>
-              <ImageIcon icon={TenancyIcon} />
+              <ImageIcon label="Tenant Icon" icon={TenancyIcon} />
               <span>Tenancy Management</span>
             </Link>
         }
@@ -212,6 +214,7 @@ const HeaderProfile = observer(() => {
           >
             <div className={S("round-image", "header-profile__image")}>
               <ImageIcon
+                label="Profile Image"
                 icon={profileImage}
                 alternateIcon={DefaultProfileImage(accountsStore.currentAccount)}
               />
@@ -228,7 +231,7 @@ const HeaderProfile = observer(() => {
                   </div>
               }
             </div>
-            <ImageIcon icon={ArrowDown} className={S("header-profile__arrow")} />
+            <ImageIcon label="Arrow" icon={ArrowDown} className={S("header-profile__arrow")} />
           </UnstyledButton>
         </Popover.Target>
         <Popover.Dropdown classNames={{dropdown: S("account-menu__dropdown")}}>

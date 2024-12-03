@@ -64,11 +64,13 @@ const TenantForm = observer(({Back}) => {
             <Group justify="center">
               <UnstyledButton
                 type="button"
+                aria-label="Set Tenant Image"
                 onClick={() => fileInputRef?.current.click()}
                 className={S("tenant-image", "tenant-form__image")}
               >
                 <div className={S("tenant-image")}>
                   <ImageIcon
+                    label="Tenant Image"
                     icon={tenantInfo.newImageUrl || tenantStore.publicTenantMetadata.image?.url || TenancyIcon}
                     alternateIcon={TenancyIcon}
                   />
@@ -78,7 +80,6 @@ const TenantForm = observer(({Back}) => {
             <TextInput
               my="md"
               label="Tenant Name"
-              placeholder="Tenant Name"
               value={tenantInfo.name}
               required
               onChange={event => {
@@ -116,6 +117,7 @@ const TenantForm = observer(({Back}) => {
 
                     Back();
                   } catch (error) {
+                    tenantStore.Log(error, true);
                     setSubmitting(false);
                   }
                 }}
@@ -164,18 +166,19 @@ const TenantOverview = observer(() => {
               title="Edit Tenancy Info"
               className={S("icon-button", "tenant-overview__edit")}
             >
-              <ImageIcon icon={EditIcon}/>
+              <ImageIcon label="Edit" icon={EditIcon}/>
             </UnstyledButton>
         }
         <Group wrap="nowrap" gap="xl" align="top">
           <div className={S("tenant-image", "tenant-overview__image")}>
             <ImageIcon
+              label="Tenant Image"
               icon={tenantStore.publicTenantMetadata.image?.url || TenancyIcon}
               alternateIcon={TenancyIcon}
             />
           </div>
           <div>
-            <Title fw={500} order={3}>{tenantStore.publicTenantMetadata.name}</Title>
+            <Title fw={500} order={3}>{tenantStore.publicTenantMetadata.name || "Tenant"}</Title>
             <Text fz="xs" mb="sm" className={S("tenant-overview__tenant-id")}>{tenantStore.tenantContractId}</Text>
             <Text fz="sm" className={S("tenant-overview__description")}>
               {tenantStore.publicTenantMetadata.description}
@@ -197,7 +200,7 @@ const TenantOverview = observer(() => {
             <Title fw={500} order={4}>Tenant Funds</Title>
             <Text fz={12}>{tenantStore.tenantFundingAccount.tenant_funding_address}</Text>
             <Group gap={5} mt="sm">
-              <ImageIcon icon={FundsIcon} className={S("icon")} />
+              <ImageIcon label="Funds Icon" icon={FundsIcon} className={S("icon")} />
               <Text fz={14}>{tenantStore.tenantFunds?.toFixed(2)}</Text>
             </Group>
           </Paper>

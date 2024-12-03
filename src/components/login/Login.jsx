@@ -50,8 +50,7 @@ const LoginGatePasswordForm = observer(({Close}) => {
 
       Close?.(true);
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
+      accountsStore.Log(error, true);
       setError(error.toString());
       setSubmitting(false);
     }
@@ -122,7 +121,7 @@ export const LoginGateModal = observer(({Close}) => {
     >
       <div className={S("login-modal")}>
         <div className={S("header")}>
-          <img src={EluvioLogo} className={S("header__logo")} />
+          <img alt="Eluvio Logo" src={EluvioLogo} className={S("header__logo")} />
           <div className={S("header__title")}>
             Content Fabric
           </div>

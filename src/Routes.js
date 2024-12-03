@@ -33,14 +33,17 @@ const TenantNav = observer(() => {
     return <Navigate to="/accounts" />;
   }
 
+  const name = tenantStore.publicTenantMetadata?.name ||
+    accountsStore.currentAccount?.tenantName ||
+    "Tenant";
+
   return (
     <nav className="side-nav">
       <nav className="side-nav__nav">
         <h2 className="side-nav__title">
           {
-            tenantStore.publicTenantMetadata?.name ||
-            accountsStore.currentAccount?.tenantName ||
-            "Tenant"
+            !name.startsWith("iq__") ? name :
+              "Tenant"
           }
         </h2>
         <NavLink to="/tenancy" end className="side-nav__link">
