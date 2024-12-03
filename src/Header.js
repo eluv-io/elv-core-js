@@ -94,7 +94,9 @@ const Header = observer(() => {
       <div className={S("header__gap")} />
       {
         !accountsStore.currentAccount ? null :
-          <Link className={S("header__apps-link")} to="/apps">All Applications</Link>
+          <Link className={S("header__apps-link")} to="/apps">
+            All Applications
+          </Link>
       }
       <AccountMenu />
     </header>

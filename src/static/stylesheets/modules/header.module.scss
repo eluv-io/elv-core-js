@@ -29,12 +29,21 @@
     }
 
     .apps-menu__button {
-      * {
-        color: var(--text-tertiary);
+      &--active,
+      &:hover {
+        background-color: var(--background--dark-secondary);
       }
 
       &--active {
-        background-color: var(--text-secondary);
+        * {
+          color: var(--accent);
+        }
+      }
+    }
+
+    .header__apps-link {
+      &:hover {
+        color: var(--text--dark);
       }
     }
   }
@@ -78,6 +87,10 @@
     padding: 8px;
     transition: color 0.25s ease, background-color 0.25s ease;
     width: 40px;
+
+    * {
+      transition: color 0.25s ease, background-color 0.25s ease;
+    }
 
     &--active,
     &:hover {

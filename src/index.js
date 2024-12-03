@@ -32,6 +32,9 @@ const Initialize = () => {
 // Redirect old offerings url
 if(window.location.pathname === "/offerings") {
   window.location.href = "https://eluv.io";
+// Redirect old dev url
+} else if(window.location.hostname === "eluvio-core-v3-dev.web.app") {
+  window.location.href = "https://dev.contentfabric.io";
 } else {
   Initialize();
 }
