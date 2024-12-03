@@ -37,7 +37,7 @@ const TenantForm = observer(({Back}) => {
   return (
     <div className={S("tenant-page")}>
       <div className={JoinClassNames("form-container", S("tenant-form"))}>
-        <form onSubmit={() => {}} className={S("left-input")}>
+        <form onSubmit={event => event.preventDefault()} className={S("left-input")}>
           <div className="form-header">
             Manage Tenancy Info
           </div>

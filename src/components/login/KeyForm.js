@@ -30,7 +30,7 @@ const DownloadMnemonic = mnemonic => {
   element.click();
 };
 
-const KeyForm = observer(({onboardParams, UpdateFormData}) => {
+const KeyForm = observer(({onboardParams, UpdateFormData, Submit}) => {
   const [editingMnemonic, setEditingMnemonic] = useState(false);
   const [formData, setFormData] = useState({
     credentialType: onboardParams ? "mnemonic" : "privateKey",
@@ -176,6 +176,11 @@ const KeyForm = observer(({onboardParams, UpdateFormData}) => {
         value={formData.passwordConfirmation}
         onChange={event => setFormData({...formData, passwordConfirmation: event.currentTarget.value})}
         error={formData.password && formData.passwordConfirmation && formData.password !== formData.passwordConfirmation}
+        onKeyDown={event => {
+          if(event.key !== "Enter") { return; }
+
+          Submit();
+        }}
       />
     </form>
   );

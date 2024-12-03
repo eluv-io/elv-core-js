@@ -218,37 +218,39 @@ const KeyAccountForm = observer(({onboardParams, Close}) => {
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
+  const Submit = async () => {
+    setSubmitting(true);
+    setError(undefined);
+
+    try {
+      await accountsStore.AddAccount({
+        mnemonic: formData.mnemonic?.trim(),
+        privateKey: formData.privateKey,
+        encryptedPrivateKey: formData.encryptedPrivateKey,
+        password: formData.password,
+        passwordConfirmation: formData.passwordConfirmation,
+        onboardParams
+      });
+
+      Close(true);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+      setError(error.toString());
+      setSubmitting(false);
+    }
+  };
+
   return (
     <>
-      <KeyForm onboardParams={onboardParams} UpdateFormData={setFormData} />
+      <KeyForm onboardParams={onboardParams} UpdateFormData={setFormData} Submit={Submit} />
       <div className={S("actions")}>
         <Button
           disabled={!formData.valid}
           w="100%"
           loading={submitting}
           className={S("button")}
-          onClick={async () => {
-            setSubmitting(true);
-            setError(undefined);
-
-            try {
-              await accountsStore.AddAccount({
-                mnemonic: formData.mnemonic?.trim(),
-                privateKey: formData.privateKey,
-                encryptedPrivateKey: formData.encryptedPrivateKey,
-                password: formData.password,
-                passwordConfirmation: formData.passwordConfirmation,
-                onboardParams
-              });
-
-              Close(true);
-            } catch (error) {
-              // eslint-disable-next-line no-console
-              console.error(error);
-              setError(error.toString());
-              setSubmitting(false);
-            }
-          }}
+          onClick={Submit}
         >
           Sign In
         </Button>

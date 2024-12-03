@@ -225,9 +225,9 @@ const HeaderProfile = observer(() => {
                 {accountsStore.currentAccount.name || accountsStore.currentAccount.address}
               </div>
               {
-                !accountsStore.currentAccount.tenantName ? null :
+                !accountsStore.currentAccount.tenantName && !accountsStore.currentAccount.tenantContractId ? null :
                   <div className={S("header-profile__tenant", "ellipsis")}>
-                    Tenant: {accountsStore.currentAccount.tenantName}
+                    Tenant: {accountsStore.currentAccount.tenantName || accountsStore.currentAccount.tenantContractId}
                   </div>
               }
             </div>

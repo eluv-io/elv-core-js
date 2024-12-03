@@ -144,7 +144,9 @@ const Accounts = observer(() => {
             }}
           >
             <Text fw={600} mr="sm">Add Account</Text>
-            <ImageIcon icon={PlusIcon} className={S("icon")} />
+            <div style={{width: "20px", height: "20px"}}>
+              <ImageIcon label="Plus Icon" icon={PlusIcon} className={S("icon")} />
+            </div>
           </ButtonWithLoader>
         </Group>
         <div className={S("accounts")}>
