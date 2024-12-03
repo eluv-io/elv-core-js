@@ -9,7 +9,6 @@ class AccountStore {
 
   accounts = {};
   currentAccountAddress;
-  currentOryAccountAddress;
   accountsLoaded = false;
   tenantAdmins = [];
 
@@ -102,25 +101,6 @@ class AccountStore {
         }
       })
     );
-
-    this.CurrentOryAccountAddress();
-  });
-
-  CurrentOryAccountAddress = flow(function * () {
-    try {
-      const response = yield this.oryClient.toSession({
-        tokenizeAs: EluvioConfiguration.ory_configuration.jwt_template
-      });
-
-      const email = response.data.identity.traits.email;
-
-      this.currentOryAccountAddress = Object.keys(this.accounts)
-        .find(address => this.accounts[address] === email);
-    } catch (error) {
-      this.currentOryAccountAddress = undefined;
-    }
-
-    return this.currentOryAccountAddress;
   });
 
   AuthenticateOry = flow(function * ({userData, sendVerificationEmail, force=false}={}) {
@@ -185,7 +165,6 @@ class AccountStore {
     }
 
     this.oryLoggingOut = false;
-    this.currentOryAccountAddress = undefined;
   });
 
   // Auth

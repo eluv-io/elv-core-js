@@ -66,7 +66,9 @@ const App = observer(() => {
             <Header />
         }
         {
-          accountsStore.loadingAccount || !accountsStore.currentAccount?.lowBalance ? null :
+          rootStore.pathname === "/" ||
+          accountsStore.loadingAccount ||
+          !accountsStore.currentAccount?.lowBalance ? null :
             <Text ta="center" mt={50} fw={500} className={S("message")}>
               This account has an insufficient balance. Please fund the account to proceed.
             </Text>

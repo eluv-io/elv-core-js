@@ -179,7 +179,13 @@ const PrivateKeyDetails = observer(() => {
 });
 
 const TenantInfo = observer(() => {
-  if(!tenantStore.publicTenantMetadata) { return null; }
+  if(
+    !tenantStore.publicTenantMetadata ||
+    !tenantStore.publicTenantMetadata.name ||
+    tenantStore.publicTenantMetadata.name?.startsWith("iq__")
+  ) {
+    return null;
+  }
 
   return (
     <div key={accountsStore.currentAccount?.tenantContractId} className={S("tenant__info")}>
@@ -190,7 +196,9 @@ const TenantInfo = observer(() => {
         />
       </div>
       <div className={S("tenant__text")}>
-        <Title fw={500} order={3} mb={5} className="tenant-info__title">{tenantStore.publicTenantMetadata.name}</Title>
+        <Title fw={500} order={3} mb={5} className={S("tenant-info__title")}>
+          {tenantStore.publicTenantMetadata.name}
+        </Title>
         <div className={S("tenant__description")}>
           { tenantStore.publicTenantMetadata.description || "" }
         </div>
@@ -274,7 +282,6 @@ const AdvancedDetails = observer(() => {
           <ImageIcon icon={FundsIcon} className={S("icon")} />
           <Text fz={20}>{accountsStore.currentAccount.balance || "0.0"}</Text>
         </Group>
-        <PrivateKeyDetails />
         <TenantDetails />
         <AccountMetadata />
       </div>
@@ -348,9 +355,11 @@ const Profile = observer(() => {
               Sign Out
             </ButtonWithLoader>
           </Group>
+
+          <PrivateKeyDetails />
         </div>
 
-        <Group justify="center" mt="xl" mb="md">
+        <Group justify="center" mb="md" mt="md">
           <button onClick={() => setShowAdvanced(!showAdvanced)} className={S("profile__advanced-toggle")}>
             <span>Advanced Details</span>
             <ImageIcon icon={showAdvanced ? CaretUpIcon : CaretDownIcon} />

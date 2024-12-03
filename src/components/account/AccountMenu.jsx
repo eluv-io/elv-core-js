@@ -7,6 +7,7 @@ import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "../Misc";
 import {rootStore, accountsStore, tenantStore} from "../../stores";
 import {Link, useNavigate} from "react-router-dom";
 import {Button, Combobox, Popover, UnstyledButton, useCombobox} from "@mantine/core";
+import {LoginGateModal} from "../login/Login";
 
 const S = CreateModuleClassMatcher(AccountMenuStyles);
 
@@ -15,13 +16,16 @@ import SwitchAccountsIcon from "../../static/icons/switch-accounts";
 import ProfileIcon from "../../static/icons/User";
 import TransferFundsIcon from "../../static/icons/dollar-sign";
 import TenancyIcon from "../../static/icons/settings";
-import {LoginGateModal} from "../login/Login";
+import ArrowDown from "../../static/icons/chevron-down";
 
 export const AccountSelector = observer(({center, className=""}) => {
   const combobox = useCombobox();
 
   const options = accountsStore.sortedAccounts
-    .filter(address => address !== accountsStore.currentAccountAddress)
+    .filter(address =>
+      address !== accountsStore.currentAccountAddress &&
+      accountsStore.accounts[address]
+    )
     .map(address => {
       const account = accountsStore.accounts[address];
       const profileImage = accountsStore.ResizeImage(account.imageUrl, 200);
@@ -97,6 +101,7 @@ export const AccountSelector = observer(({center, className=""}) => {
                     {accountsStore.currentAccount.name || accountsStore.currentAccount.address}
                   </div>
                 </div>
+                <ImageIcon icon={ArrowDown} className={S("account-selector__arrow")} />
               </>
           }
         </UnstyledButton>
@@ -223,6 +228,7 @@ const HeaderProfile = observer(() => {
                   </div>
               }
             </div>
+            <ImageIcon icon={ArrowDown} className={S("header-profile__arrow")} />
           </UnstyledButton>
         </Popover.Target>
         <Popover.Dropdown classNames={{dropdown: S("account-menu__dropdown")}}>

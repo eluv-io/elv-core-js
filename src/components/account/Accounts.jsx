@@ -124,9 +124,11 @@ const Accounts = observer(() => {
   return (
     <div className="page-content">
       <div className={S("accounts-page")}>
-        <div className={S("add-account")}>
-          <div className={S("header-text")}>Add/Switch Accounts</div>
+        <Group justify="center" mb={50}>
           <ButtonWithLoader
+            h={45}
+            px="xl"
+            fz="md"
             onClick={async () => {
               try {
                 await accountsStore.LogOutOry();
@@ -135,9 +137,9 @@ const Accounts = observer(() => {
               }
             }}
           >
-            Add Account
+            Add/Switch Accounts
           </ButtonWithLoader>
-        </div>
+        </Group>
         <div className={S("accounts")}>
           {accountsStore.sortedAccounts.map(address =>
             <Account address={address} key={`account-${address}`} />

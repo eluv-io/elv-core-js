@@ -16,9 +16,9 @@ import {
 } from "@mantine/core";
 import React, {useEffect, useRef, useState} from "react";
 import {CreateModuleClassMatcher} from "../../utils/Utils";
-import KeyForm from "../account/KeyForm";
+import KeyForm from "./KeyForm";
 import {Navigate} from "react-router";
-import OryForm from "../account/OryForm";
+import OryForm from "./OryForm";
 
 import EluvioLogo from "../../static/images/Main_Logo_Light";
 import {Link, useNavigate} from "react-router-dom";
@@ -342,17 +342,19 @@ const TenantInfo = observer(({tenantContractId}) => {
   }
 
   return (
-    <div className={S("tenant-info")}>
-      <div className={S("tenant-image", "tenant-info__image")}>
-        <ImageIcon
-          icon={metadata.image?.url}
-          alternateIcon={TenancyIcon}
-        />
+    <Group justify="center">
+      <div className={S("tenant-info")}>
+        <div className={S("tenant-image", "tenant-info__image")}>
+          <ImageIcon
+            icon={metadata.image?.url}
+            alternateIcon={TenancyIcon}
+          />
+        </div>
+        <div className={S("tenant-info__text")}>
+          <Text fw={500} fz={18} mt={5}>{metadata.name}</Text>
+        </div>
       </div>
-      <div className={S("tenant-info__text")}>
-        <Text fw={500} fz={18} mt={5}>{metadata.name}</Text>
-      </div>
-    </div>
+    </Group>
   );
 });
 
