@@ -1,8 +1,12 @@
+import TenancyStyles from "../../static/stylesheets/modules/tenancy.module.scss";
+
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react";
-import {Button, Checkbox, Group, Modal, Table, Text} from "@mantine/core";
+import {Button, Checkbox, Group, Loader, Modal, Table, Text} from "@mantine/core";
 import {rootStore, tenantStore} from "../../stores";
-import {LoadingElement} from "elv-components-js";
+import {CreateModuleClassMatcher} from "../../utils/Utils";
+
+const S = CreateModuleClassMatcher(TenancyStyles);
 
 const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
   const groups = tenantStore.managedGroups;
@@ -40,17 +44,18 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
       padding="xl"
       title="Set User Permissions"
       onClose={Close}
+      withCloseButton={false}
     >
-      <LoadingElement
-        loading={!groups || !permissions}
-        render={() => (
+      {
+        !groups || !permissions  ?
+          <Loader className={S("page-loader", "page-loader--short")} /> :
           <form onSubmit={() => {}}>
-            <Table>
+            <Table mt="xl">
               <thead>
                 <tr>
                   <th>Group</th>
-                  <th><Group position="center">Manager</Group></th>
-                  <th><Group position="center">Member</Group></th>
+                  <th><Group justify="center">Manager</Group></th>
+                  <th><Group justify="center">Member</Group></th>
                 </tr>
               </thead>
               <tbody>
@@ -67,9 +72,15 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
                           </Text>
                         </td>
                         <td>
-                          <Group mt="xs" position="center">
+                          <Group mt="xs" justify="center">
                             <Checkbox
-                              disabled={settings.owner}
+                              disabled={settings.owner || !group.isOwner}
+                              title={
+                                settings.owner ?
+                                  "This user is the owner of this group" :
+                                  !group.isOwner ? "Only group owners may add managers" :
+                                    undefined
+                              }
                               aria-label={`Manager of ${name || group.address}`}
                               checked={settings.owner || settings.manager}
                               onChange={event => setPermissions({...permissions, [group.address]: { ...settings, manager: event.currentTarget.checked }})}
@@ -77,9 +88,17 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
                           </Group>
                         </td>
                         <td>
-                          <Group position="center">
+                          <Group justify="center">
                             <Checkbox
-                              disabled={isTenantUsersGroup || settings.owner}
+                              disabled={isTenantUsersGroup || settings.owner || settings.manager}
+                              title={
+                                isTenantUsersGroup ?
+                                  "Users may not be removed from the tenant users group" :
+                                  settings.owner ?
+                                    "This user is the owner of this group" :
+                                    settings.manager ? "Managers of groups are also members" :
+                                      undefined
+                              }
                               aria-label={`Manager of ${name || group.address}`}
                               checked={settings.owner || settings.manager || settings.member}
                               onChange={event => setPermissions({...permissions, [group.address]: { ...settings, member: event.currentTarget.checked }})}
@@ -92,12 +111,13 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
                 }
               </tbody>
             </Table>
-            { !error ? null : <Text mb="md" color="red" ta="center">Something went wrong, please try again</Text> }
-            <Group position="right" mt={50} noWrap>
+            { !error ? null : <Text mb="md" mt="xl" color="red" ta="center">Something went wrong, please try again</Text> }
+            <Group justify="right" mt={50} wrap="nowrap">
               <Button
                 variant="default"
                 type="button"
                 onClick={Close}
+                h={40}
                 w={150}
               >
                 Cancel
@@ -105,6 +125,7 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
               <Button
                 disabled={JSON.stringify(originalPermissions) === JSON.stringify(permissions)}
                 type="button"
+                h={40}
                 w={150}
                 loading={submitting}
                 onClick={async () => {
@@ -113,11 +134,14 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
                     await tenantStore.SetUserGroupPermissions({userAddress: address, originalPermissions, permissions});
 
                     if(inviteId) {
-                      await tenantStore.CompleteInvite({inviteId});
+                      await tenantStore.CompleteInvite({id: inviteId});
                     }
+
+                    rootStore.SetToastMessage("User permissions updated successfully");
 
                     Close();
                   } catch (error) {
+                    tenantStore.Log(error, true);
                     setOriginalPermissions(await tenantStore.UserManagedGroupMembership({userAddress: address}));
                     setError(error);
                     setSubmitting(false);
@@ -128,8 +152,7 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
               </Button>
             </Group>
           </form>
-        )}
-      />
+      }
     </Modal>
   );
 });

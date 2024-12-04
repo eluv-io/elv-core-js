@@ -1,0 +1,265 @@
+.header-profile {
+  &__content {
+    align-items: center;
+    background-color: var(--background-primary);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    display: flex;
+    gap: 10px;
+    height: 40px;
+    justify-content: flex-end;
+    max-height: 100px;
+    max-width: 500px;
+    padding: 5px 10px;
+    text-align: left;
+    transition: background-color 0.1s ease, border 0.1s ease, opacity 0.1s ease;
+    user-select: none;
+
+    * {
+      color: var(--text-secondary);
+    }
+
+    &--locked {
+      &:not(&:hover) {
+        opacity: 0.65;
+      }
+    }
+
+    &--active,
+    &:hover {
+      border: 1px solid var(--accent);
+    }
+
+    &--dark {
+      background-color: var(--background--dark);
+      border: 1px solid var(--border--dark);
+
+      * {
+        color: white;
+      }
+
+      .header-profile__image {
+        * {
+          background-color: var(--background--dark);
+        }
+      }
+    }
+  }
+
+  &--no-account {
+    font-size: 14px;
+    font-weight: 600;
+    justify-content: flex-end;
+    padding-right: 20px;
+  }
+
+  &__image {
+    height: 30px;
+    min-width: 30px;
+    width: 30px;
+  }
+
+  &__menu-icon {
+    height: 100%;
+    transition: color 0.25s ease;
+    width: 100%;
+
+    &:hover,
+    &--active {
+      color: var(--accent);
+    }
+  }
+
+  &__account {
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    font-weight: 500;
+    height: 100%;
+    justify-content: center;
+    line-height: 16px;
+    max-width: 300px;
+  }
+
+  &__name {
+    font-size: 12px;
+    font-weight: 500;
+    height: 20px;
+  }
+
+  &__address {
+    font-size: 12px;
+    max-width: 150px;
+  }
+
+  &__tenant {
+    font-size: 10px;
+    font-weight: 600;
+    max-width: 150px;
+  }
+
+  &__arrow {
+    height: 20px;
+    width: 20px;
+
+    * {
+      color: var(--text-tertiary);
+    }
+  }
+}
+
+.account-menu {
+  min-width: 300px;
+  padding: 5px 10px 10px;
+
+  &__dropdown {
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgb(0 0 0 / 0.1);
+  }
+
+  &__header {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  &__separator {
+    background-color: var(--border);
+    height: 1px;
+    margin: 20px 10px;
+  }
+
+  &__actions {
+    display: grid;
+    gap: 5px;
+  }
+
+  &__action {
+    align-items: center;
+    border-radius: 10px;
+    display: flex;
+    font-weight: 500;
+    gap: 15px;
+    padding: 10px;
+    transition: background-color 0.25s ease;
+    width: 100%;
+
+    &:hover {
+      background-color: var(--background-secondary);
+    }
+
+    svg {
+      color: var(--text-secondary);
+      display: flex;
+      gap: 20px;
+      height: 25px;
+    }
+
+    &--disabled {
+      opacity: 0.5;
+      pointer-events: none;
+      position: relative;
+      user-select: none;
+
+      &::after {
+        content: " ";
+        inset: 0;
+        position: absolute;
+        z-index: 1;
+      }
+    }
+  }
+
+  &__sign-out {
+    height: 40px;
+    margin-top: 30px;
+    width: 100%;
+  }
+}
+
+.account-selector {
+  &__current-account {
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    display: flex;
+    height: 50px;
+    padding: 10px 15px;
+    width: 100%;
+
+    &--center {
+      justify-content: center;
+      padding-right: 20px !important;
+    }
+  }
+
+  &__dropdown {
+    background-color: var(--background-primary);
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgb(0 0 0 / 0.1);
+    display: flex;
+    max-height: 400px;
+    overflow: hidden auto;
+    overscroll-behavior: contain;
+    width: 500px;
+
+    * {
+      transition: background-color 0.25s ease;
+    }
+  }
+
+  &__options {
+    width: 500px;
+  }
+
+  &__option {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    max-width: 100%;
+    padding: 10px;
+    position: relative;
+    text-align: left;
+    width: 100%;
+  }
+
+  &__image {
+    height: 30px;
+    width: 30px;
+  }
+
+  &__account {
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    height: max-content;
+    justify-content: center;
+    line-height: 16px;
+    max-width: 175px;
+  }
+
+  &__name {
+    font-size: 14px;
+  }
+
+  &__address {
+    font-size: 12px;
+  }
+
+  &__tenant {
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  &__arrow {
+    height: 20px;
+    position: absolute;
+    right: 10px;
+    width: 20px;
+
+    * {
+      color: var(--text-tertiary);
+    }
+  }
+}

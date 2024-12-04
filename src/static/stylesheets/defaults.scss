@@ -1,6 +1,4 @@
-//@import "~elv-components-js/src/stylesheets/defaults";
 @import "./reset";
-@import "~elv-components-js/src/stylesheets/styles";
 
 html,
 body,
@@ -14,76 +12,93 @@ body,
 }
 
 body {
+  color: #222;
   height: 100vh;
+  scrollbar-gutter: stable both-edges;
+
+  * {
+    font-family: Inter, "Helvetica Neue", helvetica, sans-serif;
+    scrollbar-color: #AAA #FAFAFA;
+    scrollbar-width: thin;
+
+    ::-webkit-scrollbar {
+      opacity: 1;
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #eee;
+      opacity: 1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: #aaa;
+      border-radius: 100px;
+      opacity: 1;
+    }
+  }
+}
+
+b {
+  font-weight: bold;
 }
 
 .page-content {
   margin-left: auto;
   margin-right: auto;
-  padding-bottom: 50px;
+  padding: 50px 0;
   width: max-content;
+}
+
+.content {
+  padding-bottom: 20px;
 }
 
 .app-version {
   display: none;
 }
 
-.header {
-  position: fixed;
-  top: 0;
-}
-
 .router-container {
-  height: 100vh;
-  min-height: max-content;
-  padding-top: 40px;
+  height: max-content;
+  min-height: 100vh;
+  padding: 50px 0 80px;
   position: relative;
+
+  &--app {
+    padding-bottom: 0;
+
+    .content {
+      padding: 0;
+    }
+  }
 }
 
-.form-container,
-.content-container {
-  width: 800px;
+.form-container {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgb(0 0 0 / 0.1);
+  margin-top: 20px;
+  overflow: hidden;
+  width: 500px;
 
-  @media screen and (max-width: 850px) {
+  @media screen and (width <= 850px) {
     width: 90vw;
   }
 }
 
-.page-error {
-  align-items: flex-start;
+.form-header {
+  align-items: center;
+  background-color: var(--background-secondary);
+  color: var(--text-secondary);
   display: flex;
-  flex-direction: row;
+  font-size: 18px;
+  font-weight: 600;
+  height: 50px;
   justify-content: center;
-
-  .page-error-container {
-    align-items: center;
-    border: 1px solid $elv-color-mediumgray;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-top: $elv-spacing-xxl;
-
-    padding: $elv-spacing-l;
-  }
-
-  h1 {
-    font-size: $elv-font-l;
-    font-weight: 600;
-    padding: $elv-spacing-xxs 0;
-  }
-
-  button {
-    margin-top: $elv-spacing-l;
-  }
 }
 
-.actions-container {
-  display: flex;
-  margin: $elv-spacing-s 0;
-
-  *:not(:last-child) {
-    margin-right: $elv-spacing-xs;
-  }
+.form-content {
+  padding: 20px;
 }
 
 .flex-centered {
@@ -107,10 +122,6 @@ body {
   cursor: pointer;
 }
 
-.indented {
-  padding-left: $elv-spacing-s;
-}
-
 .labelled-field {
   label {
     display: inline-block;
@@ -119,53 +130,78 @@ body {
   }
 }
 
-.small-text {
-  font-size: $elv-font-s;
-}
-
-select {
-  @include elv-select;
-
-  // Increase specificity
-  &.recipient-select {
-    &.recipient-select {
-      font-size: $elv-font-m;
-    }
-  }
-}
-
-// Hide alt image text
-img {
-  &.-elv-icon {
-    color: transparent;
-  }
-}
-
-.-elv-cropped-icon {
-  @include elv-no-select;
-
-  position: relative;
-
-  &::after {
-    border-radius: 50%;
-    box-shadow: 0 0 12px -5px $elv-color-darkgray inset;
-    content: "";
-    display: block;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    width: 100%;
-  }
-
-  svg {
-    stroke: $elv-color-lightgray;
-  }
-}
-
-.-elv-loading-element-fullpage {
-  flex: 1 1 auto;
-}
-
 .pre-wrap {
   white-space: pre-wrap;
+}
+
+.icon {
+  height: 20px;
+  object-fit: contain;
+  width: 20px;
+}
+
+.icon-button {
+  color: var(--text-secondary);
+  height: 20px;
+  transition: opacity 0.25s ease;
+  width: 20px;
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+.side-nav {
+  min-height: calc(100vh - 150px);
+  padding-left: 200px;
+  position: relative;
+
+  &__title {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    padding-left: 10px;
+  }
+
+  &__nav {
+    border-right: 1px solid var(--background-tertiary);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    left: 0;
+    padding: 20px 15px;
+    position: fixed;
+    width: 200px;
+  }
+
+  &__link {
+    align-items: center;
+    border-radius: 5px;
+    color: var(--text-secondary);
+    display: flex;
+    gap: 15px;
+    height: 40px;
+    padding-left: 10px;
+    transition: color 0.1s ease, background-color 0.1s ease, font-weight 0.1s ease;
+
+    * {
+      transition: color 0.1s ease, background-color 0.1s ease, font-weight 0.1s ease;
+    }
+
+    &:hover,
+    &.active {
+      background-color: var(--background-secondary);
+      font-weight: 500;
+    }
+
+    &.active {
+      color: var(--accent);
+    }
+
+    svg {
+      color: var(--text-secondary);
+      height: 20px;
+      width: 20px;
+    }
+  }
 }

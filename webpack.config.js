@@ -2,6 +2,7 @@ const Path = require("path");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
+const fs = require("fs");
 
 module.exports = env => {
   const isDevelopment = !!env.WEBPACK_SERVE;
@@ -40,6 +41,14 @@ module.exports = env => {
       historyApiFallback: true,
       allowedHosts: "all",
       port: process.env.ELV_CORE_JS_PORT || 8082,
+      /*
+      https: {
+        key: fs.readFileSync("./https/private.key"),
+        cert: fs.readFileSync("./https/dev.local.crt"),
+        ca: fs.readFileSync("./https/private.pem")
+      },
+
+       */
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type, Accept",
@@ -79,7 +88,14 @@ module.exports = env => {
             {
               loader: "css-loader",
               options: {
-                importLoaders: 2
+                importLoaders: 2,
+                modules: {
+                  auto: true,
+                  namedExport: false,
+                  exportLocalsConvention: "as-is",
+                  mode: "local",
+                  localIdentName: isDevelopment ?  "[local]--[hash:base64:5]" : "[hash:base64:5]"
+                }
               }
             },
             "postcss-loader",

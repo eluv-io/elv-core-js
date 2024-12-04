@@ -1,7 +1,8 @@
 import {configure, flow, makeAutoObservable} from "mobx";
 import {ElvClient, ElvWalletClient, Utils} from "@eluvio/elv-client-js";
-import AccountStore from "./Accounts";
-import TenantStore from "./Tenant";
+import AccountStore from "./AccountStore";
+import TenantStore from "./TenantStore";
+import LocalizationEN from "../static/localizations/en.yml";
 
 // Force strict mode so mutations are only allowed within actions.
 configure({
@@ -18,6 +19,12 @@ class RootStore {
   simplePasswords = false;
   utils = Utils;
   activeApp;
+  eluvioTenantId;
+  l10n = LocalizationEN;
+  pathname = location.pathname;
+  toastMessage = "";
+  showToastMessage = false;
+  showLoginGate = false;
 
   get darkMode() {
     if(!this.activeApp) { return false; }
@@ -25,6 +32,17 @@ class RootStore {
     const darkModeApps = ["Video Editor"];
 
     return !!darkModeApps.find(app => this.activeApp.includes(app));
+  }
+
+  Log(message="", error=false) {
+    // eslint-disable-next-line no-console
+    const logMethod = error === "warn" ? console.warn : error ? console.error : console.log;
+
+    if(typeof message === "string") {
+      message = `Eluvio Media Wallet | ${message}`;
+    }
+
+    logMethod(message);
   }
 
   constructor() {
@@ -64,11 +82,15 @@ class RootStore {
 
       this.client.walletClient = this.walletClient;
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
+      this.Log(error, true);
       this.configError = true;
       return;
     }
+
+    this.eluvioTenantId =
+      this.client.networkName.includes("demo") ?
+        "iten3HEEASRTo2rNLeeKw4cfq4sPuX6" :
+        "iten34Y7Tzso2mRqhzZ6yJDZs2Sqf8L";
 
     const networkInfo = this.client.NetworkInfo();
     this.networkName = networkInfo.name;
@@ -103,7 +125,7 @@ class RootStore {
         });
 
         this.signerSet = true;
-        yield this.InitializeSearchClient(signer);
+        this.InitializeSearchClient(signer);
       } else {
         this.signerSet = false;
 
@@ -114,20 +136,13 @@ class RootStore {
         });
       }
 
-      yield this.client.CallContractMethod({
-        contractAddress: this.client.contentSpaceAddress,
-        methodName: "version"
-      });
-
       if(!this.accountsStore.accountsLoaded) {
         this.accountsStore.LoadAccounts();
       }
     } catch (error) {
       this.configError = true;
-      // eslint-disable-next-line no-console
-      console.error("Ethereum Check Failed:");
-      // eslint-disable-next-line no-console
-      console.error(error);
+      this.Log("Ethereum Check Failed:", true);
+      this.Log(error, true);
     }
   });
 
@@ -169,8 +184,7 @@ class RootStore {
 
       this.searchClient = client;
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
+      this.Log(error, true);
     }
 
     try {
@@ -183,19 +197,29 @@ class RootStore {
           signer: wallet.AddAccountFromMnemonic({mnemonic: wallet.GenerateMnemonic()})
         });
       }
-
-      yield this.searchClient.CallContractMethod({
-        contractAddress: this.searchClient.contentSpaceAddress,
-        methodName: "version"
-      });
     } catch (error) {
       this.configError = true;
-      // eslint-disable-next-line no-console
-      console.error("Ethereum Check Failed:");
-      // eslint-disable-next-line no-console
-      console.error(error);
+
+      this.Log("Ethereum Check Failed:", true);
+      this.Log(error, true);
     }
   });
+
+  SetToastMessage(message) {
+    clearTimeout(this.toastMessageTimeout);
+
+    this.toastMessage = message;
+    this.showToastMessage = true;
+    this.toastMessageTimeout = setTimeout(() => this.showToastMessage = false, 5000);
+  }
+
+  SetPathname(pathname) {
+    this.pathname = pathname;
+  }
+
+  SetShowLoginGate(show) {
+    this.showLoginGate = show;
+  }
 }
 
 const root = new RootStore();

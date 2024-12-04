@@ -1,25 +1,39 @@
+import TenantStyles from "../../static/stylesheets/modules/tenancy.module.scss";
+
 import {observer} from "mobx-react";
 import React, {useState} from "react";
-import {accountsStore, tenantStore} from "../../stores";
-import {Button, CopyButton, Group, Modal, NumberInput, Paper, Text, TextInput, Tooltip} from "@mantine/core";
+import {rootStore,  tenantStore} from "../../stores";
+import {Button, Group, Modal, NumberInput, Text, TextInput} from "@mantine/core";
+import {CreateModuleClassMatcher, ValidEmail} from "../../utils/Utils";
+import {CopyButton, ImageIcon} from "../Misc";
+import FundsIcon from "../../static/icons/elv-token.png";
 
-const TenantInviteModal = observer(({existingInviteUrl="", Close}) => {
+const S = CreateModuleClassMatcher(TenantStyles);
+
+const TenantInviteModal = observer(({existingInviteId="", Close}) => {
   const [name, setName] = useState("");
-  const [funds, setFunds] = useState(1);
+  const [email, setEmail] = useState("");
+  const [funds, setFunds] = useState(0.2);
   const [submitting, setSubmitting] = useState(false);
-  const [inviteUrl, setInviteUrl] = useState(existingInviteUrl);
   const [error, setError] = useState(undefined);
 
-  const insufficientFunds = accountsStore.currentAccount.balance < funds + 0.05;
-  const valid = name && !insufficientFunds;
+  const fundingLimit = tenantStore.tenantFundingAccount?.per_top_up_limit || 0.2;
+  const insufficientFunds = tenantStore.tenantFunds < funds + 0.05;
+  const valid = name && email && ValidEmail(email) && !insufficientFunds && funds <= fundingLimit;
+
+  const invite = existingInviteId && tenantStore.invites[existingInviteId];
 
   const Submit = async () => {
     if(!valid || insufficientFunds) { return; }
 
     try {
       setSubmitting(true);
-      setInviteUrl(await tenantStore.GenerateInvite({name, funds}));
+      await tenantStore.GenerateInvite({name, email, funds});
+      rootStore.SetToastMessage(`An invite has been sent to ${email}`);
+
+      Close();
     } catch (error) {
+      tenantStore.Log(error, true);
       setError(error);
     } finally {
       setSubmitting(false);
@@ -27,32 +41,22 @@ const TenantInviteModal = observer(({existingInviteUrl="", Close}) => {
   };
 
   let content;
-  if(inviteUrl) {
+  if(invite) {
     content = (
-      <div>
+      <div className={S("tenant-invite-modal__content")}>
         <Text fz="sm">
-          Share this URL with the new user to have them set up their account. After the account is created, you will be notified to grant permissions.
+          An invitation email has been sent to <b>{invite.data.email || invite.data.name}</b>.
         </Text>
-        <CopyButton value={inviteUrl} timeout={5000}>
-          {({ copied, copy }) => (
-            <Tooltip label={copied ? "Copied!" : "Copy"} position="bottom-start">
-              <Paper withBorder p="md" my="md" className="tenant-invite-modal__url-container">
-                <Text fz="xs" color="dimmed" className="tenant-invite-modal__url" onClick={copy}>
-                  { inviteUrl }
-                </Text>
-              </Paper>
-            </Tooltip>
-          )}
-        </CopyButton>
-        <Group position="right" mt={50}>
-          <Button
-            type="button"
-            onClick={Close}
-            w={150}
-          >
-            Done
-          </Button>
-        </Group>
+
+        <Text fz="sm" mt="md">
+          You may also share this URL with the new user to have them set up their account. After the account is created, you will be notified to grant permissions.
+        </Text>
+        <div className={S("tenant-invite-modal__url-container")}>
+          <div className={S("tenant-invite-modal__url")}>
+            { invite.data.url }
+          </div>
+          <CopyButton value={invite.data.url} className={S("icon-button")} />
+        </div>
       </div>
     );
   } else {
@@ -60,6 +64,7 @@ const TenantInviteModal = observer(({existingInviteUrl="", Close}) => {
       <form onSubmit={() => {}}>
         <TextInput
           label="Name"
+          mt="md"
           mb="md"
           value={name}
           onChange={event => setName(event.currentTarget.value)}
@@ -69,10 +74,36 @@ const TenantInviteModal = observer(({existingInviteUrl="", Close}) => {
             Submit();
           }}
         />
+        <TextInput
+          label="Email Address"
+          mt="md"
+          mb="md"
+          value={email}
+          onChange={event => setEmail(event.currentTarget.value)}
+          onKeyDown={event => {
+            if(event.key !== "Enter") { return; }
+
+            Submit();
+          }}
+        />
         <NumberInput
-          error={!funds ? true : (insufficientFunds ? "Insufficient Funds" : undefined)}
+          error={
+            !funds ? true :
+              insufficientFunds ?
+                "Insufficient Funds" :
+                funds > fundingLimit ?
+                  `Limit: ${fundingLimit.toFixed(2)}` :
+                  undefined
+          }
           mb="md"
           label="Funds"
+          description={
+            <Group gap={0}>
+              <Text fz={12} fw={500} mr={2}>Limit:</Text>
+              <ImageIcon label="Funds Icon" icon={FundsIcon} className={S("icon", "icon--small", "icon--faded")} />
+              <Text fz={12} fw={600}>{fundingLimit?.toFixed(2) || "0.0"}</Text>
+            </Group>
+          }
           value={funds}
           min={0}
           step={0.05}
@@ -87,12 +118,13 @@ const TenantInviteModal = observer(({existingInviteUrl="", Close}) => {
           }}
         />
         { !error ? null : <Text mb="md" color="red" ta="center">Something went wrong, please try again</Text> }
-        <Group position="right" mt={50} noWrap>
+        <Group justify="right" mt={50} wrap="nowrap">
           <Button
             variant="default"
             type="button"
             onClick={Close}
             w={150}
+            h={40}
           >
             Cancel
           </Button>
@@ -100,6 +132,7 @@ const TenantInviteModal = observer(({existingInviteUrl="", Close}) => {
             disabled={!valid}
             type="button"
             w={150}
+            h={40}
             loading={submitting}
             onClick={Submit}
           >
@@ -117,6 +150,7 @@ const TenantInviteModal = observer(({existingInviteUrl="", Close}) => {
       padding="xl"
       title="Invite New User"
       onClose={Close}
+      withCloseButton={false}
     >
       {content}
     </Modal>

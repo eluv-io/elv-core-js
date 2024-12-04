@@ -10,9 +10,7 @@ import UrlJoin from "url-join";
 import {Navigate, useParams} from "react-router";
 
 import {FrameClient} from "@eluvio/elv-client-js/src/FrameClient";
-import {Confirm} from "elv-components-js";
 import {observer} from "mobx-react";
-import {Debounce} from "elv-components-js";
 
 import {rootStore, accountsStore} from "../../stores";
 
@@ -74,14 +72,20 @@ class AppFrame extends React.Component {
       appName,
       appUrl,
       profileAccessAllowed: false,
-      confirmPromise: undefined
+      confirmPromise: undefined,
+      balanceLastUpdated: undefined
     };
 
     // Update account balance when making requests
-    this.UpdateBalance = Debounce(
-      () => accountsStore.AccountBalance(accountsStore.currentAccountAddress),
-      5000
-    );
+    this.UpdateBalance = async () => {
+      if(Date.now() - this.state.balanceLastUpdated < 10000) {
+        return;
+      }
+
+      this.setState({balanceLastUpdated: Date.now()});
+
+      accountsStore.AccountBalance(accountsStore.currentAccountAddress);
+    };
 
     this.ApiRequestListener = this.ApiRequestListener.bind(this);
   }
@@ -110,6 +114,7 @@ class AppFrame extends React.Component {
 
         if(!accessAllowed) {
           if(!this.state.confirmPromise) {
+            /*
             this.setState({
               confirmPromise: Confirm({
                 message: `Do you want to allow the application "${requestor}" to access your profile?`,
@@ -128,6 +133,7 @@ class AppFrame extends React.Component {
                 }
               })
             });
+             */
           }
 
           await this.state.confirmPromise;
@@ -167,11 +173,9 @@ class AppFrame extends React.Component {
         "*"
       );
     } catch (error) {
-      /* eslint-disable no-console */
-      console.error("Error responding to message");
-      console.error(responseMessage);
-      console.error(error);
-      /* eslint-enable no-console */
+      rootStore.Log("Error responding to message", true);
+      rootStore.Log(responseMessage, true);
+      rootStore.Log(error, true);
     }
 
     this.UpdateBalance();
@@ -298,9 +302,9 @@ const AppFrameWrapper = observer(() => {
     rootStore.SetActiveApp(app);
 
     return () => rootStore.SetActiveApp(undefined);
-  }, []);
+  }, [app]);
 
-  return <AppFrame app={app} key={rootStore.accountsStore.currentAccountAddress} />;
+  return <AppFrame app={app} key={`${app}-${rootStore.accountsStore.currentAccountAddress}`} />;
 });
 
 export default AppFrameWrapper;

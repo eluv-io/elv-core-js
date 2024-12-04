@@ -1,0 +1,27 @@
+:root {
+  --background-primary: #fff;
+  --background-secondary: #f8f9fd;
+  --background-tertiary: #eee;
+  --background-modal: #808080;
+  --text-primary: #222;
+  --text-secondary: #6b6b6b;
+  --text-tertiary: #aaa;
+  --accent: #228be6;
+  --error: #a00;
+  --border: #ced4da;
+  --background--dark: #131313;
+  --background--dark-secondary: #232323;
+  --text--dark: #DADADA;
+  --border--dark: #000;
+
+  @keyframes fadein {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+}

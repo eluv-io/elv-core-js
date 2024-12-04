@@ -1,78 +1,37 @@
-import "@babel/polyfill";
+import "@mantine/core/styles.css";
 import "./static/stylesheets/defaults.scss";
 
 import React from "react";
-import { render } from "react-dom";
-import {BrowserRouter} from "react-router-dom";
+import { createRoot } from "react-dom/client";
+import {MantineProvider} from "@mantine/core";
+import { ModalsProvider } from "@mantine/modals";
+import MantineTheme from "./static/MantineTheme";
+import App from "./App";
 
-import {observer} from "mobx-react";
-import {accountsStore, rootStore} from "./stores";
-
-import {Action, ErrorHandler} from "elv-components-js";
-
-import Header from "./Header";
-import Navigation from "./Navigation";
-
-import AppRoutes from "./Routes";
-import {Group, Loader, MantineProvider} from "@mantine/core";
-import ScrollToTop from "./ScrollToTop";
-
-const App = observer(() => {
-  if(rootStore.configError) {
-    return (
-      <div className="page-error">
-        <div className="page-error-container">
-          <h1>
-            Unable to load client configuration
-          </h1>
-          <h1>
-            {EluvioConfiguration["config-url"]}
-          </h1>
-
-          <Action onClick={() => rootStore.InitializeClient()}>
-            Retry
-          </Action>
-        </div>
-      </div>
-    );
-  }
-
-  if(!rootStore.client || !accountsStore.accountsLoaded) {
-    return (
-      <Group h="100vh" align="center" position="center">
-        <Loader />
-      </Group>
-    );
-  }
-
-  return (
-    <BrowserRouter>
-      <ScrollToTop />
-      <div className="router-container">
-        <Header />
-        <Navigation />
-        <AppRoutes />
-      </div>
-    </BrowserRouter>
+const Initialize = () => {
+  const element = document.createElement("div");
+  element.id = "app";
+  document.body.appendChild(
+    element
   );
-});
 
-const AppComponent = ErrorHandler(App);
+  const root = createRoot(document.getElementById("app"));
 
-const element = document.createElement("div");
-element.id = "app";
-document.body.appendChild(
-  element
-);
-
-render(
-  (
+  root.render(
     <React.Fragment>
-      <MantineProvider withGlobalStyles>
-        <AppComponent />
+      <MantineProvider withGlobalStyles theme={MantineTheme}>
+        <ModalsProvider>
+          <App/>
+        </ModalsProvider>
       </MantineProvider>
       <div className="app-version">{EluvioConfiguration.version}</div>
     </React.Fragment>
-  ),
-  document.getElementById("app")
-);
+  );
+};
+
+// Redirect old offerings url
+if(window.location.pathname === "/offerings") {
+  window.location.href = "https://eluv.io";
+} else {
+  Initialize();
+}

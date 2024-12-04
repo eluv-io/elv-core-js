@@ -1,0 +1,81 @@
+.accounts {
+  align-items: center;
+  display: grid;
+  flex-wrap: wrap;
+  gap: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  justify-content: center;
+  margin: 30px auto 50px;
+  max-width: min(1300px, 80vw);
+  width: max-content;
+}
+
+.account {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 0 10px 0 rgb(0 0 0 / 0.1);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-width: 250px;
+  padding: 30px 25px;
+  position: relative;
+  width: 250px;
+
+  &:hover {
+    .remove-account {
+      opacity: 1;
+    }
+  }
+}
+
+.remove-account {
+  color: var(--text-tertiary);
+  height: 25px;
+  opacity: 0;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  transition: opacity 0.25s ease;
+  width: 25px;
+}
+
+.image {
+  border: 1px solid var(--border);
+  height: 120px;
+  margin: 0 auto;
+  width: 120px;
+}
+
+.text {
+  margin-top: 20px;
+}
+
+.name {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.tenant {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.address {
+  color: var(--text-secondary);
+  font-size: 10px;
+  margin-top: 2px;
+}
+
+.actions {
+  flex-grow: 1;
+  justify-content: flex-end;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.action {
+  border-radius: 5px;
+  height: 40px;
+  width: 100%;
+}

@@ -1,0 +1,30 @@
+login:
+  ory:
+    actions:
+      registration: Sign Up
+      recovery: Forgot Password?
+      back_to_sign_in: Back to Sign In
+      back_to_accounts: Back to Accounts
+      update_password: Update Password
+      proceed: Proceed
+      sign_in: Sign In
+      sign_out: Sign Out
+    refresh: Confirm Your Identify
+    aal2: Two-Factor Authentication
+    registration: Register Your Account
+    recovery: Recover Your Account
+    verification: Verify Your Account
+    update_password: Change Password
+    create: Create a New Account
+    messages:
+      recovery_prompt: Please enter the email address associated with your account to request a password change
+      recovery_code_prompt: A recovery code has been sent to the specified email address. Please enter the recovery code to continue.
+      set_password: Please choose a new password for your account
+      password_updated: Password updated successfully!
+      login_limited: Maximum number of allowed logins exceeded. Would you like to force log out an older session?
+    errors:
+      invalid_credentials: Invalid Credentials
+      invalid_verification_code: Invalid Verification Code
+      invalid_recovery_email: The link you used is no longer valid. Please enter your email address to obtain a recovery code.
+      invalid_email: Invalid Email
+      invalid_password_confirmation: Password confirmation must match password
