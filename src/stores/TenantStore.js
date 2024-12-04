@@ -7,6 +7,7 @@ import {accountsStore} from "./index";
 class TenantStore {
   onboardParams;
 
+  isTenantOwner = false;
   tenantMetadata = {};
   tenantFundingAccount;
 
@@ -80,6 +81,7 @@ class TenantStore {
     this.tenantAdmins = undefined;
     this.users = {};
     this.tenantMetadata = {};
+    this.isTenantOwner = false;
 
     if(this.inviteListener) {
       try {
@@ -156,6 +158,13 @@ class TenantStore {
       if(!tenantContractId || (this.tenantMetadata[tenantContractId] && !force)) {
         return;
       }
+
+      const tenantOwner = yield this.rootStore.client.CallContractMethod({
+        contractAddress: Utils.HashToAddress(tenantContractId),
+        methodName: "owner"
+      });
+
+      this.isTenantOwner = Utils.EqualAddress(tenantOwner, this.rootStore.accountsStore.currentAccountAddress);
 
       const libraryId = yield this.client.ContentObjectLibraryId({objectId: tenantContractId});
       const objectId = Utils.AddressToObjectId(Utils.HashToAddress(tenantContractId));

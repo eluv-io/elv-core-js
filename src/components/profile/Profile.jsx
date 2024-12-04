@@ -214,7 +214,7 @@ const TenantInfo = observer(() => {
 });
 
 const TenantDetails = observer(() => {
-  const [tenantContractId, setTenantContractId] = useState(accountsStore.currentAccount.tenantContractId);
+  const [tenantContractId, setTenantContractId] = useState(accountsStore.currentAccount.tenantContractId || "");
   const [errorMessage, setErrorMessage] = useState("");
 
   return (

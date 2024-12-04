@@ -51,7 +51,8 @@ class AccountStore {
 
         return (a?.name?.toLowerCase() || "zz") < (b?.name?.toLowerCase() || "zz") ? -1 : 1;
       })
-      .map(account => account.address);
+      .map(account => account.address)
+      .filter(address => address);
   }
 
   get authToken() {

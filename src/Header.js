@@ -5,20 +5,47 @@ import {observer} from "mobx-react";
 import {accountsStore, rootStore} from "./stores";
 import {Link} from "react-router-dom";
 import {CreateModuleClassMatcher} from "./utils/Utils";
-import {Popover, UnstyledButton} from "@mantine/core";
+import {Group, Popover, UnstyledButton} from "@mantine/core";
 import {ImageIcon} from "./components/Misc";
 import AppInfo from "./components/apps/AppInfo";
+import UrlJoin from "url-join";
 
 import Logo from "./static/images/Logo.png";
 import LogoDemo from "./static/images/LogoDemo.png";
 import LogoTest from "./static/images/LogoTest.png";
 import LogoPreview from "./static/images/LogoPreview.png";
 import AccountMenu from "./components/account/AccountMenu";
-
-
 import AppsIcon from "./static/icons/apps.svg";
+import ExternalLinkIcon from "./static/icons/external-link";
 
 const S = CreateModuleClassMatcher(HeaderStyles);
+
+const AppsMenuButton = observer(({name, logo, setShowMenu}) =>
+  <button
+    className={S("apps-menu__link")}
+    key={name}
+    onClick={() => {
+      setShowMenu(false);
+      navigate(`/apps/${name}`);
+    }}
+  >
+    <Group align="center" gap={10}>
+      <ImageIcon icon={logo} className={S("apps-menu__logo")}/>
+      <span>{name}</span>
+    </Group>
+    <a
+      onClick={event => {
+        event.stopPropagation();
+        setShowMenu(false);
+      }}
+      target="_blank"
+      href={UrlJoin(window.location.origin, "apps", name)}
+      className={S("apps-menu__link-external")}
+    >
+      <ImageIcon icon={ExternalLinkIcon} className={S("icon")}/>
+    </a>
+  </button>
+);
 
 const AppsMenu = observer(() => {
   const [showMenu, setShowMenu] = useState(false);
@@ -34,7 +61,7 @@ const AppsMenu = observer(() => {
           onClick={() => setShowMenu(!showMenu)}
           className={S("apps-menu__button", showMenu ? "apps-menu__button--active" : "")}
         >
-          <ImageIcon icon={AppsIcon} />
+          <ImageIcon icon={AppsIcon}/>
         </UnstyledButton>
       </Popover.Target>
       <Popover.Dropdown classNames={{dropdown: S("apps-menu__dropdown")}}>
@@ -43,15 +70,7 @@ const AppsMenu = observer(() => {
         </div>
         {
           AppInfo.apps.map(({name, logo}) =>
-            <Link
-              to={`/apps/${name}`}
-              className={S("apps-menu__link")}
-              key={name}
-              onClick={() => setShowMenu(false)}
-            >
-              <ImageIcon icon={logo} className={S("apps-menu__logo")} />
-              <span>{name}</span>
-            </Link>
+            <AppsMenuButton key={name} name={name} logo={logo} setShowMenu={setShowMenu} />
           )
         }
         <div className={S("apps-menu__separator")} />
@@ -60,15 +79,7 @@ const AppsMenu = observer(() => {
         </div>
         {
           AppInfo.tools.map(({name, logo}) =>
-            <Link
-              to={`/apps/${name}`}
-              className={S("apps-menu__link")}
-              key={name}
-              onClick={() => setShowMenu(false)}
-            >
-              <ImageIcon icon={logo} className={S("apps-menu__logo")} />
-              <span>{name}</span>
-            </Link>
+            <AppsMenuButton key={name} name={name} logo={logo} setShowMenu={setShowMenu} />
           )
         }
       </Popover.Dropdown>

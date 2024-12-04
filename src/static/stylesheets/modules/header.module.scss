@@ -120,14 +120,28 @@
   &__link {
     align-items: center;
     display: flex;
-    gap: 10px;
+    gap: 30px;
+    justify-content: space-between;
     padding: 12px 20px;
     transition: background-color 0.15s ease;
 
     &:hover {
       background-color: var(--background-secondary);
       border-radius: 10px;
+
+      .apps-menu__link-external {
+        opacity: 1;
+      }
     }
+  }
+
+  &__link-external {
+    align-items: center;
+    color: var(--text-secondary);
+    display: flex;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.1s ease, background-color 0.1s ease;
   }
 
   &__logo {

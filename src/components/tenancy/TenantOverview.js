@@ -160,7 +160,7 @@ const TenantOverview = observer(() => {
         className={S("tenant-overview")}
       >
         {
-          !tenantStore.isTenantAdmin ? null :
+          !tenantStore.isTenantOwner ? null :
             <UnstyledButton
               onClick={() => setEditing(true)}
               title="Edit Tenancy Info"
