@@ -302,6 +302,8 @@ class AccountStore {
   });
 
   AccountBalance = flow(function * (address) {
+    if(!address) { return; }
+
     try {
       const client = this.rootStore.client;
 

@@ -3,7 +3,7 @@ import HeaderStyles from "./static/stylesheets/modules/header.module.scss";
 import React, {useState} from "react";
 import {observer} from "mobx-react";
 import {accountsStore, rootStore} from "./stores";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {CreateModuleClassMatcher} from "./utils/Utils";
 import {Group, Popover, UnstyledButton} from "@mantine/core";
 import {ImageIcon} from "./components/Misc";
@@ -20,32 +20,35 @@ import ExternalLinkIcon from "./static/icons/external-link";
 
 const S = CreateModuleClassMatcher(HeaderStyles);
 
-const AppsMenuButton = observer(({name, logo, setShowMenu}) =>
-  <button
-    className={S("apps-menu__link")}
-    key={name}
-    onClick={() => {
-      setShowMenu(false);
-      navigate(`/apps/${name}`);
-    }}
-  >
-    <Group align="center" gap={10}>
-      <ImageIcon icon={logo} className={S("apps-menu__logo")}/>
-      <span>{name}</span>
-    </Group>
-    <a
-      onClick={event => {
-        event.stopPropagation();
+const AppsMenuButton = observer(({name, logo, setShowMenu}) => {
+  const navigate = useNavigate();
+  return (
+    <button
+      className={S("apps-menu__link")}
+      key={name}
+      onClick={() => {
         setShowMenu(false);
+        navigate(`/apps/${name}`);
       }}
-      target="_blank"
-      href={UrlJoin(window.location.origin, "apps", name)}
-      className={S("apps-menu__link-external")}
     >
-      <ImageIcon icon={ExternalLinkIcon} className={S("icon")}/>
-    </a>
-  </button>
-);
+      <Group align="center" gap={10}>
+        <ImageIcon icon={logo} className={S("apps-menu__logo")}/>
+        <span>{name}</span>
+      </Group>
+      <a
+        onClick={event => {
+          event.stopPropagation();
+          setShowMenu(false);
+        }}
+        target="_blank"
+        href={UrlJoin(window.location.origin, "apps", name)}
+        className={S("apps-menu__link-external")}
+      >
+        <ImageIcon icon={ExternalLinkIcon} className={S("icon")}/>
+      </a>
+    </button>
+  );
+});
 
 const AppsMenu = observer(() => {
   const [showMenu, setShowMenu] = useState(false);
