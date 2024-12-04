@@ -121,8 +121,8 @@ export const DefaultProfileImage = ({name, email, address}={}) => {
     canvas.height = 200;
 
     const gradient = context.createLinearGradient(0, 0, context.canvas.width, 0);
-    gradient.addColorStop(0, HSLColor(name || address, 100, 30));
-    gradient.addColorStop(1, HSLColor(name || address, 100, 20));
+    gradient.addColorStop(0, HSLColor(address || name || email, 100, 30));
+    gradient.addColorStop(1, HSLColor(address || name || email, 100, 20));
 
     context.fillStyle = gradient;
     context.fillRect(0, 0, canvas.width, canvas.height);

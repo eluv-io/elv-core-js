@@ -57,6 +57,22 @@ const App = observer(() => {
     );
   }
 
+  const showBalanceWarning = !(
+    rootStore.pathname === "/" ||
+    accountsStore.loadingAccount ||
+    !accountsStore.isUnlocked ||
+    !accountsStore.currentAccount?.lowBalance
+  );
+
+  const showTenantIdWarning = !(
+    rootStore.pathname === "/" ||
+    rootStore.pathname.startsWith("/onboard") ||
+    rootStore.pathname.startsWith("/apps/") ||
+    accountsStore.loadingAccount ||
+    !accountsStore.isUnlocked ||
+    accountsStore.currentAccount?.tenantContractId
+  );
+
   return (
     <BrowserRouter>
       <ScrollToTop />
@@ -66,12 +82,14 @@ const App = observer(() => {
             <Header />
         }
         {
-          rootStore.pathname === "/" ||
-          accountsStore.loadingAccount ||
-          !accountsStore.currentAccount?.lowBalance ? null :
+          showBalanceWarning ?
             <Text ta="center" mt={50} fw={500} className={S("message")}>
               This account has an insufficient balance. Please fund the account to proceed.
-            </Text>
+            </Text> :
+            showTenantIdWarning ?
+              <Text ta="center" mt={50} fw={500} className={S("message")}>
+                Tenant ID is not set for this account. Please set it in your profile page.
+              </Text> : null
         }
         <ToastMessage />
         <AppRoutes />

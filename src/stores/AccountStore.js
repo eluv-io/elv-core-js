@@ -441,7 +441,17 @@ class AccountStore {
       );
 
       if(signer && this.accounts[address].balance > 0.02) {
-        this.UserMetadata();
+        this.UserMetadata()
+          .then(async metadata => {
+            // If account name is not set in metadata (e.g. because account was not previously funded), set it
+            if(account.name && !metadata?.public?.name) {
+              this.Log("Account name not set, updating...");
+              await this.ReplaceUserMetadata({
+                metadataSubtree: UrlJoin("public", "name"),
+                metadata: account.name
+              });
+            }
+          });
         this.CheckTenantDetails();
       }
 
@@ -604,6 +614,8 @@ class AccountStore {
     yield this.AccountBalance(address);
 
     this.SaveAccounts();
+
+    return this.accounts[address].metadata;
   });
 
   ReplaceUserProfileImage = flow(function * (image) {

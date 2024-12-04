@@ -98,12 +98,12 @@ const TenantUsers = observer(() => {
               <tbody>
                 {
                   users.map(user => (
-                    <tr>
+                    <tr key={user.address}>
                       <td>
                         <Group>
                           <div className={S("round-image", "tenant-users__image")}>
                             <ImageIcon
-                              icon={user.profileImage || DefaultProfileImage(user)}
+                              icon={user.profileImage}
                               alternateIcon={DefaultProfileImage(user)}
                               label="Profile Image"
                             />

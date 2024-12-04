@@ -158,7 +158,6 @@ export const LoginGateModal = observer(({Close}) => {
 });
 
 export const LoginGate = observer(({children}) => {
-  const navigate = useNavigate();
   const currentAccount = accountsStore.currentAccount;
 
   if(!accountsStore.accountsLoaded || accountsStore.authenticating || accountsStore.switchingAccounts) {
@@ -187,24 +186,8 @@ export const LoginGate = observer(({children}) => {
     // No account or insufficient balance
     return <Navigate to="/accounts"/>;
   } else if(!currentAccount?.signer || accountsStore.loadingAccount) {
-    return <LoginGateModal Close={result => !result && navigate("/accounts")}/>;
+    return <LoginGateModal Close={() => {}}/>;
   }
-
-  // Enforce tenant ID - Temporarily disabled
-  /*
-    else if(false && !currentAccount.tenantContractIda) {
-      return (
-        <LoginModal
-          key="tenant-id-prompt"
-          legend={"This account is not associated with a tenant. Please enter your tenant ID to proceed."}
-          prompt={true}
-          fields={[{name: "tenantContractId", label: "Tenant Contract ID", placeholder: "iten..."}]}
-          Submit={async ({tenantContractId}) => await accountsStore.SetTenantContractId({id: tenantContractId})}
-        />
-      );
-    }
-
-   */
 
   return children;
 });
@@ -398,7 +381,7 @@ const OnboardForm = observer(({onboardParams, Close}) => {
               <div className={S("round-image", "profile-image__image")}>
                 <ImageIcon
                   icon={profileImageUrl}
-                  alternateIcon={DefaultProfileImage({name, email: accountsStore.currentAccount.email})}
+                  alternateIcon={DefaultProfileImage({...accountsStore.currentAccount, name})}
                 />
               </div>
             </div>
