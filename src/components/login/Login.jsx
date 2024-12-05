@@ -92,7 +92,7 @@ const LoginGatePasswordForm = observer(({Close}) => {
         </Button>
         {
           !accountsStore.hasAccount ? null :
-            <Link to="/accounts" onClick={() => Close?.()} className={S("button-link")}>
+            <Link to="/accounts" onClick={() => Close?.()} className={S("button-link", "button-link--secondary")}>
               Back to Accounts
             </Link>
         }
@@ -104,7 +104,7 @@ const LoginGatePasswordForm = observer(({Close}) => {
 export const LoginGateModal = observer(({Close}) => {
   const [shareEmail, setShareEmail] = useState(true);
   const [closable, setClosable] = useState(true);
-  const accountType = accountsStore.currentAccount?.type || "custodial";
+  const accountType = accountsStore.currentAccount?.type || "key";
 
   if(accountsStore.sortedAccounts.length === 0) {
     return <Navigate to="/" />;

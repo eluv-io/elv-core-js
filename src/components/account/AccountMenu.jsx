@@ -191,9 +191,25 @@ const HeaderProfile = observer(() => {
 
   if(!accountsStore.currentAccount) {
     return (
-      <Link to="/accounts" className={S("header-profile", "header-profile--no-account")}>
-        Not Logged In
-      </Link>
+      <>
+        <Link to="/accounts" className={S("header-profile", "header-profile--no-account")}>
+          Not Logged In
+        </Link>
+        <ButtonWithLoader
+          h={32}
+          variant="outline"
+          px="lg"
+          onClick={async () => {
+            try {
+              await accountsStore.LogOutOry();
+            } finally {
+              rootStore.SetShowLoginGate(true);
+            }
+          }}
+        >
+          Sign In
+        </ButtonWithLoader>
+      </>
     );
   } else {
     const profileImage = accountsStore.ResizeImage(accountsStore.currentAccount.imageUrl, 200);
