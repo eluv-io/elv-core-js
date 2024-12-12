@@ -568,8 +568,6 @@ const Login = observer(() => {
             navigate(success);
           } else if(success) {
             navigate(accountsStore.currentAccount.lowBalance ? "/profile" : "/apps");
-          } else if(accountsStore.hasAccount) {
-            navigate("/accounts");
           }
         }}
       />
