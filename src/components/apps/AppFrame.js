@@ -187,6 +187,15 @@ class AppFrame extends React.Component {
     // Ignore unrelated messages
     if(!event || !event.data || event.data.type !== "ElvFrameRequest") { return; }
 
+    if(rootStore.logFrameCalls) {
+      try {
+        rootStore.Log(JSON.stringify(event.data || {}, null, 2));
+      } catch(error) {
+        rootStore.Log("Error logging frame call:", true);
+        rootStore.Log(error);
+      }
+    }
+
     const requestId = event.data.requestId;
     const source = event.source;
 

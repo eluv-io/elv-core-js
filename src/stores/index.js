@@ -26,6 +26,8 @@ class RootStore {
   showToastMessage = false;
   showLoginGate = false;
 
+  logFrameCalls = false;
+
   get darkMode() {
     if(!this.activeApp) { return false; }
 
@@ -39,7 +41,7 @@ class RootStore {
     const logMethod = error === "warn" ? console.warn : error ? console.error : console.log;
 
     if(typeof message === "string") {
-      message = `Eluvio Media Wallet | ${message}`;
+      message = `Core | ${message}`;
     }
 
     logMethod(message);
@@ -219,6 +221,10 @@ class RootStore {
 
   SetShowLoginGate(show) {
     this.showLoginGate = show;
+  }
+
+  SetFrameClientLogging(enabled) {
+    this.logFrameCalls = enabled;
   }
 }
 
