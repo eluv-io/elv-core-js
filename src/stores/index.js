@@ -68,6 +68,12 @@ class RootStore {
     this.configError = false;
 
     try {
+      let searchClientPromise;
+      if(signer) {
+        // Start search client initialization
+        searchClientPromise = this.InitializeSearchClient(signer);
+      }
+
       this.client = yield ElvClient.FromConfigurationUrl({
         configUrl: EluvioConfiguration["config-url"],
         ethereumContractTimeout: 20
@@ -83,6 +89,8 @@ class RootStore {
       });
 
       this.client.walletClient = this.walletClient;
+
+      yield searchClientPromise;
     } catch (error) {
       this.Log(error, true);
       this.configError = true;
@@ -127,7 +135,6 @@ class RootStore {
         });
 
         this.signerSet = true;
-        this.InitializeSearchClient(signer);
       } else {
         this.signerSet = false;
 
