@@ -23,6 +23,7 @@ login:
       password_updated: Password updated successfully!
       login_limited: Maximum number of allowed logins exceeded. Would you like to force log out an older session?
     errors:
+      account_exists: An account with this email address already exists. Please try signing in instead.
       invalid_credentials: Invalid Credentials
       invalid_verification_code: Invalid Verification Code
       invalid_recovery_email: The link you used is no longer valid. Please enter your email address to obtain a recovery code.

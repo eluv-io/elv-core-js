@@ -407,6 +407,13 @@ const OryForm = observer(({onboardParams, userData, isLoginGate, setClosable, Cl
 
       rootStore.Log(error, true);
 
+      const errorCode = error?.response?.data?.ui?.messages?.[0]?.id;
+      if(errorCode === 4000007){
+        // Create account - account already exists
+        setErrorMessage(rootStore.l10n.login.ory.errors.account_exists);
+        return;
+      }
+
       const errors = error?.response?.data?.ui?.messages
         ?.map(message => message.text)
         ?.filter(message => message)
@@ -532,7 +539,6 @@ const OryForm = observer(({onboardParams, userData, isLoginGate, setClosable, Cl
                       onClick={OrySubmit}
                       key={`button-${attributes.name}`}
                       type="submit"
-                      action={false}
                       className={S("button")}
                     >
                       {node.meta.label.text}

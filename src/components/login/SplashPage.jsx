@@ -8,21 +8,25 @@ import SplashBackground from "../../static/images/SplashBackground.jpg";
 import EluvioLogo from "../../static/images/Main_Logo_Light";
 import {Button, FileButton, UnstyledButton} from "@mantine/core";
 import {useNavigate} from "react-router-dom";
-import {rootStore, accountsStore} from "../../stores";
+import {rootStore, accountsStore, tenantStore} from "../../stores";
 
 const S = CreateModuleClassMatcher(LoginStyles);
 
 const Actions = observer(() => {
   const navigate = useNavigate();
   const onboard = rootStore.pathname.startsWith("/onboard");
+  const inviteConsumed =
+    onboard &&
+    tenantStore.onboardParams?.id &&
+    localStorage.getItem(`invite-consumed-${tenantStore.onboardParams.id}`);
 
   useEffect(() => {
-    if(!onboard) { return; }
+    if(!onboard || inviteConsumed) { return; }
 
     accountsStore.LogOutOry();
   }, []);
 
-  if(onboard) {
+  if(onboard && !inviteConsumed) {
     return (
       <div className={S("splash-page__actions")}>
         <Button

@@ -561,13 +561,23 @@ class TenantStore {
   }) {
     const address = this.rootStore.accountsStore.currentAccountAddress;
 
-    yield this.rootStore.client.MakeAuthServiceRequest({
-      path: UrlJoin("as", "faucet", "claim_otp", faucetToken),
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${this.rootStore.walletClient.AuthToken()}`
+    try {
+      yield this.rootStore.client.MakeAuthServiceRequest({
+        path: UrlJoin("as", "faucet", "claim_otp", faucetToken),
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.rootStore.walletClient.AuthToken()}`
+        }
+      });
+    } catch (error) {
+      this.Log(error, true);
+
+      // Ignore funding token redemption if the account already has funds
+      const balance = parseFloat(yield this.rootStore.accountsStore.AccountBalance(address));
+      if(balance < 0.02) {
+        throw error;
       }
-    });
+    }
 
     // Ensure user wallet contract is created
     yield this.rootStore.client.userProfileClient.CreateWallet();
@@ -602,6 +612,8 @@ class TenantStore {
         email: this.rootStore.accountsStore.currentAccount?.email || email
       }
     });
+
+    localStorage.setItem(`invite-consumed-${id}`, "true");
   });
 
   CompleteInvite = flow(function * ({id}) {

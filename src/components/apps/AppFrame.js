@@ -190,7 +190,7 @@ class AppFrame extends React.Component {
     if(rootStore.logFrameCalls) {
       try {
         rootStore.Log(JSON.stringify(event.data || {}, null, 2));
-      } catch(error) {
+      } catch (error) {
         rootStore.Log("Error logging frame call:", true);
         rootStore.Log(error);
       }

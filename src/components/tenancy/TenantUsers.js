@@ -86,7 +86,7 @@ const TenantUsers = observer(() => {
         </Group>
         <div className={S("tenant-users")}>
           <div className={S("tenant-users__table-container")}>
-            <Table w="100%" withBorder className={S("tenant-users__table")}>
+            <Table className={S("tenant-users__table")}>
               <thead>
                 <tr>
                   <th>Name</th>

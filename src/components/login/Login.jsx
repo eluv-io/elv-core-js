@@ -513,13 +513,22 @@ const LoginModal = observer(({Close}) => {
     setClosable(true);
   }, [accountType]);
 
-
   const onLogin = async success => {
     if(!success || !onboardParams) {
       return Close(success);
     }
 
-    setShowOnboardForm(true);
+    if(onboardParams && success) {
+      if(
+        accountsStore.currentAccount?.tenantContractId === onboardParams.tenantContractId &&
+        parseFloat(accountsStore.currentAccount?.balance || 0) > 0.02
+      ) {
+        // Account was already onboarded to this tenancy and has funds
+        Close(true);
+      } else {
+        setShowOnboardForm(true);
+      }
+    }
   };
 
   return (

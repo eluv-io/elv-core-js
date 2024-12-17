@@ -8,7 +8,7 @@ import TenantInviteModal from "./TenantInviteModal";
 import {tenantStore} from "../../stores";
 import TenantUserPermissionsModal from "./TenantUserPermissionsModal";
 import {CreateModuleClassMatcher} from "../../utils/Utils";
-import {DefaultProfileImage, ImageIcon} from "../Misc";
+import {CopyButton, DefaultProfileImage, ImageIcon} from "../Misc";
 import {useDebouncedValue} from "@mantine/hooks";
 import {modals} from "@mantine/modals";
 
@@ -40,7 +40,7 @@ const Invite = observer(({invite}) => {
   switch (invite.type) {
     case tenantStore.INVITE_EVENTS.SENT:
       actions = (
-        <Button variant="outline" onClick={() => setShowInviteUrl(true)}>
+        <Button variant="outline" onClick={() => setShowInviteUrl(true)} className={S("invite__action")}>
           View Invite
         </Button>
       );
@@ -53,7 +53,7 @@ const Invite = observer(({invite}) => {
     // eslint-disable-next-line no-fallthrough
     case tenantStore.INVITE_EVENTS.MANAGED:
       actions = (
-        <Button variant="outline" onClick={() => setShowPermissionsModal(true)}>
+        <Button variant="outline" onClick={() => setShowPermissionsModal(true)} className={S("invite__action")}>
           Set Permissions
         </Button>
       );
@@ -115,7 +115,10 @@ const Invite = observer(({invite}) => {
           {actions}
           {
             !address ? null :
-              <div title={address} className={S("invite__detail")}>{address}</div>
+              <div className={S("invite__address")}>
+                <div title={address} className={S("invite__detail")}>{address}</div>
+                <CopyButton value={address} className={S("icon", "icon--small", "invite__copy")}/>
+              </div>
           }
         </div>
       </div>

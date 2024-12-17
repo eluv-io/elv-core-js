@@ -44,74 +44,85 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
       padding="xl"
       title="Set User Permissions"
       onClose={Close}
+      size="lg"
       withCloseButton={false}
     >
       {
         !groups || !permissions  ?
           <Loader className={S("page-loader", "page-loader--short")} /> :
           <form onSubmit={() => {}}>
-            <Table mt="xl">
-              <thead>
-                <tr>
-                  <th>Group</th>
-                  <th><Group justify="center">Manager</Group></th>
-                  <th><Group justify="center">Member</Group></th>
-                </tr>
-              </thead>
-              <tbody>
-                {
-                  groups.map(group => {
-                    const name = group.meta?.public?.name || group?.meta?.name;
-                    const settings = permissions[group.address];
-                    const isTenantUsersGroup = rootStore.client.utils.EqualAddress(group.address, tenantStore.specialGroups.tenantUsers?.address);
-                    return (
-                      <tr key={`group-${group.address}`}>
-                        <td>
-                          <Text fz={name ? "sm" : "xs"}>
-                            {name || group.address}
-                          </Text>
-                        </td>
-                        <td>
-                          <Group mt="xs" justify="center">
-                            <Checkbox
-                              disabled={settings.owner || !group.isOwner}
-                              title={
-                                settings.owner ?
-                                  "This user is the owner of this group" :
-                                  !group.isOwner ? "Only group owners may add managers" :
-                                    undefined
-                              }
-                              aria-label={`Manager of ${name || group.address}`}
-                              checked={settings.owner || settings.manager}
-                              onChange={event => setPermissions({...permissions, [group.address]: { ...settings, manager: event.currentTarget.checked }})}
-                            />
-                          </Group>
-                        </td>
-                        <td>
-                          <Group justify="center">
-                            <Checkbox
-                              disabled={isTenantUsersGroup || settings.owner || settings.manager}
-                              title={
-                                isTenantUsersGroup ?
-                                  "Users may not be removed from the tenant users group" :
+            <div className={S("tenant-permissions")}>
+              <Table className={S("tenant-permissions__table")}>
+                <thead>
+                  <tr>
+                    <th>Group</th>
+                    <th><Group justify="center" px={10}>Manager</Group></th>
+                    <th><Group justify="center">Member</Group></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    groups.map((group, index) => {
+                      const name = group.meta?.public?.name || group?.meta?.name;
+                      const settings = permissions[group.address];
+                      const isTenantUsersGroup = rootStore.client.utils.EqualAddress(group.address, tenantStore.specialGroups.tenantUsers?.address);
+                      return (
+                        <tr key={`group-${group.address}`}
+                          className={S(`tenant-permissions__row--${index % 2 === 0 ? "even" : "odd"}`)}>
+                          <td>
+                            <Text fz={name ? "sm" : "xs"} p="sm">
+                              {name || group.address}
+                            </Text>
+                          </td>
+                          <td>
+                            <Group justify="center" align="center">
+                              <Checkbox
+                                disabled={settings.owner || !group.isOwner}
+                                title={
                                   settings.owner ?
                                     "This user is the owner of this group" :
-                                    settings.manager ? "Managers of groups are also members" :
+                                    !group.isOwner ? "Only group owners may add managers" :
                                       undefined
-                              }
-                              aria-label={`Manager of ${name || group.address}`}
-                              checked={settings.owner || settings.manager || settings.member}
-                              onChange={event => setPermissions({...permissions, [group.address]: { ...settings, member: event.currentTarget.checked }})}
-                            />
-                          </Group>
-                        </td>
-                      </tr>
-                    );
-                  })
-                }
-              </tbody>
-            </Table>
-            { !error ? null : <Text mb="md" mt="xl" color="red" ta="center">Something went wrong, please try again</Text> }
+                                }
+                                aria-label={`Manager of ${name || group.address}`}
+                                checked={settings.owner || settings.manager}
+                                onChange={event => setPermissions({
+                                  ...permissions,
+                                  [group.address]: {...settings, manager: event.currentTarget.checked}
+                                })}
+                              />
+                            </Group>
+                          </td>
+                          <td>
+                            <Group justify="center">
+                              <Checkbox
+                                disabled={isTenantUsersGroup || settings.owner || settings.manager}
+                                title={
+                                  isTenantUsersGroup ?
+                                    "Users may not be removed from the tenant users group" :
+                                    settings.owner ?
+                                      "This user is the owner of this group" :
+                                      settings.manager ? "Managers of groups are also members" :
+                                        undefined
+                                }
+                                aria-label={`Manager of ${name || group.address}`}
+                                checked={settings.owner || settings.manager || settings.member}
+                                onChange={event => setPermissions({
+                                  ...permissions,
+                                  [group.address]: {...settings, member: event.currentTarget.checked}
+                                })}
+                              />
+                            </Group>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  }
+                </tbody>
+              </Table>
+            </div>
+            {!error ? null :
+              <Text mb="md" mt="xl" color="red" ta="center">Something went wrong, please try again</Text>}
             <Group justify="right" mt={50} wrap="nowrap">
               <Button
                 variant="default"
@@ -120,7 +131,7 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
                 h={40}
                 w={150}
               >
-                Cancel
+                  Cancel
               </Button>
               <Button
                 disabled={JSON.stringify(originalPermissions) === JSON.stringify(permissions)}
@@ -131,7 +142,11 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
                 onClick={async () => {
                   try {
                     setSubmitting(true);
-                    await tenantStore.SetUserGroupPermissions({userAddress: address, originalPermissions, permissions});
+                    await tenantStore.SetUserGroupPermissions({
+                      userAddress: address,
+                      originalPermissions,
+                      permissions
+                    });
 
                     if(inviteId) {
                       await tenantStore.CompleteInvite({id: inviteId});
@@ -148,7 +163,7 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
                   }
                 }}
               >
-                Submit
+                  Submit
               </Button>
             </Group>
           </form>

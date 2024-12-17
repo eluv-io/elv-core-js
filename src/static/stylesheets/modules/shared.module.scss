@@ -132,12 +132,17 @@
 }
 
 .icon {
+  align-items: center;
+  display: flex;
   height: 20px;
+  justify-content: center;
+  min-width: 20px;
   object-fit: contain;
   width: 20px;
 
   &--small {
     height: 12px;
+    min-width: 12px;
     width: 12px;
   }
 
