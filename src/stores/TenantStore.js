@@ -224,8 +224,11 @@ class TenantStore {
             group.isOwner = Utils.EqualAddress(owner, this.rootStore.accountsStore.currentAccountAddress);
 
             // Manager
-            const managers = await this.client.AccessGroupManagers({contractAddress: group.address});
-            group.isManager = !!managers.find(userAddress => Utils.EqualAddress(userAddress, this.rootStore.accountsStore.currentAccountAddress));
+            group.isManager = await client.CallContractMethod({
+              contractAddress: group.address,
+              methodName: "hasManagerAccess",
+              methodArgs: [this.rootStore.accountsStore.currentAccountAddress]
+            });
 
             return group;
           } catch (error) {
