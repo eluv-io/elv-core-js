@@ -504,6 +504,11 @@ const OryForm = observer(({onboardParams, userData, isLoginGate, setClosable, Cl
                   return null;
                 }
 
+                if(node.group === "oidc") {
+                  // Third party sign in button
+                  return null;
+                }
+
                 if(nodeType === "submit" && attributes.value) {
                   if(node.meta.label.text === "Sign up") {
                     node.meta.label.text = "Sign Up";
