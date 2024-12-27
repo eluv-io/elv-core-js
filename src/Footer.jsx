@@ -4,6 +4,7 @@ import React from "react";
 import {observer} from "mobx-react";
 import {CreateModuleClassMatcher} from "./utils/Utils";
 import {useLocation} from "react-router";
+import {Link} from "react-router-dom";
 
 const S = CreateModuleClassMatcher(FooterStyles);
 
@@ -21,6 +22,7 @@ const Footer = observer(() => {
         <a href="https://eluv.io/terms" target="_blank" rel="noreferrer">End User Agreement</a>
         <a href="https://eluv.io/privacy" target="_blank" rel="noreferrer">Privacy Policy</a>
         <a href="https://eluv.io/platform-terms" target="_blank" rel="noreferrer">Tenant Platform Services Agreement</a>
+        <Link to="/release_notes">Release Notes</Link>
       </nav>
     </div>
   );

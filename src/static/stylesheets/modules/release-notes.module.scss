@@ -1,0 +1,188 @@
+.page-header {
+  font-size: 24px;
+  font-weight: 500;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.release-notes-page {
+  width: 800px;
+}
+
+.notes {
+  display: grid;
+  gap: 30px;
+}
+
+.note {
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  overflow: hidden;
+  transition: box-shadow 0.5s ease;
+  width: 100%;
+
+  &--opened {
+    box-shadow: 0 0 6px var(--border);
+
+    .note__title-container {
+      border-bottom: 1px solid var(--background-tertiary);
+    }
+  }
+
+  &__title-container {
+    padding: 15px 20px 10px;
+    text-align: left;
+    user-select: none;
+    width: 100%;
+  }
+
+  &__title {
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.2em;
+  }
+
+  &__date {
+    color: var(--text-tertiary);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  &__text {
+    animation: fadein ease-in-out 1s 0.1s forwards;
+    display: grid;
+    font-size: 16px;
+    gap: 0.8em;
+    height: max-content;
+    margin-top: 10px;
+    opacity: 0;
+    padding: 10px 20px 20px;
+    transition: opacity 0.5s ease;
+
+    &--hidden {
+      height: 0;
+      margin: 0;
+      overflow: hidden;
+      padding: 0;
+    }
+
+    &--visible {
+      opacity: 1;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
+      font-weight: 500;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    p {
+      line-height: 1.1em;
+
+      * {
+        font-size: 1em;
+      }
+    }
+
+    h1 {
+      font-size: 2em;
+    }
+
+    h2 {
+      font-size: 1.6em;
+    }
+
+    h3 {
+      font-size: 1.4em;
+    }
+
+    h4 {
+      font-size: 1.2em;
+    }
+
+    h5 {
+      font-size: 1.2em;
+    }
+
+    p {
+      font-size: 1.2em;
+    }
+
+    strong {
+      font-weight: 600;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    u {
+      text-decoration: underline;
+    }
+
+    s {
+      text-decoration: line-through;
+    }
+
+    blockquote {
+      margin: 30px 0 20px 20px;
+    }
+
+    a {
+      color: var(--accent);
+      display: inline;
+    }
+
+    ol {
+      counter-reset: item;
+      list-style: none;
+
+      li {
+        counter-increment: item;
+        margin-bottom: 5px;
+
+        &::before {
+          content: counter(item);
+          display: inline-block;
+          margin-right: 10px;
+          text-align: center;
+          width: 0.8em;
+        }
+      }
+    }
+
+    ul {
+      list-style: disc;
+      margin-left: 1em;
+    }
+
+    @media screen and (width <= 1000px) {
+      font-size: 14px;
+
+      h1 {
+        font-size: 2.5em;
+      }
+
+      h2 {
+        font-size: 1.6em;
+      }
+
+      h3 {
+        font-size: 1.4em;
+      }
+
+      h4,
+      h5,
+      p {
+        font-size: 1.1em;
+      }
+    }
+  }
+}

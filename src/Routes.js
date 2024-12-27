@@ -19,6 +19,7 @@ import {ImageIcon} from "./components/Misc";
 import OverviewIcon from "./static/icons/overview";
 import ManageIcon from "./static/icons/settings";
 import InviteIcon from "./static/icons/add-user";
+import ReleaseNotes from "./components/release_notes/ReleaseNotes";
 
 const GatedRoute = ({Component}) => {
   return (
@@ -91,6 +92,7 @@ const AppRoutes = observer(() => {
         <Route path="/accounts" element={<Accounts />} />
         <Route path="/accounts/add" element={<AccountsFormPage />} />
         <Route path="/apps" element={<AppsPage />} />
+        <Route path="/release_notes" element={<ReleaseNotes />} />
         <Route path="/onboard" element={<SplashPage />} />
         <Route path="/onboard/login" element={<Login />} />
         <Route path="/transfer" element={<GatedRoute Component={TransferFormPage} />} />

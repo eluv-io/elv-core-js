@@ -25,6 +25,7 @@ class RootStore {
   toastMessage = "";
   showToastMessage = false;
   showLoginGate = false;
+  releaseNotes;
 
   logFrameCalls = false;
 
@@ -212,6 +213,19 @@ class RootStore {
       this.Log("Ethereum Check Failed:", true);
       this.Log(error, true);
     }
+  });
+
+  LoadReleaseNotes = flow(function * () {
+    if(!this.releaseNotes) {
+      this.releaseNotes = ((yield this.client.ContentObjectMetadata({
+        libraryId: this.client.walletClient.mainSiteLibraryId,
+        objectId: this.client.walletClient.mainSiteId,
+        metadataSubtree: "public/asset_metadata/info/release_notes"
+      })) || [])
+        .sort((a, b) => a.date < b.date ? 1 : -1);
+    }
+
+    return this.releaseNotes;
   });
 
   SetToastMessage(message) {
