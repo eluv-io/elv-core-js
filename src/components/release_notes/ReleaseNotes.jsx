@@ -6,6 +6,10 @@ import {rootStore} from "../../stores";
 import {Loader} from "@mantine/core";
 import {CreateModuleClassMatcher} from "../../utils/Utils";
 
+import CaretUp from "../../static/icons/caret-up";
+import CaretDown from "../../static/icons/caret-down";
+import {ImageIcon} from "../Misc";
+
 const S = CreateModuleClassMatcher(ReleaseNotesStyles);
 
 
@@ -35,6 +39,7 @@ const Note = observer(({title, date, text, showInitially=false}) => {
                   { date.toLocaleDateString(undefined, {month: "long", day: "numeric", year: "numeric"}) }
                 </h3>
             }
+            <ImageIcon icon={show ? CaretUp : CaretDown} className={S("icon", "note__title-indicator")} />
           </button>
       }
       <div
@@ -64,7 +69,7 @@ const ReleaseNotes = observer(() => {
         <div className={S("notes")}>
           {
             rootStore.releaseNotes.map((note, index) =>
-              <Note {...note} showInitially={index === 0} key={`note-${index}`} />
+              <Note {...note} showInitially={index === 0 || note.initially_expanded} key={`note-${index}`} />
             )
           }
         </div>

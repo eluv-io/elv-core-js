@@ -17,7 +17,6 @@
 .note {
   border: 1px solid var(--border);
   border-radius: 5px;
-  overflow: hidden;
   transition: box-shadow 0.5s ease;
   width: 100%;
 
@@ -30,16 +29,39 @@
   }
 
   &__title-container {
-    padding: 15px 20px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px 20px 15px;
+    position: relative;
     text-align: left;
     user-select: none;
     width: 100%;
+
+    &:focus-visible {
+      box-shadow: 0 0 5px var(--accent)!important;
+    }
+
+    &:hover {
+      .note__title-indicator {
+        opacity: 1;
+        transition: opacity 0.25s ease;
+      }
+    }
   }
 
   &__title {
     font-size: 24px;
     font-weight: 500;
     line-height: 1.2em;
+  }
+
+  &__title-indicator {
+    color: var(--text-tertiary);
+    opacity: 0.5;
+    position: absolute;
+    right: 20px;
+    transition: opacity 0.1s ease;
   }
 
   &__date {
@@ -52,7 +74,7 @@
     animation: fadein ease-in-out 1s 0.1s forwards;
     display: grid;
     font-size: 16px;
-    gap: 0.8em;
+    gap: 20px;
     height: max-content;
     margin-top: 10px;
     opacity: 0;
@@ -111,8 +133,9 @@
       font-size: 1.2em;
     }
 
+    li,
     p {
-      font-size: 1.2em;
+      font-size: 1.1em;
     }
 
     strong {
