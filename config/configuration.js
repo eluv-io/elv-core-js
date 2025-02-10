@@ -8,7 +8,7 @@ const EluvioConfiguration = {
     "Stream Sample": "http://localhost:8084",
     "Site Sample": "http://localhost:8086",
     "Livestream Manager": "http://localhost:8155",
-    "AI Clip Search": "http://localhost:3001",
+    "AI Content Search": "http://localhost:3001",
     "Creator Studio": "http://localhost:9000",
   },
   "ory_configuration": {
