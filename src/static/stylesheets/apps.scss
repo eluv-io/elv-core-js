@@ -7,6 +7,17 @@
   width: 100%;
 }
 
+.apps-row {
+  gap: 30px;
+  display: flex;
+  flex-direction: row;
+
+  @media screen and (width <= 1500px) {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
 .apps-box {
   border: 1px solid var(--border);
   border-radius: 25px;

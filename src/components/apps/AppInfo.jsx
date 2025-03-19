@@ -1,22 +1,22 @@
 import UrlJoin from "url-join";
 
 import CreatorStudioIcon from "../../static/images/app_icons/Creator Studio.png";
-import AnalyticsAndReportingIcon from "../../static/images/app_icons/Analytics and Reporting.png";
+import AnalyticsAndReportingIcon from "../../static/images/app_icons/Analytics.png";
 import FabricBrowserIcon from "../../static/images/app_icons/FabricBrowser.png";
-import VideoEditorIcon from "../../static/images/app_icons/Video Editor.png";
-import SiteSampleIcon from "../../static/images/app_icons/site-sample.svg";
-import StreamSampleIcon from "../../static/images/app_icons/stream-sample.svg";
+import VideoEditorIcon from "../../static/images/app_icons/EVIE.png";
+import SiteSampleIcon from "../../static/images/app_icons/Site Sample.png";
+import StreamSampleIcon from "../../static/images/app_icons/Stream Sample.png";
 import StudioIcon from "../../static/images/app_icons/Media Ingest.png";
-import AISearchIcon from "../../static/images/app_icons/AI Clip Search - beta.png";
+import AISearchIcon from "../../static/images/app_icons/AI Search.png";
 import LiveStreamManagerIcon from "../../static/images/app_icons/Livestream Manager.png";
 
-const icons = {
+export const appIcons = {
   "Fabric Browser": FabricBrowserIcon,
   "Video Editor": VideoEditorIcon,
   "Site Sample": SiteSampleIcon,
   "Stream Sample": StreamSampleIcon,
   "Media Ingest": StudioIcon,
-  "AI Content Search": AISearchIcon,
+  "AI Content Search and Management": AISearchIcon,
   "Livestream Manager": LiveStreamManagerIcon,
   "Creator Studio": CreatorStudioIcon,
   "Eluvio Studio": CreatorStudioIcon,
@@ -25,9 +25,12 @@ const icons = {
 };
 
 const appNames = [
-  "Fabric Browser", "Media Ingest", "Video Editor", "Livestream Manager",
+  "Fabric Browser", "Media Ingest",  "Livestream Manager",
   "Creator Studio", "Eluvio Studio",
-  "AI Content Search",
+];
+
+const suiteAppNames = [
+  "AI Content Search and Management", "Video Editor",
   "Analytics and Reporting", "Analytics & Reporting"
 ];
 
@@ -36,12 +39,18 @@ export default {
     .filter(name => appNames.find(appName => name.toLowerCase().includes(appName.toLowerCase())))
     .map(name => ({
       name,
-      logo: icons[Object.keys(icons).find(key => name.includes(key))] || UrlJoin(EluvioConfiguration.apps[name], "Logo.png")
+      logo: appIcons[Object.keys(appIcons).find(key => name.includes(key))] || UrlJoin(EluvioConfiguration.apps[name], "Logo.png")
     })),
-  tools: Object.keys(EluvioConfiguration.apps)
-    .filter(name => !appNames.find(appName => name.toLowerCase().includes(appName.toLowerCase())))
+  suiteApps: Object.keys(EluvioConfiguration.apps)
+    .filter(name => suiteAppNames.find(appName => name.toLowerCase().includes(appName.toLowerCase())))
     .map(name => ({
       name,
-      logo: icons[Object.keys(icons).find(key => name.includes(key))] || UrlJoin(EluvioConfiguration.apps[name], "Logo.png")
+      logo: appIcons[Object.keys(appIcons).find(key => name.includes(key))] || UrlJoin(EluvioConfiguration.apps[name], "Logo.png")
+    })),
+  tools: Object.keys(EluvioConfiguration.apps)
+    .filter(name => ![...appNames, ...suiteAppNames].find(appName => name.toLowerCase().includes(appName.toLowerCase())))
+    .map(name => ({
+      name,
+      logo: appIcons[Object.keys(appIcons).find(key => name.includes(key))] || UrlJoin(EluvioConfiguration.apps[name], "Logo.png")
     }))
 };

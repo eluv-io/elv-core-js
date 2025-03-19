@@ -26,22 +26,32 @@ class Apps extends React.PureComponent {
       return <Navigate to="/accounts" />;
     }
 
-    const { apps, tools } = AppInfo;
+    const { apps, tools, suiteApps } = AppInfo;
 
     return (
       <div className="page-content">
         <div className="apps">
-          <div className="apps-box">
-            <h2>Content Fabric Application Suite</h2>
-            <div className="apps-box__apps">
-              { apps.map(app => this.App(app)) }
+          <div className="apps-row">
+            <div className="apps-box">
+              <h2>Application Suite</h2>
+              <div className="apps-box__apps">
+                { apps.map(app => this.App(app)) }
+              </div>
+            </div>
+            <div className="apps-box">
+              <h2>Intelligence Suite</h2>
+              <div className="apps-box__apps">
+                { suiteApps.map(app => this.App(app)) }
+              </div>
             </div>
           </div>
 
-          <div className="apps-box">
-            <h2>Content Fabric Tools</h2>
-            <div className="apps-box__apps">
-              { tools.map(app => this.App(app)) }
+          <div className="apps-row">
+            <div className="apps-box">
+              <h2>Tools</h2>
+              <div className="apps-box__apps">
+                { tools.map(app => this.App(app)) }
+              </div>
             </div>
           </div>
         </div>
