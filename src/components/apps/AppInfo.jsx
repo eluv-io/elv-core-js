@@ -16,7 +16,7 @@ export const appIcons = {
   "Site Sample": SiteSampleIcon,
   "Stream Sample": StreamSampleIcon,
   "Media Ingest": StudioIcon,
-  "AI Content Search and Management": AISearchIcon,
+  "AI Content Search": AISearchIcon,
   "Livestream Manager": LiveStreamManagerIcon,
   "Creator Studio": CreatorStudioIcon,
   "Eluvio Studio": CreatorStudioIcon,
@@ -30,7 +30,7 @@ const appNames = [
 ];
 
 const suiteAppNames = [
-  "AI Content Search and Management", "Video Editor",
+  "AI Content Search", "Video Editor",
   "Analytics and Reporting", "Analytics & Reporting"
 ];
 

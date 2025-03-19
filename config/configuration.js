@@ -8,7 +8,7 @@ const EluvioConfiguration = {
     "Stream Sample": "http://localhost:8084",
     "Site Sample": "http://localhost:8086",
     "Livestream Manager": "http://localhost:8155",
-    "AI Content Search and Management": "http://localhost:3001",
+    "AI Content Search": "http://localhost:3001",
     "Creator Studio": "http://localhost:9000",
     "Analytics & Reporting": "https://eluvio-casablanca-v3.web.app"
   },
