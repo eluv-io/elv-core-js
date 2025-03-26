@@ -41,12 +41,20 @@ class IFrameBase extends React.Component {
   }
 
   render() {
+    const appUrl = new URL(this.props.appUrl);
+    const hash = appUrl.hash;
+    const params = new URLSearchParams(`?${hash.split("?")[1] || ""}`);
+    appUrl.hash = appUrl.hash.split("?")[0];
+    params.keys().forEach(key =>
+      appUrl.searchParams.set(key, params.get(key))
+    );
+
     return (
       <iframe
         aria-label={`Eluvio Core Application: ${this.props.appName}`}
         ref={this.props.appRef}
         allow="encrypted-media *; clipboard-read; clipboard-write"
-        src={this.props.appUrl}
+        src={appUrl.toString()}
         sandbox={this.SandboxPermissions()}
         className={this.props.className}
         allowFullScreen={true}
