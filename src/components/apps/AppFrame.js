@@ -209,7 +209,7 @@ class AppFrame extends React.Component {
 
     switch (event.data.operation) {
       case "OpenLink":
-        let { libraryId, objectId, versionHash } = event.data;
+        let { libraryId, objectId, versionHash, params } = event.data;
 
         if(!objectId && versionHash) {
           objectId = rootStore.client.utils.DecodeVersionHash(versionHash).objectId;
@@ -227,7 +227,16 @@ class AppFrame extends React.Component {
         }
 
         const corePath = `/apps/${fabricBrowserKey}`;
-        const fabricBrowserPath = `#/content/${libraryId}/${objectId}`;
+        let fabricBrowserPath = `#/content/${libraryId}/${objectId}`;
+
+        if(params) {
+          const searchParams = new URLSearchParams();
+          Object.keys(params).forEach(key =>
+            searchParams.set(key, params[key])
+          );
+
+          fabricBrowserPath = `${fabricBrowserPath}?${searchParams.toString()}`;
+        }
 
         const url = new URL(window.location.toString());
         url.pathname = corePath;
