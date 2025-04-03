@@ -93,7 +93,7 @@ const AppsMenu = observer(() => {
 const Header = observer(() => {
   let logo = Logo;
   if(rootStore.coreUrl?.includes("v3-dev")) {
-    logo = LogoPreview;
+    //logo = LogoPreview; // MM didn't like, remove
   } else if(rootStore.networkName === "test") {
     logo = LogoTest;
   } else if(["demo", "demov3"].includes(rootStore.networkName)) {
