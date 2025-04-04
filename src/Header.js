@@ -7,7 +7,7 @@ import {Link, useNavigate} from "react-router-dom";
 import {CreateModuleClassMatcher} from "./utils/Utils";
 import {Group, Popover, UnstyledButton} from "@mantine/core";
 import {ImageIcon} from "./components/Misc";
-import AppInfo from "./components/apps/AppInfo";
+import AppInfo, {appIcons} from "./components/apps/AppInfo";
 import UrlJoin from "url-join";
 
 import Logo from "./static/images/Logo.png";
@@ -17,6 +17,7 @@ import LogoPreview from "./static/images/LogoPreview.png";
 import AccountMenu from "./components/account/AccountMenu";
 import AppsIcon from "./static/icons/apps.svg";
 import ExternalLinkIcon from "./static/icons/external-link";
+import VideoEditorIcon from "./static/images/app_icons/EVIE - dark mode.png";
 
 const S = CreateModuleClassMatcher(HeaderStyles);
 
@@ -90,6 +91,28 @@ const AppsMenu = observer(() => {
   );
 });
 
+const AppDisplay = observer(() => {
+  let icon;
+
+  if(rootStore.activeApp) {
+    if(rootStore.activeApp === "Video Editor") {
+      icon = VideoEditorIcon;
+    } else {
+      icon = appIcons[Object.keys(appIcons).find(key => rootStore.activeApp.includes(key))] || UrlJoin(EluvioConfiguration.apps[rootStore.activeApp], "Logo.png");
+    }
+  }
+
+  return (
+    <div className={S("header__app-display")}>
+      {
+        icon ?
+          <img src={icon} className={S("header__app-logo")} alt="Logo" /> : null
+      }
+      { rootStore.activeApp ? rootStore.activeApp.replace("Eluvio", "") : "The Content Fabric" }
+    </div>
+  );
+});
+
 const Header = observer(() => {
   let logo = Logo;
   if(rootStore.coreUrl?.includes("v3-dev")) {
@@ -102,18 +125,22 @@ const Header = observer(() => {
 
   return (
     <header className={S("header", rootStore.darkMode ? "header--dark" : "")}>
-      <Link to="/apps" className={S("header__logo")}>
-        <img src={logo} alt="Eluvio" />
-      </Link>
-      <AppsMenu />
-      <div className={S("header__gap")} />
-      {
-        !accountsStore.currentAccount ? null :
-          <Link className={S("header__apps-link")} to="/apps">
-            All Applications
-          </Link>
-      }
-      <AccountMenu />
+      <div className={S("header__logo-container")}>
+        <Link to="/apps" className={S("header__logo")}>
+          <img src={logo} alt="Eluvio" />
+        </Link>
+        <AppsMenu />
+      </div>
+      <AppDisplay />
+      <div className={S("header__account-container")}>
+        {
+          !accountsStore.currentAccount ? null :
+            <Link className={S("header__apps-link")} to="/apps">
+              All Applications
+            </Link>
+        }
+        <AccountMenu />
+      </div>
     </header>
   );
 });
