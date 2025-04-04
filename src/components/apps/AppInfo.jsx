@@ -3,7 +3,7 @@ import UrlJoin from "url-join";
 import CreatorStudioIcon from "../../static/images/app_icons/Creator Studio.png";
 import AnalyticsAndReportingIcon from "../../static/images/app_icons/Analytics and Reporting.png";
 import FabricBrowserIcon from "../../static/images/app_icons/FabricBrowser.png";
-import VideoEditorIcon from "../../static/images/app_icons/Video Editor.png";
+import VideoEditorIcon from "../../static/images/app_icons/EVIE logo.png";
 import SiteSampleIcon from "../../static/images/app_icons/site-sample.svg";
 import StreamSampleIcon from "../../static/images/app_icons/stream-sample.svg";
 import StudioIcon from "../../static/images/app_icons/Media Ingest.png";
@@ -12,7 +12,7 @@ import LiveStreamManagerIcon from "../../static/images/app_icons/Livestream Mana
 
 const icons = {
   "Fabric Browser": FabricBrowserIcon,
-  "Video Editor": VideoEditorIcon,
+  "Video Intelligence Editor": VideoEditorIcon,
   "Site Sample": SiteSampleIcon,
   "Stream Sample": StreamSampleIcon,
   "Media Ingest": StudioIcon,
@@ -25,7 +25,7 @@ const icons = {
 };
 
 const appNames = [
-  "Fabric Browser", "Media Ingest", "Video Editor", "Livestream Manager",
+  "Fabric Browser", "Media Ingest", "Video Intelligence Editor", "Livestream Manager",
   "Creator Studio", "Eluvio Studio",
   "AI Content Search",
   "Analytics and Reporting", "Analytics & Reporting"
