@@ -4,7 +4,7 @@ const EluvioConfiguration = {
   "apps": {
     "Eluvio Fabric Browser": "http://localhost:8080",
     "Media Ingest": "https://studio.v3.contentfabric.io",
-    "Video Editor": "http://localhost:8083",
+    "Video Intelligence Editor": "http://localhost:8083",
     "Stream Sample": "http://localhost:8084",
     "Site Sample": "http://localhost:8086",
     "Livestream Manager": "http://localhost:8155",

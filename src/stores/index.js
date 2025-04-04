@@ -32,7 +32,7 @@ class RootStore {
   get darkMode() {
     if(!this.activeApp) { return false; }
 
-    const darkModeApps = ["Video Editor"];
+    const darkModeApps = ["Video Intelligence Editor"];
 
     return !!darkModeApps.find(app => this.activeApp.includes(app));
   }

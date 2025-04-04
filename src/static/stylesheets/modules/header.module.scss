@@ -46,11 +46,26 @@
         color: var(--text--dark);
       }
     }
+
+    .header__app-display {
+      color: var(--header-text--light);
+      font-width: 600;
+    }
   }
 
-  &__gap {
-    flex-grow: 1;
-    height: 100%;
+  &__logo-container {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  &__account-container {
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+    align-items: center;
   }
 
   &__logo {
@@ -65,10 +80,26 @@
     }
   }
 
+  &__app-logo {
+    height: 30px;
+    margin-right: 10px;
+  }
+
+  &__app-display {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--header-text--dark);
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
 
   &__apps-link {
     color: var(--text-secondary);
     font-size: 14px;
+    font-weigth: 700;
     margin-right: 20px;
     transition: color 0.1s ease;
 

@@ -17,6 +17,7 @@ import LogoPreview from "./static/images/LogoPreview.png";
 import AccountMenu from "./components/account/AccountMenu";
 import AppsIcon from "./static/icons/apps.svg";
 import ExternalLinkIcon from "./static/icons/external-link";
+import EvieLogo from "./static/images/app_icons/EVIE - dark mode.png";
 
 const S = CreateModuleClassMatcher(HeaderStyles);
 
@@ -90,10 +91,29 @@ const AppsMenu = observer(() => {
   );
 });
 
+const AppDisplay = observer(() => {
+  let icon;
+  let isEvie = rootStore.activeApp === "Video Intelligence Editor";
+
+  if(isEvie) {
+    icon = EvieLogo;
+  }
+
+  return (
+    <div className={S("header__app-display")}>
+      {
+        (isEvie && icon) ?
+          <img src={icon} className={S("header__app-logo")} alt="Logo" /> : ""
+      }
+      { isEvie ? rootStore.activeApp : "" }
+    </div>
+  );
+});
+
 const Header = observer(() => {
   let logo = Logo;
   if(rootStore.coreUrl?.includes("v3-dev")) {
-    logo = LogoPreview;
+    //logo = LogoPreview; // MM didn't like, remove
   } else if(rootStore.networkName === "test") {
     logo = LogoTest;
   } else if(["demo", "demov3"].includes(rootStore.networkName)) {
@@ -102,20 +122,23 @@ const Header = observer(() => {
 
   return (
     <header className={S("header", rootStore.darkMode ? "header--dark" : "")}>
-      <Link to="/apps" className={S("header__logo")}>
-        <img src={logo} alt="Eluvio" />
-      </Link>
-      <AppsMenu />
-      <div className={S("header__gap")} />
-      {
-        !accountsStore.currentAccount ? null :
-          <Link className={S("header__apps-link")} to="/apps">
-            All Applications
-          </Link>
-      }
-      <AccountMenu />
+      <div className={S("header__logo-container")}>
+        <Link to="/apps" className={S("header__logo")}>
+          <img src={logo} alt="Eluvio"/>
+        </Link>
+        <AppDisplay/>
+        <AppsMenu/>
+        <div className={S("header__gap")}/>
+        {
+          !accountsStore.currentAccount ? null :
+            <Link className={S("header__apps-link")} to="/apps">
+              All Applications
+            </Link>
+        }
+        <AccountMenu/>
+      </div>
     </header>
-  );
+);
 });
 
 export default Header;
