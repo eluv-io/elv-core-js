@@ -209,25 +209,38 @@ class AppFrame extends React.Component {
 
     switch (event.data.operation) {
       case "OpenLink":
-        let { libraryId, objectId, versionHash, params } = event.data;
+        let { libraryId, objectId, versionHash, app, params } = event.data;
+        let linkAppPath;
 
-        if(!objectId && versionHash) {
-          objectId = rootStore.client.utils.DecodeVersionHash(versionHash).objectId;
+        if(!app) {
+          // Default to fabric browser
+          app = "fabric browser";
         }
 
-        if(!libraryId) {
-          libraryId = await rootStore.client.ContentObjectLibraryId({objectId});
+        const appKey = Object.keys(EluvioConfiguration.apps)
+          .find(key => key.toLowerCase().includes(app));
+
+        if(!appKey) {
+          throw Error("Unable to determine app URL");
         }
 
-        const fabricBrowserKey = Object.keys(EluvioConfiguration.apps)
-          .find(key => key.toLowerCase().includes("fabric browser") || key.toLowerCase().includes("fabric-browser"));
+        const corePath = `/apps/${appKey}`;
 
-        if(!fabricBrowserKey) {
-          throw Error("Unable to determine fabric browser URL");
+        if(app === "fabric browser") {
+          if(!objectId && versionHash) {
+            objectId = rootStore.client.utils.DecodeVersionHash(versionHash).objectId;
+          }
+
+          if(!libraryId) {
+            libraryId = await rootStore.client.ContentObjectLibraryId({objectId});
+          }
+
+          linkAppPath = `#/content/${libraryId}/${objectId}`;
+        } else if(app === "video intelligence editor") {
+          linkAppPath = UrlJoin("#", libraryId || "", objectId);
+        } else {
+          throw Error(`Unsupported app link: ${app}`);
         }
-
-        const corePath = `/apps/${fabricBrowserKey}`;
-        let fabricBrowserPath = `#/content/${libraryId}/${objectId}`;
 
         if(params) {
           const searchParams = new URLSearchParams();
@@ -235,12 +248,12 @@ class AppFrame extends React.Component {
             searchParams.set(key, params[key])
           );
 
-          fabricBrowserPath = `${fabricBrowserPath}?${searchParams.toString()}`;
+          linkAppPath = `${linkAppPath}?${searchParams.toString()}`;
         }
 
         const url = new URL(window.location.toString());
         url.pathname = corePath;
-        url.hash = fabricBrowserPath;
+        url.hash = linkAppPath;
 
         window.open(url.toString(), "_blank");
 
