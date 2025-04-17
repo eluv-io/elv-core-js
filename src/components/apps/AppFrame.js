@@ -45,7 +45,7 @@ class IFrameBase extends React.Component {
     const hash = appUrl.hash;
     const params = new URLSearchParams(`?${hash.split("?")[1] || ""}`);
     appUrl.hash = appUrl.hash.split("?")[0];
-    params.keys().forEach(key =>
+    Array.from(params.keys()).forEach(key =>
       appUrl.searchParams.set(key, params.get(key))
     );
 
@@ -208,6 +208,10 @@ class AppFrame extends React.Component {
     const source = event.source;
 
     switch (event.data.operation) {
+      case "OpenExternalLink":
+        window.open(event.data.url, "_blank", "noreferrer");
+
+        break;
       case "OpenLink":
         let { libraryId, objectId, versionHash, app, params } = event.data;
         let linkAppPath;
