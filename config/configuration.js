@@ -10,6 +10,7 @@ const EluvioConfiguration = {
     "Livestream Manager": "http://localhost:8155",
     "AI Content Search": "http://localhost:3001",
     "Creator Studio": "http://localhost:9000",
+    "Analytics & Reporting": "http://localhost:3000",
   },
   "ory_configuration": {
     "url": "http://localhost:3000",
