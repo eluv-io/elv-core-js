@@ -213,7 +213,7 @@ class AppFrame extends React.Component {
 
         break;
       case "OpenLink":
-        let { libraryId, objectId, versionHash, app, params } = event.data;
+        let { libraryId, objectId, versionHash, app, params, path } = event.data;
         let linkAppPath;
 
         if(!app) {
@@ -230,7 +230,8 @@ class AppFrame extends React.Component {
 
         const corePath = `/apps/${appKey}`;
 
-        if(app === "fabric browser") {
+        linkAppPath = path;
+        if(!linkAppPath) {
           if(!objectId && versionHash) {
             objectId = rootStore.client.utils.DecodeVersionHash(versionHash).objectId;
           }
@@ -239,11 +240,7 @@ class AppFrame extends React.Component {
             libraryId = await rootStore.client.ContentObjectLibraryId({objectId});
           }
 
-          linkAppPath = `#/content/${libraryId}/${objectId}`;
-        } else if(app === "video intelligence editor") {
-          linkAppPath = UrlJoin("#", libraryId || "", objectId);
-        } else {
-          throw Error(`Unsupported app link: ${app}`);
+          linkAppPath = UrlJoin("#", "content", libraryId, objectId);
         }
 
         if(params) {
