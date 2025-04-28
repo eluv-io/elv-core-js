@@ -213,7 +213,7 @@ class AppFrame extends React.Component {
 
         break;
       case "OpenLink":
-        let { libraryId, objectId, versionHash, app, params } = event.data;
+        let { libraryId, objectId, versionHash, app, params, path } = event.data;
         let linkAppPath;
 
         if(!app) {
@@ -239,9 +239,9 @@ class AppFrame extends React.Component {
             libraryId = await rootStore.client.ContentObjectLibraryId({objectId});
           }
 
-          linkAppPath = `#/content/${libraryId}/${objectId}`;
+          linkAppPath = UrlJoin("#", "content", libraryId, objectId, path || "");
         } else if(app === "video intelligence editor") {
-          linkAppPath = UrlJoin("#", libraryId || "", objectId);
+          linkAppPath = UrlJoin("#", libraryId || "", objectId, path || "");
         } else {
           throw Error(`Unsupported app link: ${app}`);
         }
