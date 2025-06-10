@@ -243,3 +243,14 @@
     }
   }
 }
+
+.page-error {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  gap: 5px;
+  height: 90vh;
+  justify-content: center;
+  width: 100%;
+}

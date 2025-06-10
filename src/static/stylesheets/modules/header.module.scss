@@ -54,18 +54,18 @@
   }
 
   &__logo-container {
+    align-items: center;
     display: flex;
     flex: 1;
     flex-direction: row;
     justify-content: flex-start;
-    align-items: center;
   }
 
   &__account-container {
+    align-items: center;
     display: flex;
     flex: 1;
     justify-content: flex-end;
-    align-items: center;
   }
 
   &__logo {
@@ -86,14 +86,14 @@
   }
 
   &__app-display {
-    font-size: 24px;
-    font-weight: 700;
+    align-items: center;
     color: var(--header-text--dark);
     display: flex;
     flex: 1;
-    justify-content: center;
-    align-items: center;
+    font-size: 24px;
+    font-weight: 700;
     height: 100%;
+    justify-content: center;
   }
 
   &__apps-link {

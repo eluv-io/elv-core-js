@@ -7,6 +7,7 @@ import {Link, useNavigate} from "react-router-dom";
 import {CreateModuleClassMatcher} from "../../utils/Utils";
 import {ImageIcon} from "../Misc";
 import FundsIcon from "../../static/icons/elv-token.png";
+import {modals} from "@mantine/modals";
 
 const S = CreateModuleClassMatcher();
 
@@ -20,9 +21,14 @@ const TransferForm = observer(() => {
 
   const [recipientAddress, setRecipientAddress] = useState(accounts[0]?.value || "");
   const [customRecipientAddress, setCustomRecipientAddress] = useState("");
+  const [recipientBalance, setRecipientBalance] = useState(undefined);
   const [amount, setAmount] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(undefined);
+
+  const recipientName = (accounts.find(({value}) =>
+    Utils.EqualAddress(value, recipientAddress || customRecipientAddress)
+  ))?.label;
 
   useEffect(() => {
     if(!accountsStore.isTenantAdmin) { return; }
@@ -31,6 +37,17 @@ const TransferForm = observer(() => {
       tenantContractId: accountsStore.currentAccount.tenantContractId
     });
   }, [accountsStore.isTenantAdmin]);
+
+  useEffect(() => {
+    setRecipientBalance(undefined);
+
+    const address = recipientAddress || customRecipientAddress;
+
+    if(Utils.ValidAddress(address)) {
+      accountsStore.AccountBalance(address)
+        .then(balance => setRecipientBalance(balance));
+    }
+  }, [recipientAddress, customRecipientAddress]);
 
   if(accountsStore.isTenantAdmin && tenantStore.tenantFundingAccount) {
     accounts.unshift({
@@ -50,6 +67,29 @@ const TransferForm = observer(() => {
 
   const Submit = async () => {
     if(!valid) { return; }
+
+    const confirm = await new Promise(resolve => {
+      modals.openConfirmModal({
+        title: "Confirm Transfer",
+        children: (
+          <Group gap={0} my="md">
+            <Text fz={14} pr={5}>Are you sure you want to send</Text>
+            <ImageIcon icon={FundsIcon} className={S("icon", "icon--small", "icon--faded")} />
+            <Text fz={14} pr={5}>{amount} to</Text>
+            <Text fz={14} fw={600}>{recipientName || recipientAddress || customRecipientAddress}?</Text>
+          </Group>
+        ),
+        onConfirm: () => resolve(true),
+        onCancel: () => resolve(false),
+        labels: { confirm: "Confirm", cancel: "Cancel" },
+        centered: true,
+        withCloseButton: false
+      });
+    });
+
+    if(!confirm) {
+      return;
+    }
 
     setSubmitting(true);
     setError(undefined);
@@ -105,10 +145,20 @@ const TransferForm = observer(() => {
               mb="md"
               label="Amount"
               description={
-                <Group gap={0}>
-                  <Text fz={12} fw={500} mr={5}>Available Balance:</Text>
-                  <ImageIcon icon={FundsIcon} className={S("icon", "icon--small", "icon--faded")} />
-                  <Text fz={12} fw={600}>{accountsStore.currentAccount.balance || "0.0"}</Text>
+                <Group gap={0} justify="space-between">
+                  <Group gap={0}>
+                    <Text fz={12} fw={500} mr={5}>Available Balance:</Text>
+                    <ImageIcon icon={FundsIcon} className={S("icon", "icon--small", "icon--faded")} />
+                    <Text fz={12} fw={600}>{accountsStore.currentAccount.balance || "0.0"}</Text>
+                  </Group>
+                  {
+                    typeof recipientBalance === "undefined" ? null :
+                      <Group gap={0} w="max-content">
+                        <Text fz={12} fw={500} mr={5}>Recipient Balance:</Text>
+                        <ImageIcon icon={FundsIcon} className={S("icon", "icon--small", "icon--faded")} />
+                        <Text fz={12} fw={600}>{recipientBalance || "0.0"}</Text>
+                      </Group>
+                  }
                 </Group>
               }
               value={amount}

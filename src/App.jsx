@@ -32,19 +32,17 @@ const ToastMessage = observer(() => {
 const App = observer(() => {
   if(rootStore.configError) {
     return (
-      <div className="page-error">
-        <div className="page-error-container">
-          <h1>
-            Unable to load client configuration
-          </h1>
-          <h1>
-            {EluvioConfiguration["config-url"]}
-          </h1>
+      <div className={S("page-error")}>
+        <h1>
+          Unable to load client configuration
+        </h1>
+        <h1>
+          {EluvioConfiguration["config-url"]}
+        </h1>
 
-          <Button onClick={() => rootStore.InitializeClient()}>
-            Retry
-          </Button>
-        </div>
+        <Button w={120} mt="md" onClick={() => rootStore.InitializeClient()}>
+          Retry
+        </Button>
       </div>
     );
   }

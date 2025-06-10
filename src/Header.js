@@ -138,7 +138,7 @@ const Header = observer(() => {
         <AccountMenu/>
       </div>
     </header>
-);
+  );
 });
 
 export default Header;
