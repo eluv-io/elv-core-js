@@ -20,7 +20,6 @@ const icons = {
   "Livestream Manager": LiveStreamManagerIcon,
   "Creator Studio": CreatorStudioIcon,
   "Eluvio Studio": CreatorStudioIcon,
-  "Analytics and Reporting": AnalyticsAndReportingIcon,
   "Analytics & Reporting": AnalyticsAndReportingIcon
 };
 
@@ -28,18 +27,24 @@ const appNames = [
   "Fabric Browser", "Media Ingest", "Video Intelligence Editor", "Livestream Manager",
   "Creator Studio", "Eluvio Studio",
   "AI Content Search",
-  "Analytics and Reporting", "Analytics & Reporting"
+  "Analytics & Reporting"
 ];
 
 export default {
   apps: Object.keys(EluvioConfiguration.apps)
-    .filter(name => appNames.find(appName => name.toLowerCase().includes(appName.toLowerCase())))
+    .filter(name => appNames.find(appName => name.toLowerCase().includes(appName.toLowerCase()) && !name.toLowerCase().includes("experiment")))
     .map(name => ({
       name,
       logo: icons[Object.keys(icons).find(key => name.includes(key))] || UrlJoin(EluvioConfiguration.apps[name], "Logo.png")
     })),
   tools: Object.keys(EluvioConfiguration.apps)
     .filter(name => !appNames.find(appName => name.toLowerCase().includes(appName.toLowerCase())))
+    .map(name => ({
+      name,
+      logo: icons[Object.keys(icons).find(key => name.includes(key))] || UrlJoin(EluvioConfiguration.apps[name], "Logo.png")
+    })),
+  experiments: Object.keys(EluvioConfiguration.apps)
+    .filter(name => appNames.find(appName => name.toLowerCase().includes("experiment")))
     .map(name => ({
       name,
       logo: icons[Object.keys(icons).find(key => name.includes(key))] || UrlJoin(EluvioConfiguration.apps[name], "Logo.png")

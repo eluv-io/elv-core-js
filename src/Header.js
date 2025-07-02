@@ -86,6 +86,19 @@ const AppsMenu = observer(() => {
             <AppsMenuButton key={name} name={name} logo={logo} setShowMenu={setShowMenu} />
           )
         }
+        { AppInfo.experiments.length > 0 && (
+          <>
+            <div className={S("apps-menu__separator")} />
+            <div className={S("apps-menu__title")}>
+              Content Fabric Experiments
+            </div>
+            {
+              AppInfo.experiments.map(({name, logo}) =>
+                <AppsMenuButton key={name} name={name} logo={logo} setShowMenu={setShowMenu} />
+              )
+            }
+          </>
+        )}
       </Popover.Dropdown>
     </Popover>
   );
