@@ -11,6 +11,7 @@ const EluvioConfiguration = {
     "AI Content Search": "http://localhost:3001",
     "Creator Studio": "http://localhost:9000",
     "Analytics & Reporting": "http://localhost:3000",
+    "Creator Studio (Experimental)": "https://eluvio-creator-studio-demov3-test.web.app",
   },
   "ory_configuration": {
     "url": "http://localhost:3000",

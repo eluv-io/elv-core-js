@@ -26,7 +26,7 @@ class Apps extends React.PureComponent {
       return <Navigate to="/accounts" />;
     }
 
-    const { apps, tools } = AppInfo;
+    const { apps, tools, experiments } = AppInfo;
 
     return (
       <div className="page-content">
@@ -44,6 +44,17 @@ class Apps extends React.PureComponent {
               { tools.map(app => this.App(app)) }
             </div>
           </div>
+
+          { experiments.length > 0 && (
+          <>
+            <div className="apps-box">
+              <h2>Content Fabric Experimental</h2>
+              <div className="apps-box__apps">
+                { experiments.map(app => this.App(app)) }
+              </div>
+            </div>
+		  </>
+		  )}
         </div>
       </div>
     );
