@@ -90,7 +90,7 @@ const AppsMenu = observer(() => {
           <>
             <div className={S("apps-menu__separator")} />
             <div className={S("apps-menu__title")}>
-              Content Fabric Experiments
+              Content Fabric Experimental
             </div>
             {
               AppInfo.experiments.map(({name, logo}) =>
