@@ -48,7 +48,7 @@ class Apps extends React.PureComponent {
           { experiments.length > 0 && (
           <>
             <div className="apps-box">
-              <h2>Content Fabric Experimental</h2>
+              <h2>Content Fabric Experiments</h2>
               <div className="apps-box__apps">
                 { experiments.map(app => this.App(app)) }
               </div>
