@@ -12,6 +12,8 @@ const EluvioConfiguration = {
     "Creator Studio": "http://localhost:9000",
     "Analytics & Reporting": "http://localhost:3000",
     "Creator Studio (Experimental)": "https://eluvio-creator-studio-demov3-test.web.app",
+    "DApp Sample": "https://dapp-sample.app.eluv.io/",
+    "Cross-chain-auth Sample": "https://dapp-sample-xco.app.eluv.io/?network=demo"
   },
   "ory_configuration": {
     "url": "http://localhost:3000",

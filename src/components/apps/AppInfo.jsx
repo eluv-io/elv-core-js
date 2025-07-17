@@ -20,7 +20,9 @@ const icons = {
   "Livestream Manager": LiveStreamManagerIcon,
   "Creator Studio": CreatorStudioIcon,
   "Eluvio Studio": CreatorStudioIcon,
-  "Analytics & Reporting": AnalyticsAndReportingIcon
+  "Analytics & Reporting": AnalyticsAndReportingIcon,
+  "DApp Sample": SiteSampleIcon,
+  "Cross-chain-auth Sample": SiteSampleIcon
 };
 
 const appNames = [
