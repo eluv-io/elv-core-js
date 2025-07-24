@@ -579,6 +579,15 @@ class AccountStore {
       }
 
       localStorage.setItem(`elv-admins-${this.network}`, JSON.stringify(this.tenantAdmins));
+
+      if(isTenantAdmin) {
+        try {
+          this.rootStore.tenantStore.SetShareConfiguration();
+        } catch (error) {
+          this.Log("Failed to set up share configuration:", true);
+          this.Log(error);
+        }
+      }
     }
   });
 

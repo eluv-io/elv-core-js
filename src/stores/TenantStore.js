@@ -95,6 +95,64 @@ class TenantStore {
     }
   }
 
+  ShareConfiguration = flow(function * () {
+    if(!this.tenantContractId || !this.rootStore.accountsStore.isUnlocked) { return; }
+
+    return yield this.rootStore.client.MakeAuthServiceRequest({
+      path: UrlJoin("as", "sharing", this.tenantContractId, "config"),
+      method: "GET",
+      format: "JSON",
+      headers: {
+        Authorization: `Bearer ${this.rootStore.walletClient.AuthToken()}`
+      }
+    });
+  });
+
+  SetShareConfiguration = flow(function * () {
+    if(!this.tenantContractId || !this.rootStore.accountsStore.isUnlocked) { return; }
+
+    const configuration = (yield this.ShareConfiguration() || {});
+    yield this.LoadManagedGroups();
+
+    let requiresSetup = (
+      !configuration.share_signing_address ||
+      !configuration.share_signing_id ||
+      !configuration.share_signing_policy_object
+    );
+
+    if(!requiresSetup && this.specialGroups.contentAdmins) {
+      requiresSetup = !(yield this.client.AccessGroupMembers({
+        contractAddress: this.specialGroups.contentAdmins.address
+      }))
+        .find(address => this.client.utils.EqualAddress(address, configuration.share_signing_address));
+    }
+
+    if(!requiresSetup) { return; }
+
+    this.Log("Setting up share configuration...");
+
+    const response = yield this.rootStore.client.MakeAuthServiceRequest({
+      path: UrlJoin("as", "sharing", this.tenantContractId, "config"),
+      method: "POST",
+      format: "JSON",
+      headers: {
+        Authorization: `Bearer ${this.rootStore.walletClient.AuthToken()}`
+      }
+    });
+
+    if(this.specialGroups.contentAdmins) {
+      yield this.client.AddAccessGroupMember({
+        contractAddress: this.specialGroups.contentAdmins.address,
+        memberAddress: response.share_signing_address
+      });
+
+      this.Log("Added share signer to content admins group");
+      this.Log("Share configuration set up successfully");
+    } else {
+      this.Log("Warning: No content admins group found. Share signer not added.", "warn");
+    }
+  });
+
   UpdateTenantInfo = flow(function * ({name, description, image}) {
     if(!this.tenantContractId) { return; }
 
