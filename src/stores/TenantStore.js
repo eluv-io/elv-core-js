@@ -224,8 +224,8 @@ class TenantStore {
 
       this.isTenantOwner = Utils.EqualAddress(tenantOwner, this.rootStore.accountsStore.currentAccountAddress);
 
-      const libraryId = yield this.client.ContentObjectLibraryId({objectId: tenantContractId});
       const objectId = Utils.AddressToObjectId(Utils.HashToAddress(tenantContractId));
+      const libraryId = yield this.client.ContentObjectLibraryId({objectId: objectId});
 
       this.tenantMetadata[tenantContractId] = {
         public: (yield this.client.ContentObjectMetadata({
