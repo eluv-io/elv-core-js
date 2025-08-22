@@ -18,7 +18,7 @@
   ],
   "dependencies": {
     "@babel/polyfill": "^7.4.3",
-    "@eluvio/elv-client-js": "^4.2.3",
+    "@eluvio/elv-client-js": "github:eluv-io/elv-client-js#node-path",
     "@mantine/core": "^7.13.4",
     "@mantine/hooks": "^7.13.4",
     "@mantine/modals": "^7.13.4",
