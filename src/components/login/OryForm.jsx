@@ -364,7 +364,11 @@ const OryForm = observer(({onboardParams, userData, isLoginGate, setClosable, Cl
           break;
 
         case "recovery_email":
-          const flowInfo = await accountsStore.SendLoginEmail({type: "reset_password", email: body.email});
+          const flowInfo = await accountsStore.SendLoginEmail({
+            type: "reset_password",
+            email: body.email,
+            callbackUrl: window.location.href
+          });
           response = await accountsStore.oryClient.getRecoveryFlow({id: flowInfo.flow});
           setFlows({...flows, recovery: response.data});
           setFlowType("recovery");
