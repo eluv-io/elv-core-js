@@ -164,7 +164,7 @@ const PrivateKeyDetails = observer(() => {
               <Text fw={500} fz={12}>
                 Private Key:
               </Text>
-              <Text fz={12}>
+              <Text fz={10}>
                 { rootStore.client.signer.privateKey }
               </Text>
               <CopyButton value={rootStore.client.signer.privateKey} className={S("icon-button", "key__copy")} />
@@ -176,7 +176,7 @@ const PrivateKeyDetails = observer(() => {
               <Text fz={8}>
                 {`kupk${publicKey}`}
               </Text>
-              <CopyButton value={publicKey} className={S("icon-button", "key__copy")} />
+              <CopyButton value={`kupk${publicKey}`} className={S("icon-button", "key__copy")} />
             </Group>
           </div>
       }
