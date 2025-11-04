@@ -201,11 +201,11 @@ const PrivateKeyDetails = observer(() => {
                 </Text>
                 <CopyButton value={rootStore.client.signer.privateKey} className={S("icon-button", "key__copy")} />
               </Group>
-              <Group h={25}>
+              <Group h={25} wrap="nowrap">
                 <Text w={70} fw={600} fz={12}>
                   Public Key:
                 </Text>
-                <Text fz={9}>
+                <Text fz={10} className={S("ellipsis")} maw={475}>
                   {`kupk${publicKey}`}
                 </Text>
                 <CopyButton value={`kupk${publicKey}`} className={S("icon-button", "key__copy")} />
