@@ -2,21 +2,21 @@ import ProfileStyles from "../../static/stylesheets/modules/profile.module.scss"
 
 import {observer} from "mobx-react";
 import {rootStore, accountsStore, tenantStore} from "../../stores";
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {CreateModuleClassMatcher} from "../../utils/Utils";
 import {ButtonWithLoader, CopyButton, DefaultProfileImage, ImageIcon} from "../Misc";
 
 
-import {Button, Group, Loader, Text, TextInput, Title, UnstyledButton} from "@mantine/core";
+import {Button, Group, Loader, Paper, Text, TextInput, Title, UnstyledButton} from "@mantine/core";
 import {useNavigate} from "react-router-dom";
 import UrlJoin from "url-join";
+import {Tabs} from "@mantine/core";
 
 import EditIcon from "../../static/icons/edit";
 import CheckIcon from "../../static/icons/Check";
 import XIcon from "../../static/icons/X";
 import CaretUpIcon from "../../static/icons/caret-up";
 import CaretDownIcon from "../../static/icons/caret-down";
-import KeyIcon from "../../static/icons/Key";
 import FundsIcon from "../../static/icons/elv-token";
 import TenancyIcon from "../../static/icons/users";
 
@@ -144,43 +144,76 @@ const ProfileName = observer(() => {
 });
 
 const PrivateKeyDetails = observer(() => {
-  const [show, setShow] = useState(false);
+  const [tab, setTab] = useState("auth");
+  const [authToken, setAuthToken] = useState("");
 
-  if(accountsStore.currentAccount?.type !== "key") {
-    return null;
-  }
+  const isCustodialAccount = accountsStore.currentAccount?.type !== "key";
+  const publicKey = isCustodialAccount ? undefined :
+    rootStore.client.utils.AddressToHash(rootStore.client.signer._signingKey().publicKey, true);
 
-  const publicKey = rootStore.client.utils.AddressToHash(rootStore.client.signer._signingKey().publicKey, true)
+  useEffect(() => {
+    rootStore.client.CreateFabricToken({
+      duration: 7 * 24 * 60 * 60 * 1000
+    })
+      .then(token => setAuthToken(token));
+  }, []);
+
+  let expirationDate = !authToken ? undefined :
+    new Date(rootStore.client.utils.DecodeSignedToken(authToken).payload.exp);
 
   return (
-    <div className={S("key")}>
-      <UnstyledButton onClick={() => setShow(!show)} className={S("icon-button", "key__toggle")}>
-        <ImageIcon icon={KeyIcon} />
-      </UnstyledButton>
-      {
-        !show ? null :
-          <div className={S("key__details")}>
-            <Group justify="center" h={25}>
-              <Text fw={500} fz={12}>
-                Private Key:
+    <Group mt="xl" justify="center" gap="xs" className={S("auth-details")}>
+      <Tabs value={tab} onChange={setTab} w="max-content">
+        <Tabs.List>
+          <Tabs.Tab w={150} value="auth">Auth Token</Tabs.Tab>
+          <Tabs.Tab w={150} value="key" disabled={isCustodialAccount}>Keys</Tabs.Tab>
+        </Tabs.List>
+      </Tabs>
+      <Paper w="100%" mx="xl" withBorder p="md">
+        {
+          tab === "auth" ?
+            <>
+              <Text mb={5} fw={600} fz={12}>
+                Authorization Token:
               </Text>
-              <Text fz={10}>
-                { rootStore.client.signer.privateKey }
-              </Text>
-              <CopyButton value={rootStore.client.signer.privateKey} className={S("icon-button", "key__copy")} />
-            </Group>
-            <Group justify="center" h={25}>
-              <Text fw={500} fz={12}>
-                Public Key:
-              </Text>
-              <Text fz={8}>
-                {`kupk${publicKey}`}
-              </Text>
-              <CopyButton value={`kupk${publicKey}`} className={S("icon-button", "key__copy")} />
-            </Group>
-          </div>
-      }
-    </div>
+              <div className={S("auth-token")}>
+                <pre className={S("auth-token__token")}>
+                  { authToken }
+                </pre>
+                <CopyButton value={authToken} className={S("icon-button", "key__copy")} />
+              </div>
+              <Group mt={5} h={25}>
+                <Text fw={600} fz={12}>
+                  Expires
+                </Text>
+                <Text fz={12}>
+                  { expirationDate?.toLocaleString() }
+                </Text>
+              </Group>
+            </> :
+            <>
+              <Group h={25}>
+                <Text fw={600} w={70} fz={12}>
+                  Private Key:
+                </Text>
+                <Text fz={10}>
+                  { rootStore.client.signer.privateKey }
+                </Text>
+                <CopyButton value={rootStore.client.signer.privateKey} className={S("icon-button", "key__copy")} />
+              </Group>
+              <Group h={25}>
+                <Text w={70} fw={600} fz={12}>
+                  Public Key:
+                </Text>
+                <Text fz={9}>
+                  {`kupk${publicKey}`}
+                </Text>
+                <CopyButton value={`kupk${publicKey}`} className={S("icon-button", "key__copy")} />
+              </Group>
+            </>
+        }
+      </Paper>
+    </Group>
   );
 });
 

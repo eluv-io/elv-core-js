@@ -62,7 +62,7 @@
   &__table-container {
     border-radius: 5px;
     max-height: calc(100vh - 420px);
-    overflow-y: auto;
+    overflow: hidden auto;
     padding: 0;
     position: relative;
   }

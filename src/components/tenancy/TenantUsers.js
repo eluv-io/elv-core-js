@@ -108,7 +108,7 @@ const TenantUsers = observer(() => {
                               label="Profile Image"
                             />
                           </div>
-                          <Text fw={500}>
+                          <Text fw={500} maw={200} className={S("ellipsis")}>
                             {user.name || ""}
                           </Text>
                         </Group>

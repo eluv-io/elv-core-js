@@ -93,14 +93,31 @@
 .key {
   margin-top: 40px;
 
-  &__details {
-    background-color: var(--background-secondary);
-    padding: 15px 0;
-  }
+
 
   &__copy {
     height: 17px;
     width: 17px;
+  }
+}
+
+.auth-details {
+  text-align: left;
+}
+
+.auth-token {
+  font-size: 10px;
+  max-width: 100%;
+  padding-right: 30px;
+  position: relative;
+  text-align: left;
+  white-space: pre-wrap;
+  word-break: break-all;
+
+  .key__copy {
+    position: absolute;
+    right: 5px;
+    top: 5px;
   }
 }
 
