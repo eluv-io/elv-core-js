@@ -156,8 +156,8 @@ class TenantStore {
   UpdateTenantInfo = flow(function * ({name, description, image}) {
     if(!this.tenantContractId) { return; }
 
-    const libraryId = yield this.client.ContentObjectLibraryId({objectId: this.tenantContractId});
     const objectId = Utils.AddressToObjectId(Utils.HashToAddress(this.tenantContractId));
+    const libraryId = yield this.client.ContentObjectLibraryId({objectId});
 
     yield this.client.EditAndFinalizeContentObject({
       libraryId,

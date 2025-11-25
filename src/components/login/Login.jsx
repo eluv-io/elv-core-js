@@ -321,7 +321,7 @@ const TenantInfo = observer(({tenantContractId}) => {
 
   const metadata = tenantStore.tenantMetadata[tenantContractId]?.public;
 
-  if(!metadata) {
+  if(!metadata || !metadata.name) {
     return null;
   }
 
