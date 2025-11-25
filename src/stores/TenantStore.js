@@ -587,7 +587,7 @@ class TenantStore {
     url.pathname = "/onboard";
     url.searchParams.set("obp", params);
 
-    url = yield this.CreateShortURL(url.toString());
+    //url = yield this.CreateShortURL(url.toString());
 
     yield this.rootStore.walletClient.PushNotification({
       tenantId: this.tenantContractId,

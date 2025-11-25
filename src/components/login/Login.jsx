@@ -328,14 +328,17 @@ const TenantInfo = observer(({tenantContractId}) => {
   return (
     <Group justify="center">
       <div className={S("tenant-info")}>
-        <div className={S("tenant-image", "tenant-info__image")}>
-          <ImageIcon
-            icon={metadata.image?.url}
-            alternateIcon={TenancyIcon}
-          />
-        </div>
+        {
+          !metadata.image?.url ? null :
+            <div className={S("tenant-image", "tenant-info__image")}>
+              <ImageIcon
+                icon={metadata.image?.url}
+                alternateIcon={TenancyIcon}
+              />
+            </div>
+        }
         <div className={S("tenant-info__text")}>
-          <Text fw={500} fz={18} mt={5}>{metadata.name}</Text>
+          <Text fw={500} fz={20}>{metadata.name}</Text>
         </div>
       </div>
     </Group>
@@ -428,7 +431,12 @@ const OnboardForm = observer(({onboardParams, Close}) => {
       rootStore.Log("Error initializing account:", true);
       rootStore.Log(error, true);
 
-      setError("Unable to complete account setup. Please try again.");
+      if(error?.body?.error?.cause?.op?.includes("already claimed")) {
+        setError("This invitation has already been claimed or has been cancelled. Please contact your administrator.");
+      } else {
+        setError("Unable to complete account setup. Please try again.");
+      }
+
       setSubmitting(false);
     }
   };
