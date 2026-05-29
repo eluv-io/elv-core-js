@@ -9,6 +9,7 @@ const EluvioConfiguration = {
     "Site Sample": "http://localhost:8086",
     "Livestream Manager": "http://localhost:8155",
     "AI Content Search": "http://localhost:3001",
+    "Content Management": "http://localhost:3003",
     "Creator Studio": "http://localhost:9000",
     "Analytics & Reporting": "http://localhost:3000",
     "Creator Studio (Experimental)": "https://eluvio-creator-studio-demov3-test.web.app",
