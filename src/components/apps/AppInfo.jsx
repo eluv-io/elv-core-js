@@ -8,6 +8,7 @@ import SiteSampleIcon from "../../static/images/app_icons/site-sample.svg";
 import StreamSampleIcon from "../../static/images/app_icons/stream-sample.svg";
 import StudioIcon from "../../static/images/app_icons/Media Ingest.png";
 import AISearchIcon from "../../static/images/app_icons/AI Clip Search - beta.png";
+import ContentManagementIcon from "../../static/images/app_icons/Content Management - beta.png"
 import LiveStreamManagerIcon from "../../static/images/app_icons/Livestream Manager.png";
 
 const icons = {
@@ -17,6 +18,7 @@ const icons = {
   "Stream Sample": StreamSampleIcon,
   "Media Ingest": StudioIcon,
   "AI Content Search": AISearchIcon,
+  "Content Management": ContentManagementIcon,
   "Livestream Manager": LiveStreamManagerIcon,
   "Creator Studio": CreatorStudioIcon,
   "Eluvio Studio": CreatorStudioIcon,
@@ -28,7 +30,7 @@ const icons = {
 const appNames = [
   "Fabric Browser", "Media Ingest", "Video Intelligence Editor", "Livestream Manager",
   "Creator Studio", "Eluvio Studio",
-  "AI Content Search",
+  "AI Content Search", "Content Management",
   "Analytics & Reporting"
 ];
 
