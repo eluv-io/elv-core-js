@@ -59,10 +59,31 @@ const LoginGatePasswordForm = observer(({Close}) => {
   return (
     <form onSubmit={event => event.preventDefault()}>
       <AccountSelector center />
+      {/* Hidden field so password managers can pick up / save the username. */}
+      <input
+        type="text"
+        name="username"
+        autoComplete="username"
+        readOnly
+        tabIndex={-1}
+        aria-hidden="true"
+        value={accountsStore.currentAccount?.name || accountsStore.currentAccountAddress || ""}
+        style={{
+          position: "absolute",
+          width: 1,
+          height: 1,
+          padding: 0,
+          margin: -1,
+          border: 0,
+          overflow: "hidden",
+          clip: "rect(0, 0, 0, 0)"
+        }}
+      />
       <PasswordInput
         data-autofocus
         mt="xs"
         aria-label="Password"
+        autoComplete="current-password"
         placeholder="Password"
         value={password}
         error={error}
