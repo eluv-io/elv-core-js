@@ -338,7 +338,7 @@ class TenantStore {
 
       // Sort special groups to the top of the list, if present
       const contentAdminGroupIndex = allGroups.findIndex(group => Utils.EqualAddress(group?.address, contentAdminGroupAddress));
-      if(contentAdminGroupAddress >= 0) {
+      if(contentAdminGroupIndex >= 0) {
         const contentAdminGroup = allGroups[contentAdminGroupIndex];
         delete allGroups[contentAdminGroupIndex];
         allGroups.unshift(contentAdminGroup);
@@ -352,7 +352,7 @@ class TenantStore {
       }
 
       const tenantAdminGroupIndex = allGroups.findIndex(group => Utils.EqualAddress(group?.address, tenantAdminGroupAddress));
-      if(tenantAdminGroupAddress >= 0) {
+      if(tenantAdminGroupIndex >= 0) {
         const tenantAdminGroup = allGroups[tenantAdminGroupIndex];
         delete allGroups[tenantAdminGroupIndex];
         allGroups.unshift(tenantAdminGroup);
