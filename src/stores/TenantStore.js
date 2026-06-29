@@ -120,7 +120,7 @@ class TenantStore {
       !configuration.share_signing_policy_object
     );
 
-    if(!requiresSetup && this.specialGroups.contentAdmins) {
+    if(!requiresSetup && this.specialGroups.contentAdmins?.address) {
       requiresSetup = !(yield this.client.AccessGroupMembers({
         contractAddress: this.specialGroups.contentAdmins.address
       }))
@@ -140,7 +140,7 @@ class TenantStore {
       }
     });
 
-    if(this.specialGroups.contentAdmins) {
+    if(this.specialGroups.contentAdmins?.address) {
       yield this.client.AddAccessGroupMember({
         contractAddress: this.specialGroups.contentAdmins.address,
         memberAddress: response.share_signing_address
@@ -320,7 +320,7 @@ class TenantStore {
           formatArguments: true,
         });
       } catch (error) {
-        this.Log("Failed to load tenant admin group", true);
+        this.Log("Failed to load tenant users group", true);
         this.Log(error, true);
       }
 
@@ -332,7 +332,7 @@ class TenantStore {
           formatArguments: true,
         });
       } catch (error) {
-        this.Log("Failed to load tenant admin group", true);
+        this.Log("Failed to load content admin group", true);
         this.Log(error, true);
       }
 
