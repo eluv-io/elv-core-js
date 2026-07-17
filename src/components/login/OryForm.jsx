@@ -323,15 +323,15 @@ const OryForm = observer(({onboardParams, userData, isLoginGate, setClosable, Cl
       const formData = new FormData(formRef.current);
       const body = { ...Object.fromEntries(formData), ...additionalData };
 
-      const identifier = formData.get("identifier");
+      const identifier = (formData.get("identifier") || "").trim();
 
-      if(identifier?.startsWith("enc") && identifier.length > 20) {
+      if((identifier?.startsWith("enc") || identifier.startsWith("{")) && identifier.length > 30) {
         // This is an autofilled encrypted private key
         try {
           setAuthenticating(true);
           const password = formData.get("password");
           await accountsStore.AddAccount({
-            encryptedPrivateKey: identifier,
+            encryptedPrivateKey: identifier.startsWith("enc") || identifier.startsWith("{") ? identifier : undefined,
             password,
             passwordConfirmation: password,
             onboardParams

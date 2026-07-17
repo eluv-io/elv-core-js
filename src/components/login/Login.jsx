@@ -28,6 +28,7 @@ import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "../Misc";
 import EditIcon from "../../static/icons/edit.svg";
 import DefaultProfileIcon from "../../static/icons/User";
 import TenancyIcon from "../../static/icons/users.svg";
+import KeyAccountForm from "./KeyForm";
 
 const S = CreateModuleClassMatcher(LoginStyles);
 
@@ -215,69 +216,6 @@ export const LoginGate = observer(({children}) => {
 
 
 /* Full page login for new accounts */
-
-
-const KeyAccountForm = observer(({onboardParams, Close}) => {
-  const [formData, setFormData] = useState({});
-  const [error, setError] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
-
-  const Submit = async () => {
-    setSubmitting(true);
-    setError(undefined);
-
-    try {
-      await accountsStore.AddAccount({
-        mnemonic: formData.mnemonic?.trim(),
-        privateKey: formData.privateKey,
-        encryptedPrivateKey: formData.encryptedPrivateKey,
-        password: formData.password,
-        passwordConfirmation: formData.passwordConfirmation,
-        onboardParams
-      });
-
-      Close(true);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
-      setError(error.toString());
-      setSubmitting(false);
-    }
-  };
-
-  return (
-    <>
-      <KeyForm
-        onboardParams={onboardParams}
-        UpdateFormData={setFormData}
-        Submit={Submit}
-      />
-      <div className={S("actions")}>
-        <Button
-          disabled={!formData.valid}
-          w="100%"
-          loading={submitting}
-          className={S("button")}
-          onClick={Submit}
-        >
-          Sign In
-        </Button>
-        {
-          !accountsStore.hasAccount ? null :
-            <Link to="/accounts" onClick={() => Close?.()} className={S("button-link", "button-link--secondary")}>
-              Back to Accounts
-            </Link>
-        }
-      </div>
-      {
-        !error ? null :
-          <div className={S("error")}>
-            { error }
-          </div>
-      }
-    </>
-  );
-});
 
 const LoginModalContent = observer(({onboardParams, accountType, setAccountType, setClosable, Close}) => {
   const [shareEmail, setShareEmail] = useState(true);

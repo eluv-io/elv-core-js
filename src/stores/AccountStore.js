@@ -477,15 +477,20 @@ class AccountStore {
     });
   });
 
-  DecryptKey = flow(function * ({encryptedPrivateKey, password}) {
+  DecryptKey = flow(function * ({encryptedPrivateKey, mnemonic, password}) {
     const client = this.rootStore.client;
     const wallet = client.GenerateWallet();
 
-    if(encryptedPrivateKey.startsWith("enc")) {
-      encryptedPrivateKey = client.utils.FromB58ToStr(encryptedPrivateKey.slice(3));
-    }
+    let signer;
+    if(mnemonic) {
+      signer = wallet.AddAccountFromMnemonic({mnemonic});
+    } else {
+      if(encryptedPrivateKey.startsWith("enc")) {
+        encryptedPrivateKey = client.utils.FromB58ToStr(encryptedPrivateKey.slice(3));
+      }
 
-    const signer = yield wallet.AddAccountFromEncryptedPK({encryptedPrivateKey, password});
+      signer = yield wallet.AddAccountFromEncryptedPK({encryptedPrivateKey, password});
+    }
 
     return signer._signingKey().privateKey;
   })
