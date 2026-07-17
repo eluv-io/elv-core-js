@@ -68,6 +68,13 @@ const KeyAccountForm = observer(({onboardParams, Close}) => {
   }, [formData]);
 
   const Submit = async () => {
+    const passwordError = accountsStore.TestPassword(formData.password);
+
+    if(passwordError) {
+      setError(passwordError);
+      return;
+    }
+
     setSubmitting(true);
     setError(undefined);
 
@@ -113,6 +120,8 @@ const KeyAccountForm = observer(({onboardParams, Close}) => {
   };
 
   const Confirm = async () => {
+    if(formData.password !== formData.passwordConfirmation) { return; }
+
     try {
       setSubmitting(true);
       await accountsStore.AddAccount({
@@ -130,6 +139,18 @@ const KeyAccountForm = observer(({onboardParams, Close}) => {
       setError(error.toString());
       setSubmitting(false);
     }
+  };
+
+  const valid = formData.password &&
+    (
+      (formData.credentialType === "privateKey" && formData.privateKey) ||
+      (formData.credentialType === "mnemonic" && formData.mnemonic)
+    );
+
+  const HandleEnterPressed = event => {
+    if(!valid || event.key !== "Enter") { return; }
+
+    confirming ? Confirm() : Submit();
   };
 
   if(confirming) {
@@ -151,6 +172,7 @@ const KeyAccountForm = observer(({onboardParams, Close}) => {
           autoComplete="current-password"
           value={formData.passwordConfirmation}
           onChange={event => setFormData({...formData, passwordConfirmation: event.currentTarget.value})}
+          onKeyDown={event => HandleEnterPressed(event)}
         />
         <div className={S("actions")}>
           <Button
@@ -222,17 +244,8 @@ const KeyAccountForm = observer(({onboardParams, Close}) => {
               ...formData,
               privateKey: event.currentTarget.value,
             })}
+            onKeyDown={event => HandleEnterPressed(event)}
             className={S("input__fz-xs")}
-          />
-      }
-      {
-        formData.credentialType !== "encryptedPrivateKey" ? null :
-          <TextInput
-            aria-label="Encrypted Private Key"
-            placeholder="Encrypted Private Key"
-            value={formData.encryptedPrivateKey}
-            className={S("input__fz-xs")}
-            onChange={event => setFormData({...formData, encryptedPrivateKey: event.currentTarget.value})}
           />
       }
       {
@@ -289,16 +302,11 @@ const KeyAccountForm = observer(({onboardParams, Close}) => {
         description="Password must be at least 6 characters long and must contain at least one uppercase letter, lowercase letter, number and symbol"
         value={formData.password}
         onChange={event => setFormData({...formData, password: event.currentTarget.value})}
+        onKeyDown={event => HandleEnterPressed(event)}
       />
       <div className={S("actions")}>
         <Button
-          disabled={
-            !formData.password ||
-            (
-              (formData.credentialType === "privateKey" && !formData.privateKey) ||
-              (formData.credentialType === "mnemonic" && !formData.mnemonic)
-            )
-          }
+          disabled={!valid}
           w="100%"
           loading={submitting}
           className={S("button")}
