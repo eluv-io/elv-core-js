@@ -247,7 +247,11 @@ const KeyAccountForm = observer(({onboardParams, Close}) => {
 
   return (
     <>
-      <KeyForm onboardParams={onboardParams} UpdateFormData={setFormData} Submit={Submit} />
+      <KeyForm
+        onboardParams={onboardParams}
+        UpdateFormData={setFormData}
+        Submit={Submit}
+      />
       <div className={S("actions")}>
         <Button
           disabled={!formData.valid}

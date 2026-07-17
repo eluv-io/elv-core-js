@@ -323,6 +323,28 @@ const OryForm = observer(({onboardParams, userData, isLoginGate, setClosable, Cl
       const formData = new FormData(formRef.current);
       const body = { ...Object.fromEntries(formData), ...additionalData };
 
+      const identifier = formData.get("identifier");
+
+      if(identifier?.startsWith("enc") && identifier.length > 20) {
+        // This is an autofilled encrypted private key
+        try {
+          setAuthenticating(true);
+          const password = formData.get("password");
+          await accountsStore.AddAccount({
+            encryptedPrivateKey: identifier,
+            password,
+            passwordConfirmation: password,
+            onboardParams
+          });
+
+          Close?.(true);
+        } catch(error) {
+          setErrorMessage("Invalid encrypted private key or password");
+          setAuthenticating(false);
+          return;
+        }
+      }
+
       let response;
 
       const email = body.email || body.identifier || body["traits.email"];

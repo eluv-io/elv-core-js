@@ -465,6 +465,31 @@ class AccountStore {
     }
   });
 
+  EncryptKey = flow(function * ({privateKey, password, N=16384}) {
+    const client = this.rootStore.client;
+    const wallet = client.GenerateWallet();
+
+    const signer = wallet.AddAccount({privateKey: privateKey.trim()});
+    return yield wallet.GenerateEncryptedPrivateKey({
+      signer,
+      password,
+      options: {scrypt: {N}}
+    });
+  });
+
+  DecryptKey = flow(function * ({encryptedPrivateKey, password}) {
+    const client = this.rootStore.client;
+    const wallet = client.GenerateWallet();
+
+    if(encryptedPrivateKey.startsWith("enc")) {
+      encryptedPrivateKey = client.utils.FromB58ToStr(encryptedPrivateKey.slice(3));
+    }
+
+    const signer = yield wallet.AddAccountFromEncryptedPK({encryptedPrivateKey, password});
+
+    return signer._signingKey().privateKey;
+  })
+
   AddAccount = flow(function * ({
     privateKey,
     encryptedPrivateKey,
@@ -488,6 +513,10 @@ class AccountStore {
     if(mnemonic) {
       signer = wallet.AddAccountFromMnemonic({mnemonic});
     } else if(encryptedPrivateKey) {
+      if(encryptedPrivateKey.startsWith("enc")) {
+        encryptedPrivateKey = client.utils.FromB58ToStr(encryptedPrivateKey.slice(3));
+      }
+
       signer = yield wallet.AddAccountFromEncryptedPK({encryptedPrivateKey, password});
     } else {
       signer = wallet.AddAccount({privateKey: privateKey.trim()});

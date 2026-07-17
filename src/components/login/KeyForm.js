@@ -14,7 +14,7 @@ import {
   Loader,
   UnstyledButton
 } from "@mantine/core";
-import {accountsStore} from "../../stores";
+import {rootStore, accountsStore} from "../../stores";
 import EditIcon from "../../static/icons/edit.svg";
 import DownloadIcon from "../../static/icons/download.svg";
 import {CreateModuleClassMatcher} from "../../utils/Utils";
@@ -32,6 +32,8 @@ const DownloadMnemonic = mnemonic => {
 
 const KeyForm = observer(({onboardParams, UpdateFormData, Submit}) => {
   const [editingMnemonic, setEditingMnemonic] = useState(false);
+  const [privateKeyFieldFocused, setPrivateKeyFieldFocused] = useState(false);
+  const [initialDecryptionDone, setInitialDecryptionDone] = useState(false);
   const [formData, setFormData] = useState({
     credentialType: onboardParams ? "mnemonic" : "privateKey",
     privateKey: "",
@@ -40,6 +42,85 @@ const KeyForm = observer(({onboardParams, UpdateFormData, Submit}) => {
     password: "",
     passwordConfirmation: ""
   });
+
+  // We want to encrypt the private key on the fly to show in the private key field
+  // to make password managers save the encrypted key instead of the plaintext key
+  const [keyData, setKeyData] = useState({
+    userPrivateKey: "",
+    encryptedUserPrivateKey: "",
+    encryptedWith: ""
+  });
+
+  const ClearKeyData = () => {
+    setKeyData({
+      userPrivateKey: "",
+      encryptedUserPrivateKey: "",
+      encryptedWith: ""
+    });
+  };
+
+  const EncryptUserPrivateKey = async () => {
+    let privateKey = formData.privateKey;
+    const password = formData.password;
+
+    // User is coming in with an encrypted private key
+    if(formData.privateKey.startsWith("enc")) {
+      if(!formData.password) { return; }
+
+      try {
+
+        const encryptedPrivateKey = `${formData.privateKey}`;
+        privateKey = await accountsStore.DecryptKey({encryptedPrivateKey, password});
+
+        setFormData({...formData, privateKey});
+        setKeyData({
+          encryptedUserPrivateKey: encryptedPrivateKey,
+          userPrivateKey: privateKey,
+          encryptedWith: password
+        });
+
+        return;
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
+        return;
+      }
+    }
+
+    if(
+      !privateKey ||
+      !formData.password ||
+      (
+        privateKey === keyData.userPrivateKey &&
+        formData.password === keyData.encryptedWith
+      )
+    ) { return; }
+
+    ClearKeyData();
+
+    try {
+      const encryptedKey = await accountsStore.EncryptKey({privateKey, password, N: 2 ** 10});
+      setKeyData({
+        userPrivateKey: privateKey,
+        encryptedUserPrivateKey: `enc${rootStore.client.utils.B58(encryptedKey)}`,
+        encryptedWith: password
+      });
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if(initialDecryptionDone) { return; }
+
+    const timeout = setTimeout(() => {
+      EncryptUserPrivateKey();
+      setInitialDecryptionDone(true);
+    }, 100);
+
+    return () => clearTimeout(timeout);
+  }, [formData.privateKey, formData.password]);
 
   // Generating a mnemonic causes the UI to stutter a bit. Delay it until after initial render
   useEffect(() => {
@@ -99,8 +180,21 @@ const KeyForm = observer(({onboardParams, UpdateFormData, Submit}) => {
           <TextInput
             aria-label="Private Key"
             placeholder="Private Key"
-            value={formData.privateKey}
-            onChange={event => setFormData({...formData, privateKey: event.currentTarget.value})}
+            value={
+              privateKeyFieldFocused ? formData.privateKey :
+                keyData.encryptedUserPrivateKey || formData.privateKey
+            }
+            onFocus={() => setPrivateKeyFieldFocused(true)}
+            onChange={event => setFormData({
+              ...formData,
+              privateKey: event.currentTarget.value,
+              encryptedUserPrivateKey: ""
+            })}
+            onBlur={event => {
+              setPrivateKeyFieldFocused(false);
+              EncryptUserPrivateKey()
+                .then(() => event.target.setSelectionRange(0, 0));
+            }}
             className={S("input__fz-xs")}
           />
       }
@@ -169,6 +263,7 @@ const KeyForm = observer(({onboardParams, UpdateFormData, Submit}) => {
         description="Password must be at least 6 characters long and must contain at least one uppercase letter, lowercase letter, number and symbol"
         value={formData.password}
         onChange={event => setFormData({...formData, password: event.currentTarget.value})}
+        onBlur={() => EncryptUserPrivateKey()}
       />
       <PasswordInput
         aria-label="Password Confirmation"
@@ -176,6 +271,7 @@ const KeyForm = observer(({onboardParams, UpdateFormData, Submit}) => {
         value={formData.passwordConfirmation}
         onChange={event => setFormData({...formData, passwordConfirmation: event.currentTarget.value})}
         error={formData.password && formData.passwordConfirmation && formData.password !== formData.passwordConfirmation}
+        onBlur={() => EncryptUserPrivateKey()}
         onKeyDown={event => {
           if(event.key !== "Enter") { return; }
 
