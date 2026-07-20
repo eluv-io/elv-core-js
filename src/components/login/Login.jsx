@@ -16,7 +16,6 @@ import {
 } from "@mantine/core";
 import React, {useEffect, useRef, useState} from "react";
 import {CreateModuleClassMatcher} from "../../utils/Utils";
-import KeyForm from "./KeyForm";
 import {Navigate} from "react-router";
 import OryForm from "./OryForm";
 
@@ -68,7 +67,7 @@ const LoginGatePasswordForm = observer(({Close}) => {
         readOnly
         tabIndex={-1}
         aria-hidden="true"
-        value={accountsStore.currentAccount?.name || accountsStore.currentAccountAddress || ""}
+        value={accountsStore.currentAccount?.encodedEncryptedPrivateKey}
         style={{
           position: "absolute",
           width: 1,
@@ -181,8 +180,14 @@ export const LoginGateModal = observer(({Close}) => {
 
 export const LoginGate = observer(({children}) => {
   const currentAccount = accountsStore.currentAccount;
+  const [autoUnlocking, setAutoUnlocking] = useState(true);
 
-  if(!accountsStore.accountsLoaded || accountsStore.authenticating || accountsStore.switchingAccounts) {
+  useEffect(() => {
+    accountsStore.CheckSavedPassword({address: accountsStore.currentAccountAddress})
+      .then(() => setAutoUnlocking(false));
+  }, []);
+
+  if(!accountsStore.accountsLoaded || accountsStore.authenticating || accountsStore.switchingAccounts || autoUnlocking) {
     return (
       <Modal
         centered
@@ -194,7 +199,7 @@ export const LoginGate = observer(({children}) => {
       >
         <Text ta="center" fz="xl" my="lg">
           {
-            accountsStore.switchingAccounts ?
+            accountsStore.switchingAccounts && !autoUnlocking ?
               "Switching Accounts..." :
               "Authenticating..."
           }

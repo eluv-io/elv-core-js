@@ -38,8 +38,10 @@ const KeyAccountForm = observer(({onboardParams, Close}) => {
   const [editingMnemonic, setEditingMnemonic] = useState(false);
   const [formData, setFormData] = useState({
     credentialType: onboardParams ? "mnemonic" : "privateKey",
+    accountName: "",
     privateKey: "",
     encryptedPrivateKey: "",
+    encodedEncryptedPrivateKey: "",
     mnemonic: "",
     password: "",
     passwordConfirmation: ""
@@ -78,36 +80,64 @@ const KeyAccountForm = observer(({onboardParams, Close}) => {
     setSubmitting(true);
     setError(undefined);
 
-    // Determine private key and bare encrypted key for whichever credential type is provided
+    // Determine private key, bare encrypted key and encoded key with name for whichever credential type is provided
     try {
       let privateKey = formData.privateKey.trim();
       let encryptedPrivateKey = formData.encryptedPrivateKey.trim();
+      let encodedEncryptedPrivateKey;
 
       if(formData.credentialType === "mnemonic") {
         // Mnemonic
         privateKey = await accountsStore.DecryptKey({mnemonic: formData.mnemonic.trim(), password: formData.password});
-        encryptedPrivateKey = await accountsStore.EncryptKey({privateKey, password: formData.password});
+        const response = await accountsStore.EncryptKey({
+          accountName: formData.accountName,
+          privateKey,
+          password: formData.password
+        });
+
+        encryptedPrivateKey = response.encryptedPrivateKey;
+        encodedEncryptedPrivateKey = response.encodedEncryptedPrivateKey;
       } else if(privateKey.startsWith("0x")) {
         // Private key
-        encryptedPrivateKey = await accountsStore.EncryptKey({privateKey, password: formData.password});
+        const response = await accountsStore.EncryptKey({
+          accountName: formData.accountName,
+          privateKey,
+          password: formData.password
+        });
+
+        encryptedPrivateKey = response.encryptedPrivateKey;
+        encodedEncryptedPrivateKey = response.encodedEncryptedPrivateKey;
       } else {
         // Encrypted key
-        if(privateKey.startsWith("enc")) {
-          encryptedPrivateKey = rootStore.client.utils.FromB58ToStr(privateKey.slice(3));
+        encodedEncryptedPrivateKey = privateKey;
+        // Remove account name from encoded private key, if present
+        encryptedPrivateKey = encodedEncryptedPrivateKey.replace(/^\[?.+]?]/, "");
+
+        if(encryptedPrivateKey.startsWith("enc")) {
+          encryptedPrivateKey = rootStore.client.utils.FromB58ToStr(encryptedPrivateKey.slice(3));
+
+          if(formData.accountName) {
+            encodedEncryptedPrivateKey = accountsStore.EncodeEncryptedKey({
+              accountName: formData.accountName,
+              encryptedPrivateKey
+            });
+          }
         } else {
           encryptedPrivateKey = privateKey;
+          encodedEncryptedPrivateKey = accountsStore.EncodeEncryptedKey({
+            accountName: formData.accountName,
+            encryptedPrivateKey
+          });
         }
 
         privateKey = await accountsStore.DecryptKey({encryptedPrivateKey, password: formData.password});
       }
 
-      // Convert to encoded format
-      encryptedPrivateKey = `enc${rootStore.client.utils.B58(encryptedPrivateKey)}`;
-
       setFormData({
         ...formData,
         privateKey,
-        encryptedPrivateKey
+        encryptedPrivateKey,
+        encodedEncryptedPrivateKey
       });
 
       setConfirming(true);
@@ -127,6 +157,7 @@ const KeyAccountForm = observer(({onboardParams, Close}) => {
       await accountsStore.AddAccount({
         mnemonic: formData.mnemonic?.trim(),
         privateKey: formData.privateKey,
+        encodedEncryptedPrivateKey: formData.encodedEncryptedPrivateKey,
         encryptedPrivateKey: formData.encryptedPrivateKey,
         password: formData.password,
         passwordConfirmation: formData.passwordConfirmation,
@@ -162,14 +193,15 @@ const KeyAccountForm = observer(({onboardParams, Close}) => {
           name="username"
           disabled
           autoComplete="username"
-          description="Please confirm your password to proceed"
-          value={formData.encryptedPrivateKey}
+          value={formData.encodedEncryptedPrivateKey}
           className={S("input__fz-xs")}
         />
         <PasswordInput
           aria-label="Password"
           placeholder="Password"
           autoComplete="current-password"
+          autoFocus
+          description="Please confirm your password to proceed"
           value={formData.passwordConfirmation}
           onChange={event => setFormData({...formData, passwordConfirmation: event.currentTarget.value})}
           onKeyDown={event => HandleEnterPressed(event)}
@@ -236,6 +268,7 @@ const KeyAccountForm = observer(({onboardParams, Close}) => {
       {
         formData.credentialType !== "privateKey" ? null :
           <TextInput
+            autoFocus
             aria-label="Private Key"
             placeholder="Private Key"
             name="username"
@@ -296,6 +329,18 @@ const KeyAccountForm = observer(({onboardParams, Close}) => {
             }
           </MantineInput.Wrapper>
       }
+      <TextInput
+        aria-label="Account Name"
+        placeholder="Account Name (optional)"
+        name="accountName"
+        value={formData.accountName}
+        onChange={event => setFormData({
+          ...formData,
+          accountName: event.currentTarget.value,
+        })}
+        onKeyDown={event => HandleEnterPressed(event)}
+        className={S("input__fz-xs")}
+      />
       <PasswordInput
         aria-label="Password"
         placeholder="Password"

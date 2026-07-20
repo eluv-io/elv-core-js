@@ -323,7 +323,7 @@ const OryForm = observer(({onboardParams, userData, isLoginGate, setClosable, Cl
       const formData = new FormData(formRef.current);
       const body = { ...Object.fromEntries(formData), ...additionalData };
 
-      const identifier = (formData.get("identifier") || "").trim();
+      const identifier = (formData.get("identifier") || "").trim().replace(/^\[?.+]?]/, "");
 
       if((identifier?.startsWith("enc") || identifier.startsWith("{")) && identifier.length > 30) {
         // This is an autofilled encrypted private key
