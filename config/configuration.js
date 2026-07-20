@@ -3,7 +3,7 @@ const EluvioConfiguration = {
   "config-url": "https://demov3.net955210.contentfabric.io/config",
   "apps": {
     "Eluvio Fabric Browser": "http://localhost:8080",
-    "Media Ingest": "https://studio.v3.contentfabric.io",
+    "Media Ingest": "http://localhost:8110",
     "Video Intelligence Editor": "http://localhost:8083",
     "Stream Sample": "http://localhost:8084",
     "Site Sample": "http://localhost:8086",
