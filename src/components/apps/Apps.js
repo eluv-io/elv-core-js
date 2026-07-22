@@ -53,8 +53,8 @@ class Apps extends React.PureComponent {
                 { experiments.map(app => this.App(app)) }
               </div>
             </div>
-		  </>
-		  )}
+          </>
+          )}
         </div>
       </div>
     );
