@@ -217,6 +217,58 @@ const PrivateKeyDetails = observer(() => {
   );
 });
 
+const PasskeySection = observer(() => {
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  if(accountsStore.currentAccount?.type !== "key") {
+    return null;
+  }
+
+  const hasPasskey = !!accountsStore.currentAccount?.encryptedPrivateKeyPasskey;
+
+  const Submit = async () => {
+    setError("");
+    setSubmitting(true);
+
+    try {
+      await accountsStore.RegisterPasskey({address: accountsStore.currentAccountAddress});
+    } catch (error) {
+      accountsStore.Log(error, true);
+      setError(error.toString());
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className={S("profile__content-block")}>
+      <Text mb="sm" fz={20} fw={500}>Passkey</Text>
+      <Text mb="sm" fz={12}>
+        {
+          hasPasskey ?
+            "A passkey is registered for this account - you can use it to sign in instead of your password." :
+            "Register a passkey (fingerprint, Face ID, etc.) to sign in without typing your password. Your password will still work as a fallback."
+        }
+      </Text>
+      <ButtonWithLoader
+        variant="outline"
+        w={200}
+        loading={submitting}
+        onClick={Submit}
+      >
+        { hasPasskey ? "Replace Passkey" : "Register Passkey" }
+      </ButtonWithLoader>
+      {
+        !error ? null :
+          <Text mt="sm" fz={12} fw={500} className={S("error")}>
+            { error }
+          </Text>
+      }
+    </div>
+  );
+});
+
 const TenantInfo = observer(() => {
   if(
     !tenantStore.publicTenantMetadata ||
@@ -396,6 +448,7 @@ const Profile = observer(() => {
           </Group>
 
           <PrivateKeyDetails />
+          <PasskeySection />
         </div>
 
         <Group justify="center" mb="md" mt="md">
