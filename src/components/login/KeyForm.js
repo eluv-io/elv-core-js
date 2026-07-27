@@ -12,13 +12,14 @@ import {
   TextInput,
   Textarea,
   Loader,
-  UnstyledButton
+  UnstyledButton, Button
 } from "@mantine/core";
-import {accountsStore} from "../../stores";
+import {rootStore, accountsStore} from "../../stores";
 import EditIcon from "../../static/icons/edit.svg";
 import DownloadIcon from "../../static/icons/download.svg";
 import {CreateModuleClassMatcher} from "../../utils/Utils";
 import {ImageIcon} from "../Misc";
+import {Link} from "react-router-dom";
 
 const S = CreateModuleClassMatcher(LoginStyles);
 
@@ -30,12 +31,17 @@ const DownloadMnemonic = mnemonic => {
   element.click();
 };
 
-const KeyForm = observer(({onboardParams, UpdateFormData, Submit}) => {
+const KeyAccountForm = observer(({onboardParams, Close}) => {
+  const [error, setError] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [confirming, setConfirming] = useState(false);
   const [editingMnemonic, setEditingMnemonic] = useState(false);
   const [formData, setFormData] = useState({
     credentialType: onboardParams ? "mnemonic" : "privateKey",
+    accountName: "",
     privateKey: "",
     encryptedPrivateKey: "",
+    encodedEncryptedPrivateKey: "",
     mnemonic: "",
     password: "",
     passwordConfirmation: ""
@@ -60,20 +66,186 @@ const KeyForm = observer(({onboardParams, UpdateFormData, Submit}) => {
   }, [formData.credentialType]);
 
   useEffect(() => {
-    UpdateFormData?.({
-      ...formData,
-      valid: !!(
-        formData.password &&
-        formData.passwordConfirmation &&
-        formData.password === formData.passwordConfirmation &&
-        (
-          (formData.credentialType === "privateKey" && formData.privateKey) ||
-          (formData.credentialType === "encryptedPrivateKey" && formData.encryptedPrivateKey) ||
-          (formData.credentialType === "mnemonic" && formData.mnemonic)
-        )
-      )
-    });
+    setError(undefined);
   }, [formData]);
+
+  const Submit = async () => {
+    const passwordError = accountsStore.TestPassword(formData.password);
+
+    if(passwordError) {
+      setError(passwordError);
+      return;
+    }
+
+    setSubmitting(true);
+    setError(undefined);
+
+    // Determine private key, bare encrypted key and encoded key with name for whichever credential type is provided
+    try {
+      let privateKey = formData.privateKey.trim();
+      let encryptedPrivateKey = formData.encryptedPrivateKey.trim();
+      let encodedEncryptedPrivateKey;
+
+      if(formData.credentialType === "mnemonic") {
+        // Mnemonic
+        privateKey = await accountsStore.DecryptKey({mnemonic: formData.mnemonic.trim(), password: formData.password});
+        const response = await accountsStore.EncryptKey({
+          accountName: formData.accountName,
+          privateKey,
+          password: formData.password
+        });
+
+        encryptedPrivateKey = response.encryptedPrivateKey;
+        encodedEncryptedPrivateKey = response.encodedEncryptedPrivateKey;
+      } else if(privateKey.startsWith("0x")) {
+        // Private key
+        const response = await accountsStore.EncryptKey({
+          accountName: formData.accountName,
+          privateKey,
+          password: formData.password
+        });
+
+        encryptedPrivateKey = response.encryptedPrivateKey;
+        encodedEncryptedPrivateKey = response.encodedEncryptedPrivateKey;
+      } else {
+        // Encrypted key
+        encodedEncryptedPrivateKey = privateKey;
+        // Remove account name from encoded private key, if present
+        encryptedPrivateKey = encodedEncryptedPrivateKey.replace(/^\[?.+]?]/, "");
+
+        if(encryptedPrivateKey.startsWith("enc")) {
+          encryptedPrivateKey = rootStore.client.utils.FromB58ToStr(encryptedPrivateKey.slice(3));
+
+          if(formData.accountName) {
+            encodedEncryptedPrivateKey = accountsStore.EncodeEncryptedKey({
+              accountName: formData.accountName,
+              encryptedPrivateKey
+            });
+          }
+        } else {
+          encryptedPrivateKey = privateKey;
+          encodedEncryptedPrivateKey = accountsStore.EncodeEncryptedKey({
+            accountName: formData.accountName,
+            encryptedPrivateKey
+          });
+        }
+
+        privateKey = await accountsStore.DecryptKey({encryptedPrivateKey, password: formData.password});
+      }
+
+      setFormData({
+        ...formData,
+        privateKey,
+        encryptedPrivateKey,
+        encodedEncryptedPrivateKey
+      });
+
+      setConfirming(true);
+    } catch (error) {
+      rootStore.Log(error, true);
+      setError("Invalid credentials");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const Confirm = async () => {
+    if(formData.password !== formData.passwordConfirmation) { return; }
+
+    try {
+      setSubmitting(true);
+      await accountsStore.AddAccount({
+        mnemonic: formData.mnemonic?.trim(),
+        privateKey: formData.privateKey,
+        encodedEncryptedPrivateKey: formData.encodedEncryptedPrivateKey,
+        encryptedPrivateKey: formData.encryptedPrivateKey,
+        password: formData.password,
+        passwordConfirmation: formData.passwordConfirmation,
+        onboardParams
+      });
+
+      Close(true);
+    } catch (error) {
+      rootStore.Log(error, true);
+      setError(error.toString());
+      setSubmitting(false);
+    }
+  };
+
+  const valid = formData.password &&
+    (
+      (formData.credentialType === "privateKey" && formData.privateKey) ||
+      (formData.credentialType === "mnemonic" && formData.mnemonic)
+    );
+
+  const HandleEnterPressed = event => {
+    if(!valid || event.key !== "Enter") { return; }
+
+    confirming ? Confirm() : Submit();
+  };
+
+  if(confirming) {
+    return (
+      <form autoComplete="on" className={S("account-form")} onSubmit={event => event.preventDefault()}>
+        <TextInput
+          aria-label="Username"
+          placeholder="Username"
+          name="username"
+          disabled
+          autoComplete="username"
+          value={formData.encodedEncryptedPrivateKey}
+          className={S("input__fz-xs")}
+        />
+        <PasswordInput
+          aria-label="Password"
+          placeholder="Password"
+          autoComplete="current-password"
+          autoFocus
+          description="Please confirm your password to proceed"
+          value={formData.passwordConfirmation}
+          onChange={event => setFormData({...formData, passwordConfirmation: event.currentTarget.value})}
+          onKeyDown={event => HandleEnterPressed(event)}
+        />
+        <div className={S("actions")}>
+          <Button
+            disabled={formData.password !== formData.passwordConfirmation}
+            w="100%"
+            loading={submitting}
+            className={S("button")}
+            onClick={Confirm}
+          >
+            Sign In
+          </Button>
+          <Button
+            w="100%"
+            className={S("button")}
+            variant="outline"
+            onClick={() => {
+              setConfirming(false);
+              setFormData({
+                ...formData,
+                passwordConfirmation: ""
+              });
+            }}
+          >
+            Back
+          </Button>
+          {
+            !accountsStore.hasAccount ? null :
+              <Link to="/accounts" onClick={() => Close?.()} className={S("button-link", "button-link--secondary")}>
+                Back to Accounts
+              </Link>
+          }
+        </div>
+        {
+          !error ? null :
+            <div className={S("error")}>
+              { error }
+            </div>
+        }
+      </form>
+    );
+  }
 
   return (
     <form className={S("account-form")} onSubmit={event => event.preventDefault()}>
@@ -82,7 +254,6 @@ const KeyForm = observer(({onboardParams, UpdateFormData, Submit}) => {
         data={[
           {label: "Mnemonic Phrase", value: "mnemonic"},
           {label: "Private Key", value: "privateKey"},
-          {label: "Encrypted Private Key", value: "encryptedPrivateKey"},
         ]}
         value={formData.credentialType}
         onChange={value => {
@@ -97,22 +268,17 @@ const KeyForm = observer(({onboardParams, UpdateFormData, Submit}) => {
       {
         formData.credentialType !== "privateKey" ? null :
           <TextInput
+            autoFocus
             aria-label="Private Key"
             placeholder="Private Key"
+            name="username"
             value={formData.privateKey}
-            onChange={event => setFormData({...formData, privateKey: event.currentTarget.value})}
+            onChange={event => setFormData({
+              ...formData,
+              privateKey: event.currentTarget.value,
+            })}
+            onKeyDown={event => HandleEnterPressed(event)}
             className={S("input__fz-xs")}
-          />
-      }
-      {
-        formData.credentialType !== "encryptedPrivateKey" ? null :
-          <Textarea
-            aria-label="Encrypted Private Key"
-            placeholder="Encrypted Private Key"
-            value={formData.encryptedPrivateKey}
-            minRows={5}
-            autosize
-            onChange={event => setFormData({...formData, encryptedPrivateKey: event.currentTarget.value})}
           />
       }
       {
@@ -163,28 +329,52 @@ const KeyForm = observer(({onboardParams, UpdateFormData, Submit}) => {
             }
           </MantineInput.Wrapper>
       }
+      <TextInput
+        aria-label="Account Name"
+        placeholder="Account Name (optional)"
+        name="accountName"
+        value={formData.accountName}
+        onChange={event => setFormData({
+          ...formData,
+          accountName: event.currentTarget.value,
+        })}
+        onKeyDown={event => HandleEnterPressed(event)}
+        className={S("input__fz-xs")}
+      />
       <PasswordInput
         aria-label="Password"
         placeholder="Password"
         description="Password must be at least 6 characters long and must contain at least one uppercase letter, lowercase letter, number and symbol"
         value={formData.password}
         onChange={event => setFormData({...formData, password: event.currentTarget.value})}
+        onKeyDown={event => HandleEnterPressed(event)}
       />
-      <PasswordInput
-        aria-label="Password Confirmation"
-        placeholder="Password Confirmation"
-        value={formData.passwordConfirmation}
-        onChange={event => setFormData({...formData, passwordConfirmation: event.currentTarget.value})}
-        error={formData.password && formData.passwordConfirmation && formData.password !== formData.passwordConfirmation}
-        onKeyDown={event => {
-          if(event.key !== "Enter") { return; }
-
-          Submit();
-        }}
-      />
+      <div className={S("actions")}>
+        <Button
+          disabled={!valid}
+          w="100%"
+          loading={submitting}
+          className={S("button")}
+          onClick={Submit}
+        >
+          Continue
+        </Button>
+        {
+          !accountsStore.hasAccount ? null :
+            <Link to="/accounts" onClick={() => Close?.()} className={S("button-link", "button-link--secondary")}>
+              Back to Accounts
+            </Link>
+        }
+      </div>
+      {
+        !error ? null :
+          <div className={S("error")}>
+            { error }
+          </div>
+      }
     </form>
   );
 });
 
-export default KeyForm;
+export default KeyAccountForm;
 

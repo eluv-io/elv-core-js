@@ -101,15 +101,6 @@ const Account = observer(({address}) => {
                 variant="outline"
                 w="100%"
                 onClick={async () => {
-                  if(accountsStore.currentAccountAddress) {
-                    try {
-                      await accountsStore.LockAccount({address: accountsStore.currentAccountAddress});
-                    } catch (error) {
-                      // eslint-disable-next-line no-console
-                      console.error(error);
-                    }
-                  }
-
                   await accountsStore.SetCurrentAccount({address: address});
 
                   setShowLoginModal(true);

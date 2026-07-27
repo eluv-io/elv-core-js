@@ -4,6 +4,7 @@ import {DownloadFromUrl} from "../utils/Utils";
 import {Utils} from "@eluvio/elv-client-js";
 import {v4 as UUID, parse as ParseUUID} from "uuid";
 import {RegisterPasskey as RegisterPasskeyCredential, LoginWithPasskey as AuthenticateWithPasskey} from "../utils/Passkey";
+import {accountsStore, rootStore} from "./index";
 
 class AccountStore {
   oryClient;
@@ -172,7 +173,7 @@ class AccountStore {
   // Auth
   SendLoginEmail = flow(function * ({email, type, code, callbackUrl}) {
     try {
-      const result = yield this.rootStore.client.utils.ResponseToJson(
+      const result = yield Utils.ResponseToJson(
         this.rootStore.client.authClient.MakeAuthServiceRequest({
           path: UrlJoin("as", "wlt", type === "send_invite_email" ? "" : "ory", type),
           method: "POST",
@@ -202,7 +203,7 @@ class AccountStore {
   });
 
   ResizeImage(imageUrl, height) {
-    return client.utils.ResizeImage({
+    return Utils.ResizeImage({
       imageUrl,
       height
     });
@@ -218,10 +219,10 @@ class AccountStore {
   }
 
   ImportAccounts(accounts) {
-    accounts = JSON.parse(this.rootStore.client.utils.FromB64(accounts));
+    accounts = JSON.parse(Utils.FromB64(accounts));
 
     Object.keys(accounts).forEach(address => {
-      const formattedAddress = this.rootStore.client.utils.FormatAddress(address);
+      const formattedAddress = Utils.FormatAddress(address);
       if(!this.accounts[formattedAddress]) {
         this.accounts[formattedAddress] = {
           ...accounts[address],
@@ -265,6 +266,13 @@ class AccountStore {
           }
 
           accounts[address].type = accounts[address].type || "key";
+
+          accounts[address].encodedEncryptedPrivateKey =
+            accounts[address].encodedEncryptedPrivateKey ||
+            this.EncodeEncryptedKey({
+              accountName: accounts[address].name || accounts[address].email,
+              encryptedPrivateKey: accounts[address].encryptedPrivateKey
+            });
         } catch (error) {
           this.Log("Error loading account " + address, true);
           this.Log(error, true);
@@ -299,6 +307,8 @@ class AccountStore {
       }
 
       this.authenticating = false;
+    } else if(this.currentAccount) {
+      yield this.CheckSavedPassword({address: this.currentAccount.address});
     }
   });
 
@@ -308,9 +318,9 @@ class AccountStore {
     try {
       const client = this.rootStore.client;
 
-      address = client.utils.FormatAddress(address);
+      address = Utils.FormatAddress(address);
 
-      const balance = client.utils.ToBigNumber(
+      const balance = Utils.ToBigNumber(
         yield client.GetBalance({address})
       ).toFixed(3);
 
@@ -326,6 +336,10 @@ class AccountStore {
   });
 
   LockAccount = flow(function * ({address}) {
+    address = Utils.FormatAddress(address || "");
+
+    sessionStorage.removeItem(`cr-${address}`);
+
     if(!(Object.keys(this.accounts).includes(address))) {
       return;
     }
@@ -346,7 +360,7 @@ class AccountStore {
 
   UnlockAccount = flow(function * ({address, password}) {
     const client = this.rootStore.client;
-    address = client.utils.FormatAddress(address);
+    address = Utils.FormatAddress(address || "");
 
     const account = this.accounts[address];
 
@@ -363,6 +377,8 @@ class AccountStore {
     this.rootStore.InitializeClient(this.accounts[address].signer);
 
     yield this.SetCurrentAccount({signer: this.accounts[address].signer});
+
+    sessionStorage.setItem(`cr-${address}`, Utils.B58(password));
   });
 
   // Registers a new passkey against an already-unlocked "key" account and
@@ -418,7 +434,7 @@ class AccountStore {
   });
 
   SendFunds = flow(function * ({recipient, ether}) {
-    recipient = this.rootStore.client.utils.FormatAddress(recipient);
+    recipient = Utils.FormatAddress(recipient);
 
     yield this.rootStore.client.SendFunds({recipient, ether});
     yield this.AccountBalance(this.currentAccountAddress);
@@ -445,13 +461,44 @@ class AccountStore {
     this.SaveAccounts();
   });
 
+  CheckSavedPassword = flow(function * ({address}) {
+    while(this.checkingSavedPassword) {
+      yield new Promise(resolve => setTimeout(resolve, 100));
+    }
+
+    if(Utils.EqualAddress(address, this.currentAccountAddress) && this.currentAccount.signer) {
+      // Already logged in
+      return;
+    }
+
+    try {
+      this.checkingSavedPassword = true;
+      address = Utils.FormatAddress(address || "");
+      const savedPassword = sessionStorage.getItem(`cr-${address}`);
+
+      if(!savedPassword) {
+        return;
+      }
+
+      try {
+        yield this.UnlockAccount({address, password: rootStore.client.utils.FromB58ToStr(savedPassword)});
+        return true;
+      } catch (error) {
+        this.Log(error);
+        sessionStorage.removeItem(`cr-${accountsStore.currentAccountAddress}`);
+      }
+    } finally {
+      this.checkingSavedPassword = false;
+    }
+  })
+
   SetCurrentAccount = flow(function * ({address, signer, switchAccount=false}) {
     try {
       if(switchAccount) {
         this.switchingAccounts = true;
       }
 
-      address = this.rootStore.client.utils.FormatAddress(address || signer.address);
+      address = Utils.FormatAddress(address || signer.address);
 
       let account = { ...this.accounts[address] } || {};
 
@@ -466,6 +513,10 @@ class AccountStore {
 
         if(yield this.rootStore.client.userProfileClient.WalletAddress()) {
           account.tenantContractId = yield this.rootStore.client.userProfileClient.TenantContractId();
+        }
+      } else {
+        if(yield this.CheckSavedPassword({address})) {
+          return;
         }
       }
 
@@ -518,9 +569,73 @@ class AccountStore {
     }
   });
 
+  EncodeEncryptedKey({encryptedPrivateKey, accountName}) {
+    if(!encryptedPrivateKey) { return ""; }
+
+    let encodedKey = `enc${Utils.B58(encryptedPrivateKey)}`;
+    if(accountName) {
+      encodedKey = `[${accountName}]${encodedKey}`;
+    }
+
+    return encodedKey;
+  }
+
+  EncryptKey = flow(function * ({accountName, privateKey, password, N=16384}) {
+    const client = this.rootStore.client;
+    const wallet = client.GenerateWallet();
+
+    const signer = wallet.AddAccount({privateKey: privateKey.trim()});
+    const encryptedPrivateKey = yield wallet.GenerateEncryptedPrivateKey({
+      signer,
+      password,
+      options: {scrypt: {N}}
+    });
+
+    return {
+      encryptedPrivateKey,
+      encodedEncryptedPrivateKey: this.EncodeEncryptedKey({encryptedPrivateKey, accountName})
+    };
+  });
+
+  DecryptKey = flow(function * ({encryptedPrivateKey, mnemonic, password}) {
+    const client = this.rootStore.client;
+    const wallet = client.GenerateWallet();
+
+    let signer;
+    if(mnemonic) {
+      signer = wallet.AddAccountFromMnemonic({mnemonic});
+    } else {
+      if(encryptedPrivateKey.startsWith("enc")) {
+        encryptedPrivateKey = Utils.FromB58ToStr(encryptedPrivateKey.slice(3));
+      }
+
+      signer = yield wallet.AddAccountFromEncryptedPK({encryptedPrivateKey, password});
+    }
+
+    return signer._signingKey().privateKey;
+  })
+
+  TestPassword(password) {
+    if(this.rootStore.simplePasswords) { return; }
+
+    const passwordTests = [
+      [{test: str => str.length >= 6}, "must be at least 6 characters"],
+      [/[a-z]/, "must contain at least one lowercase character"],
+      [/[A-Z]/, "must contain at least one uppercase character"],
+      [/[0-9]/, "must contain at least one number"],
+      [/[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/, "must contain at least one symbol"]
+    ];
+
+    let failedTest = passwordTests.find(([test]) => !test.test(password));
+    if(failedTest) {
+      return `Password ${failedTest[1]}`;
+    }
+  }
+
   AddAccount = flow(function * ({
     privateKey,
     encryptedPrivateKey,
+    encodedEncryptedPrivateKey,
     mnemonic,
     password,
     passwordConfirmation,
@@ -541,24 +656,18 @@ class AccountStore {
     if(mnemonic) {
       signer = wallet.AddAccountFromMnemonic({mnemonic});
     } else if(encryptedPrivateKey) {
+      if(encryptedPrivateKey.startsWith("enc")) {
+        encryptedPrivateKey = Utils.FromB58ToStr(encryptedPrivateKey.slice(3));
+      }
+
       signer = yield wallet.AddAccountFromEncryptedPK({encryptedPrivateKey, password});
     } else {
       signer = wallet.AddAccount({privateKey: privateKey.trim()});
     }
 
-    if(!this.rootStore.simplePasswords) {
-      const passwordTests = [
-        [{test: str => str.length >= 6}, "must be at least 6 characters"],
-        [/[a-z]/, "must contain at least one lowercase character"],
-        [/[A-Z]/, "must contain at least one uppercase character"],
-        [/[0-9]/, "must contain at least one number"],
-        [/[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/, "must contain at least one symbol"]
-      ];
-
-      let failedTest = passwordTests.find(([test]) => !test.test(password));
-      if(failedTest) {
-        throw Error(`Password ${failedTest[1]}`);
-      }
+    const passwordError = this.TestPassword(password);
+    if(passwordError) {
+      throw new Error(passwordError);
     }
 
     encryptedPrivateKey = yield wallet.GenerateEncryptedPrivateKey({
@@ -567,13 +676,14 @@ class AccountStore {
       options: {scrypt: {N: 16384}}
     });
 
-    const address = client.utils.FormatAddress(signer.address);
+    const address = Utils.FormatAddress(signer.address);
 
     this.accounts[address] = {
       type: "key",
       address,
       signer,
-      encryptedPrivateKey
+      encryptedPrivateKey,
+      encodedEncryptedPrivateKey
     };
 
     if(inviteId) {
@@ -614,21 +724,21 @@ class AccountStore {
     if(tenantContractId) {
       this.accounts[this.currentAccountAddress].tenantContractId = tenantContractId;
       const tenantAdminGroupAddress = yield this.rootStore.client.CallContractMethod({
-        contractAddress: this.rootStore.client.utils.HashToAddress(tenantContractId),
+        contractAddress: Utils.HashToAddress(tenantContractId),
         methodName: "groupsMapping",
         methodArgs: ["tenant_admin", 0],
         formatArguments: true,
       });
       const accountGroups = yield this.rootStore.client.Collection({collectionType: "accessGroups"});
 
-      const isTenantAdmin = !!accountGroups?.find(address => this.rootStore.client.utils.EqualAddress(tenantAdminGroupAddress, address));
+      const isTenantAdmin = !!accountGroups?.find(address => Utils.EqualAddress(tenantAdminGroupAddress, address));
 
       if(isTenantAdmin) {
         if(!this.tenantAdmins.includes(this.currentAccountAddress)) {
           this.tenantAdmins = [...this.tenantAdmins, this.currentAccountAddress];
         }
       } else {
-        this.tenantAdmins = this.tenantAdmins.filter(address => !this.rootStore.client.utils.EqualAddress(this.currentAccountAddress, address));
+        this.tenantAdmins = this.tenantAdmins.filter(address => !Utils.EqualAddress(this.currentAccountAddress, address));
       }
 
       localStorage.setItem(`elv-admins-${this.network}`, JSON.stringify(this.tenantAdmins));
@@ -747,6 +857,7 @@ class AccountStore {
         encryptedPrivateKey: account.encryptedPrivateKey,
         passkeyCredentialId: account.passkeyCredentialId,
         encryptedPrivateKeyPasskey: account.encryptedPrivateKeyPasskey,
+        encodedEncryptedPrivateKey: account.encodedEncryptedPrivateKey,
         tenantContractId: account.tenantContractId,
         tenantName: account.tenantName || this.rootStore.tenantStore.tenantMetadata[account.tenantContractId]?.public?.name || "",
         authToken: account.authToken,
