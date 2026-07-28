@@ -221,7 +221,8 @@ const PasskeySection = observer(() => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  if(accountsStore.currentAccount?.type !== "key") {
+  const webAuthnSupported = typeof window !== "undefined" && !!window.PublicKeyCredential;
+  if (!webAuthnSupported || accountsStore.currentAccount?.type !== "key") {
     return null;
   }
 
