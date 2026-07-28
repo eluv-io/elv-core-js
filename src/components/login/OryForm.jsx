@@ -165,6 +165,31 @@ const OryForm = observer(({onboardParams, userData, isLoginGate, setClosable, Cl
     setClosable?.(!["recovery", "settings"].includes(flowType));
   }, [flowType]);
 
+  // Kratos's webauthn/passkey nodes include a "script" node (group "webauthn"
+  // or "passkey") that has to actually be loaded as a <script src> tag - it's
+  // what defines window.__oryWebAuthnLogin/__oryPasskeyLogin etc. Rendering
+  // it as a normal JSX node (like the rest of flow.ui.nodes) doesn't reliably
+  // execute it, so it's injected into the DOM directly here instead.
+  useEffect(() => {
+    const scriptNodes = (flow?.ui?.nodes || [])
+      .filter(node => ["webauthn", "passkey"].includes(node.group) && node.attributes.node_type === "script");
+
+    const added = scriptNodes
+      .filter(node => !document.querySelector(`script[src="${node.attributes.src}"]`))
+      .map(node => {
+        const script = document.createElement("script");
+        script.src = node.attributes.src;
+        script.async = node.attributes.async;
+        script.referrerPolicy = node.attributes.referrerpolicy;
+        script.crossOrigin = node.attributes.crossorigin;
+        script.integrity = node.attributes.integrity;
+        document.body.appendChild(script);
+        return script;
+      });
+
+    return () => added.forEach(script => document.body.removeChild(script));
+  }, [flow?.ui?.nodes]);
+
   useEffect(() => {
     if(!accountsStore.oryClient || accountsStore.oryLoggingOut) { return; }
 
@@ -533,6 +558,31 @@ const OryForm = observer(({onboardParams, userData, isLoginGate, setClosable, Cl
                 if(node.group === "oidc") {
                   // Third party sign in button
                   return null;
+                }
+
+                if(["webauthn", "passkey"].includes(node.group) && attributes.node_type === "script") {
+                  // Loaded as a real <script src> tag by the effect above instead
+                  return null;
+                }
+
+                if(["webauthn", "passkey"].includes(node.group) && attributes.type === "button" && attributes.onclick) {
+                  // Triggers the actual navigator.credentials.get()/create() call via the
+                  // window.__oryWebAuthnLogin/__oryPasskeyLogin/etc global the injected script
+                  // defines - Kratos hands us this as a literal onclick string (its documented
+                  // custom-UI integration contract) rather than a React-callable function.
+                  return (
+                    <button
+                      key={`button-${key}`}
+                      type="button"
+                      className={S("button")}
+                      onClick={() => {
+                        // eslint-disable-next-line no-eval
+                        eval(attributes.onclick);
+                      }}
+                    >
+                      {node.meta.label.text}
+                    </button>
+                  );
                 }
 
                 if(nodeType === "submit" && attributes.value) {
