@@ -392,7 +392,10 @@ class AccountStore {
     if(!account) { throw Error(`Unknown account: ${address}`); }
     if(!account.signer) { throw Error("Account must be unlocked before registering a passkey"); }
 
-    const {credentialId, prfSecret} = yield RegisterPasskeyCredential({client, username: address});
+    const {credentialId, prfSecret} = yield RegisterPasskeyCredential({
+      walletAddress: address,
+      existingCredentialId: account.passkeyCredentialId
+    });
 
     const wallet = client.GenerateWallet();
     const encryptedPrivateKeyPasskey = yield wallet.GenerateEncryptedPrivateKey({
@@ -416,7 +419,7 @@ class AccountStore {
     if(!account.encryptedPrivateKeyPasskey) { throw Error(`No passkey registered for account: ${address}`); }
 
     if(!account.signer) {
-      const {prfSecret} = yield AuthenticateWithPasskey({client, username: address});
+      const {prfSecret} = yield AuthenticateWithPasskey({credentialId: account.passkeyCredentialId});
 
       const wallet = client.GenerateWallet();
       account.signer = yield wallet.AddAccountFromEncryptedPK({

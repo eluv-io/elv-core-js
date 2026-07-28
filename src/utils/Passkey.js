@@ -1,4 +1,3 @@
-import UrlJoin from "url-join";
 import {
   startRegistration,
   startAuthentication,
@@ -6,92 +5,110 @@ import {
   bufferToBase64URLString
 } from "@simplewebauthn/browser";
 
-// SimpleWebAuthn only knows how to convert the fields it recognizes (challenge, user.id, excludeCredentials[].id, ...)
-// between base64url strings and ArrayBuffers. The "prf" extension isn't one of them, so its salt has to be converted by
-// hand before the options are handed to the browser - the native WebAuthn API requires a real ArrayBuffer here.
-const BufferizePrfEval = publicKey => {
-  const first = publicKey?.extensions?.prf?.eval?.first;
-  if(first) {
-    publicKey.extensions.prf.eval.first = base64URLStringToBuffer(first);
-  }
+// This never talks to authd. The PRF extension has the authenticator derive
+// a symmetric secret (an HMAC over a salt, using key material tied to the
+// credential) that comes back to the client only - nothing here is a
+// server-verified assertion, so there's nothing for a server to do. A
+// backend is only needed for the categorically different "verify a
+// signature to establish a session" flow, which this isn't.
+
+const RP_NAME = "Eluvio Content Fabric";
+
+const PUB_KEY_CRED_PARAMS = [
+  {alg: -7, type: "public-key"},   // ES256
+  {alg: -257, type: "public-key"}  // RS256
+];
+
+// Doesn't need to be secret - it just needs to be the same value every time
+// so the same passkey always derives the same PRF secret. Bump this (and
+// treat it as a breaking change for anyone who registered under the old
+// salt) if it ever needs to rotate.
+const PRF_SALT_BASE64URL = "_uXyRAInP_wAyd_NxJxB6TUT0pydVBgp53xzsISzSuk";
+
+const randomChallenge = () => {
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  return bufferToBase64URLString(bytes);
 };
 
-// ...and the PRF result has to be converted back to a base64url string by hand too - an ArrayBuffer would otherwise
-// serialize as "{}" over JSON.stringify.
-const ExtractPrfSecret = clientExtensionResults => {
+// user.id just needs to be valid base64url bytes for SimpleWebAuthn to
+// convert to an ArrayBuffer - encode the wallet address as UTF-8 first
+// rather than passing the string through directly (it isn't valid base64url
+// itself, e.g. "0x..." decodes as arbitrary bytes, not as that text).
+const walletAddressUserHandle = walletAddress => bufferToBase64URLString(new TextEncoder().encode(walletAddress));
+
+const prfExtension = () => ({
+  prf: {
+    eval: {
+      first: base64URLStringToBuffer(PRF_SALT_BASE64URL)
+    }
+  }
+});
+
+const extractPrfSecret = clientExtensionResults => {
   const first = clientExtensionResults?.prf?.results?.first;
   return first ? bufferToBase64URLString(first) : undefined;
 };
 
-const AuthServiceRequest = async ({client, pathParts, queryParams, body}) => {
-  const response = await client.MakeAuthServiceRequest({
-    method: "POST",
-    path: UrlJoin("as", "api", ...pathParts),
-    queryParams,
-    body,
-    bodyType: "JSON"
-  });
-
-  return await client.utils.ResponseToJson(response);
-};
-
 /**
- * Register a new passkey for the given account and derive a stable PRF secret from it.
+ * Register a new passkey for the given account and derive a stable PRF secret from it, entirely client-side.
  * The caller is responsible for using that secret as the password when re-encrypting the account's private key.
  *
  * @namedParams
- * @param {Object} client - An ElvClient instance
- * @param {string} username - Identifier to register the passkey under (the wallet address)
+ * @param {string} walletAddress - The account's wallet address, used as the WebAuthn user handle
+ * @param {string=} existingCredentialId - This account's existing passkey credential ID (base64url), if any,
+ *   so re-registering doesn't create a duplicate credential for the same authenticator
  *
  * @returns {Promise<{credentialId: string, prfSecret: string}>}
  */
-export async function RegisterPasskey({client, username}) {
-  const options = await AuthServiceRequest({client, pathParts: ["register", "begin"], body: {username}});
-  BufferizePrfEval(options.publicKey);
+export async function RegisterPasskey({walletAddress, existingCredentialId}) {
+  const credentialResponse = await startRegistration({
+    optionsJSON: {
+      rp: {id: window.location.hostname, name: RP_NAME},
+      user: {id: walletAddressUserHandle(walletAddress), name: walletAddress, displayName: walletAddress},
+      challenge: randomChallenge(),
+      pubKeyCredParams: PUB_KEY_CRED_PARAMS,
+      authenticatorSelection: {
+        authenticatorAttachment: "platform",
+        userVerification: "required"
+      },
+      excludeCredentials: existingCredentialId ? [{id: existingCredentialId, type: "public-key"}] : [],
+      extensions: prfExtension()
+    }
+  });
 
-  const credentialResponse = await startRegistration({optionsJSON: options.publicKey});
-  const prfSecret = ExtractPrfSecret(credentialResponse.clientExtensionResults);
-
+  const prfSecret = extractPrfSecret(credentialResponse.clientExtensionResults);
   if(!prfSecret) {
     throw Error("This authenticator does not support the PRF extension required for passkey login");
   }
-
-  await AuthServiceRequest({
-    client,
-    pathParts: ["register", "finish"],
-    queryParams: {username, sessionToken: options.sessionToken},
-    body: credentialResponse
-  });
 
   return {credentialId: credentialResponse.id, prfSecret};
 }
 
 /**
- * Authenticate with a previously registered passkey and derive the same PRF secret produced at registration time.
+ * Authenticate with a previously registered passkey and derive the same PRF secret produced at registration time,
+ * entirely client-side.
  *
  * @namedParams
- * @param {Object} client - An ElvClient instance
- * @param {string} username - Identifier the passkey was registered under (the wallet address)
+ * @param {string} credentialId - The account's passkey credential ID (base64url)
  *
  * @returns {Promise<{prfSecret: string}>}
  */
-export async function LoginWithPasskey({client, username}) {
-  const options = await AuthServiceRequest({client, pathParts: ["login", "begin"], body: {username}});
-  BufferizePrfEval(options.publicKey);
+export async function LoginWithPasskey({credentialId}) {
+  const credentialResponse = await startAuthentication({
+    optionsJSON: {
+      rpId: window.location.hostname,
+      challenge: randomChallenge(),
+      allowCredentials: [{id: credentialId, type: "public-key"}],
+      userVerification: "required",
+      extensions: prfExtension()
+    }
+  });
 
-  const credentialResponse = await startAuthentication({optionsJSON: options.publicKey});
-  const prfSecret = ExtractPrfSecret(credentialResponse.clientExtensionResults);
-
+  const prfSecret = extractPrfSecret(credentialResponse.clientExtensionResults);
   if(!prfSecret) {
     throw Error("This authenticator did not return a PRF secret");
   }
-
-  await AuthServiceRequest({
-    client,
-    pathParts: ["login", "finish"],
-    queryParams: {username, sessionToken: options.sessionToken},
-    body: credentialResponse
-  });
 
   return {prfSecret};
 }
