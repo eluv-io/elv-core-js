@@ -5,13 +5,6 @@ import {
   bufferToBase64URLString
 } from "@simplewebauthn/browser";
 
-// This never talks to authd. The PRF extension has the authenticator derive
-// a symmetric secret (an HMAC over a salt, using key material tied to the
-// credential) that comes back to the client only - nothing here is a
-// server-verified assertion, so there's nothing for a server to do. A
-// backend is only needed for the categorically different "verify a
-// signature to establish a session" flow, which this isn't.
-
 const RP_NAME = "Eluvio Content Fabric";
 
 const PUB_KEY_CRED_PARAMS = [
@@ -19,10 +12,7 @@ const PUB_KEY_CRED_PARAMS = [
   {alg: -257, type: "public-key"}  // RS256
 ];
 
-// Doesn't need to be secret - it just needs to be the same value every time
-// so the same passkey always derives the same PRF secret. Bump this (and
-// treat it as a breaking change for anyone who registered under the old
-// salt) if it ever needs to rotate.
+// doesn't need to be secret, just needs to be constant, so passkey derives same PRF secret
 const PRF_SALT_BASE64URL = "_uXyRAInP_wAyd_NxJxB6TUT0pydVBgp53xzsISzSuk";
 
 const randomChallenge = () => {
@@ -31,10 +21,7 @@ const randomChallenge = () => {
   return bufferToBase64URLString(bytes);
 };
 
-// user.id just needs to be valid base64url bytes for SimpleWebAuthn to
-// convert to an ArrayBuffer - encode the wallet address as UTF-8 first
-// rather than passing the string through directly (it isn't valid base64url
-// itself, e.g. "0x..." decodes as arbitrary bytes, not as that text).
+// user.id just needs to be valid base64url bytes for SimpleWebAuthn to convert to an ArrayBuffer
 const walletAddressUserHandle = walletAddress => bufferToBase64URLString(new TextEncoder().encode(walletAddress));
 
 const prfExtension = () => ({
@@ -51,8 +38,8 @@ const extractPrfSecret = clientExtensionResults => {
 };
 
 /**
- * Register a new passkey for the given account and derive a stable PRF secret from it, entirely client-side.
- * The caller is responsible for using that secret as the password when re-encrypting the account's private key.
+ * Register a new passkey for the given account and derive a stable PRF secret from it.
+ * Caller is responsible for using that secret as the password when re-encrypting the account's private key.
  *
  * @namedParams
  * @param {string} walletAddress - The account's wallet address, used as the WebAuthn user handle
@@ -86,8 +73,7 @@ export async function RegisterPasskey({walletAddress, existingCredentialId}) {
 }
 
 /**
- * Authenticate with a previously registered passkey and derive the same PRF secret produced at registration time,
- * entirely client-side.
+ * Authenticate with a previously registered passkey and derive the same PRF secret produced at registration time
  *
  * @namedParams
  * @param {string} credentialId - The account's passkey credential ID (base64url)
