@@ -59,7 +59,7 @@ export async function RegisterPasskey({client, username}) {
   await AuthServiceRequest({
     client,
     pathParts: ["register", "finish"],
-    queryParams: {username},
+    queryParams: {username, sessionToken: options.sessionToken},
     body: credentialResponse
   });
 
@@ -89,7 +89,7 @@ export async function LoginWithPasskey({client, username}) {
   await AuthServiceRequest({
     client,
     pathParts: ["login", "finish"],
-    queryParams: {username},
+    queryParams: {username, sessionToken: options.sessionToken},
     body: credentialResponse
   });
 
