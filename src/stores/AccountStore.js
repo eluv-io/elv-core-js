@@ -381,12 +381,9 @@ class AccountStore {
     sessionStorage.setItem(`cr-${address}`, Utils.B58(password));
   });
 
-  // Registers a new passkey against an already-unlocked "key" account and
-  // re-encrypts its private key under the resulting PRF secret, so it can
-  // later be unlocked via UnlockAccountWithPasskey without a typed password.
-  // The original password-encrypted key is left untouched as a fallback -
-  // losing the passkey (deleted, device lost, not synced) does not lose
-  // access to the account as long as the password is still known.
+  // Registers a new passkey against an already-unlocked "key" account and re-encrypts its private key under the
+  // resulting PRF secret, so it can later be unlocked via UnlockAccountWithPasskey without a typed password.
+  // The original password-encrypted key is left untouched.
   RegisterPasskey = flow(function * ({address}) {
     const client = this.rootStore.client;
     address = client.utils.FormatAddress(address);

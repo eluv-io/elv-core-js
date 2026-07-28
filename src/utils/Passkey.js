@@ -6,11 +6,9 @@ import {
   bufferToBase64URLString
 } from "@simplewebauthn/browser";
 
-// SimpleWebAuthn only knows how to convert the fields it recognizes
-// (challenge, user.id, excludeCredentials[].id, ...) between base64url
-// strings and ArrayBuffers. The "prf" extension isn't one of them, so its
-// salt has to be converted by hand before the options are handed to the
-// browser - the native WebAuthn API requires a real ArrayBuffer here.
+// SimpleWebAuthn only knows how to convert the fields it recognizes (challenge, user.id, excludeCredentials[].id, ...)
+// between base64url strings and ArrayBuffers. The "prf" extension isn't one of them, so its salt has to be converted by
+// hand before the options are handed to the browser - the native WebAuthn API requires a real ArrayBuffer here.
 const BufferizePrfEval = publicKey => {
   const first = publicKey?.extensions?.prf?.eval?.first;
   if(first) {
@@ -18,9 +16,8 @@ const BufferizePrfEval = publicKey => {
   }
 };
 
-// ...and the PRF result has to be converted back to a base64url string by
-// hand too - an ArrayBuffer would otherwise serialize as "{}" over
-// JSON.stringify.
+// ...and the PRF result has to be converted back to a base64url string by hand too - an ArrayBuffer would otherwise
+// serialize as "{}" over JSON.stringify.
 const ExtractPrfSecret = clientExtensionResults => {
   const first = clientExtensionResults?.prf?.results?.first;
   return first ? bufferToBase64URLString(first) : undefined;
@@ -39,11 +36,8 @@ const AuthServiceRequest = async ({client, pathParts, queryParams, body}) => {
 };
 
 /**
- * Register a new passkey for the given account and derive a stable PRF
- * secret from it. The caller is responsible for using that secret as the
- * password when re-encrypting the account's private key (see
- * AccountStore.RegisterPasskey) - this function only handles the WebAuthn
- * ceremony itself, nothing about wallets or key storage.
+ * Register a new passkey for the given account and derive a stable PRF secret from it.
+ * The caller is responsible for using that secret as the password when re-encrypting the account's private key.
  *
  * @namedParams
  * @param {Object} client - An ElvClient instance
@@ -73,10 +67,7 @@ export async function RegisterPasskey({client, username}) {
 }
 
 /**
- * Authenticate with a previously registered passkey and derive the same PRF
- * secret produced at registration time. The caller uses that secret as the
- * password to decrypt the account's private key (see
- * AccountStore.UnlockAccountWithPasskey).
+ * Authenticate with a previously registered passkey and derive the same PRF secret produced at registration time.
  *
  * @namedParams
  * @param {Object} client - An ElvClient instance

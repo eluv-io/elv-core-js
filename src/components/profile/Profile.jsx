@@ -248,7 +248,8 @@ const PasskeySection = observer(() => {
         {
           hasPasskey ?
             "A passkey is registered for this account - you can use it to sign in instead of your password." :
-            "Register a passkey (fingerprint, Face ID, etc.) to sign in without typing your password. Your password will still work as a fallback."
+            "Register a passkey (fingerprint, Face ID, etc.) to sign in without typing your password. "+
+            "Your password will still work as a fallback."
         }
       </Text>
       <ButtonWithLoader
