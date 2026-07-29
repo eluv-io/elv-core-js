@@ -410,6 +410,19 @@ class AccountStore {
     this.SaveAccounts();
   });
 
+  RemovePasskey({address}) {
+    const client = this.rootStore.client;
+    address = client.utils.FormatAddress(address);
+
+    const account = this.accounts[address];
+    if(!account) { throw Error(`Unknown account: ${address}`); }
+
+    account.passkeyCredentialId = undefined;
+    account.encryptedPrivateKeyPasskey = undefined;
+
+    this.SaveAccounts();
+  }
+
   UnlockAccountWithPasskey = flow(function * ({address}) {
     const client = this.rootStore.client;
     address = client.utils.FormatAddress(address);

@@ -19,6 +19,7 @@ import {CreateModuleClassMatcher} from "../../utils/Utils";
 import {Navigate} from "react-router";
 import OryForm from "./OryForm";
 import {browserSupportsWebAuthn} from "@simplewebauthn/browser";
+import {FormatWebAuthnError} from "../../utils/Passkey";
 
 import EluvioLogo from "../../static/images/Main_Logo_Light";
 import {Link, useNavigate} from "react-router-dom";
@@ -71,10 +72,25 @@ const LoginGatePasswordForm = observer(({Close}) => {
       Close?.(true);
     } catch (error) {
       accountsStore.Log(error, true);
-      setError(error.toString());
+      setError(FormatWebAuthnError(error));
       setSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    if(!hasPasskey) { return; }
+
+    let cancelled = false;
+    const timeout = setTimeout(() => {
+      if(!cancelled) { SubmitWithPasskey(); }
+    }, 250);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeout);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <form onSubmit={event => event.preventDefault()}>

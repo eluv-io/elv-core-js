@@ -98,3 +98,8 @@ export async function LoginWithPasskey({credentialId}) {
 
   return {prfSecret};
 }
+
+// strip "See: <spec url>" from err msg
+export function FormatWebAuthnError(error) {
+  return (error?.toString() || "").replace(/\s*See:\s*https?:\/\/\S+\s*$/i, "");
+}

@@ -8,9 +8,11 @@ import {ButtonWithLoader, CopyButton, DefaultProfileImage, ImageIcon} from "../M
 
 
 import {Button, Group, Loader, Paper, Text, TextInput, Title, UnstyledButton} from "@mantine/core";
+import {modals} from "@mantine/modals";
 import {useNavigate} from "react-router-dom";
 import UrlJoin from "url-join";
 import {Tabs} from "@mantine/core";
+import {FormatWebAuthnError} from "../../utils/Passkey";
 
 import EditIcon from "../../static/icons/edit";
 import CheckIcon from "../../static/icons/Check";
@@ -236,10 +238,34 @@ const PasskeySection = observer(() => {
       await accountsStore.RegisterPasskey({address: accountsStore.currentAccountAddress});
     } catch (error) {
       accountsStore.Log(error, true);
-      setError(error.toString());
+      setError(FormatWebAuthnError(error));
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const Remove = () => {
+    modals.openConfirmModal({
+      title: "Remove Passkey",
+      children: <Text my="lg" ta="center">
+        Are you sure you want to remove your passkey? You will need to use your password to sign in.</Text>,
+      onConfirm: async () => {
+        setError("");
+        setSubmitting(true);
+
+        try {
+          await accountsStore.RemovePasskey({address: accountsStore.currentAccountAddress});
+        } catch (error) {
+          accountsStore.Log(error, true);
+          setError(error.toString());
+        } finally {
+          setSubmitting(false);
+        }
+      },
+      labels: {confirm: "Confirm", cancel: "Cancel"},
+      centered: true,
+      withCloseButton: false
+    });
   };
 
   return (
@@ -253,14 +279,28 @@ const PasskeySection = observer(() => {
             "Your password will still work as a fallback."
         }
       </Text>
-      <ButtonWithLoader
-        variant="outline"
-        w={200}
-        loading={submitting}
-        onClick={Submit}
-      >
-        { hasPasskey ? "Replace Passkey" : "Register Passkey" }
-      </ButtonWithLoader>
+      <Group justify="center">
+        <ButtonWithLoader
+          variant="outline"
+          w={200}
+          loading={submitting}
+          onClick={Submit}
+        >
+          { hasPasskey ? "Replace Passkey" : "Register Passkey" }
+        </ButtonWithLoader>
+        {
+          !hasPasskey ? null :
+            <ButtonWithLoader
+              variant="outline"
+              color="red"
+              w={200}
+              loading={submitting}
+              onClick={Remove}
+            >
+              Remove Passkey
+            </ButtonWithLoader>
+        }
+      </Group>
       {
         !error ? null :
           <Text mt="sm" fz={12} fw={500} className={S("error")}>
