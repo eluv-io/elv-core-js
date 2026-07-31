@@ -83,7 +83,7 @@ const LoginGatePasswordForm = observer(({Close}) => {
     let cancelled = false;
     const timeout = setTimeout(() => {
       if(!cancelled) { SubmitWithPasskey(); }
-    }, 250);
+    }, 75);
 
     return () => {
       cancelled = true;
