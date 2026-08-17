@@ -18,6 +18,8 @@ import React, {useEffect, useRef, useState} from "react";
 import {CreateModuleClassMatcher} from "../../utils/Utils";
 import {Navigate} from "react-router";
 import OryForm from "./OryForm";
+import {browserSupportsWebAuthn} from "@simplewebauthn/browser";
+import {FormatWebAuthnError} from "../../utils/Passkey";
 
 import EluvioLogo from "../../static/images/Main_Logo_Light";
 import {Link, useNavigate} from "react-router-dom";
@@ -38,6 +40,8 @@ const LoginGatePasswordForm = observer(({Close}) => {
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  const hasPasskey = browserSupportsWebAuthn() && !!accountsStore.currentAccount?.encryptedPrivateKeyPasskey;
+
   const Submit = async () => {
     setError(undefined);
     setSubmitting(true);
@@ -55,6 +59,38 @@ const LoginGatePasswordForm = observer(({Close}) => {
       setSubmitting(false);
     }
   };
+
+  const SubmitWithPasskey = async () => {
+    setError(undefined);
+    setSubmitting(true);
+
+    try {
+      await accountsStore.UnlockAccountWithPasskey({
+        address: accountsStore.currentAccountAddress
+      });
+
+      Close?.(true);
+    } catch (error) {
+      accountsStore.Log(error, true);
+      setError(FormatWebAuthnError(error));
+      setSubmitting(false);
+    }
+  };
+
+  useEffect(() => {
+    if(!hasPasskey) { return; }
+
+    let cancelled = false;
+    const timeout = setTimeout(() => {
+      if(!cancelled) { SubmitWithPasskey(); }
+    }, 75);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeout);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <form onSubmit={event => event.preventDefault()}>
@@ -111,6 +147,25 @@ const LoginGatePasswordForm = observer(({Close}) => {
         >
           Submit
         </Button>
+        {
+          !hasPasskey ? null :
+            <Button
+              fz="sm"
+              variant="outline"
+              opacity={submitting ? 0.5 : 1}
+              styles={{
+                root: {
+                  transition: "opacity 0.25s ease"
+                }
+              }}
+              type="button"
+              w="100%"
+              onClick={SubmitWithPasskey}
+              className={S("button")}
+            >
+              Use Passkey
+            </Button>
+        }
         {
           !accountsStore.hasAccount ? null :
             <Link to="/accounts" onClick={() => Close?.()} className={S("button-link", "button-link--secondary")}>

@@ -23,6 +23,7 @@
     "@mantine/hooks": "^7.13.4",
     "@mantine/modals": "^7.13.4",
     "@ory/client": "1.22.37",
+    "@simplewebauthn/browser": "^13.3.0",
     "buffer": "^5.6.0",
     "mobx": "^6.10.2",
     "mobx-react": "^9.0.1",
@@ -77,5 +78,8 @@
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.1",
     "yaml-loader": "^0.8.0"
+  },
+  "overrides": {
+    "fsevents": "^2.3.2"
   }
 }
