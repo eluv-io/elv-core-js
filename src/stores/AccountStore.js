@@ -3,6 +3,7 @@ import UrlJoin from "url-join";
 import {DownloadFromUrl} from "../utils/Utils";
 import {Utils} from "@eluvio/elv-client-js";
 import {v4 as UUID, parse as ParseUUID} from "uuid";
+import {RegisterPasskey as RegisterPasskeyCredential, LoginWithPasskey as AuthenticateWithPasskey} from "../utils/Passkey";
 import {accountsStore, rootStore} from "./index";
 
 class AccountStore {
@@ -378,6 +379,71 @@ class AccountStore {
     yield this.SetCurrentAccount({signer: this.accounts[address].signer});
 
     sessionStorage.setItem(`cr-${address}`, Utils.B58(password));
+  });
+
+  // Registers a new passkey against an already-unlocked "key" account and re-encrypts its private key under the
+  // resulting PRF secret, so it can later be unlocked via UnlockAccountWithPasskey without a typed password.
+  // The original password-encrypted key is left untouched.
+  RegisterPasskey = flow(function * ({address}) {
+    const client = this.rootStore.client;
+    address = client.utils.FormatAddress(address);
+
+    const account = this.accounts[address];
+    if(!account) { throw Error(`Unknown account: ${address}`); }
+    if(!account.signer) { throw Error("Account must be unlocked before registering a passkey"); }
+
+    const {credentialId, prfSecret} = yield RegisterPasskeyCredential({
+      walletAddress: address,
+      existingCredentialId: account.passkeyCredentialId
+    });
+
+    const wallet = client.GenerateWallet();
+    const encryptedPrivateKeyPasskey = yield wallet.GenerateEncryptedPrivateKey({
+      signer: account.signer,
+      password: prfSecret,
+      options: {scrypt: {N: 16384}}
+    });
+
+    account.passkeyCredentialId = credentialId;
+    account.encryptedPrivateKeyPasskey = encryptedPrivateKeyPasskey;
+
+    this.SaveAccounts();
+  });
+
+  RemovePasskey({address}) {
+    const client = this.rootStore.client;
+    address = client.utils.FormatAddress(address);
+
+    const account = this.accounts[address];
+    if(!account) { throw Error(`Unknown account: ${address}`); }
+
+    account.passkeyCredentialId = undefined;
+    account.encryptedPrivateKeyPasskey = undefined;
+
+    this.SaveAccounts();
+  }
+
+  UnlockAccountWithPasskey = flow(function * ({address}) {
+    const client = this.rootStore.client;
+    address = client.utils.FormatAddress(address);
+
+    const account = this.accounts[address];
+    if(!account) { throw Error(`Unknown account: ${address}`); }
+    if(!account.encryptedPrivateKeyPasskey) { throw Error(`No passkey registered for account: ${address}`); }
+
+    if(!account.signer) {
+      const {prfSecret} = yield AuthenticateWithPasskey({credentialId: account.passkeyCredentialId});
+
+      const wallet = client.GenerateWallet();
+      account.signer = yield wallet.AddAccountFromEncryptedPK({
+        encryptedPrivateKey: account.encryptedPrivateKeyPasskey,
+        password: prfSecret
+      });
+    }
+
+    this.rootStore.InitializeClient(account.signer);
+
+    yield this.SetCurrentAccount({signer: account.signer});
   });
 
   SendFunds = flow(function * ({recipient, ether}) {
@@ -802,6 +868,8 @@ class AccountStore {
         imageUrl: account.imageUrl,
         address: account.address,
         encryptedPrivateKey: account.encryptedPrivateKey,
+        passkeyCredentialId: account.passkeyCredentialId,
+        encryptedPrivateKeyPasskey: account.encryptedPrivateKeyPasskey,
         encodedEncryptedPrivateKey: account.encodedEncryptedPrivateKey,
         tenantContractId: account.tenantContractId,
         tenantName: account.tenantName || this.rootStore.tenantStore.tenantMetadata[account.tenantContractId]?.public?.name || "",
