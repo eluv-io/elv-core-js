@@ -26,7 +26,7 @@
   }
 
   &__tenant-id {
-    color: var(--text-secondary);
+    color: var(--ink-2);
   }
 }
 
@@ -60,7 +60,8 @@
   }
 
   &__table-container {
-    border-radius: 5px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
     max-height: calc(100vh - 420px);
     overflow: hidden auto;
     padding: 0;
@@ -78,14 +79,29 @@
 
     th,
     td {
-      padding: 10px;
+      padding: 10px 12px;
       vertical-align: middle;
     }
 
+    tbody {
+      tr {
+        transition: background-color var(--t-fast) ease;
+
+        &:hover {
+          background-color: var(--bg-subtle);
+        }
+      }
+    }
+
+    // Was `background: #fff` with `box-shadow: 0 0 2px rgb(0 0 0 / 0.5)` —
+    // a very tight, very dark halo on all four sides.
     thead {
-      background: #fff;
+      background: var(--bg-subtle);
       border: 0;
-      box-shadow: 0 0 2px rgb(0 0 0 / 0.5);
+      box-shadow: 0 1px 0 var(--line);
+      color: var(--ink-2);
+      font-size: var(--fs-meta);
+      letter-spacing: 0.02em;
       position: sticky;
       top: 0;
     }
@@ -93,16 +109,16 @@
 }
 
 .tenant-permissions {
-  border-radius: 5px;
+  border-radius: var(--r-card);
   max-height: calc(100vh - 420px);
   overflow-y: auto;
   padding: 0;
   position: relative;
 
   thead {
-    background-color: var(--background-primary);
+    background-color: var(--bg-subtle);
     border: 0;
-    box-shadow: 0 0 2px rgb(0 0 0 / 0.5);
+    box-shadow: 0 1px 0 var(--line);
     height: 50px;
     position: sticky;
     top: 0;
@@ -116,7 +132,7 @@
 
   &__row {
     &--odd {
-      background-color: var(--background-secondary);
+      background-color: var(--bg-subtle);
     }
   }
 }
@@ -142,7 +158,7 @@
   }
 
   &__add {
-    border-radius: 100%;
+    border-radius: var(--r-pill);
     height: 40px;
     padding: 8px;
     transition: background-color 0.1s ease;
@@ -150,7 +166,7 @@
 
     &:hover {
       &:not(&:disabled) {
-        background-color: var(--background-tertiary);
+        background-color: var(--accent-soft);
       }
     }
   }
@@ -158,12 +174,13 @@
 
 .invite {
   align-items: center;
-  border: 1px solid var(--border);
-  border-radius: 5px;
+  background: var(--bg-surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
   display: flex;
   gap: 20px;
   min-height: 100px;
-  padding: 15px 35px 15px 20px;
+  padding: 16px 36px 16px 20px;
   position: relative;
   width: 500px;
 
@@ -181,7 +198,7 @@
   }
 
   &__name {
-    font-size: 16px;
+    font-size: var(--fs-body);
     font-weight: 600;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -189,8 +206,8 @@
   }
 
   &__detail {
-    color: var(--text-secondary);
-    font-size: 12px;
+    color: var(--ink-2);
+    font-size: var(--fs-meta);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -212,15 +229,24 @@
     width: 15px;
   }
 
+  // Same rule as .remove-account: quietly present rather than invisible
+  // until parent hover, so keyboard users can reach it.
   &__delete {
+    border-radius: var(--r-control);
     display: flex;
     height: 15px;
-    opacity: 0;
+    opacity: 0.42;
     position: absolute;
-    right: 5px;
-    top: 5px;
-    transition: opacity 0.25s ease;
+    right: 8px;
+    top: 8px;
+    transition: opacity var(--t-mid) ease, color var(--t-fast) ease;
     width: 15px;
+
+    &:focus-visible,
+    &:hover {
+      color: var(--error);
+      opacity: 1;
+    }
   }
 
   &__actions {
@@ -236,7 +262,7 @@
 
   &__address {
     align-items: center;
-    color: var(--text-secondary);
+    color: var(--ink-2);
     display: flex;
     gap: 5px;
     margin-top: 5px;
@@ -266,10 +292,10 @@
   }
 
   &__url {
-    background-color: var(--background-secondary);
-    border-bottom: 10px;
-    border-radius: 5px;
-    color: var(--text-secondary);
+    background-color: var(--bg-subtle);
+    border-radius: var(--r-card);
+    color: var(--ink-2);
+    font-family: var(--font-data);
     font-weight: 600;
     padding: 10px 20px;
     word-break: break-all;

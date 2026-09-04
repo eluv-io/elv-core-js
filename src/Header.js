@@ -15,6 +15,7 @@ import LogoDemo from "./static/images/LogoDemo.png";
 import LogoTest from "./static/images/LogoTest.png";
 import AccountMenu from "./components/account/AccountMenu";
 import AppsIcon from "./static/icons/apps.svg";
+import GenericAppLogo from "./static/icons/App.svg";
 import ExternalLinkIcon from "./static/icons/external-link";
 import EvieLogo from "./static/images/app_icons/EVIE - dark mode.png";
 
@@ -32,7 +33,15 @@ const AppsMenuButton = observer(({name, logo, setShowMenu}) => {
       }}
     >
       <Group align="center" gap={10}>
-        <ImageIcon icon={logo} className={S("apps-menu__logo")}/>
+        {/*
+          <ImageIcon icon={logo} className={S("apps-menu__logo")}/>
+
+          Without an alternateIcon, ImageIcon's error path resolves to
+          undefined and returns null, so an icon that fails to load leaves a
+          hole in the menu rather than a placeholder. Apps.js already passes
+          the generic logo for the same reason.
+        */}
+        <ImageIcon icon={logo || GenericAppLogo} alternateIcon={GenericAppLogo} className={S("apps-menu__logo")}/>
         <span>{name}</span>
       </Group>
       <a
@@ -133,10 +142,10 @@ const Header = observer(() => {
   }
 
   return (
-    <header className={S("header", rootStore.darkMode ? "header--dark" : "")}>
+    <header className={S("header", rootStore.activeAppPrefersDarkChrome ? "header--dark" : "")}>
       <div className={S("header__logo-container")}>
         <Link to="/apps" className={S("header__logo")}>
-          <img src={logo} alt="Eluvio"/>
+          <img src={logo} alt="Eluvio" className={S("logo-img")}/>
         </Link>
         <AppDisplay/>
         <AppsMenu/>

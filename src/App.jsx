@@ -50,7 +50,7 @@ const App = observer(() => {
   if(!rootStore.client || !accountsStore.accountsLoaded || accountsStore.authenticating) {
     return (
       <Group h="100vh" align="center" justify="center">
-        <Loader color="gray.6" />
+        <Loader />
       </Group>
     );
   }

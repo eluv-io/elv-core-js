@@ -1,9 +1,10 @@
 .header-profile {
+  // border-radius was 5px.
   &__content {
     align-items: center;
-    background-color: var(--background-primary);
-    border: 1px solid var(--border);
-    border-radius: 5px;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-control);
     display: flex;
     gap: 10px;
     height: 40px;
@@ -12,11 +13,11 @@
     max-width: 500px;
     padding: 5px 10px;
     text-align: left;
-    transition: background-color 0.1s ease, border 0.1s ease, opacity 0.1s ease;
+    transition: background-color var(--t-fast) ease, border-color var(--t-fast) ease, opacity var(--t-fast) ease;
     user-select: none;
 
     * {
-      color: var(--text-secondary);
+      color: var(--ink-2);
     }
 
     &--locked {
@@ -31,23 +32,23 @@
     }
 
     &--dark {
-      background-color: var(--background--dark);
-      border: 1px solid var(--border--dark);
+      background-color: var(--chrome-bg);
+      border: 1px solid var(--chrome-line);
 
       * {
-        color: white;
+        color: var(--chrome-ink);
       }
 
       .header-profile__image {
         * {
-          background-color: var(--background--dark);
+          background-color: var(--chrome-bg);
         }
       }
     }
   }
 
   &--no-account {
-    font-size: 14px;
+    font-size: var(--fs-caption);
     font-weight: 500;
     justify-content: flex-end;
     padding-right: 20px;
@@ -73,7 +74,7 @@
   &__account {
     display: flex;
     flex-direction: column;
-    font-size: 12px;
+    font-size: var(--fs-meta);
     font-weight: 500;
     height: 100%;
     justify-content: center;
@@ -82,18 +83,20 @@
   }
 
   &__name {
-    font-size: 12px;
+    font-size: var(--fs-meta);
     font-weight: 500;
     height: 20px;
   }
 
   &__address {
-    font-size: 12px;
+    font-size: var(--fs-meta);
     max-width: 150px;
   }
 
+  // Prose, so it takes the 12px floor rather than staying at 10px.
   &__tenant {
-    font-size: 10px;
+    // font-size: 10px;
+    font-size: var(--fs-micro);
     font-weight: 600;
     max-width: 150px;
   }
@@ -103,7 +106,7 @@
     width: 20px;
 
     * {
-      color: var(--text-tertiary);
+      color: var(--ink-3);
     }
   }
 }
@@ -113,18 +116,20 @@
   padding: 5px 10px 10px;
 
   &__dropdown {
-    border-radius: 5px;
-    box-shadow: 0 5px 15px rgb(0 0 0 / 0.1);
+    // border-radius: 5px;
+    // box-shadow: 0 5px 15px rgb(0 0 0 / 0.1);
+    border-radius: var(--r-container);
+    box-shadow: var(--shadow-2);
   }
 
   &__header {
-    color: var(--text-secondary);
-    font-size: 14px;
+    color: var(--ink-2);
+    font-size: var(--fs-caption);
     margin-bottom: 10px;
   }
 
   &__separator {
-    background-color: var(--border);
+    background-color: var(--line);
     height: 1px;
     margin: 20px 10px;
   }
@@ -136,20 +141,20 @@
 
   &__action {
     align-items: center;
-    border-radius: 10px;
+    border-radius: var(--r-card);
     display: flex;
     font-weight: 500;
     gap: 15px;
     padding: 10px;
-    transition: background-color 0.25s ease;
+    transition: background-color var(--t-mid) ease;
     width: 100%;
 
     &:hover {
-      background-color: var(--background-secondary);
+      background-color: var(--bg-subtle);
     }
 
     svg {
-      color: var(--text-secondary);
+      color: var(--ink-2);
       display: flex;
       gap: 20px;
       height: 25px;
@@ -180,8 +185,8 @@
 .account-selector {
   &__current-account {
     align-items: center;
-    border: 1px solid var(--border);
-    border-radius: 5px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-control);
     display: flex;
     height: 50px;
     padding: 10px 15px;
@@ -194,9 +199,9 @@
   }
 
   &__dropdown {
-    background-color: var(--background-primary);
-    border-radius: 5px;
-    box-shadow: 0 5px 15px rgb(0 0 0 / 0.1);
+    background-color: var(--bg-surface);
+    border-radius: var(--r-container);
+    box-shadow: var(--shadow-2);
     display: flex;
     max-height: 400px;
     overflow: hidden auto;
@@ -204,7 +209,7 @@
     width: 500px;
 
     * {
-      transition: background-color 0.25s ease;
+      transition: background-color var(--t-mid) ease;
     }
   }
 
@@ -231,7 +236,7 @@
   &__account {
     display: flex;
     flex-direction: column;
-    font-size: 12px;
+    font-size: var(--fs-meta);
     height: max-content;
     justify-content: center;
     line-height: 16px;
@@ -239,16 +244,17 @@
   }
 
   &__name {
-    font-size: 14px;
+    font-size: var(--fs-caption);
   }
 
   &__address {
-    font-size: 12px;
+    font-size: var(--fs-meta);
   }
 
   &__tenant {
-    color: var(--text-secondary);
-    font-size: 11px;
+    // font-size: 11px;
+    color: var(--ink-2);
+    font-size: var(--fs-micro);
     font-weight: 600;
   }
 
@@ -259,7 +265,7 @@
     width: 20px;
 
     * {
-      color: var(--text-tertiary);
+      color: var(--ink-3);
     }
   }
 }

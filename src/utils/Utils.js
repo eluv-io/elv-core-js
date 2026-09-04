@@ -15,6 +15,14 @@ export const CreateModuleClassMatcher = (...modules) => {
   );
 };
 
+/**
+ * Truncate a blockchain address at the middle instead of the tail.
+ */
+export const TruncateAddress = (address="", head=10, tail=8) =>
+  address.length <= head + tail + 1 ?
+    address :
+    `${address.slice(0, head)}…${address.slice(-tail)}`;
+
 export const DownloadFromUrl = (url, filename, options={}) => {
   let element = document.createElement("a");
   element.href = url;

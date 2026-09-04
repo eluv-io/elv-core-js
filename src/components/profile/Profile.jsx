@@ -35,7 +35,7 @@ const ProfileImage = observer(() => {
           {
             loading ?
               <div className={S("profile-image__loader")}>
-                <Loader color="gray.2" size="xl" />
+                <Loader size="xl" />
               </div> :
               <ImageIcon
                 icon={accountsStore.currentAccount.imageUrl}
@@ -78,7 +78,7 @@ const ProfileName = observer(() => {
     return (
       <div>
         <Group justify="center" align="center" mt={5} gap={10}>
-          <Text mt={5} fz={18} fw={600}>
+          <Text mt={5} fz={20} fw={600}>
             {
               accountsStore.currentAccount.name ||
               accountsStore.currentAccount.email ||
@@ -95,7 +95,7 @@ const ProfileName = observer(() => {
         </Group>
         {
           !accountsStore.currentAccount.tenantContractId ? null :
-            <Text fz="xs" ta="center" fw={500} pr={20} color="gray.7">{accountsStore.currentAccount.tenantContractId}</Text>
+            <Text fz="xs" ta="center" fw={500} pr={20} className={S("data", "dimmed")}>{accountsStore.currentAccount.tenantContractId}</Text>
         }
       </div>
     );
@@ -198,7 +198,7 @@ const PrivateKeyDetails = observer(() => {
                 <Text fw={600} w={70} fz={12}>
                   Private Key:
                 </Text>
-                <Text fz={10}>
+                <Text className={S("data-xs")}>
                   { rootStore.client.signer.privateKey }
                 </Text>
                 <CopyButton value={rootStore.client.signer.privateKey} className={S("icon-button", "key__copy")} />
@@ -207,7 +207,7 @@ const PrivateKeyDetails = observer(() => {
                 <Text w={70} fw={600} fz={12}>
                   Public Key:
                 </Text>
-                <Text fz={10} className={S("ellipsis")} maw={475}>
+                <Text className={S("data-xs", "ellipsis")} maw={475}>
                   {`kupk${publicKey}`}
                 </Text>
                 <CopyButton value={`kupk${publicKey}`} className={S("icon-button", "key__copy")} />
@@ -270,7 +270,7 @@ const PasskeySection = observer(() => {
 
   return (
     <div className={S("profile__content-block")}>
-      <Text mb="sm" fz={20} fw={500}>Passkey</Text>
+      <Text mb="sm" fz={20} fw={600}>Passkey</Text>
       <Text mb="sm" fz={12}>
         {
           hasPasskey ?
@@ -292,7 +292,7 @@ const PasskeySection = observer(() => {
           !hasPasskey ? null :
             <ButtonWithLoader
               variant="outline"
-              color="red"
+              color="danger"
               w={200}
               loading={submitting}
               onClick={Remove}
@@ -347,7 +347,7 @@ const TenantDetails = observer(() => {
   return (
     <div className={S("profile__content-block", "tenant")}>
       <div className={S("tenant__content")}>
-        <Text mb="md" fz={20} fw={500}>Tenant Information</Text>
+        <Text mb="md" fz={20} fw={600}>Tenant Information</Text>
         <Group mb="sm" gap={10}>
           <TextInput fz={12} placeholder="Tenant Contract ID" value={tenantContractId} onChange={event => setTenantContractId(event.target.value)} className={S("tenant__input", "tenant__input--contract")} />
           <ButtonWithLoader
@@ -386,8 +386,8 @@ const AccountMetadata = observer(() => {
 
   return (
     <div className={S("profile__content-block", "profile-metadata")}>
-      <Text mb="md" fz={20} fw={500}>Profile Information</Text>
-      <Button w={200} variant="outline" color="gray.6" onClick={() => setShowMetadata(!showMetadata)}>
+      <Text mb="md" fz={20} fw={600}>Profile Information</Text>
+      <Button w={200} variant="default" onClick={() => setShowMetadata(!showMetadata)}>
         { showMetadata ? "Hide Profile Metadata" : "Show Profile Metadata" }
       </Button>
       {
@@ -410,9 +410,9 @@ const AdvancedDetails = observer(() => {
   return (
     <>
       <div className={S("profile__content-block")}>
-        <Text fz={20} fw={500}>Total Balance</Text>
+        <Text fz={20} fw={600}>Total Balance</Text>
         <Group justify="center" gap={3} mt={5}>
-          <ImageIcon icon={FundsIcon} className={S("icon")} />
+          <ImageIcon icon={FundsIcon} className={S("icon", "icon--raster")} />
           <Text fz={20}>{accountsStore.currentAccount.balance || "0.0"}</Text>
         </Group>
         <TenantDetails />
@@ -444,9 +444,9 @@ const Profile = observer(() => {
         </div>
 
         <div className={S("profile__content-block")}>
-          <Text mt="md" mb="sm" fz={20} fw={500}>Eluvio Content Blockchain Address</Text>
+          <Text mt="md" mb="sm" fz={20} fw={600}>Eluvio Content Blockchain Address</Text>
           <Group gap="md" justify="center">
-            <Text fw={500} fz={16} className={S("profile__address")}>
+            <Text fw={500} fz={16} className={S("profile__address", "data")}>
               {accountsStore.currentAccount.address}
             </Text>
             <CopyButton
@@ -455,14 +455,15 @@ const Profile = observer(() => {
               className={S("icon-button")}
             />
           </Group>
-          <Text fz={10} fw={500} mt="sm" className={S("profile__funds-warning")}>
+          {/* Size and weight now come from .profile__funds-warning — prose floors at 12px. */}
+          <Text mt="sm" className={S("profile__funds-warning")}>
             Do not send funds to this address. This is an Eluvio Content Blockchain Address and is not a payment
             address.
           </Text>
         </div>
         <div className={S("profile__content-block")}>
-          <Text fw={500} fz={20}>Signed in as</Text>
-          <Text mt={5} fz={18}>
+          <Text fw={600} fz={20}>Signed in as</Text>
+          <Text mt={5} fz={16}>
             {
               accountsStore.currentAccount.email ||
               accountsStore.currentAccount.name ||

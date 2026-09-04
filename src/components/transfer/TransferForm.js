@@ -74,7 +74,7 @@ const TransferForm = observer(() => {
         children: (
           <Group gap={0} my="md">
             <Text fz={14} pr={5}>Are you sure you want to send</Text>
-            <ImageIcon icon={FundsIcon} className={S("icon", "icon--small", "icon--faded")} />
+            <ImageIcon icon={FundsIcon} className={S("icon", "icon--small", "icon--faded", "icon--raster")} />
             <Text fz={14} pr={5}>{amount} to</Text>
             <Text fz={14} fw={600}>{recipientName || recipientAddress || customRecipientAddress}?</Text>
           </Group>
@@ -119,7 +119,7 @@ const TransferForm = observer(() => {
             Transfer Funds
           </div>
           <div className="form-content">
-            { !error ? null : <Text mb="md" color="red" ta="center">Something went wrong, please try again</Text> }
+            { !error ? null : <Text mb="md" className={S("error")} ta="center">Something went wrong, please try again</Text> }
             <Select
               mb="md"
               searchable
@@ -148,14 +148,14 @@ const TransferForm = observer(() => {
                 <Group gap={0} justify="space-between">
                   <Group gap={0}>
                     <Text fz={12} fw={500} mr={5}>Available Balance:</Text>
-                    <ImageIcon icon={FundsIcon} className={S("icon", "icon--small", "icon--faded")} />
+                    <ImageIcon icon={FundsIcon} className={S("icon", "icon--small", "icon--faded", "icon--raster")} />
                     <Text fz={12} fw={600}>{accountsStore.currentAccount.balance || "0.0"}</Text>
                   </Group>
                   {
                     typeof recipientBalance === "undefined" ? null :
                       <Group gap={0} w="max-content">
                         <Text fz={12} fw={500} mr={5}>Recipient Balance:</Text>
-                        <ImageIcon icon={FundsIcon} className={S("icon", "icon--small", "icon--faded")} />
+                        <ImageIcon icon={FundsIcon} className={S("icon", "icon--small", "icon--faded", "icon--raster")} />
                         <Text fz={12} fw={600}>{recipientBalance || "0.0"}</Text>
                       </Group>
                   }

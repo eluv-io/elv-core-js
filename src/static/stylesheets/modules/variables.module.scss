@@ -1,28 +1,227 @@
+/**
+ * Design tokens.
+ *
+ * Every colour, radius, shadow and type size in the app resolves through this
+ * file.
+ *
+ * Light values live on :root. The dark half is stamped by Mantine on
+ * <html data-mantine-color-scheme="dark">, which follows the viewer's OS
+ * setting via defaultColorScheme="auto" in index.js.
+ *
+ * Adding a colour to a component stylesheet means it will be wrong in one of
+ * the two schemes. Add it here instead, in both blocks.
+ */
+
+// ---------------------------------------------------------------------------
+// PREVIOUS TOKEN SET — kept for reference during the restyle.
+// ---------------------------------------------------------------
+// :root {
+//   --background-primary: #fff;
+//   --background-secondary: #f8f9fd;
+//   --background-tertiary: #eee;
+//   --background-modal: #808080;
+//   --text-primary: #222;
+//   --text-secondary: #6b6b6b;
+//   --text-tertiary: #aaa;
+//   --accent: #228be6;
+//   --error: #a00;
+//   --border: #ced4da;
+//   --background--dark: #131313;
+//   --background--dark-secondary: #232323;
+//   --text--dark: #DADADA;
+//   --border--dark: #000;
+//   --header-text--dark: #4b494e;
+//   --header-text--light: #bdbdbd;
+//   @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+// }
+// ---------------------------------------------------------------
+// Rename map applied across every stylesheet:
+//   --background-primary          -> --bg-surface
+//   --background-secondary        -> --bg-subtle
+//   --background-tertiary         -> --bg-muted
+//   --background-modal            -> --bg-overlay
+//   --text-primary                -> --ink-1
+//   --text-secondary              -> --ink-2
+//   --text-tertiary               -> --ink-3
+//   --border                      -> --line
+//   --background--dark            -> --chrome-bg
+//   --background--dark-secondary  -> --chrome-bg-2
+//   --text--dark                  -> --chrome-ink
+//   --border--dark                -> --chrome-line
+//   --header-text--light          -> --chrome-title
+//   --header-text--dark           -> --chrome-title-muted
+// ---------------------------------------------------------------
+
 :root {
-  --background-primary: #fff;
-  --background-secondary: #f8f9fd;
-  --background-tertiary: #eee;
-  --background-modal: #808080;
-  --text-primary: #222;
-  --text-secondary: #6b6b6b;
-  --text-tertiary: #aaa;
-  --accent: #228be6;
-  --error: #a00;
-  --border: #ced4da;
-  --background--dark: #131313;
-  --background--dark-secondary: #232323;
-  --text--dark: #DADADA;
-  --border--dark: #000;
-  --header-text--dark: #4b494e;
-  --header-text--light: #bdbdbd;
+  /* Surfaces */
+  --bg-page: #fafafc;
+  --bg-surface: #fff;
+  --bg-subtle: #f3f4f8;
+  --bg-muted: #eceef4;
+  --bg-overlay: rgb(22 24 31 / 0.42);
 
-  @keyframes fadein {
-    from {
-      opacity: 0;
-    }
+  /* Ink.
+     --ink-3 is 2.3:1 against --bg-page. It is for decorative marks, resting
+     icons, placeholders and disabled states — never for text. Text that needs
+     to recede uses --ink-2 (5.9:1). */
+  --ink-1: #16181f;
+  --ink-2: #5a6175;
+  --ink-3: #a2a8bc;
 
-    to {
-      opacity: 1;
-    }
+  /* Lines */
+  --line: #e4e7ef;
+  --line-soft: #edeff5;
+
+  /* Accent.
+     The previous accent (#228be6, Mantine's default blue) was 3.56:1 on white
+     and failed AA as link and active-nav text. This is 4.95:1. */
+  --accent: #6c5ce0;
+  --accent-hover: #5a4bc8;
+  --accent-soft: #f2f0fe;
+  --accent-line: #d9d4fa;
+  --on-accent: #fff;
+
+  /* Semantic. Distinct from the accent — status never borrows the brand hue. */
+  --error: #c6303b;
+  --error-soft: #fdf2f3;
+  --ok: #10897a;
+  --warn: #b4690e;
+
+  /* App-frame chrome.
+     Used when the header is matched to a dark embedded app on /apps/:app.
+     This is about the iframed app's own chrome and is unrelated to the
+     viewer's colour scheme — see rootStore.activeAppPrefersDarkChrome. */
+  --chrome-bg: #16181f;
+  --chrome-bg-2: #22252f;
+  --chrome-ink: #e6e8ef;
+  --chrome-line: #2c303c;
+  --chrome-title: #a2a8bc;
+  --chrome-title-muted: #6b7285;
+
+  /* Radii. Two plus a pill, replacing 5px / 10px / 25px / 100px / 100%. */
+  --r-control: 8px;
+  --r-card: 10px;
+  --r-container: 14px;
+  --r-pill: 999px;
+
+  /* Elevation. Three steps, all lit from directly above. */
+  --shadow-1: 0 1px 2px rgb(22 24 31 / 0.05), 0 4px 10px -3px rgb(22 24 31 / 0.06);
+  --shadow-2: 0 2px 4px rgb(22 24 31 / 0.04), 0 10px 22px -6px rgb(22 24 31 / 0.1);
+  --shadow-head: 0 1px 0 rgb(22 24 31 / 0.06), 0 2px 8px -2px rgb(22 24 31 / 0.06);
+
+  /* Type */
+  --font-ui: "Inter", "Helvetica Neue", helvetica, sans-serif;
+  --font-data: "JetBrains Mono", ui-monospace, sfmono-regular, menlo, monospace;
+  --fs-display: 32px;
+  --fs-title: 24px;
+  --fs-panel: 20px;
+  --fs-section: 20px;
+  --fs-body: 16px;
+  --fs-caption: 14px;
+  --fs-meta: 12px;
+
+  /* Microcopy.
+     Prose floors at 12px. Data (addresses, tokens, keys) holds 10px and
+     changes face to --font-data instead, where mono buys the legibility a
+     size bump would have. */
+  --fs-micro: 12px;
+  --fs-data-xs: 10px;
+  --lh-tight: 1.25;
+  --lh-body: 1.5;
+
+  /* Focus */
+  --focus-ring: 0 0 0 3px rgb(108 92 224 / 0.3);
+
+  /* Motion */
+  --t-fast: 0.14s;
+  --t-mid: 0.2s;
+  --t-slow: 0.28s;
+
+  /* Inverts the pure-black wordmarks on a dark ground; see the dark block.
+     --splash-filter / --splash-blend do the same job for the splash JPG. */
+  --raster-invert: none;
+  --splash-filter: none;
+  --splash-blend: normal;
+}
+
+/* Dark theme.
+   Not an inversion of the light set. The ground is tinted toward the accent
+   rather than neutral black, and the accent lifts two steps so it still
+   carries — #6c5ce0 on a dark ground is too dim to read as interactive.
+   Only tokens are redefined here; no component stylesheet changes. */
+:root[data-mantine-color-scheme="dark"] {
+  /* Surfaces */
+  --bg-page: #0f1118;
+  --bg-surface: #171a23;
+  --bg-subtle: #1e222e;
+  --bg-muted: #272c3b;
+  --bg-overlay: rgb(6 7 12 / 0.66);
+
+  /* Ink. Same rule as light: --ink-3 is for non-text only, though it clears
+     4.9:1 here and is the one token that is safer in dark than in light. */
+  --ink-1: #e9ebf3;
+  --ink-2: #a3aabe;
+  --ink-3: #7a8299;
+
+  /* Lines */
+  --line: #2a2f3d;
+  --line-soft: #222633;
+
+  /* Accent. 5.7:1 on --bg-page.
+     --on-accent flips to near-black: white on #8b7bff is only 3.3:1, which
+     fails for button labels. This is the one place the two themes genuinely
+     diverge rather than swapping values. */
+  --accent: #8b7bff;
+
+  /* Mantine derives filled-hover as primaryShade + 1, which is brand[5] in
+     dark. Matching that here keeps our own CSS and Mantine's components in
+     step; the alternative was overriding --button-hover per variant, which
+     breaks as soon as a button uses a non-brand colour. */
+  --accent-hover: #7e6de7;
+  --accent-soft: #211e38;
+  --accent-line: #3b3570;
+  --on-accent: #14111f;
+
+  /* Semantic, lifted for a dark ground */
+  --error: #f2707a;
+  --error-soft: #2b1a1e;
+  --ok: #3bc6af;
+  --warn: #e0a34a;
+
+  /* App-frame chrome. In dark the header is already dark, so the embedded-app
+     chrome collapses onto the normal surfaces and the --dark header variant
+     becomes a no-op rather than a second, conflicting palette. */
+  --chrome-bg: #0f1118;
+  --chrome-bg-2: #1e222e;
+  --chrome-ink: #e9ebf3;
+  --chrome-line: #2a2f3d;
+  --chrome-title: #a3aabe;
+  --chrome-title-muted: #7a8299;
+
+  /* Elevation. Shadows carry almost nothing on a dark ground, so these lean
+     harder on opacity and let --line do the separating. */
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 0.5), 0 4px 12px -3px rgb(0 0 0 / 0.45);
+  --shadow-2: 0 2px 6px rgb(0 0 0 / 0.5), 0 14px 30px -8px rgb(0 0 0 / 0.6);
+  --shadow-head: 0 1px 0 rgb(0 0 0 / 0.5), 0 2px 10px -2px rgb(0 0 0 / 0.5);
+
+  /* Focus */
+  --focus-ring: 0 0 0 3px rgb(139 123 255 / 0.36);
+  --splash-filter: invert(1) hue-rotate(180deg) brightness(1.75);
+  --splash-blend: screen;
+
+  /* Header wordmarks (Logo / LogoDemo / LogoTest / Token) are pure black with
+     no hue, so a straight inversion is exact — there is nothing for a hue
+     shift to act on. The mixed mark that used to sit here is now split into
+     ring + masked wordmark; see .eluvio-mark. */
+  --raster-invert: invert(1);
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
   }
 }

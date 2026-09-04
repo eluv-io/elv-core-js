@@ -1,8 +1,8 @@
 .footer {
-  background: var(--background-secondary);
+  background: var(--bg-subtle);
   bottom: 0;
-  color: var(--text-secondary);
-  font-size: 14px;
+  color: var(--ink-2);
+  font-size: var(--fs-caption);
   height: 100px;
   padding-top: 30px;
   position: absolute;
@@ -17,10 +17,10 @@
   margin: 0 auto;
 
   a {
-    transition: color 0.15s ease;
+    transition: color var(--t-fast) ease;
 
     &:hover {
-      color: var(--text-primary);
+      color: var(--ink-1);
     }
   }
 }

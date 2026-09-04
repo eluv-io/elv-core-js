@@ -12,31 +12,56 @@ body,
 }
 
 body {
-  color: #222;
+  background-color: var(--bg-page);
+  color: var(--ink-1);
+  font-family: var(--font-ui);
+  font-size: var(--fs-body);
   height: 100vh;
+  line-height: var(--lh-body);
+  scrollbar-color: var(--ink-3) var(--bg-subtle);
   scrollbar-gutter: stable both-edges;
+  scrollbar-width: thin;
+}
 
-  * {
-    font-family: Inter, "Helvetica Neue", helvetica, sans-serif;
-    scrollbar-color: #AAA #FAFAFA;
-    scrollbar-width: thin;
+// reset.scss applies `all: unset` to everything except <input>, so buttons,
+// textareas and selects already inherit the family. Inputs are the exception.
+input,
+select {
+  font-family: inherit;
+  font-size: inherit;
+}
 
-    ::-webkit-scrollbar {
-      opacity: 1;
-      width: 5px;
-    }
+// Data, not prose: auth tokens, keys, metadata. The .data / .data-xs class
+// equivalents live in shared.module.scss so S("data") resolves in components.
+code,
+kbd,
+pre,
+samp {
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+}
 
-    ::-webkit-scrollbar-track {
-      background: #eee;
-      opacity: 1;
-    }
+::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
 
-    ::-webkit-scrollbar-thumb {
-      background-color: #aaa;
-      border-radius: 100px;
-      opacity: 1;
-    }
-  }
+::-webkit-scrollbar-track {
+  background: var(--bg-subtle);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--ink-3);
+  border-radius: var(--r-pill);
+}
+
+// The app previously had exactly one :focus-visible rule, in
+// release-notes.module.scss. Mantine's UnstyledButton — used for the account
+// menu, the apps menu and the profile image control — strips the browser
+// default, so much of the header had no keyboard-visible focus at all.
+:focus-visible {
+  box-shadow: var(--focus-ring);
+  outline: none;
 }
 
 b {
@@ -74,9 +99,9 @@ b {
 }
 
 .form-container {
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgb(0 0 0 / 0.1);
+  border: 1px solid var(--line);
+  border-radius: var(--r-container);
+  box-shadow: var(--shadow-1);
   margin-top: 20px;
   overflow: hidden;
   width: 500px;
@@ -88,10 +113,10 @@ b {
 
 .form-header {
   align-items: center;
-  background-color: var(--background-secondary);
-  color: var(--text-secondary);
+  background-color: var(--bg-subtle);
+  color: var(--ink-2);
   display: flex;
-  font-size: 18px;
+  font-size: var(--fs-panel);
   font-weight: 600;
   height: 50px;
   justify-content: center;
@@ -124,8 +149,10 @@ b {
 
 .labelled-field {
   label {
+    // font-style: italic;
+    color: var(--ink-2);
     display: inline-block;
-    font-style: italic;
+    font-weight: 500;
     width: 200px;
   }
 }
@@ -141,9 +168,9 @@ b {
 }
 
 .icon-button {
-  color: var(--text-secondary);
+  color: var(--ink-2);
   height: 20px;
-  transition: opacity 0.25s ease;
+  transition: opacity var(--t-mid) ease;
   width: 20px;
 
   &:disabled {
@@ -157,14 +184,14 @@ b {
   position: relative;
 
   &__title {
-    font-size: 20px;
+    font-size: var(--fs-section);
     font-weight: 500;
     margin-bottom: 20px;
     padding-left: 10px;
   }
 
   &__nav {
-    border-right: 1px solid var(--background-tertiary);
+    border-right: 1px solid var(--line);
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -176,30 +203,32 @@ b {
 
   &__link {
     align-items: center;
-    border-radius: 5px;
-    color: var(--text-secondary);
+    border-radius: var(--r-control);
+    color: var(--ink-2);
     display: flex;
     gap: 15px;
     height: 40px;
     padding-left: 10px;
-    transition: color 0.1s ease, background-color 0.1s ease, font-weight 0.1s ease;
+    transition: color var(--t-fast) ease, background-color var(--t-fast) ease; // font-weight is not an animatable property
 
     * {
-      transition: color 0.1s ease, background-color 0.1s ease, font-weight 0.1s ease;
+      transition: color var(--t-fast) ease, background-color var(--t-fast) ease;
     }
 
-    &:hover,
+    &:hover {
+      background-color: var(--bg-subtle);
+    }
+
+    // Was --bg-subtle plus accent text, which read almost identically to
+    // hover. The accent tint makes the current page unambiguous.
     &.active {
-      background-color: var(--background-secondary);
+      background-color: var(--accent-soft);
+      color: var(--accent);
       font-weight: 500;
     }
 
-    &.active {
-      color: var(--accent);
-    }
-
     svg {
-      color: var(--text-secondary);
+      color: currentcolor;
       height: 20px;
       width: 20px;
     }

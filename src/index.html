@@ -8,7 +8,40 @@
   <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <script type="text/javascript" src="/configuration.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&family=Inter:wght@300;400;500;600;700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <!--
+    Previously:
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&family=Inter:wght@300;400;500;600;700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+
+    DM Sans and Montserrat were requested on every page load but not referenced.
+    Inter 300 was also unused.
+    JetBrains Mono is added for addresses, auth tokens,
+    keys and metadata, which previously rendered in Inter.
+  -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="text/javascript">
+    /*
+      Stamps the colour scheme before first paint, so a viewer whose OS is dark
+      does not see a flash of the light theme while the bundle boots.
+
+      Mantine ships ColorSchemeScript for this, but it is a React component and
+      cannot run in a static HTML template. This mirrors what it emits and
+      reads the same localStorage key that the in-app control writes, so the
+      two cannot disagree. A stored "auto" falls through to the media query,
+      which is why only "light" and "dark" are treated as explicit.
+    */
+    (function() {
+      try {
+        var stored = window.localStorage.getItem("mantine-color-scheme-value");
+        var scheme = (stored === "light" || stored === "dark") ? stored :
+          (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        document.documentElement.setAttribute("data-mantine-color-scheme", scheme);
+      } catch(error) {
+        /* storage blocked — MantineProvider stamps it on mount instead */
+      }
+    })();
+  </script>
 </head>
 
 <body>

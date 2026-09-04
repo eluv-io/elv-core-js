@@ -52,7 +52,14 @@ module.exports = env => {
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type, Accept",
-        "Access-Control-Allow-Methods": "POST"
+        "Access-Control-Allow-Methods": "POST",
+        // The dev server sent no Cache-Control, only a weak ETag, so Chrome
+        // was free to cache main.bundle.js heuristically. A tab holding a
+        // stale bundle asks for asset/resource files by their old content
+        // hash; those no longer exist and the requests fail. It shows up as
+        // missing PNG app icons while the SVG tool icons are fine, because
+        // svg-inline-loader compiles those into the bundle itself.
+        "Cache-Control": "no-store"
       },
       // This is to allow configuration.js to be accessed
       static: {

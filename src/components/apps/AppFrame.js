@@ -3,11 +3,47 @@
 This is a sandboxed frame that includes a message passing interface
 to allow the contained app to request fabric / blockchain API requests
 from the core app, which owns user account information and keys
+
+Information for system/light/dark mode:
+COLOUR SCHEME PROPAGATION — contract for contained apps
+
+The contained app is a separate document on a separate origin inside a
+sandboxed iframe, so nothing about core's appearance reaches it automatically.
+`prefers-color-scheme` inside the frame reports the OS, not core's preference,
+so an app that respects the media query will disagree with core whenever the
+viewer has overridden it. Closing that seam needs the app to opt in.
+
+Core offers both halves of that. Neither does anything until an app uses it, so
+adding this is safe for every existing app.
+
+1. Pull the current scheme on startup. No elv-client-js update needed —
+   SendMessage's generic `operation` form already carries it:
+
+     const colorScheme = await client.SendMessage({
+       options: {operation: "GetColorScheme"}
+     });
+
+2. Listen for changes. Core posts an unsolicited message when the viewer
+   changes their preference, which no existing app listens for today:
+
+     window.addEventListener("message", event => {
+       if(event.data?.type !== "ElvFrameEvent") { return; }
+       if(event.data.event !== "ColorSchemeChanged") { return; }
+       ApplyColorScheme(event.data.colorScheme);
+     });
+
+Push carries changes; pull carries the initial value. An app that only listens
+will miss the value it starts with, so do both.
+
+Apps that are always one scheme — EVIE is always dark — should ignore all of
+this. Core matches its own header to those apps instead; see
+rootStore.AppPrefersDarkChrome.
 */
 
 import React, {useEffect} from "react";
 import UrlJoin from "url-join";
 import {Navigate, useParams} from "react-router";
+import {useComputedColorScheme} from "@mantine/core";
 
 import {FrameClient} from "@eluvio/elv-client-js/src/FrameClient";
 import {observer} from "mobx-react";
@@ -96,6 +132,34 @@ class AppFrame extends React.Component {
     };
 
     this.ApiRequestListener = this.ApiRequestListener.bind(this);
+  }
+
+  // Announce a scheme change to the contained app. Unsolicited, so it uses its
+  // own message type rather than ElvFrameResponse, which is request-scoped.
+  AnnounceColorScheme() {
+    const frame = this.state.appRef.current;
+
+    if(!frame || !frame.contentWindow) { return; }
+
+    try {
+      frame.contentWindow.postMessage(
+        {
+          type: "ElvFrameEvent",
+          event: "ColorSchemeChanged",
+          colorScheme: this.props.colorScheme
+        },
+        "*"
+      );
+    } catch (error) {
+      rootStore.Log("Error announcing colour scheme to frame", true);
+      rootStore.Log(error, true);
+    }
+  }
+
+  componentDidUpdate(previousProps) {
+    if(previousProps.colorScheme !== this.props.colorScheme) {
+      this.AnnounceColorScheme();
+    }
   }
 
   // Ensure region and static token are reset if app changed it
@@ -260,6 +324,12 @@ class AppFrame extends React.Component {
 
         break;
 
+      // App requested core's resolved colour scheme. "auto" is already
+      // resolved to light or dark here, because that is what the app needs.
+      case "GetColorScheme":
+        this.Respond(requestId, source, {response: this.props.colorScheme});
+        break;
+
       // App requested its app path
       case "GetFramePath":
         this.Respond(requestId, source, {response: window.location.hash});
@@ -324,7 +394,11 @@ class AppFrame extends React.Component {
         appName={this.state.appName}
         appUrl={this.state.appUrl}
         listener={this.ApiRequestListener}
-        className="app-frame"
+        className={
+          rootStore.AppPrefersDarkChrome(this.state.appName) ?
+            "app-frame app-frame--dark-chrome" :
+            "app-frame"
+        }
       />
     );
   }
@@ -338,13 +412,23 @@ AppFrame = observer(AppFrame);
 const AppFrameWrapper = observer(() => {
   const {app} = useParams();
 
+  // Resolved, not the raw preference: the contained app has no use for "auto",
+  // and resolving it here means one implementation instead of one per app.
+  const colorScheme = useComputedColorScheme("light", {getInitialValueInEffect: false});
+
   useEffect(() => {
     rootStore.SetActiveApp(app);
 
     return () => rootStore.SetActiveApp(undefined);
   }, [app]);
 
-  return <AppFrame app={app} key={`${app}-${rootStore.accountsStore.currentAccountAddress}`} />;
+  return (
+    <AppFrame
+      app={app}
+      colorScheme={colorScheme}
+      key={`${app}-${rootStore.accountsStore.currentAccountAddress}`}
+    />
+  );
 });
 
 export default AppFrameWrapper;

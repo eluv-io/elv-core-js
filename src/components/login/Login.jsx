@@ -21,10 +21,9 @@ import OryForm from "./OryForm";
 import {browserSupportsWebAuthn} from "@simplewebauthn/browser";
 import {FormatWebAuthnError} from "../../utils/Passkey";
 
-import EluvioLogo from "../../static/images/Main_Logo_Light";
 import {Link, useNavigate} from "react-router-dom";
 import {AccountSelector} from "../account/AccountMenu";
-import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "../Misc";
+import {ButtonWithLoader, DefaultProfileImage, EluvioMark, ImageIcon} from "../Misc";
 
 import EditIcon from "../../static/icons/edit.svg";
 import DefaultProfileIcon from "../../static/icons/User";
@@ -197,7 +196,7 @@ export const LoginGateModal = observer(({Close}) => {
     >
       <div className={S("login-modal")}>
         <div className={S("header")}>
-          <img alt="Eluvio Logo" src={EluvioLogo} className={S("header__logo")} />
+          <EluvioMark className={S("header__logo")} />
           <div className={S("header__title")}>
             Content Fabric
           </div>
@@ -221,7 +220,7 @@ export const LoginGateModal = observer(({Close}) => {
                 By creating an account or signing in, I agree to the <a target="_blank" href="https://eluv.io/privacy">Eluvio Privacy Policy</a> and the <a target="_blank" href="https://eluv.io/terms">Eluvio Terms and Conditions</a>
               </div>
               <div className={S("terms__option")}>
-                <Checkbox size="xs" name="share-email" color="gray.3" checked={shareEmail} onChange={event => setShareEmail(event.currentTarget.checked)} />
+                <Checkbox size="xs" name="share-email" checked={shareEmail} onChange={event => setShareEmail(event.currentTarget.checked)} />
                 <label htmlFor="share-email" className={S("terms__text")}>
                   By checking this box, I give consent for my email address to be stored with my wallet address. Eluvio may also send informational and marketing emails to this address.
                 </label>
@@ -290,7 +289,6 @@ const LoginModalContent = observer(({onboardParams, accountType, setAccountType,
             Email
           </div>
           <Switch
-            color="gray.3"
             name="type"
             checked={accountType === "key"}
             onChange={event => setAccountType(event.target.checked ? "key" : "custodial")}
@@ -322,7 +320,6 @@ const LoginModalContent = observer(({onboardParams, accountType, setAccountType,
               <Checkbox
                 size="xs"
                 name="share-email"
-                color="gray.3"
                 checked={shareEmail}
                 onChange={event => setShareEmail(event.currentTarget.checked)}
               />
@@ -576,7 +573,7 @@ const LoginModal = observer(({Close}) => {
     >
       <div className={S("login-modal")}>
         <div className={S("header")}>
-          <img src={EluvioLogo} className={S("header__logo")}/>
+          <EluvioMark className={S("header__logo")}/>
           <div className={S("header__title")}>
             Content Fabric
           </div>

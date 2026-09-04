@@ -6,7 +6,7 @@
   }
 
   &__image {
-    border: 1px solid var(--border);
+    border: 1px solid var(--line);
     height: 200px;
     width: 200px;
   }
@@ -21,11 +21,11 @@
 
   &__edit {
     align-items: center;
-    background-color: var(--background-primary);
-    border: 1px solid var(--border);
-    border-radius: 100%;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
     bottom: 15px;
-    color: var(--text-tertiary);
+    color: var(--ink-3);
     display: flex;
     height: 30px;
     justify-content: center;
@@ -39,15 +39,16 @@
 }
 
 .profile {
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-container);
   overflow: hidden;
   padding-bottom: 20px;
   width: 700px;
 
   &__header {
     align-items: center;
-    background-color: var(--background-secondary);
+    background-color: var(--bg-subtle);
     display: flex;
     height: 60px;
     justify-content: center;
@@ -55,27 +56,40 @@
   }
 
   &__content-block {
-    padding: 20px 0;
+    padding: 22px 24px;
     text-align: center;
   }
 
   &__address {
-    background-color: var(--background-secondary);
-    border-radius: 10px;
-    color: var(--text-secondary);
-    padding: 5px 10px;
+    background-color: var(--bg-subtle);
+    border-radius: var(--r-card);
+    color: var(--ink-2);
+    padding: 6px 12px;
   }
 
+  // Prose: floors at 12px. Set here rather than as fz={10} in the JSX.
   &__funds-warning {
-    color: var(--text-secondary);
+    color: var(--ink-2);
+    font-size: var(--fs-micro);
+    line-height: var(--lh-body);
   }
 
+  // Was --ink-3 with no hover or focus state.
   &__advanced-toggle {
     align-items: center;
-    color: var(--text-tertiary);
+    border-radius: var(--r-control);
+    color: var(--ink-2);
     display: flex;
+    font-size: var(--fs-caption);
     font-weight: 600;
     gap: 5px;
+    padding: 6px 10px;
+    transition: color var(--t-fast) ease, background-color var(--t-fast) ease;
+
+    &:hover {
+      background-color: var(--bg-subtle);
+      color: var(--ink-1);
+    }
 
     svg {
       height: 20px;
@@ -103,8 +117,9 @@
   text-align: left;
 }
 
+// Data: 10px held, face changed. <pre> now inherits --font-data.
 .auth-token {
-  font-size: 10px;
+  font-size: var(--fs-data-xs);
   max-width: 100%;
   padding-right: 30px;
   position: relative;
@@ -120,8 +135,8 @@
 }
 
 .tenant {
-  border-bottom: 1px solid var(--border);
-  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--line);
+  border-top: 1px solid var(--line);
   margin: 30px 0 10px;
   padding: 30px 0 40px;
 
@@ -135,13 +150,15 @@
 
     &--contract {
       input {
-        font-size: 12px;
+        font-family: var(--font-data);
+        font-size: var(--fs-meta);
       }
     }
   }
 
   &__info {
-    border: 1px solid var(--border);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
     display: flex;
     gap: 20px;
     padding: 20px;
@@ -159,18 +176,21 @@
   }
 
   &__description {
-    font-size: 12px;
+    font-size: var(--fs-meta);
+    line-height: var(--lh-body);
     white-space: pre-wrap;
   }
 }
 
 .profile-metadata {
   &__metadata {
-    background-color: var(--background-secondary);
-    font-size: 14px;
+    background-color: var(--bg-subtle);
+    border-radius: var(--r-card);
+    font-size: var(--fs-caption);
     font-weight: 500;
+    line-height: var(--lh-body);
     margin-top: 20px;
-    padding: 30px 20px;
+    padding: 24px 20px;
     text-align: left;
     white-space: pre-wrap;
   }

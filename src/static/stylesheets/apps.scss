@@ -8,15 +8,16 @@
 }
 
 .apps-box {
-  border: 1px solid var(--border);
-  border-radius: 25px;
+  background: var(--bg-surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-container);
   max-width: 90vw;
-  padding: 30px 20px;
+  padding: 28px 24px;
   width: max-content;
 
   h2 {
-    color: var(--text-secondary);
-    font-size: 20px;
+    color: var(--ink-2);
+    font-size: var(--fs-section);
     font-weight: 600;
     margin-bottom: 30px;
     text-align: center;
@@ -30,14 +31,17 @@
   }
 }
 
+// Rested at opacity: 0.8, which washed out the label on every tile at all
+// times. Full opacity at rest; hover is a surface change instead of a fade.
 .app-selection {
+  border-radius: var(--r-container);
   display: flex;
   flex-direction: column;
   height: max-content;
   justify-content: center;
   margin: 5px;
-  opacity: 0.8;
-  transition: opacity 0.25s ease;
+  padding: 10px 6px;
+  transition: background-color var(--t-mid) ease;
   width: 175px;
 
   .app-logo {
@@ -48,14 +52,15 @@
   }
 
   h4 {
-    font-size: 18px;
+    font-size: var(--fs-body);
     font-weight: 400;
-    margin: 20px 0;
+    line-height: var(--lh-body);
+    margin: 16px 0 6px;
     text-align: center;
   }
 
   &:hover {
-    opacity: 1;
+    background-color: var(--bg-subtle);
   }
 }
 
@@ -64,4 +69,14 @@
   display: flex;
   height: calc(100vh - 50px);
   width: 100%;
+
+  // An iframe paints its own opaque white default until the contained document
+  // has loaded. Against a dark header that reads as a white flash on every
+  // navigation into the app. Apps that draw themselves dark get a placeholder
+  // that matches what is about to appear.
+  // Left alone for everything else: white is the right guess for an unknown
+  // contained app, and is what the iframe would have done anyway.
+  &--dark-chrome {
+    background-color: var(--chrome-bg);
+  }
 }

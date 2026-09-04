@@ -70,7 +70,7 @@ const TenantUsers = observer(() => {
       <div className={S("tenant-page")}>
         <div className={S("header-text", "tenant-page__header")}>Manage Users</div>
         <Group align="center" gap={30} w={1000} mb="xl">
-          <Tabs variant="pills" color="gray.6" value={tab} onChange={newTab => setTab(newTab)}>
+          <Tabs variant="pills" value={tab} onChange={newTab => setTab(newTab)}>
             <Tabs.List grow>
               <Tabs.Tab w={125} value="users">Users</Tabs.Tab>
               <Tabs.Tab w={125} value="admins">Admins</Tabs.Tab>
@@ -114,13 +114,13 @@ const TenantUsers = observer(() => {
                         </Group>
                       </td>
                       <td>
-                        <Text fz="sm">
+                        <Text fz="xs" className={S("data")}>
                           {user.address}
                         </Text>
                       </td>
                       <td>
                         <Group gap={3} miw={100}>
-                          <ImageIcon label="Funds Icon" icon={FundsIcon} className={S("icon")}/>
+                          <ImageIcon label="Funds Icon" icon={FundsIcon} className={S("icon", "icon--raster")}/>
                           {parseFloat(user.balance).toFixed(2) || "0.0"}
                         </Group>
                       </td>
@@ -137,7 +137,7 @@ const TenantUsers = observer(() => {
                               title: "Top Up Account",
                               children: (
                                 <Text my="lg" ta="center">
-                                  Are you sure you want to top this account up to <ImageIcon label="Funds Icon" icon={FundsIcon} className={S("icon", "icon--small")} />{fundingLimit}?
+                                  Are you sure you want to top this account up to <ImageIcon label="Funds Icon" icon={FundsIcon} className={S("icon", "icon--small", "icon--raster")} />{fundingLimit}?
                                 </Text>
                               ),
                               onConfirm: async () => await tenantStore.TopUpFunds(user.address),

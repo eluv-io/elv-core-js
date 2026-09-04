@@ -7,7 +7,7 @@ import TenantInviteModal from "./TenantInviteModal";
 
 import {tenantStore} from "../../stores";
 import TenantUserPermissionsModal from "./TenantUserPermissionsModal";
-import {CreateModuleClassMatcher} from "../../utils/Utils";
+import {CreateModuleClassMatcher, TruncateAddress} from "../../utils/Utils";
 import {CopyButton, DefaultProfileImage, ImageIcon} from "../Misc";
 import {useDebouncedValue} from "@mantine/hooks";
 import {modals} from "@mantine/modals";
@@ -116,7 +116,7 @@ const Invite = observer(({invite}) => {
           {
             !address ? null :
               <div className={S("invite__address")}>
-                <div title={address} className={S("invite__detail")}>{address}</div>
+                <div title={address} className={S("invite__detail", "data")}>{TruncateAddress(address)}</div>
                 <CopyButton value={address} className={S("icon", "icon--small", "invite__copy")}/>
               </div>
           }
@@ -160,7 +160,7 @@ const TenantInvites = observer(() => {
       <div className={S("tenant-page")}>
         <div className={S("header-text", "tenant-page__header")}>User Invitations</div>
         <Group align="center" justify="space-between" wrap="nowrap" w={1000} mb="xl" gap={10}>
-          <Tabs h="max-content" variant="pills" color="gray.6" value={tab} onChange={newTab => setTab(newTab)}>
+          <Tabs h="max-content" variant="pills" value={tab} onChange={newTab => setTab(newTab)}>
             <Tabs.List grow>
               <Tabs.Tab w={125} value={tenantStore.INVITE_EVENTS.ACCEPTED}>Accepted</Tabs.Tab>
               <Tabs.Tab w={125} value={tenantStore.INVITE_EVENTS.SENT}>Sent</Tabs.Tab>

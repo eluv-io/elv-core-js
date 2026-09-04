@@ -5,7 +5,7 @@ import {accountsStore} from "../../stores";
 import {Button, FileButton, Group, Text} from "@mantine/core";
 import {useNavigate} from "react-router-dom";
 import React, {useState} from "react";
-import {CreateModuleClassMatcher} from "../../utils/Utils";
+import {CreateModuleClassMatcher, TruncateAddress} from "../../utils/Utils";
 
 import {Utils} from "@eluvio/elv-client-js";
 import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "../Misc";
@@ -81,8 +81,8 @@ const Account = observer(({address}) => {
                 Tenant: {account.tenantName}
               </div>
           }
-          <div title={account.address} className={S("address", "ellipsis")}>
-            {address}
+          <div title={account.address} className={S("address", "data", "ellipsis")}>
+            {TruncateAddress(address)}
           </div>
         </div>
         <div className={S("actions")}>
@@ -146,17 +146,16 @@ const Accounts = observer(() => {
           )}
         </div>
         <Group justify="center">
-          <Button variant="outline" color="gray.6" onClick={() => accountsStore.ExportAccounts()}>
+          <Button variant="default" onClick={() => accountsStore.ExportAccounts()}>
             Export Accounts
           </Button>
           <FileButton
-            color="gray.6"
             accept=".elv"
             onChange={async file => {
               accountsStore.ImportAccounts(await file.text());
             }}
           >
-            {(props) => <Button {...props} variant="outline">Import Accounts</Button>}
+            {(props) => <Button {...props} variant="default">Import Accounts</Button>}
           </FileButton>
         </Group>
       </div>

@@ -11,14 +11,17 @@
 }
 
 .account {
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  box-shadow: 0 0 10px 0 rgb(0 0 0 / 0.1);
+  // border-radius: 10px;
+  // box-shadow: 0 0 10px 0 rgb(0 0 0 / 0.1);  (border + shadow both separating)
+  // padding: 30px 25px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-container);
+  box-shadow: var(--shadow-1);
   display: flex;
   flex-direction: column;
   height: 100%;
   max-width: 250px;
-  padding: 30px 25px;
+  padding: 28px 24px;
   position: relative;
   width: 250px;
 
@@ -29,19 +32,29 @@
   }
 }
 
+// Was opacity: 0 until the card was hovered — invisible, and unreachable by
+// keyboard since focus does not trigger a parent :hover. Now quietly present.
 .remove-account {
-  color: var(--text-tertiary);
+  // opacity: 0;
+  border-radius: var(--r-control);
+  color: var(--ink-3);
   height: 25px;
-  opacity: 0;
+  opacity: 0.42;
   position: absolute;
   right: 10px;
   top: 10px;
-  transition: opacity 0.25s ease;
+  transition: opacity var(--t-mid) ease, color var(--t-fast) ease;
   width: 25px;
+
+  &:focus-visible,
+  &:hover {
+    color: var(--error);
+    opacity: 1;
+  }
 }
 
 .image {
-  border: 1px solid var(--border);
+  border: 1px solid var(--line);
   height: 120px;
   margin: 0 auto;
   width: 120px;
@@ -52,19 +65,22 @@
 }
 
 .name {
-  font-size: 16px;
+  font-size: var(--fs-body);
   font-weight: 600;
 }
 
+// Prose: floors at 12px.
 .tenant {
-  font-size: 11px;
+  // font-size: 11px;
+  font-size: var(--fs-micro);
   font-weight: 600;
 }
 
+// Data: holds 10px, changes face. See .data-xs in shared.module.scss.
 .address {
-  color: var(--text-secondary);
-  font-size: 10px;
-  margin-top: 2px;
+  color: var(--ink-2);
+  font-size: var(--fs-data-xs);
+  margin-top: 4px;
 }
 
 .actions {
@@ -75,7 +91,7 @@
 }
 
 .action {
-  border-radius: 5px;
+  border-radius: var(--r-control);
   height: 40px;
   width: 100%;
 }

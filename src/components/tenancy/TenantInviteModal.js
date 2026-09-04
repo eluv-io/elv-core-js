@@ -100,7 +100,7 @@ const TenantInviteModal = observer(({existingInviteId="", Close}) => {
           description={
             <Group gap={0}>
               <Text fz={12} fw={500} mr={2}>Limit:</Text>
-              <ImageIcon label="Funds Icon" icon={FundsIcon} className={S("icon", "icon--small", "icon--faded")} />
+              <ImageIcon label="Funds Icon" icon={FundsIcon} className={S("icon", "icon--small", "icon--faded", "icon--raster")} />
               <Text fz={12} fw={600}>{fundingLimit?.toFixed(2) || "0.0"}</Text>
             </Group>
           }
@@ -117,7 +117,7 @@ const TenantInviteModal = observer(({existingInviteId="", Close}) => {
             Submit();
           }}
         />
-        { !error ? null : <Text mb="md" color="red" ta="center">Something went wrong, please try again</Text> }
+        { !error ? null : <Text mb="md" className={S("error")} ta="center">Something went wrong, please try again</Text> }
         <Group justify="right" mt={50} wrap="nowrap">
           <Button
             variant="default"

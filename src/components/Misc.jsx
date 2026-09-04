@@ -1,14 +1,89 @@
 import React, {useState} from "react";
 import {observer} from "mobx-react";
-import {Button} from "@mantine/core";
+import {Button, useMantineColorScheme} from "@mantine/core";
 import SVG from "react-inlinesvg";
 import {CreateModuleClassMatcher, JoinClassNames} from "../utils/Utils";
 import SHA1 from "../utils/Hash";
 
 
 import CopyIcon from "../static/icons/copy";
+import LogoRing from "../static/images/Main_Logo_Ring.png";
+import MonitorIcon from "../static/icons/monitor.svg";
+import SunIcon from "../static/icons/sun.svg";
+import MoonIcon from "../static/icons/moon.svg";
 
 const S = CreateModuleClassMatcher();
+
+/**
+ * The Eluvio mark, as two stacked layers.
+ *
+ * Main_Logo_Light.png is a black wordmark plus a coloured ring in one raster.
+ * There is no way to invert the text for a dark ground without dragging the
+ * ring's hue along with it, which is what the earlier filter stopgap did.
+ *
+ * Main_Logo_Ring.png keeps the ring exactly as drawn. Main_Logo_Wordmark.png
+ * is an alpha mask of the letterforms, painted with currentColor, so the text
+ * follows the colour scheme and the brand hue never shifts.
+ */
+export const EluvioMark = ({className=""}) => (
+  <div role="img" aria-label="Eluvio" className={JoinClassNames(S("eluvio-mark"), className)}>
+    <img src={LogoRing} alt="" aria-hidden="true" className={S("eluvio-mark__ring")} />
+    <span aria-hidden="true" className={S("eluvio-mark__wordmark")} />
+  </div>
+);
+
+const COLOR_SCHEMES = [
+  {value: "auto", label: "System", icon: MonitorIcon},
+  {value: "light", label: "Light", icon: SunIcon},
+  {value: "dark", label: "Dark", icon: MoonIcon}
+];
+
+/**
+ * Appearance preference.
+ *
+ * Persistence is Mantine's default localStorageColorSchemeManager, under
+ * `mantine-color-scheme-value`. The pre-paint script in index.html reads that
+ * same key, so a reload applies the choice before first paint rather than
+ * flashing the other theme, and the two stay in agreement with no extra
+ * plumbing.
+ *
+ * "System" follows prefers-color-scheme and keeps following it — it is not a
+ * snapshot of whatever the OS happened to be when it was picked.
+ */
+export const ColorSchemeControl = () => {
+  const {colorScheme, setColorScheme} = useMantineColorScheme();
+
+  return (
+    <div className={S("color-scheme")}>
+      <span id="color-scheme-label" className={S("color-scheme__label")}>Appearance</span>
+      <div
+        role="radiogroup"
+        aria-labelledby="color-scheme-label"
+        className={S("color-scheme__options")}
+      >
+        {
+          COLOR_SCHEMES.map(({value, label, icon}) => (
+            <label
+              key={`color-scheme-${value}`}
+              className={S("color-scheme__option", colorScheme === value ? "color-scheme__option--active" : "")}
+            >
+              <input
+                type="radio"
+                name="color-scheme"
+                value={value}
+                checked={colorScheme === value}
+                onChange={() => setColorScheme(value)}
+                className={S("color-scheme__input")}
+              />
+              <ImageIcon icon={icon} />
+              <span>{label}</span>
+            </label>
+          ))
+        }
+      </div>
+    </div>
+  );
+};
 
 export const ButtonWithLoader = observer(({onClick, ...props}) => {
   const [loading, setLoading] = useState(false);

@@ -1,6 +1,6 @@
 .page-header {
-  font-size: 24px;
-  font-weight: 500;
+  font-size: var(--fs-title);
+  font-weight: 600;
   margin-bottom: 30px;
   text-align: center;
 }
@@ -15,16 +15,20 @@
 }
 
 .note {
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  transition: box-shadow 0.5s ease;
+  // border-radius: 5px;
+  background: var(--bg-surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  transition: box-shadow var(--t-slow) ease, border-color var(--t-slow) ease;
   width: 100%;
 
+  // Was `box-shadow: 0 0 6px var(--line)` — a grey glow on all four sides.
   &--opened {
-    box-shadow: 0 0 6px var(--border);
+    border-color: var(--accent-line);
+    box-shadow: var(--shadow-1);
 
     .note__title-container {
-      border-bottom: 1px solid var(--background-tertiary);
+      border-bottom: 1px solid var(--bg-muted);
     }
   }
 
@@ -38,8 +42,10 @@
     user-select: none;
     width: 100%;
 
+    // This was the app's only :focus-visible rule. The ring is now the
+    // default in defaults.scss; this just aligns with it.
     &:focus-visible {
-      box-shadow: 0 0 5px var(--accent)!important;
+      box-shadow: var(--focus-ring);
     }
 
     &:hover {
@@ -50,30 +56,33 @@
     }
   }
 
+  // Was 24px/500 — identical to the page header, so one note read as loudly
+  // as the whole page.
   &__title {
-    font-size: 24px;
-    font-weight: 500;
-    line-height: 1.2em;
+    // font-size: 24px;
+    font-size: var(--fs-panel);
+    font-weight: 600;
+    line-height: var(--lh-tight);
   }
 
   &__title-indicator {
-    color: var(--text-tertiary);
+    color: var(--ink-3);
     opacity: 0.5;
     position: absolute;
     right: 20px;
-    transition: opacity 0.1s ease;
+    transition: opacity var(--t-fast) ease;
   }
 
   &__date {
-    color: var(--text-tertiary);
-    font-size: 14px;
+    color: var(--ink-2);
+    font-size: var(--fs-caption);
     font-weight: 500;
   }
 
   &__text {
-    animation: fadein ease-in-out 1s 0.1s forwards;
+    animation: fadein ease-in-out 1s 0.1s forwards; // not used to produce fade (using `transition` below instead)
     display: grid;
-    font-size: 16px;
+    font-size: var(--fs-body);
     gap: 20px;
     height: max-content;
     margin-top: 10px;
@@ -100,13 +109,14 @@
       font-weight: 500;
     }
 
+    // 1.1em made multi-line headings and paragraphs collide.
     h1,
     h2,
     h3,
     h4,
     h5,
     p {
-      line-height: 1.1em;
+      line-height: var(--lh-tight);
 
       * {
         font-size: 1em;
@@ -135,7 +145,8 @@
 
     li,
     p {
-      font-size: 1.1em;
+      font-size: 1em;
+      line-height: var(--lh-body);
     }
 
     strong {

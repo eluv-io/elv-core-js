@@ -223,7 +223,7 @@ const OryForm = observer(({onboardParams, userData, isLoginGate, setClosable, Cl
           <Button
             key="registration-link"
             onClick={() => setFlowType("registration")}
-            color="gray.8"
+            variant="default"
             className={S("button")}
           >
             {rootStore.l10n.login.ory.actions.registration}

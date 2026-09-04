@@ -1,9 +1,9 @@
 import AccountMenuStyles from "../../static/stylesheets/modules/account-menu.module.scss";
 
 import {observer} from "mobx-react";
-import {CreateModuleClassMatcher, JoinClassNames} from "../../utils/Utils";
+import {CreateModuleClassMatcher, JoinClassNames, TruncateAddress} from "../../utils/Utils";
 import React, {useState} from "react";
-import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "../Misc";
+import {ButtonWithLoader, ColorSchemeControl, DefaultProfileImage, ImageIcon} from "../Misc";
 import {rootStore, accountsStore, tenantStore} from "../../stores";
 import {Link, useNavigate} from "react-router-dom";
 import {Button, Combobox, Popover, UnstyledButton, useCombobox} from "@mantine/core";
@@ -40,8 +40,8 @@ export const AccountSelector = observer(({center, className=""}) => {
             />
           </div>
           <div className={S("account-selector__account")}>
-            <div className={S(`account-selector__${account.name ? "name" : "address"}`, "ellipsis")}>
-              {account.name || account.address}
+            <div className={S(`account-selector__${account.name ? "name" : "address"}`, account.name ? "" : "data", "ellipsis")}>
+              {account.name || TruncateAddress(account.address)}
             </div>
             {
               !account.tenantName ? null :
@@ -99,8 +99,8 @@ export const AccountSelector = observer(({center, className=""}) => {
                   />
                 </div>
                 <div className={S("account-selector__account")}>
-                  <div className={S(`account-selector__${accountsStore.currentAccount.name ? "name" : "address"}`, "ellipsis")}>
-                    {accountsStore.currentAccount.name || accountsStore.currentAccount.address}
+                  <div className={S(`account-selector__${accountsStore.currentAccount.name ? "name" : "address"}`, accountsStore.currentAccount.name ? "" : "data", "ellipsis")}>
+                    {accountsStore.currentAccount.name || TruncateAddress(accountsStore.currentAccount.address)}
                   </div>
                 </div>
                 <ImageIcon label="Arrow" icon={ArrowDown} className={S("account-selector__arrow")} />
@@ -158,6 +158,8 @@ const AccountMenu = observer(({Close}) => {
             </Link>
         }
       </div>
+      <div className={S("account-menu__separator")} />
+      <ColorSchemeControl />
       {
         accountsStore.isUnlocked ?
           <ButtonWithLoader
@@ -224,7 +226,7 @@ const HeaderProfile = observer(() => {
                 "header-profile__content",
                 !accountsStore.isUnlocked ? "header-profile__content--locked" : "",
                 showMenu ? "header-profile__content--active" : "",
-                rootStore.darkMode ? "header-profile__content--dark" : "",
+                rootStore.activeAppPrefersDarkChrome ? "header-profile__content--dark" : "",
               )
             }
           >
@@ -237,8 +239,8 @@ const HeaderProfile = observer(() => {
             </div>
             <div className={S("header-profile__account")}>
               <div
-                className={S(`header-profile__${accountsStore.currentAccount.name ? "name" : "address"}`, "ellipsis")}>
-                {accountsStore.currentAccount.name || accountsStore.currentAccount.address}
+                className={S(`header-profile__${accountsStore.currentAccount.name ? "name" : "address"}`, accountsStore.currentAccount.name ? "" : "data", "ellipsis")}>
+                {accountsStore.currentAccount.name || TruncateAddress(accountsStore.currentAccount.address)}
               </div>
               {
                 !accountsStore.currentAccount.tenantName && !accountsStore.currentAccount.tenantContractId ? null :

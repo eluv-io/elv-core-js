@@ -179,7 +179,7 @@ const TenantOverview = observer(() => {
           </div>
           <div>
             <Title fw={500} order={3}>{tenantStore.publicTenantMetadata.name || "Tenant"}</Title>
-            <Text fz="xs" mb="sm" className={S("tenant-overview__tenant-id")}>{tenantStore.tenantContractId}</Text>
+            <Text fz="xs" mb="sm" className={S("tenant-overview__tenant-id", "data")}>{tenantStore.tenantContractId}</Text>
             <Text fz="sm" className={S("tenant-overview__description")}>
               {tenantStore.publicTenantMetadata.description}
             </Text>
@@ -198,9 +198,9 @@ const TenantOverview = observer(() => {
             className={S("tenant-overview")}
           >
             <Title fw={500} order={4}>Tenant Funds</Title>
-            <Text fz={12}>{tenantStore.tenantFundingAccount.tenant_funding_address}</Text>
+            <Text fz={12} className={S("data")}>{tenantStore.tenantFundingAccount.tenant_funding_address}</Text>
             <Group gap={5} mt="sm">
-              <ImageIcon label="Funds Icon" icon={FundsIcon} className={S("icon")} />
+              <ImageIcon label="Funds Icon" icon={FundsIcon} className={S("icon", "icon--raster")} />
               <Text fz={14}>{tenantStore.tenantFunds?.toFixed(2)}</Text>
             </Group>
           </Paper>

@@ -19,7 +19,18 @@ const Initialize = () => {
 
   root.render(
     <React.Fragment>
-      <MantineProvider withGlobalStyles theme={MantineTheme}>
+      {/*
+        `withGlobalStyles` was a Mantine 6 prop and a no-op in v7.
+        `forceColorScheme` pinned the app to light while the dark tokens were
+        still empty; both are gone now that they are filled in.
+
+        "auto" is the starting point, not a lock: ColorSchemeControl in the
+        account menu lets the viewer pick System / Light / Dark, and Mantine's
+        default localStorageColorSchemeManager persists it under
+        `mantine-color-scheme-value`. index.html reads that same key before
+        first paint.
+      */}
+      <MantineProvider theme={MantineTheme} defaultColorScheme="auto">
         <ModalsProvider>
           <App/>
         </ModalsProvider>

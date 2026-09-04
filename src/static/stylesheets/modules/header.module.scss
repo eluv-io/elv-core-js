@@ -1,7 +1,7 @@
 .header {
   align-items: center;
-  background-color: var(--background-primary);
-  box-shadow: 2px 1px 5px rgb(0 0 0 / 0.15);
+  background-color: var(--bg-surface);
+  box-shadow: var(--shadow-head);
   display: flex;
   grid-template-columns: auto 1fr auto;
   grid-template-rows: 40px;
@@ -14,12 +14,12 @@
   z-index: 20;
 
   &--dark {
-    background-color: var(--background--dark);
-    border-bottom: 1px solid var(--border--dark);
+    background-color: var(--chrome-bg);
+    border-bottom: 1px solid var(--chrome-line);
     box-shadow: none;
 
     * {
-      color: var(--text--dark);
+      color: var(--chrome-ink);
     }
 
     .header__logo {
@@ -31,7 +31,7 @@
     .apps-menu__button {
       &--active,
       &:hover {
-        background-color: var(--background--dark-secondary);
+        background-color: var(--chrome-bg-2);
       }
 
       &--active {
@@ -43,12 +43,12 @@
 
     .header__apps-link {
       &:hover {
-        color: var(--text--dark);
+        color: var(--chrome-ink);
       }
     }
 
     .header__app-display {
-      color: var(--header-text--light);
+      color: var(--chrome-title);
       font-weight: 600;
     }
   }
@@ -87,45 +87,46 @@
 
   &__app-display {
     align-items: center;
-    color: var(--header-text--dark);
+    color: var(--chrome-title-muted);
     display: flex;
     flex: 1;
-    font-size: 24px;
+    font-size: var(--fs-title);
     font-weight: 700;
     height: 100%;
     justify-content: center;
   }
 
   &__apps-link {
-    color: var(--text-secondary);
-    font-size: 14px;
+    color: var(--ink-2);
+    font-size: var(--fs-caption);
     font-weight: 700;
     margin-right: 20px;
-    transition: color 0.1s ease;
+    transition: color var(--t-fast) ease;
 
     &:hover {
-      color: var(--text-primary);
+      color: var(--ink-1);
     }
   }
 }
 
 .apps-menu {
   &__button {
-    border-radius: 100%;
-    color: var(--text-tertiary);
+    // border-radius: 100%;
+    border-radius: var(--r-pill);
+    color: var(--ink-3);
     height: 40px;
     margin-left: 10px;
     padding: 8px;
-    transition: color 0.25s ease, background-color 0.25s ease;
+    transition: color var(--t-mid) ease, background-color var(--t-mid) ease;
     width: 40px;
 
     * {
-      transition: color 0.25s ease, background-color 0.25s ease;
+      transition: color var(--t-mid) ease, background-color var(--t-mid) ease;
     }
 
     &--active,
     &:hover {
-      background-color: var(--background-secondary);
+      background-color: var(--bg-subtle);
     }
 
     &--active {
@@ -134,15 +135,19 @@
   }
 
   &__title {
-    color: var(--text-tertiary);
+    color: var(--ink-2);
+    font-size: var(--fs-meta);
     font-weight: 600;
+    letter-spacing: 0.02em;
     margin-bottom: 10px;
     padding-left: 15px;
   }
 
   &__dropdown {
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgb(0 0 0 / 0.1);
+    // border-radius: 10px;
+    // box-shadow: 0 5px 15px rgb(0 0 0 / 0.1);
+    border-radius: var(--r-container);
+    box-shadow: var(--shadow-2);
     display: flex;
     flex-direction: column;
     padding: 30px 30px 20px 10px;
@@ -150,15 +155,15 @@
 
   &__link {
     align-items: center;
+    border-radius: var(--r-card);
     display: flex;
     gap: 30px;
     justify-content: space-between;
     padding: 12px 20px;
-    transition: background-color 0.15s ease;
+    transition: background-color var(--t-fast) ease;
 
     &:hover {
-      background-color: var(--background-secondary);
-      border-radius: 10px;
+      background-color: var(--bg-subtle);
 
       .apps-menu__link-external {
         opacity: 1;
@@ -168,11 +173,11 @@
 
   &__link-external {
     align-items: center;
-    color: var(--text-secondary);
+    color: var(--ink-2);
     display: flex;
     justify-content: center;
     opacity: 0;
-    transition: opacity 0.1s ease, background-color 0.1s ease;
+    transition: opacity var(--t-fast) ease, background-color var(--t-fast) ease;
   }
 
   &__logo {
@@ -182,7 +187,7 @@
   }
 
   &__separator {
-    border-bottom: 1px solid var(--background-tertiary);
+    border-bottom: 1px solid var(--line);
     height: 1px;
     margin: 5px 0 20px;
   }

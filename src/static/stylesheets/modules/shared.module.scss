@@ -6,6 +6,25 @@
   white-space: nowrap;
 }
 
+// Data, not prose.
+// ---------------------------------------------------------------
+// Addresses, auth tokens, keys and contract IDs are compared character by
+// character, so they get a mono face with tabular figures.
+// Prose microcopy floors at --fs-micro (12px) instead.
+// ---------------------------------------------------------------
+// CreateModuleClassMatcher always folds SharedStyles in, so S("data") resolves
+// from any component.
+.data {
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+}
+
+.data-xs {
+  font-family: var(--font-data);
+  font-size: var(--fs-data-xs);
+  font-variant-numeric: tabular-nums;
+}
+
 .actions {
   align-items: center;
   display: flex;
@@ -21,42 +40,42 @@
   width: 120px;
 
   & > * {
-    background: var(--background-secondary);
+    background: var(--bg-subtle);
     border-radius: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
-    stroke: var(--text-tertiary);
+    stroke: var(--ink-3);
     width: 100%;
   }
 
   &__badge {
-    background-color: var(--background-primary);
-    border: 1px solid var(--border);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--line);
     border-radius: 100%;
     bottom: 5px;
     height: 30px;
     padding: 5px;
     position: absolute;
     right: 5px;
-    stroke: var(--text-secondary);
+    stroke: var(--ink-2);
     width: 30px;
     z-index: 1;
   }
 }
 
 .tenant-image {
-  border-radius: 5px;
+  border-radius: var(--r-card);
   height: 250px;
   overflow: hidden;
   width: 250px;
 
   & > * {
-    background: var(--background-secondary);
+    background: var(--bg-subtle);
     height: 100%;
     object-fit: cover;
     object-position: center;
-    stroke: var(--text-tertiary);
+    stroke: var(--ink-3);
     width: 100%;
   }
 
@@ -69,7 +88,7 @@
 .input,
 .inner-input {
   background: 0;
-  font-size: 16px;
+  font-size: var(--fs-body);
   height: 50px;
   min-height: 50px;
   width: 100%;
@@ -80,20 +99,20 @@
 
   &__fz-sm {
     input {
-      font-size: 14px;
+      font-size: var(--fs-caption);
 
       &::placeholder {
-        font-size: 16px;
+        font-size: var(--fs-body);
       }
     }
   }
 
   &__fz-xs {
     input {
-      font-size: 12px;
+      font-size: var(--fs-meta);
 
       &::placeholder {
-        font-size: 16px;
+        font-size: var(--fs-body);
       }
     }
   }
@@ -101,18 +120,42 @@
   &__placeholder-fz-sm {
     input {
       &::placeholder {
-        font-size: 14px;
+        font-size: var(--fs-caption);
       }
     }
   }
 }
 
 .input {
-  border: 1px solid var(--border);
-  border-radius: 5px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-control);
+  transition: border-color var(--t-fast) ease, box-shadow var(--t-fast) ease;
+
+  &:focus,
+  &:focus-within {
+    border-color: var(--accent);
+    box-shadow: var(--focus-ring);
+    outline: none;
+  }
 
   &--select {
     padding-right: 30px;
+  }
+}
+
+// Referenced by the Textarea override in MantineTheme.js.
+.textarea {
+  border: 1px solid var(--line);
+  border-radius: var(--r-control);
+  font-size: var(--fs-body);
+  padding: 12px 16px;
+  transition: border-color var(--t-fast) ease, box-shadow var(--t-fast) ease;
+
+  &:focus,
+  &:focus-within {
+    border-color: var(--accent);
+    box-shadow: var(--focus-ring);
+    outline: none;
   }
 }
 
@@ -124,7 +167,12 @@
 }
 
 .copy-button {
-  transition: opacity 0.5s ease;
+  border-radius: var(--r-control);
+  transition: opacity var(--t-slow) ease, color var(--t-fast) ease;
+
+  &:hover {
+    color: var(--accent);
+  }
 
   &--active {
     opacity: 0.5;
@@ -149,13 +197,29 @@
   &--faded {
     opacity: 0.5;
   }
+
+  // Every other icon here is an SVG, which react-inlinesvg inlines so it takes
+  // its colour from currentcolor and follows the scheme for free. elv-token.png
+  // is a raster and cannot, so it stayed black when the ground went dark. The
+  // artwork is pure black on transparent, so a straight inversion is exact and
+  // gives pure white — same treatment as .logo-img.
+  // Kept off .icon itself: that class is shared with the inline SVGs, and
+  // inverting those would flip them back to dark in dark mode.
+  &--raster {
+    filter: var(--raster-invert);
+  }
 }
 
 .icon-button {
-  color: var(--text-tertiary);
+  border-radius: var(--r-control);
+  color: var(--ink-3);
   height: 20px;
-  transition: opacity 0.25s ease;
+  transition: opacity var(--t-mid) ease, color var(--t-fast) ease;
   width: 20px;
+
+  &:hover:not(:disabled) {
+    color: var(--accent);
+  }
 
   &:disabled {
     opacity: 0.5;
@@ -166,12 +230,138 @@
   }
 }
 
+// Mantine Paper. Matches the card treatment used everywhere else so
+// `withBorder` surfaces do not drift from .account / .note / .invite.
+.paper {
+  background-color: var(--bg-surface);
+  border-color: var(--line);
+  border-radius: var(--r-card);
+}
+
+// Appearance preference. See ColorSchemeControl in components/Misc.jsx.
+// The radio inputs are hidden but focusable, so the focus ring is put on the
+// label via :has() rather than on the input itself.
+.color-scheme {
+  display: grid;
+  gap: 8px;
+  margin-top: 20px;
+
+  &__label {
+    color: var(--ink-2);
+    font-size: var(--fs-meta);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding-left: 4px;
+  }
+
+  // A bordered container rather than a filled track. --bg-subtle sits darker
+  // than --bg-surface in light but lighter in dark, so any raised-pill-on-
+  // filled-track treatment inverts between the two schemes. A border and an
+  // accent tint behave the same in both, and match the active side-nav item.
+  &__options {
+    border: 1px solid var(--line);
+    border-radius: var(--r-control);
+    display: grid;
+    gap: 2px;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 3px;
+  }
+
+  &__option {
+    align-items: center;
+    border-radius: calc(var(--r-control) - 3px);
+    color: var(--ink-2);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 9px 4px;
+    position: relative;
+    text-align: center;
+    transition: background-color var(--t-fast) ease, color var(--t-fast) ease;
+    user-select: none;
+
+    &:hover {
+      color: var(--ink-1);
+    }
+
+    &--active {
+      background-color: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    &:has(:focus-visible) {
+      box-shadow: var(--focus-ring);
+    }
+
+    span {
+      font-size: var(--fs-micro);
+      font-weight: 500;
+    }
+
+    svg {
+      height: 18px;
+      width: 18px;
+    }
+  }
+
+  // Hidden but focusable, so the platform still handles arrow-key navigation
+  // and the checked state.
+  &__input {
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    width: 0;
+  }
+}
+
 .message {
   color: var(--accent);
 }
 
 .error {
   color: var(--error);
+}
+
+// Recessive text. Replaces the fixed `color="gray.7"` style props, which do not
+// track the colour scheme. Never --ink-3: that is non-text only.
+.dimmed {
+  color: var(--ink-2);
+}
+
+// Pure-black wordmarks (Logo / LogoDemo / LogoTest / Token). These carry no
+// hue, so a straight inversion is exact — see --raster-invert.
+.logo-img {
+  filter: var(--raster-invert);
+}
+
+// The splash / login mark, which mixes a black wordmark with a coloured ring.
+// Inverting it as one raster shifted the brand hue, so it ships as two layers:
+// the ring untouched, and the wordmark as an alpha mask filled with
+// currentColor. The letterforms follow the scheme; the ring never moves.
+.eluvio-mark {
+  aspect-ratio: 1656 / 706;
+  color: var(--ink-1);
+  display: block;
+  position: relative;
+
+  &__ring {
+    display: block;
+    height: 100%;
+    object-fit: contain;
+    width: 100%;
+  }
+
+  &__wordmark {
+    background-color: currentcolor;
+    inset: 0;
+    mask-image: url("../../images/Main_Logo_Wordmark.png");
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+    position: absolute;
+  }
 }
 
 .page-loader {
@@ -187,19 +377,20 @@
   }
 }
 
+// Panel heading. Was 18px/600 here but 20px/500 for the same role inside
+// Profile — one role, two settings. Both now resolve to --fs-panel at 600.
 .header-text {
-  color: var(--text-secondary);
-  font-size: 18px;
+  color: var(--ink-2);
+  font-size: var(--fs-panel);
   font-weight: 600;
 }
 
 .toast-message {
   align-items: center;
-  background: var(--background-primary);
   background-color: var(--accent);
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgb(0 0 0 / 0.05);
-  color: white;
+  border-radius: var(--r-control);
+  box-shadow: var(--shadow-2);
+  color: var(--on-accent);
   display: flex;
   justify-content: center;
   max-width: 300px;
@@ -216,20 +407,26 @@
   &__dismissed {
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.25s ease-in;
+    transition: opacity var(--t-mid) ease-in;
     user-select: none;
   }
 
   &__message {
-    font-size: 14px;
+    font-size: var(--fs-caption);
     font-weight: 500;
     text-align: center;
   }
 }
 
 .modal {
+  // Was a flat #808080 wash, which muted the page rather than dimming it.
+  // Through the token so it deepens in dark, where a light scrim would glow.
+  &__overlay {
+    background-color: var(--bg-overlay);
+  }
+
   &__header {
-    background-color: var(--background-secondary);
+    background-color: var(--bg-subtle);
     display: flex;
     height: 50px;
     justify-content: center;
@@ -237,8 +434,8 @@
     text-align: center;
 
     * {
-      color: var(--text-secondary);
-      font-size: 18px;
+      color: var(--ink-2);
+      font-size: var(--fs-panel);
       font-weight: 600;
     }
   }

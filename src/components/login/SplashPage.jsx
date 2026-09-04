@@ -1,11 +1,12 @@
 import LoginStyles from "../../static/stylesheets/modules/login.module.scss";
 
+import SplashBackground from "../../static/images/SplashBackground.jpg";
+
 import React, {useEffect} from "react";
 import {observer} from "mobx-react";
 import {CreateModuleClassMatcher} from "../../utils/Utils";
 
-import SplashBackground from "../../static/images/SplashBackground.jpg";
-import EluvioLogo from "../../static/images/Main_Logo_Light";
+import {EluvioMark} from "../Misc";
 import {Button, FileButton, UnstyledButton} from "@mantine/core";
 import {useNavigate} from "react-router-dom";
 import {rootStore, accountsStore, tenantStore} from "../../stores";
@@ -97,7 +98,7 @@ const SplashPage = observer(() => {
             Welcome to
         </div>
         <div className={S("splash-page__logo-container")}>
-          <img src={EluvioLogo} alt="Eluvio" className={S("splash-page__logo")}/>
+          <EluvioMark className={S("splash-page__logo")}/>
           <div className={S("splash-page__logo-tagline")}>
               Content Fabric
           </div>
