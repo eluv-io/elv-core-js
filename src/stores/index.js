@@ -50,7 +50,8 @@ class RootStore {
   AppPrefersDarkChrome(appName) {
     if(!appName) { return false; }
 
-    const darkChromeApps = ["Video Intelligence Editor"];
+    // const darkChromeApps = ["Video Intelligence Editor"];
+    const darkChromeApps = ["Video Intelligence Editor", "Embeddings Visualizer"];
 
     return !!darkChromeApps.find(app => appName.includes(app));
   }

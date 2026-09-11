@@ -1,8 +1,8 @@
 const EluvioConfiguration = {
-  //"config-url": "https://main.net955305.contentfabric.io/config",
-  "config-url": "https://demov3.net955210.contentfabric.io/config",
+  "config-url": "https://main.net955305.contentfabric.io/config",
+  //"config-url": "https://demov3.net955210.contentfabric.io/config",
   "apps": {
-    "Eluvio Fabric Browser": "http://localhost:8080",
+    "Eluvio Fabric Browser": "http://localhost:8091", // "http://localhost:8090", // "http://localhost:8080",
     "Media Ingest": "http://localhost:8110",
     "Livestream Manager": "http://localhost:8155",
     "Creator Studio": "http://localhost:9000",
@@ -13,7 +13,10 @@ const EluvioConfiguration = {
     "Stream Sample": "http://localhost:8084",
     "Site Sample": "http://localhost:8086",
     "DApp Sample": "https://dapp-sample.app.eluv.io/",
-    "Cross-chain-auth Sample": "https://dapp-sample-xco.app.eluv.io/?network=demo"
+    "Cross-chain-auth Sample": "https://dapp-sample-xco.app.eluv.io/?network=demo",
+    // Last in the Tools box: AppInfo sorts nothing, so both boxes follow this
+    // object's key order, and anything absent from its appNames list is a tool.
+    "Embeddings Visualizer": "http://localhost:8099" // was 8096
   },
   "ory_configuration": {
     "url": "http://localhost:3000",
