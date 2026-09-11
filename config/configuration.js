@@ -13,7 +13,7 @@ const EluvioConfiguration = {
     "Stream Sample": "http://localhost:8084",
     "Site Sample": "http://localhost:8086",
     "DApp Sample": "https://dapp-sample.app.eluv.io/",
-    "Cross-chain-auth Sample": "https://dapp-sample-xco.app.eluv.io/?network=demo",
+    "Cross-chain-auth Sample": "https://dapp-sample-xco.app.eluv.io/?network=demo"
   },
   "ory_configuration": {
     "url": "http://localhost:3000",

@@ -11,9 +11,6 @@
 }
 
 .account {
-  // border-radius: 10px;
-  // box-shadow: 0 0 10px 0 rgb(0 0 0 / 0.1);  (border + shadow both separating)
-  // padding: 30px 25px;
   border: 1px solid var(--line);
   border-radius: var(--r-container);
   box-shadow: var(--shadow-1);
@@ -35,7 +32,6 @@
 // Was opacity: 0 until the card was hovered — invisible, and unreachable by
 // keyboard since focus does not trigger a parent :hover. Now quietly present.
 .remove-account {
-  // opacity: 0;
   border-radius: var(--r-control);
   color: var(--ink-3);
   height: 25px;
@@ -71,7 +67,6 @@
 
 // Prose: floors at 12px.
 .tenant {
-  // font-size: 11px;
   font-size: var(--fs-micro);
   font-weight: 600;
 }

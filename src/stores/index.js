@@ -29,24 +29,15 @@ class RootStore {
 
   logFrameCalls = false;
 
-  // NOTE: this is not a theme, and must not be wired to one.
-  //
-  // It reports whether the app embedded in the /apps/:app iframe draws itself
+  // Reports whether the app embedded in the /apps/:app iframe draws itself
   // dark, so core's own header can be matched to it and the seam at the top of
   // the page is not jarring. It is a property of the contained app, not a
-  // preference of the viewer's, and it never crosses the iframe boundary —
-  // EVIE has no knowledge of it.
-  //
+  // preference of the viewer's, and it never crosses the iframe boundary.
+
   // The viewer's light/dark preference is Mantine's colour scheme, stamped on
   // <html data-mantine-color-scheme>. The two are independent by design: a
   // viewer in light mode still gets a dark header on the EVIE route.
-  //
-  // Renamed from `darkMode`, which read like a theme flag and would eventually
-  // have been wired to the real one.
-  //
-  // EVIE draws itself dark whatever the viewer prefers, so 
-  // letting a light preference win here would put a
-  // light core header directly above a dark iframe.
+  // Renamed from `darkMode` because it is not a theme.
   AppPrefersDarkChrome(appName) {
     if(!appName) { return false; }
 

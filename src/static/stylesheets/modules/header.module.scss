@@ -111,7 +111,6 @@
 
 .apps-menu {
   &__button {
-    // border-radius: 100%;
     border-radius: var(--r-pill);
     color: var(--ink-3);
     height: 40px;
@@ -144,8 +143,6 @@
   }
 
   &__dropdown {
-    // border-radius: 10px;
-    // box-shadow: 0 5px 15px rgb(0 0 0 / 0.1);
     border-radius: var(--r-container);
     box-shadow: var(--shadow-2);
     display: flex;
