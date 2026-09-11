@@ -14,9 +14,6 @@ const EluvioConfiguration = {
     "Site Sample": "http://localhost:8086",
     "DApp Sample": "https://dapp-sample.app.eluv.io/",
     "Cross-chain-auth Sample": "https://dapp-sample-xco.app.eluv.io/?network=demo",
-    // Last in the Tools box: AppInfo sorts nothing, so both boxes follow this
-    // object's key order, and anything absent from its appNames list is a tool.
-    "Embeddings Visualizer": "http://localhost:8099" // was 8096
   },
   "ory_configuration": {
     "url": "http://localhost:3000",
