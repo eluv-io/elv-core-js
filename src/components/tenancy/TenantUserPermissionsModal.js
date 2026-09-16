@@ -5,6 +5,7 @@ import {observer} from "mobx-react";
 import {Button, Checkbox, Group, Loader, Modal, Table, Text} from "@mantine/core";
 import {rootStore, tenantStore} from "../../stores";
 import {CreateModuleClassMatcher} from "../../utils/Utils";
+import {CopyButton} from "../Misc";
 
 const S = CreateModuleClassMatcher(TenancyStyles);
 
@@ -50,7 +51,7 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
       {
         !groups || !permissions  ?
           <Loader className={S("page-loader", "page-loader--short")} /> :
-          <form onSubmit={() => {}}>
+          <form onSubmit={event => event.preventDefault()}>
             <div className={S("tenant-permissions")}>
               <Table className={S("tenant-permissions__table")}>
                 <thead>
@@ -70,9 +71,15 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
                         <tr key={`group-${group.address}`}
                           className={S(`tenant-permissions__row--${index % 2 === 0 ? "even" : "odd"}`)}>
                           <td>
-                            <Text fz={name ? "sm" : "xs"} p="sm">
+                            <Text fw={600} fz={name ? "sm" : "xs"} px="sm">
                               {name || group.address}
                             </Text>
+                            <Group>
+                              <Text fz={9} color="gray.6" pl="sm">
+                                {group.address}
+                              </Text>
+                              <CopyButton value={group.address} className={S("tenant-permissions__copy")} />
+                            </Group>
                           </td>
                           <td>
                             <Group justify="center" align="center">

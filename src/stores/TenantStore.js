@@ -282,11 +282,16 @@ class TenantStore {
             group.isOwner = Utils.EqualAddress(owner, this.rootStore.accountsStore.currentAccountAddress);
 
             // Manager
-            group.isManager = await client.CallContractMethod({
+            group.isManager = await this.client.CallContractMethod({
               contractAddress: group.address,
               methodName: "hasManagerAccess",
               methodArgs: [this.rootStore.accountsStore.currentAccountAddress]
             });
+
+            if(group.isManager) {
+              group.isDirectManager = !!(await this.client.AccessGroupManagers({contractAddress: group.address}))
+                .find(managerAddress => this.client.utils.EqualAddress(managerAddress, this.client.CurrentAccountAddress()));
+            }
 
             return group;
           } catch (error) {
@@ -380,7 +385,12 @@ class TenantStore {
       }
 
       this.groups = allGroups;
-      this.managedGroups = allGroups.filter(group => group?.isOwner || group?.isManager);
+      this.managedGroups = allGroups.filter(group =>
+        group?.isOwner ||
+        this.tenantContractId === "iten2aYr2mCUKsJ6zL9e5kAXZ2mvDXom" ?
+          group?.isDirectManager :
+          group?.isManager
+      );
     }
 
     return this.managedGroups;
