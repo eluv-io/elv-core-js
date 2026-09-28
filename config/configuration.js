@@ -1,6 +1,6 @@
-const EluvioConfiguration = {
+var EluvioConfiguration = {
   "config-url": "https://main.net955305.contentfabric.io/config",
-  "config-url": "https://demov3.net955210.contentfabric.io/config",
+  // "config-url": "https://demov3.net955210.contentfabric.io/config",
   "apps": {
     "Eluvio Fabric Browser": "http://localhost:8080",
     "Media Ingest": "https://studio.v3.contentfabric.io",
@@ -10,6 +10,7 @@ const EluvioConfiguration = {
     "Livestream Manager": "http://localhost:8155",
     "AI Content Search": "http://localhost:3001",
     "Content Management": "http://localhost:3003",
+    "Pre-Ingest Dashboard": "http://localhost:3005",
     "Creator Studio": "http://localhost:9000",
     "Analytics & Reporting": "http://localhost:3000",
     "Creator Studio (Experimental)": "https://eluvio-creator-studio-demov3-test.web.app",
