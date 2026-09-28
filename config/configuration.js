@@ -1,19 +1,18 @@
-var EluvioConfiguration = {
-  "config-url": "https://main.net955305.contentfabric.io/config",
-  // "config-url": "https://demov3.net955210.contentfabric.io/config",
+const EluvioConfiguration = {
+  //"config-url": "https://main.net955305.contentfabric.io/config",
+  "config-url": "https://demov3.net955210.contentfabric.io/config",
   "apps": {
     "Eluvio Fabric Browser": "http://localhost:8080",
-    "Media Ingest": "https://studio.v3.contentfabric.io",
-    "Video Intelligence Editor": "http://localhost:8083",
-    "Stream Sample": "http://localhost:8084",
-    "Site Sample": "http://localhost:8086",
+    "Media Ingest": "http://localhost:8110",
     "Livestream Manager": "http://localhost:8155",
+    "Creator Studio": "http://localhost:9000",
+    "Video Intelligence Editor": "http://localhost:8083",
     "AI Content Search": "http://localhost:3001",
+    "Analytics & Reporting": "http://localhost:3000",
     "Content Management": "http://localhost:3003",
     "Pre-Ingest Dashboard": "http://localhost:3005",
-    "Creator Studio": "http://localhost:9000",
-    "Analytics & Reporting": "http://localhost:3000",
-    "Creator Studio (Experimental)": "https://eluvio-creator-studio-demov3-test.web.app",
+    "Stream Sample": "http://localhost:8084",
+    "Site Sample": "http://localhost:8086",
     "DApp Sample": "https://dapp-sample.app.eluv.io/",
     "Cross-chain-auth Sample": "https://dapp-sample-xco.app.eluv.io/?network=demo"
   },

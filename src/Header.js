@@ -13,7 +13,6 @@ import UrlJoin from "url-join";
 import Logo from "./static/images/Logo.png";
 import LogoDemo from "./static/images/LogoDemo.png";
 import LogoTest from "./static/images/LogoTest.png";
-import LogoPreview from "./static/images/LogoPreview.png";
 import AccountMenu from "./components/account/AccountMenu";
 import AppsIcon from "./static/icons/apps.svg";
 import ExternalLinkIcon from "./static/icons/external-link";

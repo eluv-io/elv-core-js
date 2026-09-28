@@ -32,7 +32,11 @@ const icons = {
 const appNames = [
   "Fabric Browser", "Media Ingest", "Video Intelligence Editor", "Livestream Manager",
   "Creator Studio", "Eluvio Studio",
+<<<<<<< HEAD
   "AI Content Search", "Content Management", "Pre-Ingest Dashboard",
+=======
+  "AI Content Search", "Content Management",
+>>>>>>> master
   "Analytics & Reporting"
 ];
 

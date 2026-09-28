@@ -120,7 +120,7 @@ class TenantStore {
       !configuration.share_signing_policy_object
     );
 
-    if(!requiresSetup && this.specialGroups.contentAdmins) {
+    if(!requiresSetup && this.specialGroups.contentAdmins?.address) {
       requiresSetup = !(yield this.client.AccessGroupMembers({
         contractAddress: this.specialGroups.contentAdmins.address
       }))
@@ -140,7 +140,7 @@ class TenantStore {
       }
     });
 
-    if(this.specialGroups.contentAdmins) {
+    if(this.specialGroups.contentAdmins?.address) {
       yield this.client.AddAccessGroupMember({
         contractAddress: this.specialGroups.contentAdmins.address,
         memberAddress: response.share_signing_address
@@ -282,11 +282,16 @@ class TenantStore {
             group.isOwner = Utils.EqualAddress(owner, this.rootStore.accountsStore.currentAccountAddress);
 
             // Manager
-            group.isManager = await client.CallContractMethod({
+            group.isManager = await this.client.CallContractMethod({
               contractAddress: group.address,
               methodName: "hasManagerAccess",
               methodArgs: [this.rootStore.accountsStore.currentAccountAddress]
             });
+
+            if(group.isManager) {
+              group.isDirectManager = !!(await this.client.AccessGroupManagers({contractAddress: group.address}))
+                .find(managerAddress => this.client.utils.EqualAddress(managerAddress, this.client.CurrentAccountAddress()));
+            }
 
             return group;
           } catch (error) {
@@ -320,7 +325,7 @@ class TenantStore {
           formatArguments: true,
         });
       } catch (error) {
-        this.Log("Failed to load tenant admin group", true);
+        this.Log("Failed to load tenant users group", true);
         this.Log(error, true);
       }
 
@@ -332,13 +337,13 @@ class TenantStore {
           formatArguments: true,
         });
       } catch (error) {
-        this.Log("Failed to load tenant admin group", true);
+        this.Log("Failed to load content admin group", true);
         this.Log(error, true);
       }
 
       // Sort special groups to the top of the list, if present
       const contentAdminGroupIndex = allGroups.findIndex(group => Utils.EqualAddress(group?.address, contentAdminGroupAddress));
-      if(contentAdminGroupAddress >= 0) {
+      if(contentAdminGroupIndex >= 0) {
         const contentAdminGroup = allGroups[contentAdminGroupIndex];
         delete allGroups[contentAdminGroupIndex];
         allGroups.unshift(contentAdminGroup);
@@ -352,7 +357,7 @@ class TenantStore {
       }
 
       const tenantAdminGroupIndex = allGroups.findIndex(group => Utils.EqualAddress(group?.address, tenantAdminGroupAddress));
-      if(tenantAdminGroupAddress >= 0) {
+      if(tenantAdminGroupIndex >= 0) {
         const tenantAdminGroup = allGroups[tenantAdminGroupIndex];
         delete allGroups[tenantAdminGroupIndex];
         allGroups.unshift(tenantAdminGroup);
@@ -380,7 +385,12 @@ class TenantStore {
       }
 
       this.groups = allGroups;
-      this.managedGroups = allGroups.filter(group => group?.isOwner || group?.isManager);
+      this.managedGroups = allGroups.filter(group =>
+        group?.isOwner ||
+        this.tenantContractId === "iten2aYr2mCUKsJ6zL9e5kAXZ2mvDXom" ?
+          group?.isDirectManager :
+          group?.isManager
+      );
     }
 
     return this.managedGroups;

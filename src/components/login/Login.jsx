@@ -16,9 +16,10 @@ import {
 } from "@mantine/core";
 import React, {useEffect, useRef, useState} from "react";
 import {CreateModuleClassMatcher} from "../../utils/Utils";
-import KeyForm from "./KeyForm";
 import {Navigate} from "react-router";
 import OryForm from "./OryForm";
+import {browserSupportsWebAuthn} from "@simplewebauthn/browser";
+import {FormatWebAuthnError} from "../../utils/Passkey";
 
 import EluvioLogo from "../../static/images/Main_Logo_Light";
 import {Link, useNavigate} from "react-router-dom";
@@ -28,6 +29,7 @@ import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "../Misc";
 import EditIcon from "../../static/icons/edit.svg";
 import DefaultProfileIcon from "../../static/icons/User";
 import TenancyIcon from "../../static/icons/users.svg";
+import KeyAccountForm from "./KeyForm";
 
 const S = CreateModuleClassMatcher(LoginStyles);
 
@@ -37,6 +39,8 @@ const LoginGatePasswordForm = observer(({Close}) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  const hasPasskey = browserSupportsWebAuthn() && !!accountsStore.currentAccount?.encryptedPrivateKeyPasskey;
 
   const Submit = async () => {
     setError(undefined);
@@ -56,13 +60,66 @@ const LoginGatePasswordForm = observer(({Close}) => {
     }
   };
 
+  const SubmitWithPasskey = async () => {
+    setError(undefined);
+    setSubmitting(true);
+
+    try {
+      await accountsStore.UnlockAccountWithPasskey({
+        address: accountsStore.currentAccountAddress
+      });
+
+      Close?.(true);
+    } catch (error) {
+      accountsStore.Log(error, true);
+      setError(FormatWebAuthnError(error));
+      setSubmitting(false);
+    }
+  };
+
+  useEffect(() => {
+    if(!hasPasskey) { return; }
+
+    let cancelled = false;
+    const timeout = setTimeout(() => {
+      if(!cancelled) { SubmitWithPasskey(); }
+    }, 75);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeout);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <form onSubmit={event => event.preventDefault()}>
       <AccountSelector center />
+      {/* Hidden field so password managers can pick up / save the username. */}
+      <input
+        type="text"
+        name="username"
+        autoComplete="username"
+        readOnly
+        tabIndex={-1}
+        aria-hidden="true"
+        value={accountsStore.currentAccount?.encodedEncryptedPrivateKey}
+        style={{
+          position: "absolute",
+          width: 1,
+          height: 1,
+          padding: 0,
+          margin: -1,
+          border: 0,
+          overflow: "hidden",
+          clip: "rect(0, 0, 0, 0)"
+        }}
+      />
       <PasswordInput
         data-autofocus
         mt="xs"
         aria-label="Password"
+        autoComplete="current-password"
         placeholder="Password"
         value={password}
         error={error}
@@ -90,6 +147,25 @@ const LoginGatePasswordForm = observer(({Close}) => {
         >
           Submit
         </Button>
+        {
+          !hasPasskey ? null :
+            <Button
+              fz="sm"
+              variant="outline"
+              opacity={submitting ? 0.5 : 1}
+              styles={{
+                root: {
+                  transition: "opacity 0.25s ease"
+                }
+              }}
+              type="button"
+              w="100%"
+              onClick={SubmitWithPasskey}
+              className={S("button")}
+            >
+              Use Passkey
+            </Button>
+        }
         {
           !accountsStore.hasAccount ? null :
             <Link to="/accounts" onClick={() => Close?.()} className={S("button-link", "button-link--secondary")}>
@@ -159,8 +235,14 @@ export const LoginGateModal = observer(({Close}) => {
 
 export const LoginGate = observer(({children}) => {
   const currentAccount = accountsStore.currentAccount;
+  const [autoUnlocking, setAutoUnlocking] = useState(true);
 
-  if(!accountsStore.accountsLoaded || accountsStore.authenticating || accountsStore.switchingAccounts) {
+  useEffect(() => {
+    accountsStore.CheckSavedPassword({address: accountsStore.currentAccountAddress})
+      .then(() => setAutoUnlocking(false));
+  }, []);
+
+  if(!accountsStore.accountsLoaded || accountsStore.authenticating || accountsStore.switchingAccounts || autoUnlocking) {
     return (
       <Modal
         centered
@@ -172,7 +254,7 @@ export const LoginGate = observer(({children}) => {
       >
         <Text ta="center" fz="xl" my="lg">
           {
-            accountsStore.switchingAccounts ?
+            accountsStore.switchingAccounts && !autoUnlocking ?
               "Switching Accounts..." :
               "Authenticating..."
           }
@@ -194,65 +276,6 @@ export const LoginGate = observer(({children}) => {
 
 
 /* Full page login for new accounts */
-
-
-const KeyAccountForm = observer(({onboardParams, Close}) => {
-  const [formData, setFormData] = useState({});
-  const [error, setError] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
-
-  const Submit = async () => {
-    setSubmitting(true);
-    setError(undefined);
-
-    try {
-      await accountsStore.AddAccount({
-        mnemonic: formData.mnemonic?.trim(),
-        privateKey: formData.privateKey,
-        encryptedPrivateKey: formData.encryptedPrivateKey,
-        password: formData.password,
-        passwordConfirmation: formData.passwordConfirmation,
-        onboardParams
-      });
-
-      Close(true);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
-      setError(error.toString());
-      setSubmitting(false);
-    }
-  };
-
-  return (
-    <>
-      <KeyForm onboardParams={onboardParams} UpdateFormData={setFormData} Submit={Submit} />
-      <div className={S("actions")}>
-        <Button
-          disabled={!formData.valid}
-          w="100%"
-          loading={submitting}
-          className={S("button")}
-          onClick={Submit}
-        >
-          Sign In
-        </Button>
-        {
-          !accountsStore.hasAccount ? null :
-            <Link to="/accounts" onClick={() => Close?.()} className={S("button-link", "button-link--secondary")}>
-              Back to Accounts
-            </Link>
-        }
-      </div>
-      {
-        !error ? null :
-          <div className={S("error")}>
-            { error }
-          </div>
-      }
-    </>
-  );
-});
 
 const LoginModalContent = observer(({onboardParams, accountType, setAccountType, setClosable, Close}) => {
   const [shareEmail, setShareEmail] = useState(true);
