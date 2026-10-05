@@ -8,7 +8,12 @@ const EluvioConfiguration = {
     "Stream Sample": "https://display.v3.contentfabric.io",
     "Site Sample": "https://site-sample.v3.contentfabric.io",
     "AI Content Search": "https://eluvio-clip-search.web.app",
-    "Livestream Manager": "https://eluvio-live-stream-v3.web.app"
+    "Livestream Manager": "https://eluvio-live-stream-v3.web.app",
+    "Media Packager": "http://localhost:3006"
+  },
+  // Restrict apps to specific tenants: {"<app name>": ["iten..."]}. Unlisted apps are available to all tenants.
+  "appTenantAllowlist": {
+    "Media Packager": ["iten..."]
   },
   "version": "local"
 };
