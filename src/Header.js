@@ -2,12 +2,12 @@ import HeaderStyles from "./static/stylesheets/modules/header.module.scss";
 
 import React, {useState} from "react";
 import {observer} from "mobx-react";
-import {accountsStore, rootStore} from "./stores";
+import {accountsStore, rootStore, tenantStore} from "./stores";
 import {Link, useNavigate} from "react-router-dom";
 import {CreateModuleClassMatcher} from "./utils/Utils";
 import {Group, Popover, UnstyledButton} from "@mantine/core";
 import {ImageIcon} from "./components/Misc";
-import AppInfo from "./components/apps/AppInfo";
+import AppInfo, {FilterAllowedApps} from "./components/apps/AppInfo";
 import UrlJoin from "url-join";
 
 import Logo from "./static/images/Logo.png";
@@ -56,6 +56,11 @@ const AppsMenu = observer(() => {
     return null;
   }
 
+  const tenantContractId = tenantStore.tenantContractId;
+  const apps = FilterAllowedApps(AppInfo.apps, tenantContractId);
+  const tools = FilterAllowedApps(AppInfo.tools, tenantContractId);
+  const experiments = FilterAllowedApps(AppInfo.experiments, tenantContractId);
+
   return (
     <Popover opened={showMenu} onChange={setShowMenu} offset={20} position="bottom-start">
       <Popover.Target>
@@ -72,7 +77,7 @@ const AppsMenu = observer(() => {
           Content Fabric Application Suite
         </div>
         {
-          AppInfo.apps.map(({name, logo}) =>
+          apps.map(({name, logo}) =>
             <AppsMenuButton key={name} name={name} logo={logo} setShowMenu={setShowMenu} />
           )
         }
@@ -81,18 +86,18 @@ const AppsMenu = observer(() => {
           Content Fabric Tools
         </div>
         {
-          AppInfo.tools.map(({name, logo}) =>
+          tools.map(({name, logo}) =>
             <AppsMenuButton key={name} name={name} logo={logo} setShowMenu={setShowMenu} />
           )
         }
-        { AppInfo.experiments.length > 0 && (
+        { experiments.length > 0 && (
           <>
             <div className={S("apps-menu__separator")} />
             <div className={S("apps-menu__title")}>
               Content Fabric Experiments
             </div>
             {
-              AppInfo.experiments.map(({name, logo}) =>
+              experiments.map(({name, logo}) =>
                 <AppsMenuButton key={name} name={name} logo={logo} setShowMenu={setShowMenu} />
               )
             }

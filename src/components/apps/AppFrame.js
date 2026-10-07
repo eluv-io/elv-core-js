@@ -13,6 +13,7 @@ import {FrameClient} from "@eluvio/elv-client-js/src/FrameClient";
 import {observer} from "mobx-react";
 
 import {rootStore, accountsStore} from "../../stores";
+import {IsAppAllowed, IsAppRestricted} from "./AppInfo";
 
 class IFrameBase extends React.Component {
   SandboxPermissions() {
@@ -343,6 +344,19 @@ const AppFrameWrapper = observer(() => {
 
     return () => rootStore.SetActiveApp(undefined);
   }, [app]);
+
+  if(IsAppRestricted(app)) {
+    const tenantContractId = rootStore.tenantStore.tenantContractId;
+
+    // Tenant is loaded asynchronously after the account - wait for it before deciding
+    if(!tenantContractId) {
+      return null;
+    }
+
+    if(!IsAppAllowed(app, tenantContractId)) {
+      return <Navigate to="/apps" replace />;
+    }
+  }
 
   return <AppFrame app={app} key={`${app}-${rootStore.accountsStore.currentAccountAddress}`} />;
 });

@@ -3,10 +3,11 @@ import "../../static/stylesheets/apps.scss";
 import React from "react";
 import GenericAppLogo from "../../static/icons/App.svg";
 import {Link} from "react-router-dom";
-import AppInfo from "./AppInfo";
+import AppInfo, {FilterAllowedApps} from "./AppInfo";
 import {ImageIcon} from "../Misc";
-import {accountsStore} from "../../stores";
+import {accountsStore, tenantStore} from "../../stores";
 import {Navigate} from "react-router";
+import {observer} from "mobx-react";
 
 class Apps extends React.PureComponent {
   App({name, logo}) {
@@ -26,7 +27,10 @@ class Apps extends React.PureComponent {
       return <Navigate to="/accounts" />;
     }
 
-    const { apps, tools, experiments } = AppInfo;
+    const tenantContractId = tenantStore.tenantContractId;
+    const apps = FilterAllowedApps(AppInfo.apps, tenantContractId);
+    const tools = FilterAllowedApps(AppInfo.tools, tenantContractId);
+    const experiments = FilterAllowedApps(AppInfo.experiments, tenantContractId);
 
     return (
       <div className="page-content">
@@ -61,4 +65,4 @@ class Apps extends React.PureComponent {
   }
 }
 
-export default Apps;
+export default observer(Apps);

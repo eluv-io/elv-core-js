@@ -10,6 +10,7 @@ import StudioIcon from "../../static/images/app_icons/Media Ingest.png";
 import AISearchIcon from "../../static/images/app_icons/AI Clip Search - beta.png";
 import ContentManagementIcon from "../../static/images/app_icons/Content Management - beta.png"
 import LiveStreamManagerIcon from "../../static/images/app_icons/Livestream Manager.png";
+import MediaPackagerIcon from "../../static/images/app_icons/Media Packager.png";
 
 const icons = {
   "Fabric Browser": FabricBrowserIcon,
@@ -20,6 +21,7 @@ const icons = {
   "AI Content Search": AISearchIcon,
   "Content Management": ContentManagementIcon,
   "Livestream Manager": LiveStreamManagerIcon,
+  "Media Packager": MediaPackagerIcon,
   "Creator Studio": CreatorStudioIcon,
   "Eluvio Studio": CreatorStudioIcon,
   "Analytics & Reporting": AnalyticsAndReportingIcon,
@@ -31,8 +33,21 @@ const appNames = [
   "Fabric Browser", "Media Ingest", "Video Intelligence Editor", "Livestream Manager",
   "Creator Studio", "Eluvio Studio",
   "AI Content Search", "Content Management",
-  "Analytics & Reporting"
+  "Analytics & Reporting", "Media Packager"
 ];
+
+// Apps listed in EluvioConfiguration.appTenantAllowlist are only available to the listed tenants.
+// Apps not listed there are available to everyone.
+const tenantAllowlist = EluvioConfiguration.appTenantAllowlist || {};
+
+export const IsAppRestricted = name => Array.isArray(tenantAllowlist[name]);
+
+export const IsAppAllowed = (name, tenantContractId) =>
+  !IsAppRestricted(name) ||
+  (!!tenantContractId && tenantAllowlist[name].includes(tenantContractId));
+
+export const FilterAllowedApps = (appList, tenantContractId) =>
+  appList.filter(({name}) => IsAppAllowed(name, tenantContractId));
 
 export default {
   apps: Object.keys(EluvioConfiguration.apps)
