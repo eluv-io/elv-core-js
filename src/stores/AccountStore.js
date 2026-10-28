@@ -529,6 +529,7 @@ class AccountStore {
         }
       } else {
         if(yield this.CheckSavedPassword({address})) {
+          this.CheckTenantDetails();
           return;
         }
       }

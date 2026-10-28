@@ -94,7 +94,8 @@ const AppsMenu = observer(() => {
     <Popover opened={showMenu} onChange={setShowMenu} offset={20} position="bottom-start">
       <Popover.Target>
         <UnstyledButton
-          aria-label="All Applications"
+          title="View All Applications"
+          aria-label="View All Applications"
           onClick={() => setShowMenu(!showMenu)}
           className={S("apps-menu__button", showMenu ? "apps-menu__button--active" : "")}
         >
@@ -148,7 +149,7 @@ const CenterContent = observer(() => {
 
   return (
     <div className={S("header__center-content", "header__app-display")}>
-      <img src={EvieLogo} className={S("header__app-logo")} alt="Logo" /> : ""
+      <img src={EvieLogo} className={S("header__app-logo")} alt="Logo" />
       { rootStore.activeApp || "" }
     </div>
   );
