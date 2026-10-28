@@ -17,8 +17,37 @@ import AccountMenu from "./components/account/AccountMenu";
 import AppsIcon from "./static/icons/apps.svg";
 import ExternalLinkIcon from "./static/icons/external-link";
 import EvieLogo from "./static/images/app_icons/EVIE - dark mode.png";
+import NotificationIcon from "./static/icons/info.svg";
 
 const S = CreateModuleClassMatcher(HeaderStyles);
+
+const TenantInviteNotification = observer(() => {
+  if(!tenantStore.isTenantAdmin) {
+    return null;
+  }
+
+  const invites = Object.keys(tenantStore.invites || {})
+    .filter(key => tenantStore.invites[key].type === tenantStore.INVITE_EVENTS.ACCEPTED);
+
+  if(invites.length === 0) {
+    return;
+  }
+
+  return (
+    <Link to="/tenancy/invites" className={S("notification")}>
+      <ImageIcon
+        icon={NotificationIcon}
+        className={S("notification__icon")}
+      />
+      <div className={S("notification__text")}>
+        {invites.length} new user{invites.length === 1 ? "" : "s"} are awaiting permissions
+      </div>
+      <div className={S("notification__action")}>
+        Manage
+      </div>
+    </Link>
+  );
+});
 
 const AppsMenuButton = observer(({name, logo, setShowMenu}) => {
   const navigate = useNavigate();
@@ -108,21 +137,15 @@ const AppsMenu = observer(() => {
   );
 });
 
-const AppDisplay = observer(() => {
-  let icon;
-  let isEvie = rootStore.activeApp === "Video Intelligence Editor";
-
-  if(isEvie) {
-    icon = EvieLogo;
+const CenterContent = observer(() => {
+  if(rootStore.activeApp !== "Video Intelligence Editor") {
+    return <TenantInviteNotification />;
   }
 
   return (
     <div className={S("header__app-display")}>
-      {
-        (isEvie && icon) ?
-          <img src={icon} className={S("header__app-logo")} alt="Logo" /> : ""
-      }
-      { isEvie ? rootStore.activeApp : "" }
+      <img src={EvieLogo} className={S("header__app-logo")} alt="Logo" /> : ""
+      { rootStore.activeApp || "" }
     </div>
   );
 });
@@ -143,17 +166,17 @@ const Header = observer(() => {
         <Link to="/apps" className={S("header__logo")}>
           <img src={logo} alt="Eluvio"/>
         </Link>
-        <AppDisplay/>
-        <AppsMenu/>
-        <div className={S("header__gap")}/>
-        {
-          !accountsStore.currentAccount ? null :
-            <Link className={S("header__apps-link")} to="/apps">
-              All Applications
-            </Link>
-        }
-        <AccountMenu/>
       </div>
+      <CenterContent />
+      <AppsMenu/>
+      <div className={S("header__gap")}/>
+      {
+        !accountsStore.currentAccount ? null :
+          <Link className={S("header__apps-link")} to="/apps">
+            All Applications
+          </Link>
+      }
+      <AccountMenu/>
     </header>
   );
 });

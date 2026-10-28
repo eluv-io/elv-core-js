@@ -759,6 +759,7 @@ class AccountStore {
       if(isTenantAdmin) {
         try {
           this.rootStore.tenantStore.SetShareConfiguration();
+          this.rootStore.tenantStore.LoadInviteNotifications();
         } catch (error) {
           this.Log("Failed to set up share configuration:", true);
           this.Log(error);
