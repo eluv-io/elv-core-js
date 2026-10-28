@@ -6,9 +6,7 @@ import TransferFormPage from "./components/transfer/TransferForm";
 import TenantOverview from "./components/tenancy/TenantOverview";
 import {observer} from "mobx-react";
 import Accounts from "./components/account/Accounts";
-import {Routes, Route, NavLink} from "react-router-dom";
 import TenantInvites from "./components/tenancy/TenantInvites";
-import {Navigate, Outlet} from "react-router";
 import {accountsStore, rootStore, tenantStore} from "./stores";
 import TenantUsers from "./components/tenancy/TenantUsers";
 import Login, {LoginGate, LoginGateModal} from "./components/login/Login";
@@ -17,21 +15,27 @@ import SplashPage from "./components/login/SplashPage";
 import {ImageIcon} from "./components/Misc";
 import ReleaseNotes from "./components/release_notes/ReleaseNotes";
 
+import {Link, Redirect, Route, Switch} from "wouter";
+
 import OverviewIcon from "./static/icons/overview.svg";
 import ManageIcon from "./static/icons/settings.svg";
 import InviteIcon from "./static/icons/add-user.svg";
 
-const GatedRoute = ({Component}) => {
+const GatedRoute = ({Component, children}) => {
   return (
     <LoginGate>
-      <Component />
+      {
+        children ?
+          children :
+          <Component />
+      }
     </LoginGate>
   );
 };
 
-const TenantNav = observer(() => {
+const TenantRoutes = observer(() => {
   if(!tenantStore.isTenantAdmin) {
-    return <Navigate to="/accounts" />;
+    return <Redirect to="/accounts" />;
   }
 
   const name = tenantStore.publicTenantMetadata?.name ||
@@ -39,70 +43,74 @@ const TenantNav = observer(() => {
     "Tenant";
 
   return (
-    <nav className="side-nav">
-      <nav className="side-nav__nav">
-        <h2 className="side-nav__title">
-          {
-            !name.startsWith("iq__") ? name :
-              "Tenant"
-          }
-        </h2>
-        <NavLink to="/tenancy" end className="side-nav__link">
-          <ImageIcon icon={OverviewIcon} />
-          <span>Overview</span>
-        </NavLink>
-        <NavLink to="/tenancy/manage" end className="side-nav__link">
-          <ImageIcon icon={ManageIcon} />
-          <span>Manage</span>
-        </NavLink>
-        <NavLink to="/tenancy/invites" end className="side-nav__link">
-          <ImageIcon icon={InviteIcon} />
-          <span>Invite</span>
-        </NavLink>
+    <GatedRoute>
+      <nav className="side-nav">
+        <nav className="side-nav__nav">
+          <h2 className="side-nav__title">
+            {
+              !name.startsWith("iq__") ? name :
+                "Tenant"
+            }
+          </h2>
+          <Link to="/" className={active => `side-nav__link ${active ? "side-nav__link--active" : ""}`}>
+            <ImageIcon icon={OverviewIcon} />
+            <span>Overview</span>
+          </Link>
+          <Link to="/manage" className={active => `side-nav__link ${active ? "side-nav__link--active" : ""}`}>
+            <ImageIcon icon={ManageIcon} />
+            <span>Manage</span>
+          </Link>
+          <Link to="/invites" className={active => `side-nav__link ${active ? "side-nav__link--active" : ""}`}>
+            <ImageIcon icon={InviteIcon} />
+            <span>Invite</span>
+          </Link>
+        </nav>
+        <div className="content">
+          <Switch>
+            <Route path="/" component={TenantOverview} />
+            <Route path="/invites" component={TenantInvites} />
+            <Route path="/manage" component={TenantUsers} />
+          </Switch>
+        </div>
       </nav>
-      <div className="content">
-        <Outlet />
-      </div>
-    </nav>
+    </GatedRoute>
   );
 });
 
-const ContentNav = observer(() => {
+const ContentWrapper = observer(({children}) => {
   if(rootStore.showLoginGate) {
     return <LoginGateModal Close={() => rootStore.SetShowLoginGate(false)} />;
   }
 
-  if(!rootStore.pathname.startsWith("/tenancy")) {
-    return (
-      <div className="content">
-        <Outlet />
-      </div>
-    );
-  }
-
-  return <TenantNav />;
+  return (
+    <div className="content">
+      { children }
+    </div>
+  );
 });
 
 const AppRoutes = observer(() => {
   return (
-    <Routes>
-      <Route path="/" element={<ContentNav />}>
-        <Route path="/" element={<SplashPage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/accounts" element={<Accounts />} />
-        <Route path="/accounts/add" element={<AccountsFormPage />} />
-        <Route path="/apps" element={<AppsPage />} />
-        <Route path="/release_notes" element={<ReleaseNotes />} />
-        <Route path="/onboard" element={<SplashPage />} />
-        <Route path="/onboard/login" element={<Login />} />
-        <Route path="/transfer" element={<GatedRoute Component={TransferFormPage} />} />
-        <Route path="/apps/:app" element={<GatedRoute Component={AppFramePage} />} />
-        <Route path="/profile" element={<GatedRoute Component={Profile} />} />
-        <Route path="/tenancy" element={<GatedRoute Component={TenantOverview} />} />
-        <Route path="/tenancy/invites" element={<GatedRoute Component={TenantInvites} />} />
-        <Route path="/tenancy/manage" element={<GatedRoute Component={TenantUsers} />} />
+    <Switch>
+      <Route path="/tenancy" nest>
+        <TenantRoutes />
       </Route>
-    </Routes>
+      <Route path="/" nest>
+        <ContentWrapper>
+          <Route path="/" component={SplashPage} />
+          <Route path="/login" component={Login} />
+          <Route path="/accounts" component={Accounts} />
+          <Route path="/accounts/add" component={AccountsFormPage} />
+          <Route path="/apps" component={AppsPage} />
+          <Route path="/release_notes" component={ReleaseNotes} />
+          <Route path="/onboard" component={SplashPage} />
+          <Route path="/onboard/login" component={Login} />
+          <Route path="/transfer" component={() => <GatedRoute Component={TransferFormPage} />} />
+          <Route path="/apps/:app" component={() => <GatedRoute Component={AppFramePage} />} />
+          <Route path="/profile" component={() => <GatedRoute Component={Profile} />} />
+        </ContentWrapper>
+      </Route>
+    </Switch>
   );
 });
 

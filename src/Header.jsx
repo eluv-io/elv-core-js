@@ -3,7 +3,7 @@ import HeaderStyles from "./static/stylesheets/modules/header.module.scss";
 import React, {useState} from "react";
 import {observer} from "mobx-react";
 import {accountsStore, rootStore, tenantStore} from "./stores";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useLocation} from "wouter";
 import {CreateModuleClassMatcher} from "./utils/Utils";
 import {Group, Popover, UnstyledButton} from "@mantine/core";
 import {ImageIcon} from "./components/Misc";
@@ -50,7 +50,7 @@ const TenantInviteNotification = observer(() => {
 });
 
 const AppsMenuButton = observer(({name, logo, setShowMenu}) => {
-  const navigate = useNavigate();
+  const [,navigate] = useLocation();
   return (
     <button
       className={S("apps-menu__link")}

@@ -189,12 +189,12 @@ b {
     }
 
     &:hover,
-    &.active {
+    &--active {
       background-color: var(--background-secondary);
       font-weight: 500;
     }
 
-    &.active {
+    &--active {
       color: var(--accent);
     }
 

@@ -17,7 +17,7 @@ import {
 import {rootStore, accountsStore} from "../../stores";
 import {CreateModuleClassMatcher} from "../../utils/Utils";
 import {ImageIcon} from "../Misc";
-import {Link} from "react-router-dom";
+import {Link} from "wouter";
 
 import EditIcon from "../../static/icons/edit.svg";
 import DownloadIcon from "../../static/icons/download.svg";

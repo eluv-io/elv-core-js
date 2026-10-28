@@ -1,7 +1,6 @@
 import "./static/stylesheets/modules/shared.module.scss";
 
 import React from "react";
-import {BrowserRouter} from "react-router-dom";
 import {observer} from "mobx-react";
 import {accountsStore, rootStore} from "./stores";
 import Header from "./Header.jsx";
@@ -70,7 +69,7 @@ const App = observer(() => {
   );
 
   return (
-    <BrowserRouter>
+    <div>
       <ScrollToTop />
       <div className={`router-container ${rootStore.activeApp ? "router-container--app" : ""}`}>
         {
@@ -94,7 +93,7 @@ const App = observer(() => {
             <Footer />
         }
       </div>
-    </BrowserRouter>
+    </div>
   );
 });
 

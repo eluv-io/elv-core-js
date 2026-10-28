@@ -9,7 +9,7 @@ import {ButtonWithLoader, CopyButton, DefaultProfileImage, ImageIcon} from "../M
 
 import {Button, Group, Loader, Paper, Text, TextInput, Title, UnstyledButton} from "@mantine/core";
 import {modals} from "@mantine/modals";
-import {useNavigate} from "react-router-dom";
+import {useLocation} from "wouter";
 import UrlJoin from "url-join";
 import {Tabs} from "@mantine/core";
 import {FormatWebAuthnError} from "../../utils/Passkey";
@@ -423,7 +423,7 @@ const AdvancedDetails = observer(() => {
 });
 
 const Profile = observer(() => {
-  const navigate = useNavigate();
+  const [, navigate] = useLocation();
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   if(!accountsStore.currentAccount) {

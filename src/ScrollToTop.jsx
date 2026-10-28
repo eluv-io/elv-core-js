@@ -1,4 +1,4 @@
-import {useLocation} from "react-router-dom";
+import {useLocation} from "wouter";
 import {useEffect} from "react";
 import {rootStore} from "./stores";
 
@@ -16,13 +16,13 @@ export const ScrollTo = ({top=0, target, behavior="smooth"}) => {
 };
 
 const ScrollToTop = () => {
-  const location = useLocation();
+  const [location] = useLocation();
 
   useEffect(() => {
     ScrollTo({top: 0, behavior: "auto"});
-  }, [location.pathname]);
+  }, [location]);
 
-  rootStore.SetPathname(location.pathname);
+  rootStore.SetPathname(location);
 
   return null;
 };

@@ -3,7 +3,7 @@ import AccountStyles from "../../static/stylesheets/modules/accounts.module.scss
 import {observer} from "mobx-react";
 import {accountsStore} from "../../stores";
 import {Button, FileButton, Group, Text} from "@mantine/core";
-import {useNavigate} from "react-router-dom";
+import {useLocation} from "wouter";
 import React, {useState} from "react";
 import {CreateModuleClassMatcher} from "../../utils/Utils";
 
@@ -19,7 +19,7 @@ import KeyIcon from "../../static/icons/Key.svg";
 const S = CreateModuleClassMatcher(AccountStyles);
 
 const Account = observer(({address}) => {
-  const navigate = useNavigate();
+  const [,navigate] = useLocation();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const account = accountsStore.accounts[address];
 
@@ -116,7 +116,7 @@ const Account = observer(({address}) => {
 });
 
 const Accounts = observer(() => {
-  const navigate = useNavigate();
+  const [, navigate] = useLocation();
 
   return (
     <div className="page-content">

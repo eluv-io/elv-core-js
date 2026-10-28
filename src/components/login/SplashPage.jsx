@@ -4,7 +4,7 @@ import React, {useEffect} from "react";
 import {observer} from "mobx-react";
 import {CreateModuleClassMatcher} from "../../utils/Utils";
 import {Button, FileButton, UnstyledButton} from "@mantine/core";
-import {useNavigate} from "react-router-dom";
+import {useLocation} from "wouter";
 import {rootStore, accountsStore, tenantStore} from "../../stores";
 
 import SplashBackground from "../../static/images/SplashBackground.jpg";
@@ -13,7 +13,7 @@ import EluvioLogo from "../../static/images/Main_Logo_Light.png";
 const S = CreateModuleClassMatcher(LoginStyles);
 
 const Actions = observer(() => {
-  const navigate = useNavigate();
+  const [, navigate] = useLocation();
   const onboard = rootStore.pathname.startsWith("/onboard");
   const inviteConsumed =
     onboard &&

@@ -1,11 +1,10 @@
 import "../../static/stylesheets/apps.scss";
 
 import React from "react";
-import {Link} from "react-router-dom";
+import {Link, Redirect} from "wouter";
 import AppInfo, {FilterAllowedApps} from "./AppInfo";
 import {ImageIcon} from "../Misc";
 import {accountsStore, tenantStore} from "../../stores";
-import {Navigate} from "react-router";
 import {observer} from "mobx-react";
 
 import GenericAppLogo from "../../static/icons/App.svg";
@@ -25,7 +24,7 @@ class Apps extends React.PureComponent {
 
   render() {
     if(parseFloat(accountsStore.currentAccount?.balance || 0) < 0.01) {
-      return <Navigate to="/accounts" />;
+      return <Redirect to="/accounts" />;
     }
 
     const tenantContractId = tenantStore.tenantContractId;

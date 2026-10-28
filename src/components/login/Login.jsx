@@ -16,12 +16,11 @@ import {
 } from "@mantine/core";
 import React, {useEffect, useRef, useState} from "react";
 import {CreateModuleClassMatcher} from "../../utils/Utils";
-import {Navigate} from "react-router";
+import {Redirect, Link, useLocation} from "wouter";
 import OryForm from "./OryForm";
 import {browserSupportsWebAuthn} from "@simplewebauthn/browser";
 import {FormatWebAuthnError} from "../../utils/Passkey";
 
-import {Link, useNavigate} from "react-router-dom";
 import {AccountSelector} from "../account/AccountMenu";
 import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "../Misc";
 import KeyAccountForm from "./KeyForm";
@@ -183,7 +182,7 @@ export const LoginGateModal = observer(({Close}) => {
   const accountType = accountsStore.currentAccount?.type || "key";
 
   if(accountsStore.sortedAccounts.length === 0) {
-    return <Navigate to="/" />;
+    return <Redirect to="/" />;
   }
 
   return (
@@ -266,7 +265,7 @@ export const LoginGate = observer(({children}) => {
     );
   } else if(currentAccount?.signer && currentAccount?.balance < 0.1 && location.pathname !== "/profile") {
     // No account or insufficient balance
-    return <Navigate to="/accounts"/>;
+    return <Redirect to="/accounts"/>;
   } else if(!currentAccount?.signer || accountsStore.loadingAccount) {
     return <LoginGateModal Close={() => {}}/>;
   }
@@ -598,7 +597,7 @@ const LoginModal = observer(({Close}) => {
 });
 
 const Login = observer(() => {
-  const navigate = useNavigate();
+  const [, navigate] = useLocation();
 
   return (
     <div className={S("page-content", "login-page")}>

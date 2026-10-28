@@ -5,7 +5,7 @@ import {CreateModuleClassMatcher, JoinClassNames} from "../../utils/Utils";
 import React, {useState} from "react";
 import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "../Misc";
 import {rootStore, accountsStore, tenantStore} from "../../stores";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useLocation} from "wouter";
 import {Button, Combobox, Popover, UnstyledButton, useCombobox} from "@mantine/core";
 import {LoginGateModal} from "../login/Login";
 
@@ -119,7 +119,7 @@ export const AccountSelector = observer(({center, className=""}) => {
 
 const AccountMenu = observer(({Close}) => {
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const navigate = useNavigate();
+  const [,navigate] = useLocation();
   const limited = !accountsStore.currentAccount || accountsStore.currentAccount?.lowBalance;
 
   if(showLoginModal) {

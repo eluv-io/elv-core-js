@@ -6,7 +6,7 @@ import {rootStore, accountsStore} from "../../stores";
 import {Button, Loader, PasswordInput, TextInput} from "@mantine/core";
 import {CreateModuleClassMatcher, ValidEmail} from "../../utils/Utils";
 import {ButtonWithLoader} from "../Misc";
-import {Link} from "react-router-dom";
+import {Link} from "wouter";
 import {AccountSelector} from "../account/AccountMenu";
 
 const S = CreateModuleClassMatcher(LoginStyles);
