@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react";
 import {Select, TextInput, NumberInput, Button, Group, Text} from "@mantine/core";
-import {rootStore, accountsStore, tenantStore} from "../../stores";
+import {rootStore, accountsStore, tenantStore} from "@/stores";
 import {Utils} from "@eluvio/elv-client-js";
 import {Link, useLocation} from "wouter";
-import {CreateModuleClassMatcher} from "../../utils/Utils";
-import {ImageIcon} from "../Misc";
+import {CreateModuleClassMatcher} from "@/utils/Utils";
+import {ImageIcon} from "@/components/Misc";
 import {modals} from "@mantine/modals";
 
-import FundsIcon from "../../static/icons/elv-token.png";
+import FundsIcon from "@/assets/icons/elv-token.png";
 
 const S = CreateModuleClassMatcher();
 

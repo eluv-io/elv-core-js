@@ -1,8 +1,8 @@
-import FooterStyles from "./static/stylesheets/modules/footer.module.scss";
+import FooterStyles from "@/assets/stylesheets/modules/footer.module.scss";
 
 import React from "react";
 import {observer} from "mobx-react";
-import {CreateModuleClassMatcher} from "./utils/Utils";
+import {CreateModuleClassMatcher} from "@/utils/Utils";
 import {Link, useLocation} from "wouter";
 
 const S = CreateModuleClassMatcher(FooterStyles);

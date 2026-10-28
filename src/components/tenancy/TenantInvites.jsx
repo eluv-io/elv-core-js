@@ -1,20 +1,20 @@
-import TenancyStyles from "../../static/stylesheets/modules/tenancy.module.scss";
+import TenancyStyles from "@/assets/stylesheets/modules/tenancy.module.scss";
 
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react";
 import {Tabs, Group, Text, Button, Loader, UnstyledButton, TextInput} from "@mantine/core";
-import TenantInviteModal from "./TenantInviteModal";
+import TenantInviteModal from "@/components/tenancy/TenantInviteModal";
 
-import {tenantStore} from "../../stores";
-import TenantUserPermissionsModal from "./TenantUserPermissionsModal";
-import {CreateModuleClassMatcher} from "../../utils/Utils";
-import {CopyButton, DefaultProfileImage, ImageIcon} from "../Misc";
+import {tenantStore} from "@/stores";
+import TenantUserPermissionsModal from "@/components/tenancy/TenantUserPermissionsModal";
+import {CreateModuleClassMatcher} from "@/utils/Utils";
+import {CopyButton, DefaultProfileImage, ImageIcon} from "@/components/Misc";
 import {useDebouncedValue} from "@mantine/hooks";
 import {modals} from "@mantine/modals";
 
-import XIcon from "../../static/icons/X.svg";
-import AlertIcon from "../../static/icons/alert-circle.svg";
-import AddUserIcon from "../../static/icons/add-user.svg";
+import XIcon from "@/assets/icons/X.svg";
+import AlertIcon from "@/assets/icons/alert-circle.svg";
+import AddUserIcon from "@/assets/icons/add-user.svg";
 
 
 const S = CreateModuleClassMatcher(TenancyStyles);

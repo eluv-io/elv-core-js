@@ -1,6 +1,6 @@
 import {useLocation} from "wouter";
 import {useEffect} from "react";
-import {rootStore} from "./stores";
+import {rootStore} from "@/stores";
 
 export const ScrollTo = ({top=0, target, behavior="smooth"}) => {
   if(target) {

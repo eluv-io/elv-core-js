@@ -1,7 +1,7 @@
-import LoginStyles from "../../static/stylesheets/modules/login.module.scss";
+import LoginStyles from "@/assets/stylesheets/modules/login.module.scss";
 
 import {observer} from "mobx-react";
-import {rootStore, accountsStore, tenantStore} from "../../stores";
+import {rootStore, accountsStore, tenantStore} from "@/stores";
 import {
   Button,
   Checkbox,
@@ -15,20 +15,20 @@ import {
   TextInput
 } from "@mantine/core";
 import React, {useEffect, useRef, useState} from "react";
-import {CreateModuleClassMatcher} from "../../utils/Utils";
+import {CreateModuleClassMatcher} from "@/utils/Utils";
 import {Redirect, Link, useLocation} from "wouter";
-import OryForm from "./OryForm";
+import OryForm from "@/components/login/OryForm";
 import {browserSupportsWebAuthn} from "@simplewebauthn/browser";
-import {FormatWebAuthnError} from "../../utils/Passkey";
+import {FormatWebAuthnError} from "@/utils/Passkey";
 
-import {AccountSelector} from "../account/AccountMenu";
-import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "../Misc";
-import KeyAccountForm from "./KeyForm";
+import {AccountSelector} from "@/components/account/AccountMenu";
+import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "@/components/Misc";
+import KeyAccountForm from "@/components/login/KeyForm";
 
 import EluvioLogo from "@/assets/images/Main_Logo_Light.png";
-import EditIcon from "../../static/icons/edit.svg";
-import DefaultProfileIcon from "../../static/icons/User.svg";
-import TenancyIcon from "../../static/icons/users.svg";
+import EditIcon from "@/assets/icons/edit.svg";
+import DefaultProfileIcon from "@/assets/icons/User.svg";
+import TenancyIcon from "@/assets/icons/users.svg";
 
 const S = CreateModuleClassMatcher(LoginStyles);
 

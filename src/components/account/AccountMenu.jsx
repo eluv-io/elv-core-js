@@ -1,22 +1,22 @@
-import AccountMenuStyles from "../../static/stylesheets/modules/account-menu.module.scss";
+import AccountMenuStyles from "@/assets/stylesheets/modules/account-menu.module.scss";
 
 import {observer} from "mobx-react";
-import {CreateModuleClassMatcher, JoinClassNames} from "../../utils/Utils";
+import {CreateModuleClassMatcher, JoinClassNames} from "@/utils/Utils";
 import React, {useState} from "react";
-import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "../Misc";
-import {rootStore, accountsStore, tenantStore} from "../../stores";
+import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "@/components/Misc";
+import {rootStore, accountsStore, tenantStore} from "@/stores";
 import {Link, useLocation} from "wouter";
 import {Button, Combobox, Popover, UnstyledButton, useCombobox} from "@mantine/core";
-import {LoginGateModal} from "../login/Login";
+import {LoginGateModal} from "@/components/login/Login";
 
 const S = CreateModuleClassMatcher(AccountMenuStyles);
 
-import AppsIcon from "../../static/icons/apps.svg";
-import SwitchAccountsIcon from "../../static/icons/switch-accounts.svg";
-import ProfileIcon from "../../static/icons/User.svg";
-import TransferFundsIcon from "../../static/icons/dollar-sign.svg";
-import TenancyIcon from "../../static/icons/settings.svg";
-import ArrowDown from "../../static/icons/chevron-down.svg";
+import AppsIcon from "@/assets/icons/apps.svg";
+import SwitchAccountsIcon from "@/assets/icons/switch-accounts.svg";
+import ProfileIcon from "@/assets/icons/User.svg";
+import TransferFundsIcon from "@/assets/icons/dollar-sign.svg";
+import TenancyIcon from "@/assets/icons/settings.svg";
+import ArrowDown from "@/assets/icons/chevron-down.svg";
 
 export const AccountSelector = observer(({center, className=""}) => {
   const combobox = useCombobox();

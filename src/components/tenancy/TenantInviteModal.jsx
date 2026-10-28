@@ -1,13 +1,13 @@
-import TenantStyles from "../../static/stylesheets/modules/tenancy.module.scss";
+import TenantStyles from "@/assets/stylesheets/modules/tenancy.module.scss";
 
 import {observer} from "mobx-react";
 import React, {useState} from "react";
-import {rootStore,  tenantStore} from "../../stores";
+import {rootStore,  tenantStore} from "@/stores";
 import {Button, Group, Modal, NumberInput, Text, TextInput} from "@mantine/core";
-import {CreateModuleClassMatcher, ValidEmail} from "../../utils/Utils";
-import {CopyButton, ImageIcon} from "../Misc";
+import {CreateModuleClassMatcher, ValidEmail} from "@/utils/Utils";
+import {CopyButton, ImageIcon} from "@/components/Misc";
 
-import FundsIcon from "../../static/icons/elv-token.png";
+import FundsIcon from "@/assets/icons/elv-token.png";
 
 const S = CreateModuleClassMatcher(TenantStyles);
 

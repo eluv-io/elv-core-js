@@ -1,13 +1,13 @@
-import LoginStyles from "../../static/stylesheets/modules/login.module.scss";
+import LoginStyles from "@/assets/stylesheets/modules/login.module.scss";
 
 import React, {useState, useEffect, useRef} from "react";
 import {observer} from "mobx-react";
-import {rootStore, accountsStore} from "../../stores";
+import {rootStore, accountsStore} from "@/stores";
 import {Button, Loader, PasswordInput, TextInput} from "@mantine/core";
-import {CreateModuleClassMatcher, ValidEmail} from "../../utils/Utils";
-import {ButtonWithLoader} from "../Misc";
+import {CreateModuleClassMatcher, ValidEmail} from "@/utils/Utils";
+import {ButtonWithLoader} from "@/components/Misc";
 import {Link} from "wouter";
-import {AccountSelector} from "../account/AccountMenu";
+import {AccountSelector} from "@/components/account/AccountMenu";
 
 const S = CreateModuleClassMatcher(LoginStyles);
 

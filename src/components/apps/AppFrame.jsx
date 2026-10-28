@@ -12,8 +12,8 @@ import {Redirect, useParams} from "wouter";
 import {FrameClient} from "@eluvio/elv-client-js/src/FrameClient";
 import {observer} from "mobx-react";
 
-import {rootStore, accountsStore} from "../../stores";
-import {IsAppAllowed, IsAppRestricted} from "./AppInfo";
+import {rootStore, accountsStore} from "@/stores";
+import {IsAppAllowed, IsAppRestricted} from "@/components/apps/AppInfo";
 
 class IFrameBase extends React.Component {
   SandboxPermissions() {

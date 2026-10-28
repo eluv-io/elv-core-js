@@ -1,10 +1,10 @@
 import {flow, makeAutoObservable} from "mobx";
 import UrlJoin from "url-join";
-import {DownloadFromUrl} from "../utils/Utils";
+import {DownloadFromUrl} from "@/utils/Utils";
 import {Utils} from "@eluvio/elv-client-js";
 import {v4 as UUID, parse as ParseUUID} from "uuid";
-import {RegisterPasskey as RegisterPasskeyCredential, LoginWithPasskey as AuthenticateWithPasskey} from "../utils/Passkey";
-import {accountsStore, rootStore} from "./index";
+import {RegisterPasskey as RegisterPasskeyCredential, LoginWithPasskey as AuthenticateWithPasskey} from "@/utils/Passkey";
+import {accountsStore, rootStore} from "@/stores/index";
 
 class AccountStore {
   oryClient;

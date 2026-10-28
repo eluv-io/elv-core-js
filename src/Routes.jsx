@@ -1,25 +1,25 @@
 import React from "react";
-import AppsPage from "./components/apps/Apps";
-import AppFramePage from "./components/apps/AppFrame";
-import AccountsFormPage from "./components/login/KeyForm";
-import TransferFormPage from "./components/transfer/TransferForm";
-import TenantOverview from "./components/tenancy/TenantOverview";
+import AppsPage from "@/components/apps/Apps";
+import AppFramePage from "@/components/apps/AppFrame";
+import AccountsFormPage from "@/components/login/KeyForm";
+import TransferFormPage from "@/components/transfer/TransferForm";
+import TenantOverview from "@/components/tenancy/TenantOverview";
 import {observer} from "mobx-react";
-import Accounts from "./components/account/Accounts";
-import TenantInvites from "./components/tenancy/TenantInvites";
-import {accountsStore, rootStore, tenantStore} from "./stores";
-import TenantUsers from "./components/tenancy/TenantUsers";
-import Login, {LoginGate, LoginGateModal} from "./components/login/Login";
-import Profile from "./components/profile/Profile";
-import SplashPage from "./components/login/SplashPage";
-import {ImageIcon} from "./components/Misc";
-import ReleaseNotes from "./components/release_notes/ReleaseNotes";
+import Accounts from "@/components/account/Accounts";
+import TenantInvites from "@/components/tenancy/TenantInvites";
+import {accountsStore, rootStore, tenantStore} from "@/stores";
+import TenantUsers from "@/components/tenancy/TenantUsers";
+import Login, {LoginGate, LoginGateModal} from "@/components/login/Login";
+import Profile from "@/components/profile/Profile";
+import SplashPage from "@/components/login/SplashPage";
+import {ImageIcon} from "@/components/Misc";
+import ReleaseNotes from "@/components/release_notes/ReleaseNotes";
 
 import {Link, Redirect, Route, Switch} from "wouter";
 
-import OverviewIcon from "./static/icons/overview.svg";
-import ManageIcon from "./static/icons/settings.svg";
-import InviteIcon from "./static/icons/add-user.svg";
+import OverviewIcon from "@/assets/icons/overview.svg";
+import ManageIcon from "@/assets/icons/settings.svg";
+import InviteIcon from "@/assets/icons/add-user.svg";
 
 const GatedRoute = ({Component, children}) => {
   return (

@@ -1,16 +1,16 @@
 import UrlJoin from "url-join";
 
-import CreatorStudioIcon from "../../static/images/app_icons/Creator Studio.png";
-import AnalyticsAndReportingIcon from "../../static/images/app_icons/Analytics and Reporting.png";
-import FabricBrowserIcon from "../../static/images/app_icons/FabricBrowser.png";
-import VideoEditorIcon from "../../static/images/app_icons/EVIE logo.png";
-import SiteSampleIcon from "../../static/images/app_icons/site-sample.svg";
-import StreamSampleIcon from "../../static/images/app_icons/stream-sample.svg";
-import StudioIcon from "../../static/images/app_icons/Media Ingest.png";
-import AISearchIcon from "../../static/images/app_icons/AI Clip Search - beta.png";
-import ContentManagementIcon from "../../static/images/app_icons/Content Management - beta.png";
-import LiveStreamManagerIcon from "../../static/images/app_icons/Livestream Manager.png";
-import MediaPackagerIcon from "../../static/images/app_icons/Media Packager.png";
+import CreatorStudioIcon from "@/assets/images/app_icons/Creator Studio.png";
+import AnalyticsAndReportingIcon from "@/assets/images/app_icons/Analytics and Reporting.png";
+import FabricBrowserIcon from "@/assets/images/app_icons/FabricBrowser.png";
+import VideoEditorIcon from "@/assets/images/app_icons/EVIE logo.png";
+import SiteSampleIcon from "@/assets/images/app_icons/site-sample.svg";
+import StreamSampleIcon from "@/assets/images/app_icons/stream-sample.svg";
+import StudioIcon from "@/assets/images/app_icons/Media Ingest.png";
+import AISearchIcon from "@/assets/images/app_icons/AI Clip Search - beta.png";
+import ContentManagementIcon from "@/assets/images/app_icons/Content Management - beta.png";
+import LiveStreamManagerIcon from "@/assets/images/app_icons/Livestream Manager.png";
+import MediaPackagerIcon from "@/assets/images/app_icons/Media Packager.png";
 
 const icons = {
   "Fabric Browser": FabricBrowserIcon,

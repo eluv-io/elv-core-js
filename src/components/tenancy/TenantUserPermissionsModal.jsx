@@ -1,11 +1,11 @@
-import TenancyStyles from "../../static/stylesheets/modules/tenancy.module.scss";
+import TenancyStyles from "@/assets/stylesheets/modules/tenancy.module.scss";
 
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react";
 import {Button, Checkbox, Group, Loader, Modal, Table, Text} from "@mantine/core";
-import {rootStore, tenantStore} from "../../stores";
-import {CreateModuleClassMatcher} from "../../utils/Utils";
-import {CopyButton} from "../Misc";
+import {rootStore, tenantStore} from "@/stores";
+import {CreateModuleClassMatcher} from "@/utils/Utils";
+import {CopyButton} from "@/components/Misc";
 
 const S = CreateModuleClassMatcher(TenancyStyles);
 

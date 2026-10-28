@@ -1,23 +1,23 @@
-import HeaderStyles from "./static/stylesheets/modules/header.module.scss";
+import HeaderStyles from "@/assets/stylesheets/modules/header.module.scss";
 
 import React, {useState} from "react";
 import {observer} from "mobx-react";
-import {accountsStore, rootStore, tenantStore} from "./stores";
+import {accountsStore, rootStore, tenantStore} from "@/stores";
 import {Link, useLocation} from "wouter";
-import {CreateModuleClassMatcher} from "./utils/Utils";
+import {CreateModuleClassMatcher} from "@/utils/Utils";
 import {Group, Popover, UnstyledButton} from "@mantine/core";
-import {ImageIcon} from "./components/Misc";
-import AppInfo, {FilterAllowedApps} from "./components/apps/AppInfo";
+import {ImageIcon} from "@/components/Misc";
+import AppInfo, {FilterAllowedApps} from "@/components/apps/AppInfo";
 import UrlJoin from "url-join";
-import AccountMenu from "./components/account/AccountMenu.jsx";
+import AccountMenu from "@/components/account/AccountMenu.jsx";
 
-import Logo from "./static/images/Logo.png";
-import LogoDemo from "./static/images/LogoDemo.png";
-import LogoTest from "./static/images/LogoTest.png";
-import AppsIcon from "./static/icons/apps.svg";
-import ExternalLinkIcon from "./static/icons/external-link.svg";
-import EvieLogo from "./static/images/app_icons/EVIE - dark mode.png";
-import NotificationIcon from "./static/icons/info.svg";
+import Logo from "@/assets/images/Logo.png";
+import LogoDemo from "@/assets/images/LogoDemo.png";
+import LogoTest from "@/assets/images/LogoTest.png";
+import AppsIcon from "@/assets/icons/apps.svg";
+import ExternalLinkIcon from "@/assets/icons/external-link.svg";
+import EvieLogo from "@/assets/images/app_icons/EVIE - dark mode.png";
+import NotificationIcon from "@/assets/icons/info.svg";
 
 const S = CreateModuleClassMatcher(HeaderStyles);
 

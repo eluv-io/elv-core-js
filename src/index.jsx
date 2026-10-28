@@ -1,11 +1,11 @@
 import "@mantine/core/styles.css";
-import "./static/stylesheets/defaults.scss";
+import "@/assets/stylesheets/defaults.scss";
 
 import React from "react";
 import { createRoot } from "react-dom/client";
 import {MantineProvider} from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
-import MantineTheme from "./static/MantineTheme";
+import MantineTheme from "@/assets/MantineTheme";
 import App from "./App";
 
 const Initialize = () => {

@@ -1,4 +1,4 @@
-import TenantStyles from "../../static/stylesheets/modules/tenancy.module.scss";
+import TenantStyles from "@/assets/stylesheets/modules/tenancy.module.scss";
 
 import React, {useEffect, useRef, useState} from "react";
 import {observer} from "mobx-react";
@@ -13,13 +13,13 @@ import {
   Textarea,
   Loader,
 } from "@mantine/core";
-import {rootStore, accountsStore, tenantStore} from "../../stores";
-import {ImageIcon} from "../Misc";
-import {CreateModuleClassMatcher, JoinClassNames} from "../../utils/Utils";
+import {rootStore, accountsStore, tenantStore} from "@/stores";
+import {ImageIcon} from "@/components/Misc";
+import {CreateModuleClassMatcher, JoinClassNames} from "@/utils/Utils";
 
-import TenancyIcon from "../../static/icons/users.svg";
-import EditIcon from "../../static/icons/edit.svg";
-import FundsIcon from "../../static/icons/elv-token.png";
+import TenancyIcon from "@/assets/icons/users.svg";
+import EditIcon from "@/assets/icons/edit.svg";
+import FundsIcon from "@/assets/icons/elv-token.png";
 
 const S = CreateModuleClassMatcher(TenantStyles);
 

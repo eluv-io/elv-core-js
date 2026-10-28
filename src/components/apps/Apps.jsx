@@ -1,13 +1,13 @@
-import "../../static/stylesheets/apps.scss";
+import "@/assets/stylesheets/apps.scss";
 
 import React from "react";
 import {Link, Redirect} from "wouter";
-import AppInfo, {FilterAllowedApps} from "./AppInfo";
-import {ImageIcon} from "../Misc";
-import {accountsStore, tenantStore} from "../../stores";
+import AppInfo, {FilterAllowedApps} from "@/components/apps/AppInfo";
+import {ImageIcon} from "@/components/Misc";
+import {accountsStore, tenantStore} from "@/stores";
 import {observer} from "mobx-react";
 
-import GenericAppLogo from "../../static/icons/App.svg";
+import GenericAppLogo from "@/assets/icons/App.svg";
 
 class Apps extends React.PureComponent {
   App({name, logo}) {

@@ -2,7 +2,7 @@ import {flow, makeAutoObservable, runInAction} from "mobx";
 import {Utils} from "@eluvio/elv-client-js";
 import {v4 as UUID, parse as UUIDParse} from "uuid";
 import UrlJoin from "url-join";
-import {accountsStore} from "./index";
+import {accountsStore} from "@/stores/index";
 
 class TenantStore {
   onboardParams;

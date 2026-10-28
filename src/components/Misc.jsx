@@ -2,11 +2,11 @@ import React, {useState} from "react";
 import {observer} from "mobx-react";
 import {Button} from "@mantine/core";
 import SVG from "react-inlinesvg";
-import {CreateModuleClassMatcher, JoinClassNames} from "../utils/Utils";
-import SHA1 from "../utils/Hash";
+import {CreateModuleClassMatcher, JoinClassNames} from "@/utils/Utils";
+import SHA1 from "@/utils/Hash";
 
 
-import CopyIcon from "../static/icons/copy.svg";
+import CopyIcon from "@/assets/icons/copy.svg";
 
 const S = CreateModuleClassMatcher();
 

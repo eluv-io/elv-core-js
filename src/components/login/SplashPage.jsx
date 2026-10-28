@@ -1,14 +1,14 @@
-import LoginStyles from "../../static/stylesheets/modules/login.module.scss";
+import LoginStyles from "@/assets/stylesheets/modules/login.module.scss";
 
 import React, {useEffect} from "react";
 import {observer} from "mobx-react";
-import {CreateModuleClassMatcher} from "../../utils/Utils";
+import {CreateModuleClassMatcher} from "@/utils/Utils";
 import {Button, FileButton, UnstyledButton} from "@mantine/core";
 import {useLocation} from "wouter";
-import {rootStore, accountsStore, tenantStore} from "../../stores";
+import {rootStore, accountsStore, tenantStore} from "@/stores";
 
-import SplashBackground from "../../static/images/SplashBackground.jpg";
-import EluvioLogo from "../../static/images/Main_Logo_Light.png";
+import SplashBackground from "@/assets/images/SplashBackground.jpg";
+import EluvioLogo from "@/assets/images/Main_Logo_Light.png";
 
 const S = CreateModuleClassMatcher(LoginStyles);
 

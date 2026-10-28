@@ -1,10 +1,10 @@
-import ProfileStyles from "../../static/stylesheets/modules/profile.module.scss";
+import ProfileStyles from "@/assets/stylesheets/modules/profile.module.scss";
 
 import {observer} from "mobx-react";
-import {rootStore, accountsStore, tenantStore} from "../../stores";
+import {rootStore, accountsStore, tenantStore} from "@/stores";
 import React, {useEffect, useRef, useState} from "react";
-import {CreateModuleClassMatcher} from "../../utils/Utils";
-import {ButtonWithLoader, CopyButton, DefaultProfileImage, ImageIcon} from "../Misc";
+import {CreateModuleClassMatcher} from "@/utils/Utils";
+import {ButtonWithLoader, CopyButton, DefaultProfileImage, ImageIcon} from "@/components/Misc";
 
 
 import {Button, Group, Loader, Paper, Text, TextInput, Title, UnstyledButton} from "@mantine/core";
@@ -12,15 +12,15 @@ import {modals} from "@mantine/modals";
 import {useLocation} from "wouter";
 import UrlJoin from "url-join";
 import {Tabs} from "@mantine/core";
-import {FormatWebAuthnError} from "../../utils/Passkey";
+import {FormatWebAuthnError} from "@/utils/Passkey";
 
-import EditIcon from "../../static/icons/edit.svg";
-import CheckIcon from "../../static/icons/Check.svg";
-import XIcon from "../../static/icons/X.svg";
-import CaretUpIcon from "../../static/icons/caret-up.svg";
-import CaretDownIcon from "../../static/icons/caret-down.svg";
-import FundsIcon from "../../static/icons/elv-token.png";
-import TenancyIcon from "../../static/icons/users.svg";
+import EditIcon from "@/assets/icons/edit.svg";
+import CheckIcon from "@/assets/icons/Check.svg";
+import XIcon from "@/assets/icons/X.svg";
+import CaretUpIcon from "@/assets/icons/caret-up.svg";
+import CaretDownIcon from "@/assets/icons/caret-down.svg";
+import FundsIcon from "@/assets/icons/elv-token.png";
+import TenancyIcon from "@/assets/icons/users.svg";
 
 const S = CreateModuleClassMatcher(ProfileStyles);
 
