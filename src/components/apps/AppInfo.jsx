@@ -8,7 +8,7 @@ import SiteSampleIcon from "../../static/images/app_icons/site-sample.svg";
 import StreamSampleIcon from "../../static/images/app_icons/stream-sample.svg";
 import StudioIcon from "../../static/images/app_icons/Media Ingest.png";
 import AISearchIcon from "../../static/images/app_icons/AI Clip Search - beta.png";
-import ContentManagementIcon from "../../static/images/app_icons/Content Management - beta.png"
+import ContentManagementIcon from "../../static/images/app_icons/Content Management - beta.png";
 import LiveStreamManagerIcon from "../../static/images/app_icons/Livestream Manager.png";
 import MediaPackagerIcon from "../../static/images/app_icons/Media Packager.png";
 

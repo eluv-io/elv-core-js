@@ -25,11 +25,11 @@ import EluvioLogo from "../../static/images/Main_Logo_Light";
 import {Link, useNavigate} from "react-router-dom";
 import {AccountSelector} from "../account/AccountMenu";
 import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "../Misc";
+import KeyAccountForm from "./KeyForm";
 
 import EditIcon from "../../static/icons/edit.svg";
-import DefaultProfileIcon from "../../static/icons/User";
+import DefaultProfileIcon from "../../static/icons/User.svg";
 import TenancyIcon from "../../static/icons/users.svg";
-import KeyAccountForm from "./KeyForm";
 
 const S = CreateModuleClassMatcher(LoginStyles);
 

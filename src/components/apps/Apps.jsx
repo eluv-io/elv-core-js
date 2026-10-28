@@ -1,13 +1,14 @@
 import "../../static/stylesheets/apps.scss";
 
 import React from "react";
-import GenericAppLogo from "../../static/icons/App.svg";
 import {Link} from "react-router-dom";
 import AppInfo, {FilterAllowedApps} from "./AppInfo";
 import {ImageIcon} from "../Misc";
 import {accountsStore, tenantStore} from "../../stores";
 import {Navigate} from "react-router";
 import {observer} from "mobx-react";
+
+import GenericAppLogo from "../../static/icons/App.svg";
 
 class Apps extends React.PureComponent {
   App({name, logo}) {

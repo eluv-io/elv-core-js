@@ -12,9 +12,9 @@ import {CopyButton, DefaultProfileImage, ImageIcon} from "../Misc";
 import {useDebouncedValue} from "@mantine/hooks";
 import {modals} from "@mantine/modals";
 
-import XIcon from "../../static/icons/X";
-import AlertIcon from "../../static/icons/alert-circle";
-import AddUserIcon from "../../static/icons/add-user";
+import XIcon from "../../static/icons/X.svg";
+import AlertIcon from "../../static/icons/alert-circle.svg";
+import AddUserIcon from "../../static/icons/add-user.svg";
 
 
 const S = CreateModuleClassMatcher(TenancyStyles);

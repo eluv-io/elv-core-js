@@ -6,6 +6,7 @@ import {rootStore,  tenantStore} from "../../stores";
 import {Button, Group, Modal, NumberInput, Text, TextInput} from "@mantine/core";
 import {CreateModuleClassMatcher, ValidEmail} from "../../utils/Utils";
 import {CopyButton, ImageIcon} from "../Misc";
+
 import FundsIcon from "../../static/icons/elv-token.png";
 
 const S = CreateModuleClassMatcher(TenantStyles);

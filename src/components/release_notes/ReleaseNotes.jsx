@@ -5,13 +5,12 @@ import {observer} from "mobx-react";
 import {rootStore} from "../../stores";
 import {Loader} from "@mantine/core";
 import {CreateModuleClassMatcher} from "../../utils/Utils";
-
-import CaretUp from "../../static/icons/caret-up";
-import CaretDown from "../../static/icons/caret-down";
 import {ImageIcon} from "../Misc";
 
-const S = CreateModuleClassMatcher(ReleaseNotesStyles);
+import CaretUp from "../../static/icons/caret-up.svg";
+import CaretDown from "../../static/icons/caret-down.svg";
 
+const S = CreateModuleClassMatcher(ReleaseNotesStyles);
 
 const Note = observer(({title, date, text, showInitially=false}) => {
   const [show, setShow] = useState(showInitially);

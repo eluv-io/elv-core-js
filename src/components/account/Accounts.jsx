@@ -13,8 +13,8 @@ import {LoginGateModal} from "../login/Login";
 import {modals} from "@mantine/modals";
 
 import XIcon from "../../static/icons/X.svg";
-import PlusIcon from "../../static/icons/plus";
-import KeyIcon from "../../static/icons/Key";
+import PlusIcon from "../../static/icons/plus.svg";
+import KeyIcon from "../../static/icons/Key.svg";
 
 const S = CreateModuleClassMatcher(AccountStyles);
 

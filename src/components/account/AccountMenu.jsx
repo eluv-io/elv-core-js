@@ -11,12 +11,12 @@ import {LoginGateModal} from "../login/Login";
 
 const S = CreateModuleClassMatcher(AccountMenuStyles);
 
-import AppsIcon from "../../static/icons/apps";
-import SwitchAccountsIcon from "../../static/icons/switch-accounts";
-import ProfileIcon from "../../static/icons/User";
-import TransferFundsIcon from "../../static/icons/dollar-sign";
-import TenancyIcon from "../../static/icons/settings";
-import ArrowDown from "../../static/icons/chevron-down";
+import AppsIcon from "../../static/icons/apps.svg";
+import SwitchAccountsIcon from "../../static/icons/switch-accounts.svg";
+import ProfileIcon from "../../static/icons/User.svg";
+import TransferFundsIcon from "../../static/icons/dollar-sign.svg";
+import TenancyIcon from "../../static/icons/settings.svg";
+import ArrowDown from "../../static/icons/chevron-down.svg";
 
 export const AccountSelector = observer(({center, className=""}) => {
   const combobox = useCombobox();

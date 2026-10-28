@@ -3,18 +3,16 @@ import TenantStyles from "../../static/stylesheets/modules/tenancy.module.scss";
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react";
 import {Tabs, Group, Text, Table, TextInput, Loader, UnstyledButton} from "@mantine/core";
-
 import {tenantStore} from "../../stores";
-
 import {useDebouncedValue} from "@mantine/hooks";
 import TenantUserPermissionsModal from "./TenantUserPermissionsModal";
 import {DefaultProfileImage, ImageIcon} from "../Misc";
 import {CreateModuleClassMatcher} from "../../utils/Utils";
-
-import PermissionsIcon from "../../static/icons/sliders";
-import FundsIcon from "../../static/icons/elv-token.png";
-import TopUpIcon from "../../static/icons/up-lines";
 import {modals} from "@mantine/modals";
+
+import PermissionsIcon from "../../static/icons/sliders.svg";
+import FundsIcon from "../../static/icons/elv-token.png";
+import TopUpIcon from "../../static/icons/up-lines.svg";
 
 const S = CreateModuleClassMatcher(TenantStyles);
 

@@ -6,7 +6,7 @@ import {CreateModuleClassMatcher, JoinClassNames} from "../utils/Utils";
 import SHA1 from "../utils/Hash";
 
 
-import CopyIcon from "../static/icons/copy";
+import CopyIcon from "../static/icons/copy.svg";
 
 const S = CreateModuleClassMatcher();
 

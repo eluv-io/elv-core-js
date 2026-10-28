@@ -14,13 +14,13 @@ import UrlJoin from "url-join";
 import {Tabs} from "@mantine/core";
 import {FormatWebAuthnError} from "../../utils/Passkey";
 
-import EditIcon from "../../static/icons/edit";
-import CheckIcon from "../../static/icons/Check";
-import XIcon from "../../static/icons/X";
-import CaretUpIcon from "../../static/icons/caret-up";
-import CaretDownIcon from "../../static/icons/caret-down";
-import FundsIcon from "../../static/icons/elv-token";
-import TenancyIcon from "../../static/icons/users";
+import EditIcon from "../../static/icons/edit.svg";
+import CheckIcon from "../../static/icons/Check.svg";
+import XIcon from "../../static/icons/X.svg";
+import CaretUpIcon from "../../static/icons/caret-up.svg";
+import CaretDownIcon from "../../static/icons/caret-down.svg";
+import FundsIcon from "../../static/icons/elv-token.png";
+import TenancyIcon from "../../static/icons/users.svg";
 
 const S = CreateModuleClassMatcher(ProfileStyles);
 

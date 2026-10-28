@@ -6,8 +6,9 @@ import {Utils} from "@eluvio/elv-client-js";
 import {Link, useNavigate} from "react-router-dom";
 import {CreateModuleClassMatcher} from "../../utils/Utils";
 import {ImageIcon} from "../Misc";
-import FundsIcon from "../../static/icons/elv-token.png";
 import {modals} from "@mantine/modals";
+
+import FundsIcon from "../../static/icons/elv-token.png";
 
 const S = CreateModuleClassMatcher();
 

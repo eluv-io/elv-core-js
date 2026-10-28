@@ -17,9 +17,9 @@ import {rootStore, accountsStore, tenantStore} from "../../stores";
 import {ImageIcon} from "../Misc";
 import {CreateModuleClassMatcher, JoinClassNames} from "../../utils/Utils";
 
-import TenancyIcon from "../../static/icons/users";
+import TenancyIcon from "../../static/icons/users.svg";
 import EditIcon from "../../static/icons/edit.svg";
-import FundsIcon from "../../static/icons/elv-token";
+import FundsIcon from "../../static/icons/elv-token.png";
 
 const S = CreateModuleClassMatcher(TenantStyles);
 
