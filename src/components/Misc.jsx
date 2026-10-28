@@ -45,7 +45,7 @@ export const ImageIcon = ({icon, alternateIcon, title, label, useLoadingIndicato
     return null;
   }
 
-  if(currentIcon.startsWith("<svg")) {
+  if(currentIcon.startsWith("<svg") || currentIcon.startsWith("data:image/svg+xml")) {
     return (
       <SVG alt={label} title={title} className={className} src={currentIcon} {...props} />
     );

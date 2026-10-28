@@ -2,16 +2,14 @@ import "./static/stylesheets/modules/shared.module.scss";
 
 import React from "react";
 import {BrowserRouter} from "react-router-dom";
-
 import {observer} from "mobx-react";
 import {accountsStore, rootStore} from "./stores";
-
-import Header from "./Header";
-import AppRoutes from "./Routes";
+import Header from "./Header.jsx";
+import AppRoutes from "./Routes.jsx";
 import {Button, Group, Loader, Text} from "@mantine/core";
-import ScrollToTop from "./ScrollToTop";
 import Footer from "./Footer";
 import {CreateModuleClassMatcher} from "./utils/Utils";
+import ScrollToTop from "./ScrollToTop.jsx";
 
 const S = CreateModuleClassMatcher();
 

@@ -15,11 +15,11 @@ import Login, {LoginGate, LoginGateModal} from "./components/login/Login";
 import Profile from "./components/profile/Profile";
 import SplashPage from "./components/login/SplashPage";
 import {ImageIcon} from "./components/Misc";
-
-import OverviewIcon from "./static/icons/overview";
-import ManageIcon from "./static/icons/settings";
-import InviteIcon from "./static/icons/add-user";
 import ReleaseNotes from "./components/release_notes/ReleaseNotes";
+
+import OverviewIcon from "./static/icons/overview.svg";
+import ManageIcon from "./static/icons/settings.svg";
+import InviteIcon from "./static/icons/add-user.svg";
 
 const GatedRoute = ({Component}) => {
   return (

@@ -9,13 +9,13 @@ import {Group, Popover, UnstyledButton} from "@mantine/core";
 import {ImageIcon} from "./components/Misc";
 import AppInfo, {FilterAllowedApps} from "./components/apps/AppInfo";
 import UrlJoin from "url-join";
+import AccountMenu from "./components/account/AccountMenu.jsx";
 
 import Logo from "./static/images/Logo.png";
 import LogoDemo from "./static/images/LogoDemo.png";
 import LogoTest from "./static/images/LogoTest.png";
-import AccountMenu from "./components/account/AccountMenu";
 import AppsIcon from "./static/icons/apps.svg";
-import ExternalLinkIcon from "./static/icons/external-link";
+import ExternalLinkIcon from "./static/icons/external-link.svg";
 import EvieLogo from "./static/images/app_icons/EVIE - dark mode.png";
 import NotificationIcon from "./static/icons/info.svg";
 
@@ -139,11 +139,15 @@ const AppsMenu = observer(() => {
 
 const CenterContent = observer(() => {
   if(rootStore.activeApp !== "Video Intelligence Editor") {
-    return <TenantInviteNotification />;
+    return (
+      <div className={S("header__center-content")}>
+        <TenantInviteNotification />
+      </div>
+    );
   }
 
   return (
-    <div className={S("header__app-display")}>
+    <div className={S("header__center-content", "header__app-display")}>
       <img src={EvieLogo} className={S("header__app-logo")} alt="Logo" /> : ""
       { rootStore.activeApp || "" }
     </div>

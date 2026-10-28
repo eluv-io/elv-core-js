@@ -85,11 +85,14 @@
     margin-right: 10px;
   }
 
+  &__center-content {
+    flex: 1;
+  }
+
   &__app-display {
     align-items: center;
     color: var(--header-text--dark);
     display: flex;
-    flex: 1;
     font-size: 24px;
     font-weight: 700;
     height: 100%;
@@ -112,7 +115,6 @@
 .notification {
   align-items: center;
   display: flex;
-  flex: 1;
   font-size: 14px;
   gap: 10px;
   justify-content: center;
@@ -152,6 +154,11 @@
 
     * {
       transition: color 0.25s ease, background-color 0.25s ease;
+    }
+
+    svg {
+      height: 100%;
+      width: 100%;
     }
 
     &--active,

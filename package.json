@@ -1,10 +1,12 @@
 {
   "version": "3.1.15",
+  "type": "module",
   "scripts": {
     "bump-version": "npm --git-tag-version --no-commit-hooks version patch",
-    "serve": "webpack-dev-server --host 0.0.0.0 --hot",
-    "build": "node ./node_modules/webpack-cli/bin/cli.js --mode=production --devtool false",
-    "build-analyze": "ANALYZE_BUNDLE=true node ./node_modules/webpack-cli/bin/cli.js --mode=production --devtool false",
+    "serve": "rm -rf node_modules/.vite; vite",
+    "serve-db": "firebase emulators:start",
+    "build": "rm -rf dist/* ; vite build",
+    "build-analyze": "rm -rf dist/* ; ANALYZE_BUNDLE=true vite build",
     "lint": "npm run lint-scss-fix ; npm run lint-scss ; npm run fix-js",
     "lint-show": "npm run lint-scss ; npm run lint-js",
     "lint-js": "./node_modules/.bin/eslint \"src/**/*.js\"",
@@ -17,7 +19,6 @@
     "last 2 versions"
   ],
   "dependencies": {
-    "@babel/polyfill": "^7.4.3",
     "@eluvio/elv-client-js": "^4.2.39",
     "@mantine/core": "^7.13.4",
     "@mantine/hooks": "^7.13.4",
@@ -39,47 +40,21 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.0",
-    "@babel/preset-env": "^7.22.20",
-    "@babel/preset-react": "^7.0.0",
-    "@babel/runtime": "^7.23.1",
-    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
+    "@modyfi/vite-plugin-yaml": "^1.1.1",
+    "@vitejs/plugin-react": "^6.1.2",
     "autoprefixer": "^10.4.16",
-    "babel-cli": "^6.26.0",
-    "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
-    "babel-loader": "^9.1.3",
-    "babel-plugin-syntax-async-functions": "^6.13.0",
-    "copy-webpack-plugin": "^4.6.0",
-    "css-loader": "^7.1.2",
     "csv-parse": "^4.16.3",
     "eslint": "^5.16.0",
     "eslint-plugin-react": "^7.12.4",
-    "html-webpack-inline-source-plugin": "0.0.10",
-    "html-webpack-plugin": "^5.5.3",
-    "postcss-loader": "^7.3.3",
-    "raw-loader": "^0.5.1",
-    "react-refresh": "^0.14.0",
-    "regenerator-runtime": "^0.12.1",
     "sass": "^1.86.3",
     "sass-lint": "^1.13.1",
     "sass-loader": "^16.0.5",
-    "source-map-loader": "^0.2.4",
-    "stream-browserify": "^3.0.0",
-    "style-loader": "^3.3.3",
     "stylelint": "^15.10.2",
     "stylelint-config-standard": "^34.0.0",
     "stylelint-config-standard-scss": "^10.0.0",
     "stylelint-order": "^6.0.3",
-    "svg-inline-loader": "^0.8.2",
-    "url": "^0.11.3",
-    "webpack": "^5.88.2",
-    "webpack-bundle-analyzer": "^4.9.1",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.1",
-    "yaml-loader": "^0.8.0"
-  },
-  "overrides": {
-    "fsevents": "^2.3.2"
+    "vite": "^8.3.5",
+    "vite-plugin-static-copy": "^4.1.1"
   }
 }
