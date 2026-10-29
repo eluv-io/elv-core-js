@@ -15,7 +15,7 @@ import SplashPage from "@/components/login/SplashPage";
 import {ImageIcon} from "@/components/Misc";
 import ReleaseNotes from "@/components/release_notes/ReleaseNotes";
 
-import {Link, Redirect, Route, Switch} from "wouter";
+import {Link, Redirect, Route, Switch, useLocation} from "wouter";
 
 import OverviewIcon from "@/assets/icons/overview.svg";
 import ManageIcon from "@/assets/icons/settings.svg";
@@ -34,6 +34,8 @@ const GatedRoute = ({Component, children}) => {
 };
 
 const TenantRoutes = observer(() => {
+  const [location] = useLocation();
+
   if(!tenantStore.isTenantAdmin) {
     return <Redirect to="/accounts" />;
   }
@@ -65,7 +67,7 @@ const TenantRoutes = observer(() => {
             <span>Invite</span>
           </Link>
         </nav>
-        <div className="content">
+        <div key={`path-${location}`} className="content">
           <Switch>
             <Route path="/" component={TenantOverview} />
             <Route path="/invites" component={TenantInvites} />
@@ -78,12 +80,14 @@ const TenantRoutes = observer(() => {
 });
 
 const ContentWrapper = observer(({children}) => {
+  const [location] = useLocation();
+
   if(rootStore.showLoginGate) {
     return <LoginGateModal Close={() => rootStore.SetShowLoginGate(false)} />;
   }
 
   return (
-    <div className="content">
+    <div key={`path-${location}`} className="content">
       { children }
     </div>
   );

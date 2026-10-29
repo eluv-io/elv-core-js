@@ -1,5 +1,11 @@
 @use "./reset";
 
+@keyframes fadein {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+
 html,
 body,
 .app,
@@ -12,6 +18,8 @@ body,
 }
 
 body {
+  --animation-fade-in: fadein;
+
   color: #222;
   height: 100vh;
   scrollbar-gutter: stable both-edges;
@@ -51,6 +59,7 @@ b {
 }
 
 .content {
+  animation: var(--animation-fade-in) 0.35s ease;
   padding-bottom: 20px;
 }
 

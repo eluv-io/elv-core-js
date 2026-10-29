@@ -503,7 +503,7 @@ class AccountStore {
     } finally {
       this.checkingSavedPassword = false;
     }
-  })
+  });
 
   SetCurrentAccount = flow(function * ({address, signer, switchAccount=false}) {
     try {
@@ -513,7 +513,7 @@ class AccountStore {
 
       address = Utils.FormatAddress(address || signer.address);
 
-      let account = { ...this.accounts[address] } || {};
+      let account = {...(this.accounts[address] || {})};
 
       this.rootStore.ResetTenancy();
 
@@ -627,7 +627,7 @@ class AccountStore {
     }
 
     return signer._signingKey().privateKey;
-  })
+  });
 
   TestPassword(password) {
     if(this.rootStore.simplePasswords) { return; }
@@ -637,7 +637,7 @@ class AccountStore {
       [/[a-z]/, "must contain at least one lowercase character"],
       [/[A-Z]/, "must contain at least one uppercase character"],
       [/[0-9]/, "must contain at least one number"],
-      [/[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/, "must contain at least one symbol"]
+      [/[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/, "must contain at least one symbol"]
     ];
 
     let failedTest = passwordTests.find(([test]) => !test.test(password));

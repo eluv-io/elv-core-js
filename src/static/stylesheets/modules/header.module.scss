@@ -115,6 +115,7 @@
 
 .notification {
   align-items: center;
+  animation: var(--animation-fade-in) 1s ease;
   display: flex;
   font-size: 14px;
   gap: 10px;
