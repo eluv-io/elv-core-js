@@ -248,7 +248,10 @@ class AccountStore {
     let accounts = localStorage.getItem(`elv-accounts-${this.network}`) || localStorage.getItem("elv-accounts");
     accounts = accounts ? JSON.parse(atob(accounts)) : {};
 
-    this.currentAccountAddress = localStorage.getItem(`elv-current-account-${this.network}`) || localStorage.getItem("elv-current-account");
+    this.currentAccountAddress = (
+      sessionStorage.getItem(`elv-current-account-${this.network}`) ||
+      localStorage.getItem(`elv-current-account-${this.network}`)
+    );
 
     yield Promise.all(
       Object.keys(accounts).map(async address => {
@@ -553,10 +556,8 @@ class AccountStore {
 
       this.currentAccountAddress = address;
 
-      localStorage.setItem(
-        `elv-current-account-${this.network}`,
-        address.toString()
-      );
+      localStorage.setItem(`elv-current-account-${this.network}`, address.toString());
+      sessionStorage.setItem(`elv-current-account-${this.network}`, address.toString());
 
       if(signer && this.accounts[address].balance > 0.02) {
         this.UserMetadata()
