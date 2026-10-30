@@ -4,10 +4,10 @@ import React, {useState} from "react";
 import {observer} from "mobx-react";
 import {accountsStore, rootStore, tenantStore} from "@/stores";
 import {Link, useLocation} from "wouter";
-import {CreateModuleClassMatcher} from "@/utils/Utils";
+import {CreateModuleClassMatcher} from "@/utils/Utils.js";
 import {Group, Popover, UnstyledButton} from "@mantine/core";
-import {ImageIcon} from "@/components/Misc";
-import AppInfo, {FilterAllowedApps} from "@/components/apps/AppInfo";
+import {ImageIcon} from "@/components/Misc.jsx";
+import AppInfo, {FilterAllowedApps} from "@/components/apps/AppInfo.jsx";
 import UrlJoin from "url-join";
 import AccountMenu from "@/components/account/AccountMenu.jsx";
 

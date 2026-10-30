@@ -38,3 +38,24 @@ export const ValidEmail = email => {
   return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     .test(email);
 };
+
+export const Sort = (list, sortStatus) => {
+  list = [...list]
+    .sort((a, b) => {
+      let v1 = a[sortStatus.columnAccessor];
+      let v2 = b[sortStatus.columnAccessor];
+
+      v1 = typeof v1 === "string" ? v1.toLowerCase() :
+        typeof v1 === "number" ? parseFloat(v1) : v1;
+      v2 = typeof v2 === "string" ? v2.toLowerCase() :
+        typeof v2 === "number" ? parseFloat(v2) : v2;
+
+      return v1 < v2 ? -1 : 1;
+    });
+
+  if(sortStatus.direction === "desc") {
+    list = list.reverse();
+  }
+
+  return list;
+};

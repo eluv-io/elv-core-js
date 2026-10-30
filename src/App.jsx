@@ -3,12 +3,12 @@ import "@/assets/stylesheets/modules/shared.module.scss";
 import React from "react";
 import {observer} from "mobx-react";
 import {accountsStore, rootStore} from "@/stores";
-import Header from "./Header.jsx";
+import Header from "@/components/common/Header.jsx";
 import AppRoutes from "./Routes.jsx";
 import {Button, Group, Loader, Text} from "@mantine/core";
-import Footer from "./Footer";
+import Footer from "@/components/common/Footer.jsx";
 import {CreateModuleClassMatcher} from "@/utils/Utils";
-import ScrollToTop from "./ScrollToTop.jsx";
+import ScrollToTop from "@/components/common/ScrollToTop.jsx";
 
 const S = CreateModuleClassMatcher();
 

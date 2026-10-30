@@ -70,8 +70,8 @@
 .inner-input {
   background: 0;
   font-size: 16px;
-  height: 50px;
-  min-height: 50px;
+  height: 40px;
+  min-height: 40px;
   width: 100%;
 
   input {
@@ -151,9 +151,17 @@
   }
 }
 
+.text-button {
+  color: var(--accent);
+  font-size: 12px;
+  text-decoration: underline;
+}
+
 .icon-button {
   color: var(--text-tertiary);
   height: 20px;
+  max-height: 20px;
+  max-width: 20px;
   transition: opacity 0.25s ease;
   width: 20px;
 
@@ -163,6 +171,12 @@
 
   &--accent {
     color: var(--accent);
+  }
+
+  svg {
+    height: 100%;
+    object-fit: contain;
+    width: 100%;
   }
 }
 
@@ -251,4 +265,28 @@
   height: 90vh;
   justify-content: center;
   width: 100%;
+}
+
+.search-icon {
+  color: var(--text-tertiary);
+  height: 20px;
+  width: 20px;
+}
+
+.copyable-field {
+  align-items: center;
+  display: flex;
+  gap: 5px;
+
+  &__button {
+    color: var(--text-tertiary);
+    display: flex;
+    height: 0.8em;
+    width: 0.8em;
+
+    svg {
+      height: 100%;
+      width: 100%;
+    }
+  }
 }

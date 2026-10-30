@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {observer} from "mobx-react";
-import {Button} from "@mantine/core";
+import {Button, Text} from "@mantine/core";
 import SVG from "react-inlinesvg";
 import {CreateModuleClassMatcher, JoinClassNames} from "@/utils/Utils";
 import SHA1 from "@/utils/Hash";
@@ -100,6 +100,15 @@ export const CopyButton = ({value, className="", ...props}) => {
     >
       <SVG src={CopyIcon} alt="Copy" />
     </button>
+  );
+};
+
+export const CopyableField = ({children, value, className="", ...props}) => {
+  return (
+    <div className={[S("copyable-field"), className].join(" ")}>
+      <Text {...props}>{children}</Text>
+      <CopyButton value={value} className={S("copyable-field__button")} />
+    </div>
   );
 };
 

@@ -728,8 +728,8 @@ class TenantStore {
     delete this.invites[id];
   });
 
-  LoadInviteNotifications = flow(function * () {
-    if(this.invites) { return; }
+  LoadInviteNotifications = flow(function * (force=false) {
+    if(this.invites && !force) { return; }
 
     const inviteNotifications = yield this.rootStore.walletClient.Notifications({
       tenantId: this.tenantContractId,

@@ -2,135 +2,29 @@ import TenancyStyles from "@/assets/stylesheets/modules/tenancy.module.scss";
 
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react";
-import {Tabs, Group, Text, Button, Loader, UnstyledButton, TextInput} from "@mantine/core";
+import {Tabs, Group, Text, Button, Loader, UnstyledButton, TextInput, Stack} from "@mantine/core";
 import TenantInviteModal from "@/components/tenancy/TenantInviteModal";
 
 import {tenantStore} from "@/stores";
 import TenantUserPermissionsModal from "@/components/tenancy/TenantUserPermissionsModal";
-import {CreateModuleClassMatcher} from "@/utils/Utils";
-import {CopyButton, DefaultProfileImage, ImageIcon} from "@/components/Misc";
+import {CreateModuleClassMatcher, Sort} from "@/utils/Utils";
+import {CopyableField, DefaultProfileImage, ImageIcon} from "@/components/Misc";
 import {useDebouncedValue} from "@mantine/hooks";
 import {modals} from "@mantine/modals";
 
 import XIcon from "@/assets/icons/X.svg";
-import AlertIcon from "@/assets/icons/alert-circle.svg";
-import AddUserIcon from "@/assets/icons/add-user.svg";
-
+import SearchIcon from "@/assets/icons/search.svg";
+import DataTable from "@/components/common/DataTable.jsx";
 
 const S = CreateModuleClassMatcher(TenancyStyles);
 
-const Invite = observer(({invite}) => {
-  const [showInviteUrl, setShowInviteUrl] = useState(false);
-  const [showPermissionsModal, setShowPermissionsModal] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-
-  const address = invite.data.address;
-  const user = tenantStore.users[address] || {};
-  const name = user.name || invite.data.name || address;
-  const time = new Date(invite.created * 1000).toLocaleString();
-
-  useEffect(() => {
-    if(!address) { return; }
-
-    tenantStore.LoadUser({address})
-      .finally(() => setLoaded(true));
-  }, [invite.data.address]);
-
-  let actions, alert;
-  switch (invite.type) {
-    case tenantStore.INVITE_EVENTS.SENT:
-      actions = (
-        <Button variant="outline" onClick={() => setShowInviteUrl(true)} className={S("invite__action")}>
-          View Invite
-        </Button>
-      );
-      break;
-    case tenantStore.INVITE_EVENTS.ACCEPTED:
-      if(invite.new) {
-        alert = true;
-      }
-
-    // eslint-disable-next-line no-fallthrough
-    case tenantStore.INVITE_EVENTS.MANAGED:
-      actions = (
-        <Button variant="outline" onClick={() => setShowPermissionsModal(true)} className={S("invite__action")}>
-          Set Permissions
-        </Button>
-      );
-  }
-
-  return (
-    <>
-      { showInviteUrl ? <TenantInviteModal existingInviteId={invite.data.id} Close={() => setShowInviteUrl(false)} /> : null }
-      { showPermissionsModal ? <TenantUserPermissionsModal address={invite.data.address} inviteId={invite.data.id} Close={() => setShowPermissionsModal(false)} /> : null }
-      <div className={S("invite")}>
-        {
-          !alert ? null :
-            <ImageIcon
-              icon={AlertIcon}
-              title="The user has accepted your invitation. Please set their permissions."
-              className={S("icon", "invite__alert")}
-            />
-        }
-
-        {
-          !address ? null :
-            <div className={S("round-image", "invite__image")}>
-              {
-                !loaded ? null :
-                  <ImageIcon
-                    label="Profile Image"
-                    icon={user.profileImage}
-                    alternateIcon={DefaultProfileImage(invite.data)}
-                  />
-              }
-            </div>
-        }
-
-        <UnstyledButton
-          title="Remove Invite"
-          onClick={() => modals.openConfirmModal({
-            title: "Remove Invite",
-            children: <Text my="lg" ta="center">Are you sure you want to remove this invite from your history?</Text>,
-            onConfirm: async () => await tenantStore.DeleteInvite({id: invite.data.id}),
-            labels: { confirm: "Confirm", cancel: "Cancel" },
-            centered: true,
-            withCloseButton: false
-          })}
-          className={S("icon-button", "invite__delete")}
-        >
-          <ImageIcon icon={XIcon} />
-        </UnstyledButton>
-        <div className={S("invite__text")}>
-          <div className={S("invite__name")}>{name}</div>
-          {
-            !invite?.data?.email ? null :
-              <div title={invite.data.email} className={S("invite__detail")}>{invite.data.email}</div>
-          }
-          <div className={S("invite__detail")}>
-            {time}
-          </div>
-        </div>
-        <div className={S("invite__actions")}>
-          {actions}
-          {
-            !address ? null :
-              <div className={S("invite__address")}>
-                <div title={address} className={S("invite__detail")}>{address}</div>
-                <CopyButton value={address} className={S("icon", "icon--small", "invite__copy")}/>
-              </div>
-          }
-        </div>
-      </div>
-    </>
-  );
-});
-
 const TenantInvites = observer(() => {
-  const [showInviteModal, setShowInviteModal] = useState(false);
   const [tab, setTab] = useState(tenantStore.INVITE_EVENTS.ACCEPTED);
   const [filter, setFilter] = useState("");
   const [debouncedFilter] = useDebouncedValue(filter, 200);
+  const [sortStatus, setSortStatus] = useState({columnAccessor: "createdAt", direction: "desc"});
+  const [showPermissionsModal, setShowPermissionsModal] = useState(false);
+  const [showInviteModal, setShowInviteModal] = useState(undefined);
 
   useEffect(() => {
     tenantStore.LoadManagedGroups();
@@ -138,7 +32,22 @@ const TenantInvites = observer(() => {
     tenantStore.LoadTenantFundingAccount();
   }, []);
 
-  const invites = tenantStore.Invites(tab);
+  const invites = tenantStore.Invites(tab)
+    .map(invite => ({
+      ...invite,
+      id: invite?.data?.id,
+      address: invite?.data?.address,
+      user: tenantStore.users[invite?.data?.address] || {},
+      name: tenantStore.users[invite?.data?.address]?.name || invite?.data?.name || invite?.data?.address,
+      createdAt: invite.created,
+      createdAtString: new Date(invite.created * 1000).toLocaleString()
+    }))
+    .filter(invite =>
+      !debouncedFilter ||
+      invite?.name?.toLowerCase().includes(debouncedFilter.toLowerCase()) ||
+      invite?.address?.toLowerCase().includes(debouncedFilter.toLowerCase())
+    );
+
   const emptyTabDescriptions = {
     [tenantStore.INVITE_EVENTS.SENT]: "No pending invites",
     [tenantStore.INVITE_EVENTS.ACCEPTED]: "No new accepted invites",
@@ -154,55 +63,141 @@ const TenantInvites = observer(() => {
     return <Loader className={S("page-loader")} />;
   }
 
+  const selectedInvite = !showPermissionsModal ? null :
+    invites.find(invite => invite.id === showPermissionsModal);
+
   return (
-    <>
-      { showInviteModal ? <TenantInviteModal Close={() => setShowInviteModal(false)} /> : null }
-      <div className={S("tenant-page")}>
-        <div className={S("header-text", "tenant-page__header")}>User Invitations</div>
-        <Group align="center" justify="space-between" wrap="nowrap" w={1000} mb="xl" gap={10}>
-          <Tabs h="max-content" variant="pills" color="gray.6" value={tab} onChange={newTab => setTab(newTab)}>
-            <Tabs.List grow>
-              <Tabs.Tab w={125} value={tenantStore.INVITE_EVENTS.ACCEPTED}>Accepted</Tabs.Tab>
-              <Tabs.Tab w={125} value={tenantStore.INVITE_EVENTS.SENT}>Sent</Tabs.Tab>
-              <Tabs.Tab w={125} value={tenantStore.INVITE_EVENTS.MANAGED}>Complete</Tabs.Tab>
-            </Tabs.List>
-          </Tabs>
-          <TextInput
-            aria-label="Filter Users"
-            value={filter}
-            onChange={event => setFilter(event.target.value)}
-            placeholder="Filter Users"
-            className={S("invites__filter")}
+    <div className={S("tenant-page")}>
+      {
+        !showInviteModal ? null :
+          <TenantInviteModal
+            existingInviteId={typeof showInviteModal === "string" ? showInviteModal : undefined}
+            Close={() => setShowInviteModal(false)}
           />
-          <UnstyledButton
-            ml={20}
-            disabled={!canInvite}
-            title={
-              canInvite ?
-                "Invite New User" :
-                "You must be a manager of the tenant users group to invite new users"
-            }
-            className={S("icon-button", canInvite ? "icon-button--accent" : "", "invites__add")}
-            onClick={() => setShowInviteModal(true)}
-          >
-            <ImageIcon icon={AddUserIcon} />
-          </UnstyledButton>
-        </Group>
+      }
+      {
+        !selectedInvite ? null :
+          <TenantUserPermissionsModal
+            address={selectedInvite.address}
+            inviteId={selectedInvite.id}
+            Close={() => setShowPermissionsModal(false)}
+          />
+      }
+
+      <div className={S("header-text", "tenant-page__header")}>User Invitations</div>
+      <Group justify="space-between" maw={1200}>
+        <TextInput
+          leftSection={<ImageIcon icon={SearchIcon} className={S("search-icon")} />}
+          leftSectionWidth={40}
+          aria-label="Filter Users"
+          value={filter}
+          onChange={event => setFilter(event.target.value)}
+          placeholder="Filter Users"
+          className={S("tenant-users__filter")}
+          mb="md"
+          maw={400}
+          w={400}
+        />
         {
-          !invites || invites.length === 0 ?
-            <Text fw={500} w={900} ta="center" mt={50}>{emptyTabDescriptions[tab]}</Text> :
-            <div className={S("invites")}>
-              {
-                invites
-                  .filter(invite => !debouncedFilter || invite?.data?.name?.toLowerCase()?.includes(debouncedFilter.toLowerCase()))
-                  .map(invite =>
-                    <Invite invite={invite} key={`invite-${invite.data.id}`}/>
-                  )
-              }
-            </div>
+          !canInvite ? null :
+            <Button w={150} onClick={() => setShowInviteModal(true)}>Invite</Button>
         }
-      </div>
-    </>
+      </Group>
+      <Group align="center" gap={30} w="100%" maw={1200} mb="md">
+        <Tabs w="100%" maw={1200} color="blue.6" value={tab} onChange={newTab => setTab(newTab)}>
+          <Tabs.List>
+            <Tabs.Tab w={125} value={tenantStore.INVITE_EVENTS.ACCEPTED}>Accepted</Tabs.Tab>
+            <Tabs.Tab w={125} value={tenantStore.INVITE_EVENTS.SENT}>Sent</Tabs.Tab>
+            <Tabs.Tab w={125} value={tenantStore.INVITE_EVENTS.MANAGED}>Complete</Tabs.Tab>
+          </Tabs.List>
+        </Tabs>
+      </Group>
+      <DataTable
+        key={`table-${tab}`}
+        sortStatus={sortStatus}
+        onSortStatusChange={setSortStatus}
+        noRecordsText={emptyTabDescriptions[tab]}
+        records={Sort(invites, sortStatus)}
+        columns={[
+          {
+            accessor: "name",
+            sortable: true,
+            render: invite =>
+              <Group gap="xs">
+                <div className={S("round-image", "tenant-users__image")}>
+                  <ImageIcon
+                    icon={invite?.user?.profileImage}
+                    alternateIcon={DefaultProfileImage(invite)}
+                    label="Profile Image"
+                  />
+                </div>
+                <Stack gap={0}>
+                  <Text fw={600} className={S("ellipsis")}>
+                    {invite.name || invite.address || ""}
+                  </Text>
+                  <Text fz={10}>
+                    { invite.data.email }
+                  </Text>
+                </Stack>
+              </Group>
+          },
+          {
+            accessor: "address",
+            hidden: tab === tenantStore.INVITE_EVENTS.SENT,
+            width: 350,
+            render: invite => <CopyableField value={invite.address} fz={12}>{invite.address}</CopyableField>
+          },
+          {
+            accessor: "createdAt",
+            title: "Date",
+            sortable: true,
+            width: 250,
+            render: user => user.createdAtString
+          },
+          {
+            accessor: "action",
+            title: "",
+            width: 175,
+            render: invite => (
+              <Group justify="end" wrap="nowrap" pr="xs">
+                {
+                  !invite.address ?
+                    <UnstyledButton
+                      title="View Invite"
+                      className={S("text-button")}
+                      onClick={() => setShowInviteModal(invite.id)}
+                    >
+                      View Invite
+                    </UnstyledButton> :
+                    <UnstyledButton
+                      title="Set User Permissions"
+                      className={S("text-button")}
+                      disabled={!tenantStore.managedGroups || tenantStore.managedGroups.length === 0}
+                      onClick={() => setShowPermissionsModal(invite.id)}
+                    >
+                      Set Permissions
+                    </UnstyledButton>
+                }
+                <UnstyledButton
+                  title="Remove Invite"
+                  onClick={() => modals.openConfirmModal({
+                    title: "Remove Invite",
+                    children: <Text mb="lg" fz={16}>Are you sure you want to remove this invite from your history?</Text>,
+                    onConfirm: async () => await tenantStore.DeleteInvite({id: invite.data.id}),
+                    labels: { confirm: "Confirm", cancel: "Cancel" },
+                    centered: true,
+                    withCloseButton: false
+                  })}
+                  className={S("icon-button")}
+                >
+                  <ImageIcon icon={XIcon} />
+                </UnstyledButton>
+              </Group>
+            )
+          }
+        ]}
+      />
+    </div>
   );
 });
 

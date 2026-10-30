@@ -17,22 +17,25 @@ const TenantInviteModal = observer(({existingInviteId="", Close}) => {
   const [funds, setFunds] = useState(0.2);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(undefined);
+  const [createdInviteId, setCreatedInviteId] = useState("");
 
   const fundingLimit = tenantStore.tenantFundingAccount?.per_top_up_limit || 0.2;
   const insufficientFunds = tenantStore.tenantFunds < funds + 0.05;
   const valid = name && email && ValidEmail(email) && !insufficientFunds && funds <= fundingLimit;
 
-  const invite = existingInviteId && tenantStore.invites[existingInviteId];
+  const invite = (existingInviteId || createdInviteId) && tenantStore.invites[existingInviteId || createdInviteId];
 
   const Submit = async () => {
     if(!valid || insufficientFunds) { return; }
 
     try {
       setSubmitting(true);
-      await tenantStore.GenerateInvite({name, email, funds});
+      const id = await tenantStore.GenerateInvite({name, email, funds});
       rootStore.SetToastMessage(`An invite has been sent to ${email}`);
 
-      Close();
+      await tenantStore.LoadInviteNotifications();
+
+      setCreatedInviteId(id);
     } catch (error) {
       tenantStore.Log(error, true);
       setError(error);
@@ -52,21 +55,28 @@ const TenantInviteModal = observer(({existingInviteId="", Close}) => {
         <Text fz="sm" mt="md">
           You may also share this URL with the new user to have them set up their account. After the account is created, you will be notified to grant permissions.
         </Text>
-        <div className={S("tenant-invite-modal__url-container")}>
-          <div className={S("tenant-invite-modal__url")}>
-            { invite.data.url }
-          </div>
-          <CopyButton value={invite.data.url} className={S("icon-button")} />
+        <div className={S("tenant-invite-modal__url")}>
+          { invite.data.url }
+          <CopyButton value={invite.data.url} className={S("tenant-invite-modal__url-copy")} />
         </div>
+        <Group justify="right" mt={50} wrap="nowrap">
+          <Button
+            type="button"
+            onClick={Close}
+            w={150}
+            h={40}
+          >
+            Done
+          </Button>
+        </Group>
       </div>
     );
   } else {
     content = (
       <form onSubmit={() => {}}>
         <TextInput
-          label="Name"
-          mt="md"
           mb="md"
+          label="Name"
           value={name}
           onChange={event => setName(event.currentTarget.value)}
           onKeyDown={event => {
@@ -76,9 +86,8 @@ const TenantInviteModal = observer(({existingInviteId="", Close}) => {
           }}
         />
         <TextInput
-          label="Email Address"
-          mt="md"
           mb="md"
+          label="Email Address"
           value={email}
           onChange={event => setEmail(event.currentTarget.value)}
           onKeyDown={event => {
@@ -88,6 +97,7 @@ const TenantInviteModal = observer(({existingInviteId="", Close}) => {
           }}
         />
         <NumberInput
+          mb="md"
           error={
             !funds ? true :
               insufficientFunds ?
@@ -96,7 +106,6 @@ const TenantInviteModal = observer(({existingInviteId="", Close}) => {
                   `Limit: ${fundingLimit.toFixed(2)}` :
                   undefined
           }
-          mb="md"
           label="Funds"
           description={
             <Group gap={0}>
