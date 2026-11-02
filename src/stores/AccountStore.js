@@ -173,7 +173,7 @@ class AccountStore {
   // Auth
   SendLoginEmail = flow(function * ({email, type, code, callbackUrl}) {
     try {
-      const result = yield Utils.ResponseToJson(
+      return yield Utils.ResponseToJson(
         this.rootStore.client.authClient.MakeAuthServiceRequest({
           path: UrlJoin("as", "wlt", type === "send_invite_email" ? "" : "ory", type),
           method: "POST",
@@ -188,15 +188,27 @@ class AccountStore {
             { Authorization: `Bearer ${this.rootStore.walletClient.AuthToken()}` }
         })
       );
+    } catch (error) {
+      this.Log(error, true);
+    }
+  });
 
-      /*
-      if(type === "confirm_email") {
-        this.SetAlertNotification(this.l10n.login.email_confirmed);
-      }
-
-       */
-
-      return result;
+  SendTenantAccountEmail = flow(function * ({email, type, callbackUrl}) {
+    try {
+      return yield Utils.ResponseToJson(
+        this.rootStore.client.authClient.MakeAuthServiceRequest({
+          path: UrlJoin("as", "tnt", this.currentAccount.tenantContractId, type),
+          method: "POST",
+          body: {
+            tenant: this.currentAccount.tenantContractId,
+            email,
+            callback_url: callbackUrl?.toString()
+          },
+          headers: {
+            Authorization: `Bearer ${this.rootStore.walletClient.AuthToken()}`
+          }
+        })
+      );
     } catch (error) {
       this.Log(error, true);
     }

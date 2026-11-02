@@ -58,7 +58,14 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
               <DataTable
                 sortStatus={sortStatus}
                 onSortStatusChange={setSortStatus}
-                records={Sort(groups, sortStatus)}
+                records={
+                  Sort(groups, sortStatus)
+                    .sort((a, b) =>
+                      a.isSpecialGroup ?
+                        b.isSpecialGroup ? 0 : -1 :
+                        b.isSpecialGroup ? 1 : 0
+                    )
+                }
                 columns={[
                   {
                     accessor: "name",
@@ -66,7 +73,12 @@ const TenantUserPermissionsModal = observer(({address, inviteId, Close}) => {
                     sortable: true,
                     render: group =>
                       <Stack gap={0}>
-                        <Text fw={500}>{group.meta?.public?.name || group?.meta?.name || ""}</Text>
+                        <Text
+                          td={group.isSpecialGroup ? "underline" : undefined}
+                          fw={500}
+                        >
+                          {group.meta?.public?.name || group?.meta?.name || ""}
+                        </Text>
                         <CopyableField value={group.address} fz={9}>{group.address}</CopyableField>
                       </Stack>
                   },

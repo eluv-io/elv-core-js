@@ -40,31 +40,18 @@ const TenantRoutes = observer(() => {
     return <Redirect to="/accounts" />;
   }
 
-  const name = tenantStore.publicTenantMetadata?.name ||
-    accountsStore.currentAccount?.tenantName ||
-    "Tenant";
-
   return (
     <GatedRoute>
       <nav className="side-nav">
         <nav className="side-nav__nav">
-          <h2 className="side-nav__title">
-            {
-              !name.startsWith("iq__") ? name :
-                "Tenant"
-            }
-          </h2>
-          <Link to="/" className={active => `side-nav__link ${active ? "side-nav__link--active" : ""}`}>
+          <Link title="Tenancy Overview" to="/" className={active => `side-nav__link ${active ? "side-nav__link--active" : ""}`}>
             <ImageIcon icon={OverviewIcon} />
-            <span>Overview</span>
           </Link>
-          <Link to="/manage" className={active => `side-nav__link ${active ? "side-nav__link--active" : ""}`}>
+          <Link title="Manage Users" to="/manage" className={active => `side-nav__link ${active ? "side-nav__link--active" : ""}`}>
             <ImageIcon icon={ManageIcon} />
-            <span>Manage</span>
           </Link>
-          <Link to="/invites" className={active => `side-nav__link ${active ? "side-nav__link--active" : ""}`}>
+          <Link title="User Invitations" to="/invites" className={active => `side-nav__link ${active ? "side-nav__link--active" : ""}`}>
             <ImageIcon icon={InviteIcon} />
-            <span>Invite</span>
           </Link>
         </nav>
         <div key={`path-${location}`} className="content">
