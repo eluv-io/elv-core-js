@@ -18,7 +18,8 @@ const EluvioConfiguration = {
   },
   // Restrict apps to specific tenants: {"<app name>": ["iten..."]}. Unlisted apps are available to all tenants.
   "appTenantAllowlist": {
-    "Media Packager": ["iten2Cfqbvd4SL9QApyewGMoqBtEvGzY"]
+    "Media Packager": ["iten2Cfqbvd4SL9QApyewGMoqBtEvGzY"],
+    "Content Management": ["iten2fY3bSh8Q7zY1t6vGZ8mUNFLHAWM"]
   },
   "ory_configuration": {
     "url": "http://localhost:3000",
