@@ -151,9 +151,17 @@
   }
 }
 
+.text-button {
+  color: var(--accent);
+  font-size: 12px;
+  text-decoration: underline;
+}
+
 .icon-button {
   color: var(--text-tertiary);
   height: 20px;
+  max-height: 20px;
+  max-width: 20px;
   transition: opacity 0.25s ease;
   width: 20px;
 
@@ -163,6 +171,12 @@
 
   &--accent {
     color: var(--accent);
+  }
+
+  svg {
+    height: 100%;
+    object-fit: contain;
+    width: 100%;
   }
 }
 
@@ -229,15 +243,13 @@
 
 .modal {
   &__header {
-    background-color: var(--background-secondary);
     display: flex;
     height: 50px;
-    justify-content: center;
-    padding: 0 15px;
-    text-align: center;
+    justify-content: flex-start;
+    text-align: left;
 
     * {
-      color: var(--text-secondary);
+      color: var(--text-primary);
       font-size: 18px;
       font-weight: 600;
     }
@@ -253,4 +265,28 @@
   height: 90vh;
   justify-content: center;
   width: 100%;
+}
+
+.search-icon {
+  color: var(--text-tertiary);
+  height: 20px;
+  width: 20px;
+}
+
+.copyable-field {
+  align-items: center;
+  display: flex;
+  gap: 5px;
+
+  &__button {
+    color: var(--text-tertiary);
+    display: flex;
+    height: 0.8em;
+    width: 0.8em;
+
+    svg {
+      height: 100%;
+      width: 100%;
+    }
+  }
 }

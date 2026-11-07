@@ -1,5 +1,11 @@
 @use "./reset";
 
+@keyframes fadein {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+
 html,
 body,
 .app,
@@ -12,6 +18,8 @@ body,
 }
 
 body {
+  --animation-fade-in: fadein;
+
   color: #222;
   height: 100vh;
   scrollbar-gutter: stable both-edges;
@@ -51,6 +59,7 @@ b {
 }
 
 .content {
+  animation: var(--animation-fade-in) 0.35s ease;
   padding-bottom: 20px;
 }
 
@@ -152,9 +161,15 @@ b {
 }
 
 .side-nav {
+  --nav-width: 80px;
+
   min-height: calc(100vh - 150px);
-  padding-left: 200px;
+  padding-left: var(--nav-width);
   position: relative;
+
+  .content {
+    min-height: calc(100vh - 150px);
+  }
 
   &__title {
     font-size: 20px;
@@ -164,14 +179,17 @@ b {
   }
 
   &__nav {
+    align-items: center;
     border-right: 1px solid var(--background-tertiary);
     display: flex;
     flex-direction: column;
+    gap: 5px;
     height: 100%;
     left: 0;
-    padding: 20px 15px;
+    min-width: var(--nav-width);
+    padding-top: 20px;
     position: fixed;
-    width: 200px;
+    width: var(--nav-width);
   }
 
   &__link {
@@ -180,21 +198,23 @@ b {
     color: var(--text-secondary);
     display: flex;
     gap: 15px;
-    height: 40px;
-    padding-left: 10px;
+    height: 50px;
+    justify-content: center;
+    min-width: 50px;
     transition: color 0.1s ease, background-color 0.1s ease, font-weight 0.1s ease;
+    width: 50px;
 
     * {
       transition: color 0.1s ease, background-color 0.1s ease, font-weight 0.1s ease;
     }
 
     &:hover,
-    &.active {
-      background-color: var(--background-secondary);
+    &--active {
+      background-color: var(--background-active);
       font-weight: 500;
     }
 
-    &.active {
+    &--active {
       color: var(--accent);
     }
 

@@ -1,16 +1,15 @@
-import FooterStyles from "./static/stylesheets/modules/footer.module.scss";
+import FooterStyles from "@/assets/stylesheets/modules/footer.module.scss";
 
 import React from "react";
 import {observer} from "mobx-react";
-import {CreateModuleClassMatcher} from "./utils/Utils";
-import {useLocation} from "react-router";
-import {Link} from "react-router-dom";
+import {CreateModuleClassMatcher} from "@/utils/Utils.js";
+import {Link, useLocation} from "wouter";
 
 const S = CreateModuleClassMatcher(FooterStyles);
 
 const Footer = observer(() => {
-  const location = useLocation();
-  if(location.pathname.match(/^\/apps\/.+$/)) {
+  const [location] = useLocation();
+  if(location.match(/^\/apps\/.+$/)) {
     // App frame is visible - hide navigation
     return null;
   }

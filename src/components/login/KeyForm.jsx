@@ -1,4 +1,4 @@
-import LoginStyles from "../../static/stylesheets/modules/login.module.scss";
+import LoginStyles from "@/assets/stylesheets/modules/login.module.scss";
 
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react";
@@ -14,12 +14,13 @@ import {
   Loader,
   UnstyledButton, Button
 } from "@mantine/core";
-import {rootStore, accountsStore} from "../../stores";
-import EditIcon from "../../static/icons/edit.svg";
-import DownloadIcon from "../../static/icons/download.svg";
-import {CreateModuleClassMatcher} from "../../utils/Utils";
-import {ImageIcon} from "../Misc";
-import {Link} from "react-router-dom";
+import {rootStore, accountsStore} from "@/stores";
+import {CreateModuleClassMatcher} from "@/utils/Utils";
+import {ImageIcon} from "@/components/Misc";
+import {Link} from "wouter";
+
+import EditIcon from "@/assets/icons/edit.svg";
+import DownloadIcon from "@/assets/icons/download.svg";
 
 const S = CreateModuleClassMatcher(LoginStyles);
 

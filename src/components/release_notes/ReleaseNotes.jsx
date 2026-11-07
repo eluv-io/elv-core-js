@@ -1,17 +1,16 @@
-import ReleaseNotesStyles from "../../static/stylesheets/modules/release-notes.module.scss";
+import ReleaseNotesStyles from "@/assets/stylesheets/modules/release-notes.module.scss";
 
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react";
-import {rootStore} from "../../stores";
+import {rootStore} from "@/stores";
 import {Loader} from "@mantine/core";
-import {CreateModuleClassMatcher} from "../../utils/Utils";
+import {CreateModuleClassMatcher} from "@/utils/Utils";
+import {ImageIcon} from "@/components/Misc";
 
-import CaretUp from "../../static/icons/caret-up";
-import CaretDown from "../../static/icons/caret-down";
-import {ImageIcon} from "../Misc";
+import CaretUp from "@/assets/icons/caret-up.svg";
+import CaretDown from "@/assets/icons/caret-down.svg";
 
 const S = CreateModuleClassMatcher(ReleaseNotesStyles);
-
 
 const Note = observer(({title, date, text, showInitially=false}) => {
   const [show, setShow] = useState(showInitially);

@@ -1,10 +1,10 @@
 import {flow, makeAutoObservable} from "mobx";
 import UrlJoin from "url-join";
-import {DownloadFromUrl} from "../utils/Utils";
+import {DownloadFromUrl} from "@/utils/Utils";
 import {Utils} from "@eluvio/elv-client-js";
 import {v4 as UUID, parse as ParseUUID} from "uuid";
-import {RegisterPasskey as RegisterPasskeyCredential, LoginWithPasskey as AuthenticateWithPasskey} from "../utils/Passkey";
-import {accountsStore, rootStore} from "./index";
+import {RegisterPasskey as RegisterPasskeyCredential, LoginWithPasskey as AuthenticateWithPasskey} from "@/utils/Passkey";
+import {accountsStore, rootStore} from "@/stores/index";
 
 class AccountStore {
   oryClient;
@@ -173,7 +173,7 @@ class AccountStore {
   // Auth
   SendLoginEmail = flow(function * ({email, type, code, callbackUrl}) {
     try {
-      const result = yield Utils.ResponseToJson(
+      return yield Utils.ResponseToJson(
         this.rootStore.client.authClient.MakeAuthServiceRequest({
           path: UrlJoin("as", "wlt", type === "send_invite_email" ? "" : "ory", type),
           method: "POST",
@@ -188,15 +188,27 @@ class AccountStore {
             { Authorization: `Bearer ${this.rootStore.walletClient.AuthToken()}` }
         })
       );
+    } catch (error) {
+      this.Log(error, true);
+    }
+  });
 
-      /*
-      if(type === "confirm_email") {
-        this.SetAlertNotification(this.l10n.login.email_confirmed);
-      }
-
-       */
-
-      return result;
+  SendTenantAccountEmail = flow(function * ({email, type, callbackUrl}) {
+    try {
+      return yield Utils.ResponseToJson(
+        this.rootStore.client.authClient.MakeAuthServiceRequest({
+          path: UrlJoin("as", "tnt", this.currentAccount.tenantContractId, type),
+          method: "POST",
+          body: {
+            tenant: this.currentAccount.tenantContractId,
+            email,
+            callback_url: callbackUrl?.toString()
+          },
+          headers: {
+            Authorization: `Bearer ${this.rootStore.walletClient.AuthToken()}`
+          }
+        })
+      );
     } catch (error) {
       this.Log(error, true);
     }
@@ -248,7 +260,10 @@ class AccountStore {
     let accounts = localStorage.getItem(`elv-accounts-${this.network}`) || localStorage.getItem("elv-accounts");
     accounts = accounts ? JSON.parse(atob(accounts)) : {};
 
-    this.currentAccountAddress = localStorage.getItem(`elv-current-account-${this.network}`) || localStorage.getItem("elv-current-account");
+    this.currentAccountAddress = (
+      sessionStorage.getItem(`elv-current-account-${this.network}`) ||
+      localStorage.getItem(`elv-current-account-${this.network}`)
+    );
 
     yield Promise.all(
       Object.keys(accounts).map(async address => {
@@ -503,7 +518,7 @@ class AccountStore {
     } finally {
       this.checkingSavedPassword = false;
     }
-  })
+  });
 
   SetCurrentAccount = flow(function * ({address, signer, switchAccount=false}) {
     try {
@@ -513,7 +528,7 @@ class AccountStore {
 
       address = Utils.FormatAddress(address || signer.address);
 
-      let account = { ...this.accounts[address] } || {};
+      let account = {...(this.accounts[address] || {})};
 
       this.rootStore.ResetTenancy();
 
@@ -529,6 +544,7 @@ class AccountStore {
         }
       } else {
         if(yield this.CheckSavedPassword({address})) {
+          this.CheckTenantDetails();
           return;
         }
       }
@@ -552,10 +568,8 @@ class AccountStore {
 
       this.currentAccountAddress = address;
 
-      localStorage.setItem(
-        `elv-current-account-${this.network}`,
-        address.toString()
-      );
+      localStorage.setItem(`elv-current-account-${this.network}`, address.toString());
+      sessionStorage.setItem(`elv-current-account-${this.network}`, address.toString());
 
       if(signer && this.accounts[address].balance > 0.02) {
         this.UserMetadata()
@@ -626,7 +640,7 @@ class AccountStore {
     }
 
     return signer._signingKey().privateKey;
-  })
+  });
 
   TestPassword(password) {
     if(this.rootStore.simplePasswords) { return; }
@@ -636,7 +650,7 @@ class AccountStore {
       [/[a-z]/, "must contain at least one lowercase character"],
       [/[A-Z]/, "must contain at least one uppercase character"],
       [/[0-9]/, "must contain at least one number"],
-      [/[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/, "must contain at least one symbol"]
+      [/[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/, "must contain at least one symbol"]
     ];
 
     let failedTest = passwordTests.find(([test]) => !test.test(password));
@@ -759,6 +773,7 @@ class AccountStore {
       if(isTenantAdmin) {
         try {
           this.rootStore.tenantStore.SetShareConfiguration();
+          this.rootStore.tenantStore.LoadInviteNotifications();
         } catch (error) {
           this.Log("Failed to set up share configuration:", true);
           this.Log(error);

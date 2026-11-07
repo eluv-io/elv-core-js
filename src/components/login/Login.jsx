@@ -1,7 +1,7 @@
-import LoginStyles from "../../static/stylesheets/modules/login.module.scss";
+import LoginStyles from "@/assets/stylesheets/modules/login.module.scss";
 
 import {observer} from "mobx-react";
-import {rootStore, accountsStore, tenantStore} from "../../stores";
+import {rootStore, accountsStore, tenantStore} from "@/stores";
 import {
   Button,
   Checkbox,
@@ -15,21 +15,20 @@ import {
   TextInput
 } from "@mantine/core";
 import React, {useEffect, useRef, useState} from "react";
-import {CreateModuleClassMatcher} from "../../utils/Utils";
-import {Navigate} from "react-router";
-import OryForm from "./OryForm";
+import {CreateModuleClassMatcher} from "@/utils/Utils";
+import {Redirect, Link, useLocation} from "wouter";
+import OryForm from "@/components/login/OryForm";
 import {browserSupportsWebAuthn} from "@simplewebauthn/browser";
-import {FormatWebAuthnError} from "../../utils/Passkey";
+import {FormatWebAuthnError} from "@/utils/Passkey";
 
-import EluvioLogo from "../../static/images/Main_Logo_Light";
-import {Link, useNavigate} from "react-router-dom";
-import {AccountSelector} from "../account/AccountMenu";
-import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "../Misc";
+import {AccountSelector} from "@/components/account/AccountMenu";
+import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "@/components/Misc";
+import KeyAccountForm from "@/components/login/KeyForm";
 
-import EditIcon from "../../static/icons/edit.svg";
-import DefaultProfileIcon from "../../static/icons/User";
-import TenancyIcon from "../../static/icons/users.svg";
-import KeyAccountForm from "./KeyForm";
+import EluvioLogo from "@/assets/images/Main_Logo_Light.png";
+import EditIcon from "@/assets/icons/edit.svg";
+import DefaultProfileIcon from "@/assets/icons/User.svg";
+import TenancyIcon from "@/assets/icons/users.svg";
 
 const S = CreateModuleClassMatcher(LoginStyles);
 
@@ -183,7 +182,7 @@ export const LoginGateModal = observer(({Close}) => {
   const accountType = accountsStore.currentAccount?.type || "key";
 
   if(accountsStore.sortedAccounts.length === 0) {
-    return <Navigate to="/" />;
+    return <Redirect to="/" />;
   }
 
   return (
@@ -266,7 +265,7 @@ export const LoginGate = observer(({children}) => {
     );
   } else if(currentAccount?.signer && currentAccount?.balance < 0.1 && location.pathname !== "/profile") {
     // No account or insufficient balance
-    return <Navigate to="/accounts"/>;
+    return <Redirect to="/accounts"/>;
   } else if(!currentAccount?.signer || accountsStore.loadingAccount) {
     return <LoginGateModal Close={() => {}}/>;
   }
@@ -598,7 +597,7 @@ const LoginModal = observer(({Close}) => {
 });
 
 const Login = observer(() => {
-  const navigate = useNavigate();
+  const [, navigate] = useLocation();
 
   return (
     <div className={S("page-content", "login-page")}>

@@ -2,7 +2,7 @@ import {flow, makeAutoObservable, runInAction} from "mobx";
 import {Utils} from "@eluvio/elv-client-js";
 import {v4 as UUID, parse as UUIDParse} from "uuid";
 import UrlJoin from "url-join";
-import {accountsStore} from "./index";
+import {accountsStore} from "@/stores/index";
 
 class TenantStore {
   onboardParams;
@@ -346,7 +346,7 @@ class TenantStore {
       if(contentAdminGroupIndex >= 0) {
         const contentAdminGroup = allGroups[contentAdminGroupIndex];
         delete allGroups[contentAdminGroupIndex];
-        allGroups.unshift(contentAdminGroup);
+        allGroups.unshift({...contentAdminGroup, isSpecialGroup: true});
 
         this.specialGroups.contentAdmins = contentAdminGroup;
       } else {
@@ -360,7 +360,7 @@ class TenantStore {
       if(tenantAdminGroupIndex >= 0) {
         const tenantAdminGroup = allGroups[tenantAdminGroupIndex];
         delete allGroups[tenantAdminGroupIndex];
-        allGroups.unshift(tenantAdminGroup);
+        allGroups.unshift({...tenantAdminGroup, isSpecialGroup: true});
 
         this.specialGroups.tenantAdmins = tenantAdminGroup;
       } else {
@@ -374,7 +374,7 @@ class TenantStore {
       if(tenantUsersGroupIndex >= 0) {
         const tenantUsersGroup = allGroups[tenantUsersGroupIndex];
         delete allGroups[tenantUsersGroupIndex];
-        allGroups.unshift(tenantUsersGroup);
+        allGroups.unshift({...tenantUsersGroup, isSpecialGroup: true});
 
         this.specialGroups.tenantUsers = tenantUsersGroup;
       } else {
@@ -387,9 +387,9 @@ class TenantStore {
       this.groups = allGroups;
       this.managedGroups = allGroups.filter(group =>
         group?.isOwner ||
-        this.tenantContractId === "iten2aYr2mCUKsJ6zL9e5kAXZ2mvDXom" ?
+        (this.tenantContractId === "iten2aYr2mCUKsJ6zL9e5kAXZ2mvDXom" ?
           group?.isDirectManager :
-          group?.isManager
+          group?.isManager)
       );
     }
 
@@ -612,8 +612,8 @@ class TenantStore {
       }
     });
 
-    this.rootStore.accountsStore.SendLoginEmail({
-      type: "send_invite_email",
+    this.rootStore.accountsStore.SendTenantAccountEmail({
+      type: "email_invite",
       email,
       callbackUrl: url.toString()
     });
@@ -713,6 +713,13 @@ class TenantStore {
         ...acceptedInvite.data
       }
     });
+
+    this.rootStore.accountsStore.SendTenantAccountEmail({
+      type: "email_invite_confirmation",
+      email: acceptedInvite.data.email,
+      address: acceptedInvite.data.address,
+      callbackUrl: window.location.origin
+    });
   });
 
   DeleteInvite = flow(function * ({id}) {
@@ -728,8 +735,8 @@ class TenantStore {
     delete this.invites[id];
   });
 
-  LoadInviteNotifications = flow(function * () {
-    if(this.invites) { return; }
+  LoadInviteNotifications = flow(function * (force=false) {
+    if(this.invites && !force) { return; }
 
     const inviteNotifications = yield this.rootStore.walletClient.Notifications({
       tenantId: this.tenantContractId,

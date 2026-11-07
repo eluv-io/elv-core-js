@@ -56,9 +56,10 @@
   &__logo-container {
     align-items: center;
     display: flex;
-    flex: 1;
     flex-direction: row;
     justify-content: flex-start;
+    min-width: 250px;
+    width: max-content;
   }
 
   &__account-container {
@@ -85,11 +86,14 @@
     margin-right: 10px;
   }
 
+  &__center-content {
+    flex: 1;
+  }
+
   &__app-display {
     align-items: center;
     color: var(--header-text--dark);
     display: flex;
-    flex: 1;
     font-size: 24px;
     font-weight: 700;
     height: 100%;
@@ -99,13 +103,44 @@
   &__apps-link {
     color: var(--text-secondary);
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 600;
     margin-right: 20px;
     transition: color 0.1s ease;
 
     &:hover {
       color: var(--text-primary);
     }
+  }
+}
+
+.notification {
+  align-items: center;
+  animation: var(--animation-fade-in) 1s ease;
+  display: flex;
+  font-size: 14px;
+  gap: 10px;
+  justify-content: center;
+
+  &__icon {
+    height: 20px;
+    min-height: 20px;
+    min-width: 20px;
+    width: 20px;
+
+    * {
+      color: var(--accent);
+    }
+  }
+
+  &__text {
+    font-weight: 500;
+  }
+
+  &__action {
+    color: var(--accent);
+    font-size: 12px;
+    margin-left: 5px;
+    text-decoration: underline;
   }
 }
 
@@ -123,9 +158,9 @@
       transition: color 0.25s ease, background-color 0.25s ease;
     }
 
-    &--active,
-    &:hover {
-      background-color: var(--background-secondary);
+    svg {
+      height: 100%;
+      width: 100%;
     }
 
     &--active {

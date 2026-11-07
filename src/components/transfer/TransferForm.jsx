@@ -1,18 +1,19 @@
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react";
 import {Select, TextInput, NumberInput, Button, Group, Text} from "@mantine/core";
-import {rootStore, accountsStore, tenantStore} from "../../stores";
+import {rootStore, accountsStore, tenantStore} from "@/stores";
 import {Utils} from "@eluvio/elv-client-js";
-import {Link, useNavigate} from "react-router-dom";
-import {CreateModuleClassMatcher} from "../../utils/Utils";
-import {ImageIcon} from "../Misc";
-import FundsIcon from "../../static/icons/elv-token.png";
+import {Link, useLocation} from "wouter";
+import {CreateModuleClassMatcher} from "@/utils/Utils";
+import {ImageIcon} from "@/components/Misc";
 import {modals} from "@mantine/modals";
+
+import FundsIcon from "@/assets/icons/elv-token.png";
 
 const S = CreateModuleClassMatcher();
 
 const TransferForm = observer(() => {
-  const navigate = useNavigate();
+  const [, navigate] = useLocation();
   const accounts = Object.values(accountsStore.sortedAccounts)
     .filter(address => address !== accountsStore.currentAccountAddress)
     .map(address => accountsStore.accounts[address])

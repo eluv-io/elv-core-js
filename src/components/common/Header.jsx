@@ -1,27 +1,56 @@
-import HeaderStyles from "./static/stylesheets/modules/header.module.scss";
+import HeaderStyles from "@/assets/stylesheets/modules/header.module.scss";
 
 import React, {useState} from "react";
 import {observer} from "mobx-react";
-import {accountsStore, rootStore, tenantStore} from "./stores";
-import {Link, useNavigate} from "react-router-dom";
-import {CreateModuleClassMatcher} from "./utils/Utils";
+import {accountsStore, rootStore, tenantStore} from "@/stores";
+import {Link, useLocation} from "wouter";
+import {CreateModuleClassMatcher} from "@/utils/Utils.js";
 import {Group, Popover, UnstyledButton} from "@mantine/core";
-import {ImageIcon} from "./components/Misc";
-import AppInfo, {FilterAllowedApps} from "./components/apps/AppInfo";
+import {ImageIcon} from "@/components/Misc.jsx";
+import AppInfo, {FilterAllowedApps} from "@/components/apps/AppInfo.jsx";
 import UrlJoin from "url-join";
+import AccountMenu from "@/components/account/AccountMenu.jsx";
 
-import Logo from "./static/images/Logo.png";
-import LogoDemo from "./static/images/LogoDemo.png";
-import LogoTest from "./static/images/LogoTest.png";
-import AccountMenu from "./components/account/AccountMenu";
-import AppsIcon from "./static/icons/apps.svg";
-import ExternalLinkIcon from "./static/icons/external-link";
-import EvieLogo from "./static/images/app_icons/EVIE - dark mode.png";
+import Logo from "@/assets/images/Logo.png";
+import LogoDemo from "@/assets/images/LogoDemo.png";
+import LogoTest from "@/assets/images/LogoTest.png";
+import AppsIcon from "@/assets/icons/apps.svg";
+import ExternalLinkIcon from "@/assets/icons/external-link.svg";
+import EvieLogo from "@/assets/images/app_icons/EVIE - dark mode.png";
+import NotificationIcon from "@/assets/icons/info.svg";
 
 const S = CreateModuleClassMatcher(HeaderStyles);
 
+const TenantInviteNotification = observer(() => {
+  if(!tenantStore.isTenantAdmin) {
+    return null;
+  }
+
+  const invites = Object.keys(tenantStore.invites || {})
+    .filter(key => tenantStore.invites[key].type === tenantStore.INVITE_EVENTS.ACCEPTED);
+
+  if(invites.length === 0) {
+    return;
+  }
+
+  return (
+    <Link to="/tenancy/invites" className={S("notification")}>
+      <ImageIcon
+        icon={NotificationIcon}
+        className={S("notification__icon")}
+      />
+      <div className={S("notification__text")}>
+        {invites.length} new user{invites.length === 1 ? "" : "s"} are awaiting permissions
+      </div>
+      <div className={S("notification__action")}>
+        Manage
+      </div>
+    </Link>
+  );
+});
+
 const AppsMenuButton = observer(({name, logo, setShowMenu}) => {
-  const navigate = useNavigate();
+  const [,navigate] = useLocation();
   return (
     <button
       className={S("apps-menu__link")}
@@ -65,7 +94,8 @@ const AppsMenu = observer(() => {
     <Popover opened={showMenu} onChange={setShowMenu} offset={20} position="bottom-start">
       <Popover.Target>
         <UnstyledButton
-          aria-label="All Applications"
+          title="View All Applications"
+          aria-label="View All Applications"
           onClick={() => setShowMenu(!showMenu)}
           className={S("apps-menu__button", showMenu ? "apps-menu__button--active" : "")}
         >
@@ -108,21 +138,19 @@ const AppsMenu = observer(() => {
   );
 });
 
-const AppDisplay = observer(() => {
-  let icon;
-  let isEvie = rootStore.activeApp === "Video Intelligence Editor";
-
-  if(isEvie) {
-    icon = EvieLogo;
+const CenterContent = observer(() => {
+  if(rootStore.activeApp !== "Video Intelligence Editor") {
+    return (
+      <div className={S("header__center-content")}>
+        <TenantInviteNotification />
+      </div>
+    );
   }
 
   return (
-    <div className={S("header__app-display")}>
-      {
-        (isEvie && icon) ?
-          <img src={icon} className={S("header__app-logo")} alt="Logo" /> : ""
-      }
-      { isEvie ? rootStore.activeApp : "" }
+    <div className={S("header__center-content", "header__app-display")}>
+      <img src={EvieLogo} className={S("header__app-logo")} alt="Logo" />
+      { rootStore.activeApp || "" }
     </div>
   );
 });
@@ -143,17 +171,17 @@ const Header = observer(() => {
         <Link to="/apps" className={S("header__logo")}>
           <img src={logo} alt="Eluvio"/>
         </Link>
-        <AppDisplay/>
-        <AppsMenu/>
-        <div className={S("header__gap")}/>
-        {
-          !accountsStore.currentAccount ? null :
-            <Link className={S("header__apps-link")} to="/apps">
-              All Applications
-            </Link>
-        }
-        <AccountMenu/>
       </div>
+      <CenterContent />
+      <AppsMenu/>
+      <div className={S("header__gap")}/>
+      {
+        !accountsStore.currentAccount ? null :
+          <Link className={S("header__apps-link")} to="/apps">
+            All Applications
+          </Link>
+      }
+      <AccountMenu/>
     </header>
   );
 });

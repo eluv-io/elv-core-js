@@ -1,17 +1,14 @@
-import "./static/stylesheets/modules/shared.module.scss";
+import "@/assets/stylesheets/modules/shared.module.scss";
 
 import React from "react";
-import {BrowserRouter} from "react-router-dom";
-
 import {observer} from "mobx-react";
-import {accountsStore, rootStore} from "./stores";
-
-import Header from "./Header";
-import AppRoutes from "./Routes";
+import {accountsStore, rootStore} from "@/stores";
+import Header from "@/components/common/Header.jsx";
+import AppRoutes from "./Routes.jsx";
 import {Button, Group, Loader, Text} from "@mantine/core";
-import ScrollToTop from "./ScrollToTop";
-import Footer from "./Footer";
-import {CreateModuleClassMatcher} from "./utils/Utils";
+import Footer from "@/components/common/Footer.jsx";
+import {CreateModuleClassMatcher} from "@/utils/Utils";
+import ScrollToTop from "@/components/common/ScrollToTop.jsx";
 
 const S = CreateModuleClassMatcher();
 
@@ -72,7 +69,7 @@ const App = observer(() => {
   );
 
   return (
-    <BrowserRouter>
+    <div>
       <ScrollToTop />
       <div className={`router-container ${rootStore.activeApp ? "router-container--app" : ""}`}>
         {
@@ -96,7 +93,7 @@ const App = observer(() => {
             <Footer />
         }
       </div>
-    </BrowserRouter>
+    </div>
   );
 });
 

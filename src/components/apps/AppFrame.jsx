@@ -7,13 +7,13 @@ from the core app, which owns user account information and keys
 
 import React, {useEffect} from "react";
 import UrlJoin from "url-join";
-import {Navigate, useParams} from "react-router";
+import {Redirect, useParams} from "wouter";
 
 import {FrameClient} from "@eluvio/elv-client-js/src/FrameClient";
 import {observer} from "mobx-react";
 
-import {rootStore, accountsStore} from "../../stores";
-import {IsAppAllowed, IsAppRestricted} from "./AppInfo";
+import {rootStore, accountsStore} from "@/stores";
+import {IsAppAllowed, IsAppRestricted} from "@/components/apps/AppInfo";
 
 class IFrameBase extends React.Component {
   SandboxPermissions() {
@@ -312,7 +312,7 @@ class AppFrame extends React.Component {
 
   render() {
     if(this.state.redirectLocation) {
-      return <Navigate replace to={this.state.redirectLocation} />;
+      return <Redirect to={this.state.redirectLocation} />;
     }
 
     if(!rootStore.client) {
@@ -354,7 +354,7 @@ const AppFrameWrapper = observer(() => {
     }
 
     if(!IsAppAllowed(app, tenantContractId)) {
-      return <Navigate to="/apps" replace />;
+      return <Redirect to="/apps" />;
     }
   }
 

@@ -1,25 +1,25 @@
-import AccountStyles from "../../static/stylesheets/modules/accounts.module.scss";
+import AccountStyles from "@/assets/stylesheets/modules/accounts.module.scss";
 
 import {observer} from "mobx-react";
-import {accountsStore} from "../../stores";
+import {accountsStore} from "@/stores";
 import {Button, FileButton, Group, Text} from "@mantine/core";
-import {useNavigate} from "react-router-dom";
+import {useLocation} from "wouter";
 import React, {useState} from "react";
-import {CreateModuleClassMatcher} from "../../utils/Utils";
+import {CreateModuleClassMatcher} from "@/utils/Utils";
 
 import {Utils} from "@eluvio/elv-client-js";
-import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "../Misc";
-import {LoginGateModal} from "../login/Login";
+import {ButtonWithLoader, DefaultProfileImage, ImageIcon} from "@/components/Misc";
+import {LoginGateModal} from "@/components/login/Login";
 import {modals} from "@mantine/modals";
 
-import XIcon from "../../static/icons/X.svg";
-import PlusIcon from "../../static/icons/plus";
-import KeyIcon from "../../static/icons/Key";
+import XIcon from "@/assets/icons/X.svg";
+import PlusIcon from "@/assets/icons/plus.svg";
+import KeyIcon from "@/assets/icons/Key.svg";
 
 const S = CreateModuleClassMatcher(AccountStyles);
 
 const Account = observer(({address}) => {
-  const navigate = useNavigate();
+  const [,navigate] = useLocation();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const account = accountsStore.accounts[address];
 
@@ -116,7 +116,7 @@ const Account = observer(({address}) => {
 });
 
 const Accounts = observer(() => {
-  const navigate = useNavigate();
+  const [, navigate] = useLocation();
 
   return (
     <div className="page-content">
