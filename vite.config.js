@@ -21,7 +21,7 @@ export default defineConfig(({command}) => {
   return {
     plugins,
     server: {
-      port: 8082,
+      port: process.env.ELV_CORE_JS_PORT || 8082,
       host: true
     },
     resolve: {
