@@ -763,7 +763,7 @@ class TenantStore {
     this.invites = invites;
 
     if(!this.inviteListener) {
-      this.inviteListener = this.rootStore.walletClient.AddNotificationListener({
+      this.inviteListener = yield this.rootStore.walletClient.AddNotificationListener({
         onMessage: invite => {
           if(!Object.values(this.INVITE_EVENTS).includes(invite.type) || !invite.data?.id) {
             return;

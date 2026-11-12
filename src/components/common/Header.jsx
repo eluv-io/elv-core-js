@@ -1,6 +1,6 @@
 import HeaderStyles from "@/assets/stylesheets/modules/header.module.scss";
 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react";
 import {accountsStore, rootStore, tenantStore} from "@/stores";
 import {Link, useLocation} from "wouter";
@@ -22,6 +22,19 @@ import NotificationIcon from "@/assets/icons/info.svg";
 const S = CreateModuleClassMatcher(HeaderStyles);
 
 const TenantInviteNotification = observer(() => {
+  useEffect(() => {
+    document.title = "Eluvio Core";
+
+    if(tenantStore.isTenantAdmin) {
+      const invites = Object.keys(tenantStore.invites || {})
+        .filter(key => tenantStore.invites[key].type === tenantStore.INVITE_EVENTS.ACCEPTED);
+
+      if(invites.length > 0) {
+        document.title = `(${invites.length}) Eluvio Core`;
+      }
+    }
+  }, [tenantStore.invites]);
+
   if(!tenantStore.isTenantAdmin) {
     return null;
   }
