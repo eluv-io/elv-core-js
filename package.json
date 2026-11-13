@@ -19,7 +19,7 @@
     "last 2 versions"
   ],
   "dependencies": {
-    "@eluvio/elv-client-js": "^4.2.43",
+    "@eluvio/elv-client-js": "github:eluv-io/elv-client-js#profile-fix",
     "@mantine/core": "^9.7.4",
     "@mantine/hooks": "^9.7.4",
     "@mantine/modals": "^9.7.4",
